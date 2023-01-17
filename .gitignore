@@ -1,0 +1,12 @@
+node_modules
+
+*.log
+.next
+
+/app
+dist
+renderer/build
+
+
+.env.local
+.env

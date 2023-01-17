@@ -1,0 +1,12 @@
+appId: com.zauto.manager
+productName: Zauto Manager
+copyright: Copyright © 2022 Houdhaifa Lebbad
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null

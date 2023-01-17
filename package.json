@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "name": "zauto-manager",
+  "description": "A software for a car dealership",
+  "version": "1.0.0",
+  "author": "Houdhaifa Lebbad",
+  "main": "app/background.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nextron",
+    "build": "nextron build",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "@next/font": "^13.1.2",
+    "@types/styled-components": "^5.1.26",
+    "electron-serve": "^1.1.0",
+    "electron-store": "^8.1.0",
+    "styled-components": "^5.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "@types/react": "^18.0.26",
+    "babel-plugin-styled-components": "^2.0.7",
+    "electron": "^21.3.4",
+    "electron-builder": "^23.6.0",
+    "electron-react-devtools": "^0.5.3",
+    "next": "^13.1.2",
+    "nextron": "^8.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^4.9.4"
+  }
+}
