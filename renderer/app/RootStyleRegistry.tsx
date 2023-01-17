@@ -1,7 +1,7 @@
 "use client";
 
 import { useServerInsertedHTML } from "next/navigation";
-import { useStyledComponentsRegistry } from "../lib/StyledComponents";
+import { useStyledComponentsRegistry } from "lib/StyledComponents";
 
 export default function RootStyleRegistry({
   children,

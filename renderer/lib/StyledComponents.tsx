@@ -9,7 +9,7 @@ export function useStyledComponentsRegistry() {
 
     /*@ts-ignore */
     styledComponentsStyleSheet.instance.clearTag();
-    return <>{styles}</>;
+    return styles;
   };
 
   const StyledComponentsRegistry = ({ children }: { children: ReactNode }) => (
