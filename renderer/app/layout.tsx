@@ -1,15 +1,16 @@
-import RootStyleRegistry from "app/RootStyleRegistry";
+import { ReactNode } from "react";
+import Registry from "app/Registry";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+interface LayoutProps {
+  children: ReactNode;
+}
+
+export default function RootLayout({ children }: LayoutProps) {
   return (
     <html>
       <head />
       <body>
-        <RootStyleRegistry>{children}</RootStyleRegistry>
+        <Registry>{children}</Registry>
       </body>
     </html>
   );

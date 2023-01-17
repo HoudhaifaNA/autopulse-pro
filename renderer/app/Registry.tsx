@@ -1,22 +1,30 @@
+"use client";
+
 import { ReactNode, useState } from "react";
+import { useServerInsertedHTML } from "next/navigation";
 import { ServerStyleSheet, StyleSheetManager } from "styled-components";
 
-export function useStyledComponentsRegistry() {
+interface RegistryProps {
+  children: ReactNode;
+}
+
+export default function StyledComponentsRegistry({ children }: RegistryProps) {
+  // Only create stylesheet once with lazy initial state
   const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
 
-  const styledComponentsFlushEffect = () => {
+  useServerInsertedHTML(() => {
     const styles = styledComponentsStyleSheet.getStyleElement();
 
-    /*@ts-ignore */
+    /**@ts-ignore */
     styledComponentsStyleSheet.instance.clearTag();
     return <>{styles}</>;
-  };
+  });
 
-  const StyledComponentsRegistry = ({ children }: { children: ReactNode }) => (
+  if (typeof window !== "undefined") return <>{children}</>;
+
+  return (
     <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
-      {children}
+      {children as ReactNode}
     </StyleSheetManager>
   );
-
-  return [StyledComponentsRegistry, styledComponentsFlushEffect] as const;
 }
