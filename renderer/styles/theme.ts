@@ -40,7 +40,7 @@ let typographyOptions = {
   subtitle: [1.6, 400, 3.2],
   body1: [1.6, 400, 2.4],
   body2: [1.4, 400, 1.6],
-  button: [1.6, 500, 2.4],
+  button: [1.6, 500, 2.4, "0.012em"],
   label: [1.2, 400, 1.6],
 };
 
@@ -48,10 +48,11 @@ let typography = {};
 
 // Setting the typography object from typographyOptions
 for (const [key, value] of Object.entries(typographyOptions)) {
-  const [size, weight, lineHeight] = value;
+  const [size, weight, lineHeight, letterSpacing] = value;
   const options = {
     size: `${size}rem`,
     lineHeight: `${lineHeight}rem`,
+    letterSpacing,
     weight,
   };
   typography = { ...typography, [key]: options };

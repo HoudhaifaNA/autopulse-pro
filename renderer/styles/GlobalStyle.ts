@@ -5,15 +5,20 @@ const GlobalStyle = createGlobalStyle`
     *, 
     *::before,
     *::after{
-        box-sizing: border-box;
         padding: 0;
         margin: 0;
+        box-sizing: border-box;
     }
     html{
         font-size: 62.25%;
         scroll-behavior: smooth;
     }
-   
+
+    body, button,input{
+        font-family: 'Inter', sans-serif;
+
+    }
+
   
 `;
 
