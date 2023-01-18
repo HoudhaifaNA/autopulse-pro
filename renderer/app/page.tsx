@@ -1,12 +1,5 @@
-import Button from "app/Button";
-import Cutton from "./Cutton";
-
-const HomePage = () => {
-  return (
-    <div>
-      <Cutton />
-    </div>
-  );
+const LoginPage = () => {
+  return <div>Login Page</div>;
 };
 
-export default HomePage;
+export default LoginPage;
