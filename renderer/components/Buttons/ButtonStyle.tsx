@@ -1,6 +1,8 @@
 "use client";
 import styled from "styled-components";
 
+// TODO : Naming of the function
+
 /**@ts-ignore */
 const isDisabled = (props) => {
   const { theme, disabled } = props;
@@ -9,6 +11,7 @@ const isDisabled = (props) => {
 
 interface RProp {
   icon?: "right" | "left";
+  floating?: boolean;
 }
 
 const Button = styled.button<RProp>`
@@ -18,7 +21,8 @@ const Button = styled.button<RProp>`
   flex-direction: ${({ icon }) => (icon === "right" ? "row-reverse" : "row")};
   gap: 0.8rem;
   height: 4rem;
-  padding: 1rem 2rem;
+  width: ${(props) => (props.floating ? "4rem" : "")};
+  padding: ${(props) => (props.floating ? "" : "1rem 1.8rem")};
   outline: none;
   border: 0.1rem solid ${isDisabled};
   border-radius: 0.4rem;
@@ -26,14 +30,14 @@ const Button = styled.button<RProp>`
   cursor: pointer;
 
   svg {
-    width: 1.8rem;
-    height: 1.8rem;
+    width: 2rem;
+    height: 2rem;
     fill: currentColor;
   }
 
   // !TO REMOVE
   &:active {
-    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.1);
+    transform: translateY(0.1rem);
   }
 `;
 
