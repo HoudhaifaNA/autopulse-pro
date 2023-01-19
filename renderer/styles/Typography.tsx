@@ -22,7 +22,7 @@ export const Heading2 = styled.h2`
 `;
 
 export const Heading3 = styled.h3`
-  ${setElementDeclerartions(2.764, 700, 4)}
+  ${setElementDeclerartions(2.765, 700, 4)}
 `;
 
 export const Heading4 = styled.h4`
@@ -51,5 +51,6 @@ export const ButtonText = styled.span`
 `;
 
 export const LabelText = styled.label`
-  ${setElementDeclerartions(1.2, 400, 1.6)}
+  ${setElementDeclerartions(1.4, 500, 1.6)}
+  display: block;
 `;
