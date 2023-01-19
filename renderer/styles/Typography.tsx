@@ -45,9 +45,9 @@ export const Body2 = styled.p`
   ${setElementDeclerartions(1.4, 400, 1.6)}
 `;
 
-export const ButtonText = styled.button`
-  ${setElementDeclerartions(1.6, 500, 2.4)}
-  letter-spacing: 0.012em;
+export const ButtonText = styled.span`
+  ${setElementDeclerartions(1.4, 500, 1.6)}
+  letter-spacing: 0.0125em;
 `;
 
 export const LabelText = styled.label`
