@@ -31,33 +31,7 @@ const colors = {
     "700": "#fb8f26",
   },
 };
-let typographyOptions = {
-  h1: [3.981, 700, 5.6],
-  h2: [3.318, 700, 4.8],
-  h3: [2.764, 700, 4],
-  h4: [2.304, 500, 3.2],
-  h5: [1.92, 500, 3.2],
-  subtitle: [1.6, 400, 3.2],
-  body1: [1.6, 400, 2.4],
-  body2: [1.4, 400, 1.6],
-  button: [1.6, 500, 2.4, "0.012em"],
-  label: [1.2, 400, 1.6],
-};
 
-let typography = {};
-
-// Setting the typography object from typographyOptions
-for (const [key, value] of Object.entries(typographyOptions)) {
-  const [size, weight, lineHeight, letterSpacing] = value;
-  const options = {
-    size: `${size}rem`,
-    lineHeight: `${lineHeight}rem`,
-    letterSpacing,
-    weight,
-  };
-  typography = { ...typography, [key]: options };
-}
-
-const theme = { colors, typography };
+const theme = { colors };
 
 export default theme;
