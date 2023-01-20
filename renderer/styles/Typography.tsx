@@ -1,3 +1,4 @@
+"use client";
 import styled, { css } from "styled-components";
 
 const setElementDeclerartions = (
@@ -21,7 +22,7 @@ export const Heading2 = styled.h2`
 `;
 
 export const Heading3 = styled.h3`
-  ${setElementDeclerartions(2.764, 700, 4)}
+  ${setElementDeclerartions(2.765, 700, 4)}
 `;
 
 export const Heading4 = styled.h4`
@@ -44,11 +45,12 @@ export const Body2 = styled.p`
   ${setElementDeclerartions(1.4, 400, 1.6)}
 `;
 
-export const ButtonText = styled.button`
-  ${setElementDeclerartions(1.6, 500, 2.4)}
-  letter-spacing: 0.012em;
+export const ButtonText = styled.span`
+  ${setElementDeclerartions(1.4, 500, 1.6)}
+  letter-spacing: 0.0125em;
 `;
 
 export const LabelText = styled.label`
-  ${setElementDeclerartions(1.2, 400, 1.6)}
+  ${setElementDeclerartions(1.4, 500, 1.6)}
+  display: block;
 `;
