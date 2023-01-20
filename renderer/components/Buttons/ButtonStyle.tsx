@@ -1,8 +1,6 @@
 "use client";
 import styled from "styled-components";
 
-// TODO : Naming of the function
-
 /**@ts-ignore */
 const isDisabled = (props) => {
   const { theme, disabled } = props;
@@ -35,9 +33,10 @@ const Button = styled.button<RProp>`
     fill: currentColor;
   }
 
-  // !TO REMOVE
   &:active {
-    transform: translateY(0.1rem);
+    &:not([disabled]) {
+      transform: translateY(0.1rem);
+    }
   }
 `;
 

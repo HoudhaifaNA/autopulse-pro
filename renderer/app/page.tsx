@@ -1,5 +1,4 @@
 import { Heading1 } from "styles/Typography";
-import Button from "components/Buttons/Button";
 
 const LoginPage = () => {
   return (
