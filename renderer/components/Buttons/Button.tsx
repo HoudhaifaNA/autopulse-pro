@@ -1,17 +1,18 @@
-import { ButtonText } from "styles/Typography";
 import { GhostButton, PrimaryButton, SecondaryButton } from "./ButtonStyle";
+import { ButtonText } from "styles/Typography";
+import Icon from "components/Icon/Icon";
 
 interface IconType {
-  src: string;
+  name: string;
   position: "right" | "left";
 }
 
 interface ButtonProps {
-  children: string;
   variant: "primary" | "secondary" | "ghost";
   icon?: IconType;
   floating?: boolean;
   disabled?: boolean;
+  children?: string;
 }
 
 const buttonVariants = {
@@ -30,7 +31,8 @@ const Button = (props: ButtonProps) => {
       floating={floating}
       disabled={disabled}
     >
-      <ButtonText>{children}</ButtonText>
+      {icon && <Icon icon={icon.name} />}
+      {children && <ButtonText>{children}</ButtonText>}
     </SelectedButton>
   );
 };
