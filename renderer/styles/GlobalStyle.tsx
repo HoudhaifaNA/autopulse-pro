@@ -10,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
     }
     html{
-        font-size: 62.25%;
+        font-size: 10px;
         scroll-behavior: smooth;
     }
 
