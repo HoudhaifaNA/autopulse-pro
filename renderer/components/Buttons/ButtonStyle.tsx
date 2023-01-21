@@ -19,7 +19,7 @@ const Button = styled.button<RProp>`
   flex-direction: ${({ icon }) => (icon === "right" ? "row-reverse" : "row")};
   gap: 0.8rem;
   height: 4rem;
-  width: ${(props) => (props.floating ? "4rem" : "")};
+  width: ${(props) => (props.floating ? "4rem" : "100%")};
   padding: ${(props) => (props.floating ? "" : "1rem 1.8rem")};
   outline: none;
   border: 0.1rem solid ${isDisabled};
