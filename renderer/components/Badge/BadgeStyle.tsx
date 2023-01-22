@@ -11,7 +11,7 @@ export const BadgeWrapper = styled.div<BadgeWrapperProps>`
   font-size: 1.2rem;
   font-weight: 500;
   text-transform: capitalize;
-  background-color: ${({ theme, type }) => theme.colors[type]["200"]};
-  color: ${({ theme, type }) => theme.colors[type]["700"]};
+  background-color: ${({ theme, $type }) => theme.colors[$type]["200"]};
+  color: ${({ theme, $type }) => theme.colors[$type]["700"]};
   border-radius: 10rem;
 `;

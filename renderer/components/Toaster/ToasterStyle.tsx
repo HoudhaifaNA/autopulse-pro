@@ -11,7 +11,8 @@ export const ToasterWrapper = styled.div<ToasterWrapperProps>`
   gap: 1.4rem;
   padding: 1.5rem 1rem;
   width: 45rem;
-  border-bottom: 0.4rem solid ${({ theme, type }) => theme.colors[type]["500"]};
+  border-bottom: 0.4rem solid
+    ${({ theme, $type }) => theme.colors[$type]["500"]};
   border-radius: 0.4rem;
   box-shadow: 0 1rem 2rem 0.2rem rgba(0, 0, 0, 0.15);
 
@@ -25,7 +26,7 @@ export const ToasterWrapper = styled.div<ToasterWrapperProps>`
   }
 
   svg:first-child {
-    fill: ${({ theme, type }) => theme.colors[type]["500"]};
+    fill: ${({ theme, $type }) => theme.colors[$type]["500"]};
   }
 
   svg:last-child {

@@ -27,8 +27,8 @@ const Button = (props: ButtonProps) => {
 
   return (
     <SelectedButton
-      icon={icon?.position}
-      floating={floating}
+      $icon={icon?.position}
+      $floating={floating}
       disabled={disabled}
     >
       {icon && <Icon icon={icon.name} />}
