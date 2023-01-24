@@ -9,7 +9,7 @@ export interface ToasterProps {
 
 const Toaster = ({ children, type }: ToasterProps) => {
   return (
-    <ToasterWrapper type={type}>
+    <ToasterWrapper $type={type}>
       <Icon icon={type} />
       <Body2>{children}</Body2>
       <Icon icon="close" />

@@ -8,7 +8,7 @@ export interface BadgeProps {
 
 const Badge = ({ type, children }: BadgeProps) => {
   return (
-    <BadgeWrapper type={type}>
+    <BadgeWrapper $type={type}>
       <span>{children}</span>
     </BadgeWrapper>
   );

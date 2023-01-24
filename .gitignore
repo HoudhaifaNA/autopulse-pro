@@ -7,6 +7,9 @@ node_modules
 dist
 renderer/build
 
+.vscode
+
+_app
 
 .env.local
 .env
