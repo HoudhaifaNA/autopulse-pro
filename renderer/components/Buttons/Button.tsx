@@ -1,37 +1,36 @@
-import { GhostButton, PrimaryButton, SecondaryButton } from "./ButtonStyle";
+import * as S from "components/Buttons/Button.styled";
 import { ButtonText } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 
-interface IconType {
-  name: string;
-  position: "right" | "left";
-}
-
-interface ButtonProps {
+export interface ButtonProps {
   variant: "primary" | "secondary" | "ghost";
-  icon?: IconType;
+  type: "submit";
+  icon?: string;
+  iconPostition?: "right" | "left";
   floating?: boolean;
   disabled?: boolean;
   children?: string;
 }
 
 const buttonVariants = {
-  primary: PrimaryButton,
-  secondary: SecondaryButton,
-  ghost: GhostButton,
+  primary: S.PrimaryButton,
+  secondary: S.SecondaryButton,
+  ghost: S.GhostButton,
 };
 
 const Button = (props: ButtonProps) => {
-  const { variant, icon, floating, disabled, children } = props;
+  const { variant, type, icon, iconPostition, floating, disabled, children } =
+    props;
   const SelectedButton = buttonVariants[variant];
 
   return (
     <SelectedButton
-      $icon={icon?.position}
-      $floating={floating}
+      type={type}
       disabled={disabled}
+      $iconPosition={iconPostition}
+      $floating={floating}
     >
-      {icon && <Icon icon={icon.name} />}
+      {icon && <Icon icon={icon} />}
       {children && <ButtonText>{children}</ButtonText>}
     </SelectedButton>
   );

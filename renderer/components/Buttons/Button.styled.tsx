@@ -1,4 +1,3 @@
-"use client";
 import styled from "styled-components";
 
 /**@ts-ignore */
@@ -7,16 +6,17 @@ const isDisabled = (props) => {
   return disabled ? theme.colors.neutral["500"] : theme.colors.primary["500"];
 };
 
-interface RProp {
-  $icon?: "right" | "left";
+interface StyledButtonProps {
+  $iconPosition?: "right" | "left";
   $floating?: boolean;
 }
 
-const Button = styled.button<RProp>`
+const Button = styled.button<StyledButtonProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: ${({ $icon }) => ($icon === "right" ? "row-reverse" : "row")};
+  flex-direction: ${({ $iconPosition }) =>
+    $iconPosition === "right" ? "row-reverse" : "row"};
   gap: 0.8rem;
   height: 4rem;
   width: ${({ $floating }) => ($floating ? "4rem" : "100%")};
@@ -35,7 +35,7 @@ const Button = styled.button<RProp>`
 
   &:active {
     &:not([disabled]) {
-      transform: translateY(0.1rem);
+      transform: translateY(0.05rem);
     }
   }
 `;
