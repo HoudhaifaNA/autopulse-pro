@@ -1,11 +1,10 @@
-"use client";
-
 import styled from "styled-components";
 import { ToasterProps } from "./Toaster";
 
-type ToasterWrapperProps = Omit<ToasterProps, "children">;
-
-export const ToasterWrapper = styled.div<ToasterWrapperProps>`
+export interface StyledToasterProps {
+  $type: ToasterProps["type"];
+}
+export const ToasterWrapper = styled.div<StyledToasterProps>`
   display: flex;
   align-items: center;
   gap: 1.4rem;
