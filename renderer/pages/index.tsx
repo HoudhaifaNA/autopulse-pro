@@ -1,16 +1,17 @@
-import { Heading1 } from "styles/Typography";
 import { Formik, FormikProps, FormikHelpers } from "formik";
-import { Checkbox, TextInput } from "components/Input/Input";
+
+import { Heading1 } from "styles/Typography";
 import Button from "components/Buttons/Button";
-import Toggle from "components/Toggle/Toggle";
+import { TypedInput } from "components/Input/Input";
 
 interface Values {
   name: string;
   tos: boolean;
   password: string;
+  favs: string;
 }
 
-const initalValues = { name: "", password: "", tos: false };
+const initalValues = { name: "", password: "", tos: false, favs: "coffe" };
 const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
   setTimeout(() => {
     console.log(values);
@@ -34,9 +35,9 @@ const LoginPage = () => {
       >
         {({ isSubmitting, handleSubmit }: FormikProps<Values>) => {
           return (
-            <form onSubmit={handleSubmit} style={{ width: "804px" }}>
-              <div style={{ width: "350px", marginTop: "2rem" }}>
-                <TextInput
+            <form onSubmit={handleSubmit} style={{ width: "304px" }}>
+              <div style={{ width: "100%", marginTop: "2rem" }}>
+                <TypedInput
                   name="name"
                   type="text"
                   label="name"
@@ -44,21 +45,14 @@ const LoginPage = () => {
                   addOn="+213"
                 />
               </div>
-              <div style={{ width: "350px", marginTop: "2rem" }}>
-                <TextInput
-                  name="password"
-                  type="password"
-                  label="Password"
-                  placeholder="Enter your password"
-                  iconRight="visibility"
-                />
-              </div>
-              <div style={{ width: "350px", marginTop: "2rem" }}>
-                <Checkbox name="tos" type="checkbox" label="Terms of Service" />
-              </div>
 
-              <div style={{ width: "350px", marginTop: "2rem" }}>
-                <Button type="submit" variant="primary" disabled={isSubmitting}>
+              <div style={{ width: "100%", marginTop: "2rem" }}>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  disabled={isSubmitting}
+                  icon="success"
+                >
                   Submit
                 </Button>
               </div>
@@ -66,18 +60,6 @@ const LoginPage = () => {
           );
         }}
       </Formik>
-      <div style={{ width: "350px", marginTop: "2rem" }}>
-        <Toggle status={true} />
-      </div>
-      <div style={{ width: "350px", marginTop: "2rem" }}>
-        <Toggle label={{ text: "Turn off", position: "left" }} status={false} />
-      </div>
-      <div style={{ width: "350px", marginTop: "2rem" }}>
-        <Toggle
-          label={{ text: "Change user look to blur", position: "right" }}
-          disabled
-        />
-      </div>
     </div>
   );
 };
