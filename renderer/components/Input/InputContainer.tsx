@@ -1,5 +1,5 @@
 import { FieldInputProps, FieldMetaProps } from "formik";
-import * as S from "components/Input/Input.styled";
+import * as S from "components/Input/InputContainer.styled";
 import { Body2 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 import { TypedInputProps } from "./types";
