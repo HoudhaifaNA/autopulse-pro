@@ -6,13 +6,16 @@ import { Body2 } from "styles/Typography";
 interface DropdownProps {
   items: { mainText: string; icon?: string; secondText?: string }[];
   iconSize?: "s" | "l";
+  onItemClick: (text: string) => void;
   children?: ReactElement | ReactElement[];
 }
 
-const renderItems = (items: DropdownProps["items"]) => {
+type DropdownItemArgs = Pick<DropdownProps, "items" | "onItemClick">;
+
+const renderItems = ({ items, onItemClick }: DropdownItemArgs) => {
   return items.map(({ mainText, icon, secondText }) => {
     return (
-      <S.DropdownItem key={mainText}>
+      <S.DropdownItem key={mainText} onClick={() => onItemClick(mainText)}>
         <S.MainTextWrapper>
           {icon && <Icon icon={icon} />}
           <Body2>{mainText}</Body2>
@@ -23,10 +26,11 @@ const renderItems = (items: DropdownProps["items"]) => {
   });
 };
 
-const Dropdown = ({ items, iconSize = "s", children }: DropdownProps) => {
+const Dropdown = (props: DropdownProps) => {
+  const { items, iconSize = "s", onItemClick, children } = props;
   return (
     <S.DropdownWrapper $iconSize={iconSize}>
-      <S.DropdownList>{renderItems(items)}</S.DropdownList>
+      <S.DropdownList>{renderItems({ items, onItemClick })}</S.DropdownList>
       {children}
     </S.DropdownWrapper>
   );
