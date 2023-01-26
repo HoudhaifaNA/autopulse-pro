@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@next/font": "^13.1.2",
+    "@tremor/react": "^1.6.1",
     "@types/styled-components": "^5.1.26",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",

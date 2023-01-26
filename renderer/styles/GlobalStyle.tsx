@@ -13,7 +13,9 @@ const GlobalStyle = createGlobalStyle`
         font-size: 10px;
         scroll-behavior: smooth;
     }
-
+    body{
+        overflow: hidden;
+    }
     body, button,input{
         font-family: 'Inter', sans-serif;
 
