@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Icon from "components/Icon/Icon";
 import * as InputStyle from "components/Input/InputContainer.styled";
 import * as S from "./SearchBar.styled";
-import { Body2 } from "styles/Typography";
+import { Body1, Body2, Heading5 } from "styles/Typography";
 import Link from "next/link";
 
 // !TODO NEED REFACTORE
@@ -96,7 +96,12 @@ const SearchBar = () => {
           <S.SearchList>{renderSearchedItems(CATEGORIES_EXAMPLE)}</S.SearchList>
         )}
       </S.SearchBarContainer>
-      <S.UserOverview></S.UserOverview>
+      <S.UserOverview>
+        <Body1>Saber Zehani</Body1>
+        <S.UserPicture>
+          <Heading5>S</Heading5>
+        </S.UserPicture>
+      </S.UserOverview>
     </S.SearchBarWrapper>
   );
 };

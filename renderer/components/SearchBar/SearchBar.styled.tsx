@@ -67,7 +67,22 @@ export const CategoryItem = styled.div`
 `;
 
 export const UserOverview = styled.div`
-  background-color: red;
-  height: 4rem;
-  flex-basis: 4rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+
+  h5 {
+    text-transform: capitalize;
+    color: ${({ theme }) => theme.colors.white};
+  }
+`;
+
+export const UserPicture = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 10rem;
+  background-color: ${({ theme }) => theme.colors.warning["700"]};
 `;
