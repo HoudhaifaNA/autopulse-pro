@@ -1,9 +1,11 @@
-import { Heading1 } from "styles/Typography";
+import Navbar from "components/Navbar/Navbar";
+import { Body1, Heading1 } from "styles/Typography";
 
 const LoginPage = () => {
   return (
-    <div style={{ padding: "4rem" }}>
-      <Heading1>Login Page</Heading1>
+    <div style={{ padding: "0", display: "flex" }}>
+      <Navbar />
+      <div style={{ flex: "1", height: "100vh", background: "#fff" }}></div>
     </div>
   );
 };
