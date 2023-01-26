@@ -1,6 +1,5 @@
 import Navbar from "components/Navbar/Navbar";
-import SearchBar from "components/SearchBar/SearchBar";
-import { Body1, Heading1 } from "styles/Typography";
+import SearchBar from "components/Header/Header";
 
 const LoginPage = () => {
   return (

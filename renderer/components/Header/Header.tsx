@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Icon from "components/Icon/Icon";
 import * as InputStyle from "components/Input/InputContainer.styled";
-import * as S from "./SearchBar.styled";
+import * as S from "./Header.styled";
 import { Body1, Body2, Heading5 } from "styles/Typography";
 import Link from "next/link";
 
@@ -80,7 +80,7 @@ const SearchBar = () => {
   }, []);
 
   return (
-    <S.SearchBarWrapper>
+    <S.Header>
       <S.SearchBarContainer ref={searchListRef}>
         <InputStyle.InputContainer>
           <InputStyle.InputWrapper>
@@ -102,7 +102,7 @@ const SearchBar = () => {
           <Heading5>S</Heading5>
         </S.UserPicture>
       </S.UserOverview>
-    </S.SearchBarWrapper>
+    </S.Header>
   );
 };
 

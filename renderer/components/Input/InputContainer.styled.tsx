@@ -1,4 +1,4 @@
-import { SearchBarContainer } from "components/SearchBar/SearchBar.styled";
+import { SearchBarContainer } from "components/Header/Header.styled";
 import styled from "styled-components";
 
 export const InputContainer = styled.div`
