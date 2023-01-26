@@ -1,3 +1,4 @@
+import { SearchBarContainer } from "components/SearchBar/SearchBar.styled";
 import styled from "styled-components";
 
 export const InputContainer = styled.div`
@@ -19,6 +20,10 @@ export const InputContainer = styled.div`
 
   &.error svg {
     fill: ${({ theme }) => theme.colors.error["700"]};
+  }
+
+  ${SearchBarContainer} & {
+    border-radius: 0.4rem 0.4rem 0 0;
   }
 `;
 
