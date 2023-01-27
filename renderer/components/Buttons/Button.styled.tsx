@@ -1,15 +1,15 @@
 import styled from "styled-components";
 
+interface StyledButtonProps {
+  $iconPosition?: "right" | "left";
+  $floating?: boolean;
+}
+
 /**@ts-ignore */
 const isDisabled = (props) => {
   const { theme, disabled } = props;
   return disabled ? theme.colors.neutral["500"] : theme.colors.primary["500"];
 };
-
-interface StyledButtonProps {
-  $iconPosition?: "right" | "left";
-  $floating?: boolean;
-}
 
 const Button = styled.button<StyledButtonProps>`
   display: flex;
@@ -27,12 +27,7 @@ const Button = styled.button<StyledButtonProps>`
   transition: all 0.1s ease-in-out;
   cursor: pointer;
 
-  svg {
-    width: 2rem;
-    height: 2rem;
-    fill: currentColor;
-  }
-
+  // Make transition if not disabled
   &:active {
     &:not([disabled]) {
       transform: translateY(0.05rem);
@@ -44,6 +39,7 @@ export const PrimaryButton = styled(Button)`
   background-color: ${isDisabled};
   color: ${({ theme }) => theme.colors.white};
 
+  // Change background color if not disabled
   &:hover,
   &:active {
     &:not([disabled]) {

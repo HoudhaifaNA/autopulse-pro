@@ -1,23 +1,16 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { GhostButton } from "components/Buttons/Button.styled";
 
-export const DropdownWrapper = styled.div<{ $iconSize?: "s" | "l" }>`
-  width: fit-content;
+export const DropdownWrapper = styled.div`
   max-height: 24rem;
+  min-width: fit-content;
   width: 100%;
   overflow: hidden;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
   border-radius: 0.4rem;
-
-  svg {
-    width: ${({ $iconSize }) => ($iconSize === "s" ? "1.8rem" : "2.4rem")};
-    height: ${({ $iconSize }) => ($iconSize === "s" ? "1.8rem" : "2.4rem")};
-  }
 `;
 
 export const DropdownList = styled.ul`
-  list-style: none;
-  width: fit-content;
   list-style: none;
   width: 100%;
   max-height: 20rem;

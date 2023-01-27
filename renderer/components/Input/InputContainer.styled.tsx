@@ -44,8 +44,6 @@ export const InputWrapper = styled.div`
   padding: 0.8rem 1rem;
 
   svg {
-    width: 1.8rem;
-    height: 1.8rem;
     fill: ${({ theme }) => theme.colors.neutral["500"]};
   }
 `;

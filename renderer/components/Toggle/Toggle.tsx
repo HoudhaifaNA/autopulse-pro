@@ -3,9 +3,9 @@ import * as S from "components/Toggle/Toggle.styled";
 import { Body1 } from "styles/Typography";
 
 interface ToggleProps {
-  disabled?: boolean;
   status?: boolean;
   labelPosition?: "left" | "right";
+  disabled?: boolean;
   children?: string;
 }
 
@@ -18,7 +18,7 @@ const Toggle = (props: ToggleProps) => {
   return (
     <S.ToggleContainer
       $label={labelPosition}
-      $disabled={disabled}
+      disabled={disabled}
       onClick={switchToggle}
     >
       {children && <Body1>{children}</Body1>}

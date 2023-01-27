@@ -51,12 +51,6 @@ export const CategoryItem = styled.div`
     color: ${({ theme }) => theme.colors.black};
   }
 
-  svg {
-    width: 2.4rem;
-    height: 2.4rem;
-    fill: currentColor;
-  }
-
   p {
     text-transform: capitalize;
   }

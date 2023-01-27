@@ -1,8 +1,21 @@
-const Icon = ({ icon }: { icon: string }) => {
+import styled from "styled-components";
+
+interface IconProps {
+  icon: string;
+  iconSize: string;
+}
+
+const SvgWrapper = styled.svg<{ $iconSize: string }>`
+  width: ${({ $iconSize }) => $iconSize};
+  height: ${({ $iconSize }) => $iconSize};
+  fill: currentColor;
+`;
+
+const Icon = ({ icon, iconSize }: IconProps) => {
   return (
-    <svg>
+    <SvgWrapper $iconSize={iconSize}>
       <use xlinkHref={`./sprite.svg#${icon}`} />;
-    </svg>
+    </SvgWrapper>
   );
 };
 

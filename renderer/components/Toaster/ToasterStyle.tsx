@@ -19,11 +19,6 @@ export const ToasterWrapper = styled.div<StyledToasterProps>`
     flex: 1;
   }
 
-  svg {
-    width: 2rem;
-    height: 2rem;
-  }
-
   svg:first-child {
     fill: ${({ theme, $type }) => theme.colors[$type]["500"]};
   }

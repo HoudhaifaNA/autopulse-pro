@@ -1,8 +1,7 @@
-import Button from "components/Buttons/Button";
 import Image from "next/image";
-import React from "react";
-import { Body1, Heading3 } from "styles/Typography";
 import * as S from "./EmptyState.style";
+import Button from "components/Buttons/Button";
+import { Body1, Heading3 } from "styles/Typography";
 
 interface EmptyStateProps {
   title: string;

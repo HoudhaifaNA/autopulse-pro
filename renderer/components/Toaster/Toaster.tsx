@@ -7,12 +7,12 @@ export interface ToasterProps {
   children: string;
 }
 
-const Toaster = ({ children, type }: ToasterProps) => {
+const Toaster = ({ type, children }: ToasterProps) => {
   return (
     <ToasterWrapper $type={type}>
-      <Icon icon={type} />
+      <Icon icon={type} iconSize="2rem" />
       <Body2>{children}</Body2>
-      <Icon icon="close" />
+      <Icon icon="close" iconSize="2rem" />
     </ToasterWrapper>
   );
 };

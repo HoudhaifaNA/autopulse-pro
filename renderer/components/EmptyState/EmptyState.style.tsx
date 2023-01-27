@@ -9,7 +9,7 @@ export const EmptyStateWrapper = styled.div`
 `;
 
 export const EmptyStateImage = styled.div`
-  margin-bottom: 1.5rem;
+  margin-bottom: 0rem;
 `;
 
 export const EmptyStateText = styled.div`
