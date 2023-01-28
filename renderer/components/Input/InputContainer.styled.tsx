@@ -46,6 +46,9 @@ export const InputWrapper = styled.div`
   svg {
     fill: ${({ theme }) => theme.colors.neutral["500"]};
   }
+  svg:last-child {
+    cursor: pointer;
+  }
 `;
 
 export const Input = styled.input`
