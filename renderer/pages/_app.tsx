@@ -1,9 +1,11 @@
 import { AppProps } from "next/app";
+import { useRouter } from "next/router";
 import Inter from "@next/font/local";
 import { ThemeProvider } from "styled-components";
 
 import GlobalStyle from "styles/GlobalStyle";
 import theme from "styles/theme";
+import Layout from "components/Layout/Layout";
 
 const inter = Inter({
   src: [
@@ -14,11 +16,23 @@ const inter = Inter({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
+  // Insert Login page without Layout
+  const insertPage = () => {
+    if (router.asPath === "/") return <Component {...pageProps} />;
+    return (
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    );
+  };
+
   return (
     <main className={inter.className}>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <Component {...pageProps} />
+        {insertPage()}
       </ThemeProvider>
     </main>
   );
