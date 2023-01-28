@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+
 import Icon from "components/Icon/Icon";
 import * as InputStyle from "components/Input/InputContainer.styled";
 import * as S from "./Header.styled";
 import { Body1, Body2, Heading5 } from "styles/Typography";
-import Link from "next/link";
 
 // !TODO NEED REFACTORE
 

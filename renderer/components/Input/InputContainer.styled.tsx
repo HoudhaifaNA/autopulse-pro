@@ -41,7 +41,7 @@ export const InputWrapper = styled.div`
   align-items: center;
   flex: 1;
   gap: 0.8rem;
-  padding: 0.8rem 1rem;
+  padding: 0 1rem;
 
   svg {
     fill: ${({ theme }) => theme.colors.neutral["500"]};
@@ -60,6 +60,7 @@ export const Input = styled.input`
   font-weight: 400;
   line-height: 1.6rem;
   width: 100%;
+  height: 100%;
   outline: none;
   border: none;
 

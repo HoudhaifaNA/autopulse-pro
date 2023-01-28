@@ -1,4 +1,5 @@
 import styled from "styled-components";
+
 import { ToasterProps } from "./Toaster";
 
 export interface StyledToasterProps {
@@ -9,7 +10,7 @@ export const ToasterWrapper = styled.div<StyledToasterProps>`
   align-items: center;
   gap: 1.4rem;
   padding: 1.5rem 1rem;
-  width: 45rem;
+  min-width: 35rem;
   border-bottom: 0.4rem solid
     ${({ theme, $type }) => theme.colors[$type]["500"]};
   border-radius: 0.4rem;
