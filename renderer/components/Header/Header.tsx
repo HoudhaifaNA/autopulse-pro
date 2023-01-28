@@ -27,7 +27,7 @@ const renderSearchedItems = (categories: SearchCategories[]) => {
           return (
             <S.CategoryItem>
               <Link href={item.link}>
-                <Icon icon={categoryToIcon(category.name)} />
+                <Icon icon={categoryToIcon(category.name)} iconSize="2.4rem" />
                 <Body2>{item.name}</Body2>
               </Link>
             </S.CategoryItem>
@@ -65,7 +65,7 @@ const CATEGORIES_EXAMPLE: SearchCategories[] = [
   },
 ];
 
-const SearchBar = () => {
+const Header = () => {
   const [focus, setFocus] = useState(false);
   const searchListRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -84,7 +84,7 @@ const SearchBar = () => {
       <S.SearchBarContainer ref={searchListRef}>
         <InputStyle.InputContainer>
           <InputStyle.InputWrapper>
-            <Icon icon="search" />
+            <Icon icon="search" iconSize="1.8rem" />
             <InputStyle.Input
               type="text"
               placeholder="Search"
@@ -106,4 +106,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default Header;

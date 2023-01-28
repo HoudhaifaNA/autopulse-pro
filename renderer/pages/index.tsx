@@ -1,6 +1,5 @@
 import Navbar from "components/Navbar/Navbar";
 import SearchBar from "components/Header/Header";
-import Dropdown from "components/Dropdown/Dropdown";
 import EmptyState from "components/EmptyState/EmptyState";
 
 const LoginPage = () => {
@@ -20,7 +19,7 @@ const LoginPage = () => {
         <EmptyState
           title="Vous n'avez pas de clients"
           description="Ajoutez des clients pour les voir ici"
-          image="finance"
+          image="clients"
           CTAIcon="add"
           CTAText="Ajouter un client"
         />

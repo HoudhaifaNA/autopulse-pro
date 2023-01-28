@@ -6,12 +6,13 @@ import Icon from "components/Icon/Icon";
 export interface ButtonProps {
   variant: "primary" | "secondary" | "ghost";
   type?: "submit" | "button" | "reset" | undefined;
+  width?: string;
   icon?: string;
   iconPostition?: "right" | "left";
   floating?: boolean;
   disabled?: boolean;
-  children?: string;
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+  children?: string;
 }
 
 const buttonVariants = {
@@ -21,28 +22,29 @@ const buttonVariants = {
 };
 
 const Button = (props: ButtonProps) => {
+  // ...allProps will equalt to type and disabled and onClick.
+  // we can show them with the element in the browser so we don't use $. ex: type={type}
+
   const {
-    type = "button",
     variant,
+    width,
     icon,
     iconPostition,
     floating,
-    disabled,
-    onClick,
     children,
+    ...allProps
   } = props;
 
   const SelectedButton = buttonVariants[variant];
 
   return (
     <SelectedButton
-      type={type}
-      disabled={disabled}
       $iconPosition={iconPostition}
       $floating={floating}
-      onClick={onClick}
+      $width={width}
+      {...allProps}
     >
-      {icon && <Icon icon={icon} />}
+      {icon && <Icon icon={icon} iconSize="2rem" />}
       {children && <ButtonText>{children}</ButtonText>}
     </SelectedButton>
   );

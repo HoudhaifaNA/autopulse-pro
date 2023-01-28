@@ -9,14 +9,10 @@ export const EmptyStateWrapper = styled.div`
 `;
 
 export const EmptyStateImage = styled.div`
-  margin-bottom: 1.5rem;
+  margin-bottom: 0rem;
 `;
 
 export const EmptyStateText = styled.div`
   margin-bottom: 2.5rem;
   text-align: center;
-`;
-
-export const CTAWrapper = styled.div`
-  width: fit-content;
 `;

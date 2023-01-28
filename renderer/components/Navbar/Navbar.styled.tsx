@@ -1,5 +1,13 @@
 import styled, { css, keyframes } from "styled-components";
 
+interface StyledNavbarProps {
+  $short: boolean;
+}
+
+interface StyledNavbarItemProps extends StyledNavbarProps {
+  $active?: boolean;
+}
+
 const collapse = keyframes`
   0%{
     width: 23.5rem;
@@ -9,7 +17,7 @@ const collapse = keyframes`
   }
 `;
 
-export const NavbarWrapper = styled.div<{ $short: boolean }>`
+export const NavbarWrapper = styled.div<StyledNavbarProps>`
   width: 23.5rem;
   display: flex;
   flex-direction: column;
@@ -40,7 +48,7 @@ export const MainNavbarList = styled.ul`
   list-style: none;
 `;
 
-export const NavbarItem = styled.li<{ $active?: boolean; $short: boolean }>`
+export const NavbarItem = styled.li<StyledNavbarItemProps>`
   background-color: ${({ theme, $active }) =>
     $active ? theme.colors.primary["50"] : theme.colors.white};
   border-radius: 0.8rem;
@@ -61,12 +69,6 @@ export const NavbarItem = styled.li<{ $active?: boolean; $short: boolean }>`
     font-weight: 500;
     line-height: 1.6rem;
     letter-spacing: 0.0125em;
-  }
-
-  svg {
-    width: 2.4rem;
-    height: 2.4rem;
-    fill: currentColor;
   }
 
   &:hover {

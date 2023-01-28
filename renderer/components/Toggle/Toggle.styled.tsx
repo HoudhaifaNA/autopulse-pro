@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 interface ToggleProps {
   $label?: "left" | "right";
-  $disabled?: boolean;
+  disabled?: boolean;
 }
 
 interface SwitchProps {
@@ -15,8 +15,8 @@ export const ToggleContainer = styled.div<ToggleProps>`
   flex-direction: ${({ $label }) => ($label === "right" ? "row-reverse" : "")};
   width: fit-content;
   gap: 1rem;
-  opacity: ${({ $disabled }) => ($disabled ? ".6" : "1")};
-  pointer-events: ${({ $disabled }) => ($disabled ? "disabled" : "")};
+  opacity: ${({ disabled }) => (disabled ? ".6" : "1")};
+  pointer-events: ${({ disabled }) => (disabled ? "disabled" : "")};
   cursor: default;
 `;
 

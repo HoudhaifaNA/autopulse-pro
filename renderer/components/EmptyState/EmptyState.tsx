@@ -1,8 +1,7 @@
-import Button from "components/Buttons/Button";
 import Image from "next/image";
-import React from "react";
-import { Body1, Heading3 } from "styles/Typography";
 import * as S from "./EmptyState.style";
+import Button from "components/Buttons/Button";
+import { Body1, Heading3 } from "styles/Typography";
 
 interface EmptyStateProps {
   title: string;
@@ -28,11 +27,9 @@ const EmptyState = (props: EmptyStateProps) => {
         <Heading3>{title}</Heading3>
         <Body1>{description}</Body1>
       </S.EmptyStateText>
-      <S.CTAWrapper>
-        <Button variant="primary" icon={CTAIcon}>
-          {CTAText}
-        </Button>
-      </S.CTAWrapper>
+      <Button variant="primary" icon={CTAIcon}>
+        {CTAText}
+      </Button>
     </S.EmptyStateWrapper>
   );
 };
