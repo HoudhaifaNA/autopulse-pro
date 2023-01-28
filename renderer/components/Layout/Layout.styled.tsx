@@ -14,6 +14,7 @@ export const CurrentPage = styled.div`
   background-color: ${({ theme }) => theme.colors.neutral["50"]};
   flex: 1 1 auto;
   height: 0;
+  padding: 2rem 3.2rem;
   overflow: hidden;
   overflow-y: scroll;
 
