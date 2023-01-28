@@ -1,21 +1,28 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 interface StyledButtonProps {
   $iconPosition?: "right" | "left";
   $floating?: boolean;
   $width: string;
+  disabled?: boolean;
 }
-
-/**@ts-ignore */
-const isDisabled = ({ theme, disabled }) => {
-  return disabled ? theme.colors.neutral["500"] : theme.colors.primary["500"];
-};
 
 const setButtonWidth = ({ $floating, $width }: StyledButtonProps) => {
   if ($floating) return "4rem";
   if ($width) return $width;
   return "fit-content";
 };
+
+const spinner = keyframes`
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(360deg);
+
+  }
+
+`;
 
 const Button = styled.button<StyledButtonProps>`
   display: flex;
@@ -28,9 +35,10 @@ const Button = styled.button<StyledButtonProps>`
   width: ${(props) => setButtonWidth(props)};
   padding: ${({ $floating }) => ($floating ? "" : "1rem 1.8rem")};
   outline: none;
-  border: 0.1rem solid ${isDisabled};
+  border: 0.1rem solid ${({ theme }) => theme.colors.primary["500"]};
   border-radius: 0.4rem;
   transition: all 0.1s ease-in-out;
+  opacity: ${({ disabled }) => (disabled ? ".6" : "1")};
   cursor: pointer;
 
   // Make transition if not disabled
@@ -42,7 +50,7 @@ const Button = styled.button<StyledButtonProps>`
 `;
 
 export const PrimaryButton = styled(Button)`
-  background-color: ${isDisabled};
+  background-color: ${({ theme }) => theme.colors.primary["500"]};
   color: ${({ theme }) => theme.colors.white};
 
   // Change background color if not disabled
@@ -55,12 +63,21 @@ export const PrimaryButton = styled(Button)`
 `;
 
 export const SecondaryButton = styled(Button)`
-  color: ${isDisabled};
+  color: ${({ theme }) => theme.colors.primary["500"]};
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
 export const GhostButton = styled(Button)`
-  color: ${isDisabled};
+  color: ${({ theme }) => theme.colors.primary["500"]};
   background-color: ${({ theme }) => theme.colors.white};
   border: none;
+`;
+
+export const Loader = styled.div`
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 0.2rem solid currentColor;
+  border-top-color: transparent;
+  border-radius: 10rem;
+  animation: ${spinner} 1s linear infinite;
 `;

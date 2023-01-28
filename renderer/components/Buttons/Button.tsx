@@ -10,6 +10,7 @@ export interface ButtonProps {
   icon?: string;
   iconPostition?: "right" | "left";
   floating?: boolean;
+  loading?: boolean;
   disabled?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
   children?: string;
@@ -30,6 +31,7 @@ const Button = (props: ButtonProps) => {
     width,
     icon,
     iconPostition,
+    loading,
     floating,
     children,
     ...allProps
@@ -46,6 +48,7 @@ const Button = (props: ButtonProps) => {
     >
       {icon && <Icon icon={icon} iconSize="2rem" />}
       {children && <ButtonText>{children}</ButtonText>}
+      {loading && <S.Loader />}
     </SelectedButton>
   );
 };
