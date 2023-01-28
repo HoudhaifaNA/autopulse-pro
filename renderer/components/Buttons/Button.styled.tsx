@@ -3,12 +3,18 @@ import styled from "styled-components";
 interface StyledButtonProps {
   $iconPosition?: "right" | "left";
   $floating?: boolean;
+  $width: string;
 }
 
 /**@ts-ignore */
-const isDisabled = (props) => {
-  const { theme, disabled } = props;
+const isDisabled = ({ theme, disabled }) => {
   return disabled ? theme.colors.neutral["500"] : theme.colors.primary["500"];
+};
+
+const setButtonWidth = ({ $floating, $width }: StyledButtonProps) => {
+  if ($floating) return "4rem";
+  if ($width) return $width;
+  return "fit-content";
 };
 
 const Button = styled.button<StyledButtonProps>`
@@ -19,7 +25,7 @@ const Button = styled.button<StyledButtonProps>`
     $iconPosition === "right" ? "row-reverse" : "row"};
   gap: 0.8rem;
   height: 4rem;
-  width: ${({ $floating }) => ($floating ? "4rem" : "100%")};
+  width: ${(props) => setButtonWidth(props)};
   padding: ${({ $floating }) => ($floating ? "" : "1rem 1.8rem")};
   outline: none;
   border: 0.1rem solid ${isDisabled};
