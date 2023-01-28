@@ -65,7 +65,7 @@ const CATEGORIES_EXAMPLE: SearchCategories[] = [
   },
 ];
 
-const SearchBar = () => {
+const Header = () => {
   const [focus, setFocus] = useState(false);
   const searchListRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -106,4 +106,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default Header;

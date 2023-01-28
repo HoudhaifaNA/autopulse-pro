@@ -27,11 +27,9 @@ const EmptyState = (props: EmptyStateProps) => {
         <Heading3>{title}</Heading3>
         <Body1>{description}</Body1>
       </S.EmptyStateText>
-      <S.CTAWrapper>
-        <Button variant="primary" icon={CTAIcon}>
-          {CTAText}
-        </Button>
-      </S.CTAWrapper>
+      <Button variant="primary" icon={CTAIcon}>
+        {CTAText}
+      </Button>
     </S.EmptyStateWrapper>
   );
 };

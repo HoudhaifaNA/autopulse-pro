@@ -12,9 +12,9 @@ interface items {
 }
 
 const NAVBAR_ITEMS: items[] = [
-  { text: "Tableau de bord", icon: "dashboard", link: "/", active: true },
+  { text: "Tableau de bord", icon: "dashboard", link: "/" },
   { text: "Voitures", icon: "car", link: "/voitures" },
-  { text: "Clients", icon: "clients", link: "/clients" },
+  { text: "Clients", icon: "clients", link: "/clients", active: true },
   { text: "Licences", icon: "document", link: "/licences" },
   { text: "Finance", icon: "finance", link: "/finance" },
   { text: "Paramètres", icon: "setting", link: "/paramètres" },

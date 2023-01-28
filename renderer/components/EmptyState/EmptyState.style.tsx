@@ -16,7 +16,3 @@ export const EmptyStateText = styled.div`
   margin-bottom: 2.5rem;
   text-align: center;
 `;
-
-export const CTAWrapper = styled.div`
-  width: fit-content;
-`;
