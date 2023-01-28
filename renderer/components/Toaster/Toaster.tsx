@@ -1,6 +1,6 @@
 import Icon from "components/Icon/Icon";
 import { Body2 } from "styles/Typography";
-import { ToasterWrapper } from "./ToasterStyle";
+import { ToasterWrapper } from "./Toaster.styled";
 
 export interface ToasterProps {
   type: "success" | "error" | "warning";

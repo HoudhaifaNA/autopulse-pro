@@ -1,4 +1,5 @@
 import { FieldInputProps, FieldMetaProps } from "formik";
+
 import * as S from "components/Input/InputContainer.styled";
 import { Body2 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
@@ -18,7 +19,8 @@ const InputAddOn = ({ addOn }: { addOn: string }) => {
 };
 
 const InputContainer = (props: InputProps) => {
-  const { name, iconLeft, addOn, meta, field, ...allProps } = props;
+  const { name, iconLeft, addOn, meta, field, onIconClick, ...allProps } =
+    props;
 
   // If there is an error icon right should be error icon despite the specified icon
   let { iconRight } = props;
@@ -31,7 +33,11 @@ const InputContainer = (props: InputProps) => {
       <S.InputWrapper>
         {iconLeft && <Icon icon={iconLeft} iconSize="1.8rem" />}
         <S.Input id={name} {...allProps} {...field} />
-        {iconRight && <Icon icon={iconRight} iconSize="1.8rem" />}
+        {iconRight && (
+          <div onClick={onIconClick}>
+            <Icon icon={iconRight} iconSize="1.8rem" />
+          </div>
+        )}
       </S.InputWrapper>
     </S.InputContainer>
   );

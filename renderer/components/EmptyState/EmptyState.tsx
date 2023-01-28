@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import * as S from "./EmptyState.style";
 import Button from "components/Buttons/Button";
 import { Body1, Heading3 } from "styles/Typography";

@@ -5,6 +5,7 @@ interface TextInputProps {
   iconLeft?: string;
   iconRight?: string;
   addOn?: string;
+  onIconClick?: () => void;
 }
 
 export type TypedInputProps = TextInputProps & FieldHookConfig<any>;

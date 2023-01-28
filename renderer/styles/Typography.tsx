@@ -53,5 +53,4 @@ export const ButtonText = styled.span`
 export const LabelText = styled.label`
   ${setElementDeclerartions(1.4, 500, 1.6)}
   display: block;
-  text-transform: capitalize;
 `;
