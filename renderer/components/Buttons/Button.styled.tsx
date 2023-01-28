@@ -3,7 +3,7 @@ import styled, { keyframes } from "styled-components";
 interface StyledButtonProps {
   $iconPosition?: "right" | "left";
   $floating?: boolean;
-  $width: string;
+  $width?: string;
   disabled?: boolean;
 }
 
