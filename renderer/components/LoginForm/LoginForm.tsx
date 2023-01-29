@@ -4,7 +4,7 @@ import { Formik, FormikProps, FormikHelpers } from "formik";
 import * as S from "styles/LoginPage.styled";
 import { TypedInput } from "components/Input/Input";
 import Button from "components/Buttons/Button";
-import { LoginSchema } from "Schemas/FormSchema";
+import { LoginSchema } from "schemas/FormSchema";
 
 interface Values {
   username: string;
@@ -14,10 +14,11 @@ interface Values {
 const INITIAL_VALUES = { username: "", password: "" };
 
 const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
-  setTimeout(() => {
-    console.log(values);
-    actions.resetForm();
-  }, 2000);
+  // setTimeout(() => {
+  // console.log(values);
+  // actions.resetForm();
+  location.assign("/clients");
+  // }, 2000);
 };
 
 const LoginForm = () => {
@@ -26,7 +27,7 @@ const LoginForm = () => {
   return (
     <Formik
       initialValues={INITIAL_VALUES}
-      validationSchema={LoginSchema}
+      // validationSchema={LoginSchema}
       onSubmit={onSubmit}
     >
       {({ handleSubmit, isSubmitting }: FormikProps<Values>) => {
