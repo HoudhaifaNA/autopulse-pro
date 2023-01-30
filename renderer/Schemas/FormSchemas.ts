@@ -4,7 +4,7 @@ const PASSWORD_RULES = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
 const PHONE_NUMBER_RULES =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
-export const LoginSchema = object({
+export const loginSchema = object({
   username: string()
     .trim()
     .min(4, "Nom d'utilisateur doit être d'au moins 4 caractères")
@@ -16,7 +16,7 @@ export const LoginSchema = object({
     .required("Mot de pass est requis"),
 });
 
-export const ClientSchema = object({
+export const clientSchema = object({
   firstName: string()
     .trim()
     .min(3, `Prénom doit comporter au moins 3 caractères`)
