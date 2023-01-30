@@ -1,6 +1,7 @@
 import styled, { keyframes } from "styled-components";
 
 interface StyledButtonProps {
+  $danger?: boolean;
   $iconPosition?: "right" | "left";
   $floating?: boolean;
   $width?: string;
@@ -50,8 +51,11 @@ const Button = styled.button<StyledButtonProps>`
 `;
 
 export const PrimaryButton = styled(Button)`
-  background-color: ${({ theme }) => theme.colors.primary["500"]};
   color: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme, $danger }) =>
+    $danger ? theme.colors.error["500"] : theme.colors.primary["500"]};
+  border-color: ${({ theme, $danger }) =>
+    $danger ? theme.colors.error["500"] : theme.colors.primary["500"]};
 
   // Change background color if not disabled
   &:hover,
