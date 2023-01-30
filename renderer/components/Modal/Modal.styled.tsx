@@ -7,8 +7,8 @@ export const ModalWrapper = styled.div`
   transform: translate(-50%, -52.5%);
   z-index: 1000;
   min-width: 65rem;
+  background-color: ${({ theme }) => theme.colors.white};
   border-radius: 0.8rem;
-  background-color: #fff;
 `;
 
 export const ModalHeader = styled.div`
@@ -25,8 +25,8 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  padding: 1rem 2rem;
   max-height: 55rem;
+  padding: 2rem;
   overflow-y: scroll;
 
   &::-webkit-scrollbar {

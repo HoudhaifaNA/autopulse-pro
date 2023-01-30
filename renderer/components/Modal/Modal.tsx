@@ -6,19 +6,18 @@ import { Heading5 } from "styles/Typography";
 
 interface ModalProps {
   title: string;
-  actionsComponent: ReactElement;
-  children: ReactElement;
+  children: [ReactElement, ReactElement];
 }
 
-const Modal = ({ title, actionsComponent, children }: ModalProps) => {
+const Modal = ({ title, children }: ModalProps) => {
   return (
     <S.ModalWrapper>
       <S.ModalHeader>
         <Heading5>{title}</Heading5>
         <Icon icon="close" iconSize="2.4rem" />
       </S.ModalHeader>
-      <S.ModalContent>{children}</S.ModalContent>
-      <S.ModalActions>{actionsComponent}</S.ModalActions>
+      <S.ModalContent>{children[0]}</S.ModalContent>
+      <S.ModalActions>{children[1]}</S.ModalActions>
     </S.ModalWrapper>
   );
 };
