@@ -3,7 +3,7 @@ import { Formik, FormikProps, FormikHelpers } from "formik";
 import * as S from "components/ClientForm/ClientForm.styled";
 import { TypedInput } from "components/Input/Input";
 import Button from "components/Buttons/Button";
-import { ClientSchema } from "schemas/FormSchema";
+import { clientSchema } from "schemas/FormSchemas";
 import Modal from "components/Modal/Modal";
 
 interface Values {
@@ -24,39 +24,20 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
   setTimeout(() => {
     console.log(values);
     actions.resetForm();
-  }, 2000);
+  }, 1000);
 };
 
 const ClientForm = () => {
   return (
     <Formik
       initialValues={INITIAL_VALUES}
-      validationSchema={ClientSchema}
+      validationSchema={clientSchema}
       onSubmit={onSubmit}
     >
-      {({ isSubmitting, submitForm }: FormikProps<Values>) => {
-        const Actions = (
-          <>
-            <Button
-              type="submit"
-              variant="primary"
-              loading={isSubmitting}
-              disabled={isSubmitting}
-              onClick={submitForm}
-            >
-              Ajouter
-            </Button>
-          </>
-        );
+      {({ handleSubmit, submitForm, isSubmitting }: FormikProps<Values>) => {
         return (
-          <Modal title="Ajouter un client" actionsComponent={Actions}>
-            <S.Form
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  submitForm();
-                }
-              }}
-            >
+          <Modal title="Ajouter un client">
+            <S.Form onSubmit={handleSubmit}>
               <S.FormRow>
                 <TypedInput
                   name="firstName"
@@ -86,7 +67,20 @@ const ClientForm = () => {
                   addOn="DZD"
                 />
               </S.FormRow>
+              {/*Add hidden input to submit button with hitting enter */}
+              <input type="submit" style={{ display: "none" }} />
             </S.Form>
+            <>
+              <Button
+                type="submit"
+                variant="primary"
+                loading={isSubmitting}
+                disabled={isSubmitting}
+                onClick={submitForm}
+              >
+                Ajouter
+              </Button>
+            </>
           </Modal>
         );
       }}
