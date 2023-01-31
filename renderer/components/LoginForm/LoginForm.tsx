@@ -4,7 +4,7 @@ import { Formik, FormikProps, FormikHelpers } from "formik";
 import * as S from "styles/LoginPage.styled";
 import { TypedInput } from "components/Input/Input";
 import Button from "components/Buttons/Button";
-import { LoginSchema } from "schemas/FormSchema";
+// import { loginSchema } from "schemas/FormSchemas";
 
 interface Values {
   username: string;
@@ -27,7 +27,7 @@ const LoginForm = () => {
   return (
     <Formik
       initialValues={INITIAL_VALUES}
-      // validationSchema={LoginSchema}
+      // validationSchema={loginSchema}
       onSubmit={onSubmit}
     >
       {({ handleSubmit, isSubmitting }: FormikProps<Values>) => {
