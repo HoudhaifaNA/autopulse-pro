@@ -11,14 +11,14 @@ const ClientsPage = () => {
         CTAText="Ajouter un client"
         CTAIcon="add"
       /> */}
-      <PageHeader
-        title="Clients"
-        CTAText="Ajouter un client"
-        CTAIcon="add"
-        CTAonClick={() => console.log("sd")}
-      />
-      <div className="background-black" />
-      <ClientForm />
+      <div style={{ position: "relative", zIndex: "8000" }}>
+        <PageHeader
+          title="Clients"
+          CTAText="Ajouter un client"
+          CTAIcon="add"
+          CTAonClick={() => console.log("Hello")}
+        />
+      </div>
     </div>
   );
 };
