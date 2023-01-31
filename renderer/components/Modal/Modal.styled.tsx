@@ -1,14 +1,26 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const show = keyframes`
+  0%{
+    transform: translate(-50%, -52.5%) scale(0.9);
+    
+  }
+  
+  100%{
+    transform: translate(-50%, -52.5%) scale(1);
+  }
+`;
 
 export const ModalWrapper = styled.div`
   position: fixed;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -52.5%);
+  transform: translate(-50%, -52.5%) scale(0.9);
   z-index: 1000;
   min-width: 65rem;
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 0.8rem;
+  animation: ${show} 0.15s ease forwards;
 `;
 
 export const ModalHeader = styled.div`
@@ -25,7 +37,7 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalContent = styled.div`
-  max-height: 55rem;
+  max-height: 60rem;
   padding: 2rem;
   overflow-y: scroll;
 
