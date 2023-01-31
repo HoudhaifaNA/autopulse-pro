@@ -13,32 +13,6 @@ interface SearchCategories {
   items: { name: string; link: string }[];
 }
 
-const categoryToIcon = (category: SearchCategories["name"]) => {
-  if (category === "voitures") return "car";
-  if (category === "licences") return "document";
-  return category;
-};
-
-const renderSearchedItems = (categories: SearchCategories[]) => {
-  return categories.map((category) => {
-    return (
-      <S.SearchCategory>
-        <span>{category.name}</span>
-        {category.items.map((item) => {
-          return (
-            <S.CategoryItem>
-              <Link href={item.link}>
-                <Icon icon={categoryToIcon(category.name)} iconSize="2.4rem" />
-                <Body2>{item.name}</Body2>
-              </Link>
-            </S.CategoryItem>
-          );
-        })}
-      </S.SearchCategory>
-    );
-  });
-};
-
 const CATEGORIES_EXAMPLE: SearchCategories[] = [
   {
     name: "clients",
@@ -65,6 +39,31 @@ const CATEGORIES_EXAMPLE: SearchCategories[] = [
     ],
   },
 ];
+const categoryToIcon = (category: SearchCategories["name"]) => {
+  if (category === "voitures") return "car";
+  if (category === "licences") return "document";
+  return category;
+};
+
+const renderSearchedItems = (categories: SearchCategories[]) => {
+  return categories.map((category) => {
+    return (
+      <S.SearchCategory key={category.name}>
+        <span>{category.name}</span>
+        {category.items.map((item) => {
+          return (
+            <S.CategoryItem key={item.name}>
+              <Link href={item.link}>
+                <Icon icon={categoryToIcon(category.name)} iconSize="2.4rem" />
+                <Body2>{item.name}</Body2>
+              </Link>
+            </S.CategoryItem>
+          );
+        })}
+      </S.SearchCategory>
+    );
+  });
+};
 
 const Header = () => {
   const [focus, setFocus] = useState(false);

@@ -12,9 +12,10 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@mantine/dates": "^5.10.2",
     "@next/font": "^13.1.2",
-    "@tremor/react": "^1.6.1",
     "@types/styled-components": "^5.1.26",
+    "dayjs": "^1.11.7",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
     "formik": "^2.2.9",

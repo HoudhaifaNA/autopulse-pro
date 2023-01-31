@@ -7,6 +7,7 @@ import Icon from "components/Icon/Icon";
 export interface ButtonProps {
   variant: "primary" | "secondary" | "ghost";
   type?: "submit" | "button" | "reset" | undefined;
+  danger?: boolean;
   width?: string;
   icon?: string;
   iconPostition?: "right" | "left";
@@ -29,6 +30,7 @@ const Button = (props: ButtonProps) => {
 
   const {
     variant,
+    danger,
     width,
     icon,
     iconPostition,
@@ -42,6 +44,7 @@ const Button = (props: ButtonProps) => {
 
   return (
     <SelectedButton
+      $danger={danger}
       $iconPosition={iconPostition}
       $floating={floating}
       $width={width}

@@ -62,6 +62,7 @@ export const NavbarItem = styled.li<StyledNavbarItemProps>`
     padding: 1.2rem 1rem;
     color: ${({ theme, $active }) =>
       $active ? theme.colors.primary["500"] : theme.colors.neutral["500"]};
+    outline: none;
   }
 
   span {
