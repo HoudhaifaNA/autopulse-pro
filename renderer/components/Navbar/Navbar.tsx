@@ -31,7 +31,7 @@ const renderNavItems = (
     return (
       <S.NavbarItem key={text} $active={isActive} $short={short}>
         <Link href={link}>
-          <Icon icon={icon} iconSize="2.4rem" />
+          <Icon icon={icon} size="2.4rem" />
           {!short && <span>{text}</span>}
         </Link>
       </S.NavbarItem>
@@ -54,7 +54,7 @@ const Navbar = () => {
       <S.SecondaryNavList>
         <S.NavbarItem $active={true} $short={short}>
           <Link href={"/logout"}>
-            <Icon icon="logout" iconSize="2.4rem" />
+            <Icon icon="logout" size="2.4rem" />
             {!short && <span>Se déconnecter</span>}
           </Link>
         </S.NavbarItem>

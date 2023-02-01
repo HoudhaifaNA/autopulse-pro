@@ -2,18 +2,18 @@ import styled from "styled-components";
 
 interface IconProps {
   icon: string;
-  iconSize: string;
+  size: string;
 }
 
-const SvgWrapper = styled.svg<{ $iconSize: string }>`
-  width: ${({ $iconSize }) => $iconSize};
-  height: ${({ $iconSize }) => $iconSize};
+const SvgWrapper = styled.svg<{ $size: string }>`
+  width: ${({ $size }) => $size};
+  height: ${({ $size }) => $size};
   fill: currentColor;
 `;
 
-const Icon = ({ icon, iconSize }: IconProps) => {
+const Icon = ({ icon, size }: IconProps) => {
   return (
-    <SvgWrapper $iconSize={iconSize}>
+    <SvgWrapper $size={size}>
       <use xlinkHref={`./sprite.svg#${icon}`} />;
     </SvgWrapper>
   );

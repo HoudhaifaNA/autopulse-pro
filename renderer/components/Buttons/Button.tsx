@@ -50,7 +50,7 @@ const Button = (props: ButtonProps) => {
       $width={width}
       {...allProps}
     >
-      {icon && <Icon icon={icon} iconSize="2rem" />}
+      {icon && <Icon icon={icon} size="2rem" />}
       {children && <ButtonText>{children}</ButtonText>}
       {loading && <S.Loader />}
     </SelectedButton>
