@@ -9,7 +9,16 @@ const TableRow = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 2rem;
+  padding: 1.5rem 2rem;
+  height: 5.4rem;
+
+  & > div:last-child,
+  & > :first-child {
+    width: 1.6rem;
+  }
+  & > div:last-child {
+    margin-left: auto;
+  }
 `;
 
 export const TableHeader = styled(TableRow)`
@@ -18,11 +27,11 @@ export const TableHeader = styled(TableRow)`
 
 export const TableItem = styled(TableRow)`
   background-color: ${({ theme }) => theme.colors.white};
-  height: 5.4rem;
 `;
 
 export const TableContent = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.4rem;
+  width: 16rem;
 `;
