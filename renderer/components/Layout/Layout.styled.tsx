@@ -15,7 +15,6 @@ export const CurrentPage = styled.div`
   flex: 1 1 auto;
   height: 0;
   padding: 2rem 3.2rem;
-  overflow: hidden;
   overflow-y: scroll;
 
   ::-webkit-scrollbar {
