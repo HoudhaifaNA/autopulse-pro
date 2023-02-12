@@ -1,5 +1,14 @@
 import ClientForm from "components/ClientForm/ClientForm";
 import PageHeader from "components/PageHeader/PageHeader";
+import Table from "components/Table/Table";
+
+const HeaderItems = [
+  { text: "Date", sortable: true },
+  { text: "Client", sortable: true },
+  { text: "Méthode" },
+  { text: "Route" },
+  { text: "Montant", sortable: true },
+];
 
 const ClientsPage = () => {
   return (
@@ -19,6 +28,7 @@ const ClientsPage = () => {
           CTAonClick={() => console.log("Hello")}
         />
       </div>
+      <Table HeaderItems={HeaderItems}></Table>
     </div>
   );
 };

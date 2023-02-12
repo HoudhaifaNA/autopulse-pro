@@ -8,7 +8,7 @@ export const TableWrapper = styled.div`
 const TableRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 3rem;
   padding: 1.5rem 2rem;
   height: 5.4rem;
 
@@ -33,5 +33,5 @@ export const TableContent = styled.div`
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  width: 16rem;
+  width: 10rem;
 `;

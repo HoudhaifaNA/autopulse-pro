@@ -1,62 +1,40 @@
 import Badge from "components/Badge/Badge";
 import Icon from "components/Icon/Icon";
 import * as S from "components/Table/Table.styled";
+import { ReactNode } from "react";
 import { Body2 } from "styles/Typography";
 
-const Table = () => {
+interface TableHeaderProps {
+  sortable?: boolean;
+  text: string;
+}
+
+export const TableHeader = ({ columns }: { columns: TableHeaderProps[] }) => {
+  return (
+    <S.TableHeader>
+      <S.TableContent>
+        <input type="checkbox" />
+      </S.TableContent>
+      {columns.map(({ text, sortable }) => {
+        return (
+          <S.TableContent key={text}>
+            <Body2>{text}</Body2>
+            {sortable && <Icon icon="expand" size="1.6rem" />}
+          </S.TableContent>
+        );
+      })}
+      <S.TableContent>
+        <Icon icon="more_vert" size="1.6rem" />
+      </S.TableContent>
+    </S.TableHeader>
+  );
+};
+
+const Table = ({ HeaderItems }: { HeaderItems: TableHeaderProps[] }) => {
   return (
     <S.TableWrapper>
-      <S.TableHeader>
-        <S.TableContent>
-          <input type="checkbox" />
-        </S.TableContent>
-        <S.TableContent>
-          <Body2>Date créée</Body2>
-          <Icon icon="expand" size="1.6rem" />
-        </S.TableContent>
-        <S.TableContent>
-          <Body2>Nom</Body2>
-          <Icon icon="expand" size="1.6rem" />
-        </S.TableContent>
-        <S.TableContent>
-          <Body2>Dette</Body2>
-          <Icon icon="expand" size="1.6rem" />
-        </S.TableContent>
-        <S.TableContent>
-          <Body2>Status de payment</Body2>
-        </S.TableContent>
-        <S.TableContent>
-          <Body2>Dernière transaction</Body2>
-          <Icon icon="expand" size="1.6rem" />
-        </S.TableContent>
-        <S.TableContent>
-          <Icon icon="more_vert" size="1.6rem" />
-        </S.TableContent>
-      </S.TableHeader>
-      <S.TableItem>
-        <S.TableContent>
-          <input type="checkbox" />
-        </S.TableContent>
-
-        <S.TableContent>
-          <Body2>15/07/2021</Body2>
-        </S.TableContent>
-        <S.TableContent>
-          <Body2>Houdhaifa Lebbad</Body2>
-        </S.TableContent>
-        <S.TableContent>
-          <Body2>1500000.00</Body2>
-        </S.TableContent>
-        <S.TableContent>
-          <Badge type="error">Endetté</Badge>
-        </S.TableContent>
-        <S.TableContent>
-          <Body2>19/08/2022</Body2>
-        </S.TableContent>
-        <S.TableContent>
-          <Icon icon="more_vert" size="1.6rem" />
-        </S.TableContent>
-      </S.TableItem>
+      <TableHeader columns={HeaderItems} />
+      <S.TableItem></S.TableItem>
     </S.TableWrapper>
   );
 };
