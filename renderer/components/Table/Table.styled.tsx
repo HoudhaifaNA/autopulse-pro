@@ -16,9 +16,9 @@ const TableRow = styled.div`
   & > :first-child {
     width: 1.6rem;
   }
-  & > div:last-child {
+  /* & > div:last-child {
     margin-left: auto;
-  }
+  } */
 `;
 
 export const TableHeader = styled(TableRow)`
@@ -33,5 +33,5 @@ export const TableContent = styled.div`
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  width: 10rem;
+  width: 15rem;
 `;

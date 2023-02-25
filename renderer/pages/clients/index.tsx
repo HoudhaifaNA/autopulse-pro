@@ -1,6 +1,8 @@
+import Badge from "components/Badge/Badge";
 import ClientForm from "components/ClientForm/ClientForm";
 import PageHeader from "components/PageHeader/PageHeader";
 import Table from "components/Table/Table";
+import { Body2 } from "styles/Typography";
 
 const HeaderItems = [
   { text: "Date", sortable: true },
@@ -28,7 +30,11 @@ const ClientsPage = () => {
           CTAonClick={() => console.log("Hello")}
         />
       </div>
-      <Table HeaderItems={HeaderItems}></Table>
+      <Table HeaderItems={HeaderItems}>
+        <input type="checkbox" />
+        <Body2>Houdhaifa Lebbad</Body2>
+        <Badge type="success">Endette</Badge>
+      </Table>
     </div>
   );
 };

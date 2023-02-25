@@ -30,11 +30,22 @@ export const TableHeader = ({ columns }: { columns: TableHeaderProps[] }) => {
   );
 };
 
-const Table = ({ HeaderItems }: { HeaderItems: TableHeaderProps[] }) => {
+const Table = ({
+  HeaderItems,
+  children,
+}: {
+  HeaderItems: TableHeaderProps[];
+  children: ReactNode[];
+}) => {
   return (
     <S.TableWrapper>
       <TableHeader columns={HeaderItems} />
-      <S.TableItem></S.TableItem>
+      <S.TableItem>
+        {children &&
+          children.map((el) => {
+            return <S.TableContent>{el}</S.TableContent>;
+          })}
+      </S.TableItem>
     </S.TableWrapper>
   );
 };
