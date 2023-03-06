@@ -1,7 +1,7 @@
 import Badge from "components/Badge/Badge";
 import ClientForm from "components/ClientForm/ClientForm";
 import PageHeader from "components/PageHeader/PageHeader";
-import Table from "components/Table/Table";
+import Table, { TableRow } from "components/Table/Table";
 import { Body2 } from "styles/Typography";
 
 const HeaderItems = [
@@ -31,9 +31,24 @@ const ClientsPage = () => {
         />
       </div>
       <Table HeaderItems={HeaderItems}>
-        <input type="checkbox" />
-        <Body2>Houdhaifa Lebbad</Body2>
-        <Badge type="success">Endette</Badge>
+        <TableRow>
+          <Body2>Houdhaifa Lebbad</Body2>
+          <Badge type="success">Endette</Badge>
+          <Body2>Houdhaifa Lebbad</Body2>
+        </TableRow>
+        <TableRow>
+          <Body2>Ahmed Lebbad</Body2>
+          <Badge type="error">Endette</Badge>
+          <Body2>Ahmed ss</Body2>
+          <Body2>Ahmed ss</Body2>
+          <Body2>Ahmed ss</Body2>
+          <Body2>Ahmed ss</Body2>
+        </TableRow>
+        <TableRow>
+          <Body2>Houdhaifa Lebbad</Body2>
+          <Badge type="success">Endette</Badge>
+          <Body2>Ahmed Lebbad</Body2>
+        </TableRow>
       </Table>
     </div>
   );

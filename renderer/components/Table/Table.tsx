@@ -1,8 +1,7 @@
-import Badge from "components/Badge/Badge";
-import Icon from "components/Icon/Icon";
-import * as S from "components/Table/Table.styled";
 import { ReactNode } from "react";
+import * as S from "components/Table/Table.styled";
 import { Body2 } from "styles/Typography";
+import Icon from "components/Icon/Icon";
 
 interface TableHeaderProps {
   sortable?: boolean;
@@ -12,21 +11,31 @@ interface TableHeaderProps {
 export const TableHeader = ({ columns }: { columns: TableHeaderProps[] }) => {
   return (
     <S.TableHeader>
-      <S.TableContent>
+      <S.TableCell>
         <input type="checkbox" />
-      </S.TableContent>
+      </S.TableCell>
       {columns.map(({ text, sortable }) => {
         return (
-          <S.TableContent key={text}>
+          <S.TableCell key={text}>
             <Body2>{text}</Body2>
             {sortable && <Icon icon="expand" size="1.6rem" />}
-          </S.TableContent>
+          </S.TableCell>
         );
       })}
-      <S.TableContent>
-        <Icon icon="more_vert" size="1.6rem" />
-      </S.TableContent>
     </S.TableHeader>
+  );
+};
+
+export const TableRow = ({ children }: { children: ReactNode[] }) => {
+  return (
+    <S.TableItem>
+      <S.TableCell>
+        <input type="checkbox" />
+      </S.TableCell>
+      {children.map((el) => {
+        return <S.TableCell>{el}</S.TableCell>;
+      })}
+    </S.TableItem>
   );
 };
 
@@ -35,17 +44,12 @@ const Table = ({
   children,
 }: {
   HeaderItems: TableHeaderProps[];
-  children: ReactNode[];
+  children: ReactNode;
 }) => {
   return (
     <S.TableWrapper>
       <TableHeader columns={HeaderItems} />
-      <S.TableItem>
-        {children &&
-          children.map((el) => {
-            return <S.TableContent>{el}</S.TableContent>;
-          })}
-      </S.TableItem>
+      {children}
     </S.TableWrapper>
   );
 };
