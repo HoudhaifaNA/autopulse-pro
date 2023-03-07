@@ -35,6 +35,9 @@ const ClientsPage = () => {
           <Body2>Houdhaifa Lebbad</Body2>
           <Badge type="success">Endette</Badge>
           <Body2>Houdhaifa Lebbad</Body2>
+          <Body2>Ahmed ss</Body2>
+          <Body2>Ahmed ss</Body2>
+          <Body2>Ahmed ss</Body2>
         </TableRow>
         <TableRow>
           <Body2>Ahmed Lebbad</Body2>
@@ -48,6 +51,9 @@ const ClientsPage = () => {
           <Body2>Houdhaifa Lebbad</Body2>
           <Badge type="success">Endette</Badge>
           <Body2>Ahmed Lebbad</Body2>
+          <Body2>Ahmed ss</Body2>
+          <Body2>Ahmed ss</Body2>
+          <Body2>Ahmed ss</Body2>
         </TableRow>
       </Table>
     </div>

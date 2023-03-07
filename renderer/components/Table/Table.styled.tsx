@@ -5,20 +5,17 @@ export const TableWrapper = styled.div`
   margin-top: 8rem;
 `;
 
-const TableRow = styled.div`
+export const TableRow = styled.div`
   display: flex;
   align-items: center;
   gap: 3rem;
   padding: 1.5rem 2rem;
   height: 5.4rem;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 export const TableHeader = styled(TableRow)`
   background-color: ${({ theme }) => theme.colors.primary["50"]};
-`;
-
-export const TableItem = styled(TableRow)`
-  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 export const TableCell = styled.div`

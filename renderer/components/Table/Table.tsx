@@ -28,14 +28,17 @@ export const TableHeader = ({ columns }: { columns: TableHeaderProps[] }) => {
 
 export const TableRow = ({ children }: { children: ReactNode[] }) => {
   return (
-    <S.TableItem>
+    <S.TableRow>
       <S.TableCell>
         <input type="checkbox" />
       </S.TableCell>
       {children.map((el) => {
         return <S.TableCell>{el}</S.TableCell>;
       })}
-    </S.TableItem>
+      <S.TableCell>
+        <Icon icon="more_vert" size="1.6rem" />
+      </S.TableCell>
+    </S.TableRow>
   );
 };
 
