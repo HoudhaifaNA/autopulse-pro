@@ -5,11 +5,28 @@ import Table, { TableRow } from "components/Table/Table";
 import { Body2 } from "styles/Typography";
 
 const HeaderItems = [
-  { text: "Date", sortable: true },
-  { text: "Client", sortable: true },
-  { text: "Méthode" },
-  { text: "Route" },
-  { text: "Montant", sortable: true },
+  { text: "Date créée", sortable: true },
+  { text: "Nom", sortable: true },
+  { text: "Dette" },
+  { text: "Statut de paiement" },
+  { text: "Dernière transaction", sortable: true },
+];
+
+const TableItems = [
+  {
+    userName: "Houdhaifa Lebbad",
+    Debt: 15000.0,
+    status: "endette",
+    lastTransaction: "15/09/2019",
+    createdAt: "15/09/2019",
+  },
+  {
+    userName: "Saber Zehani",
+    Debt: 17500.0,
+    status: "Due",
+    lastTransaction: "15/09/2012",
+    createdAt: "15/09/2021",
+  },
 ];
 
 const ClientsPage = () => {
@@ -31,30 +48,17 @@ const ClientsPage = () => {
         />
       </div>
       <Table HeaderItems={HeaderItems}>
-        <TableRow>
-          <Body2>Houdhaifa Lebbad</Body2>
-          <Badge type="success">Endette</Badge>
-          <Body2>Houdhaifa Lebbad</Body2>
-          <Body2>Ahmed ss</Body2>
-          <Body2>Ahmed ss</Body2>
-          <Body2>Ahmed ss</Body2>
-        </TableRow>
-        <TableRow>
-          <Body2>Ahmed Lebbad</Body2>
-          <Badge type="error">Endette</Badge>
-          <Body2>Ahmed ss</Body2>
-          <Body2>Ahmed ss</Body2>
-          <Body2>Ahmed ss</Body2>
-          <Body2>Ahmed ss</Body2>
-        </TableRow>
-        <TableRow>
-          <Body2>Houdhaifa Lebbad</Body2>
-          <Badge type="success">Endette</Badge>
-          <Body2>Ahmed Lebbad</Body2>
-          <Body2>Ahmed ss</Body2>
-          <Body2>Ahmed ss</Body2>
-          <Body2>Ahmed ss</Body2>
-        </TableRow>
+        {TableItems.map((el) => {
+          return (
+            <TableRow key={el.userName}>
+              <Body2>{el.createdAt}</Body2>
+              <Body2>{el.userName}</Body2>
+              <Body2>{el.Debt}</Body2>
+              <Badge type="success">{el.status}</Badge>
+              <Body2>{el.lastTransaction}</Body2>
+            </TableRow>
+          );
+        })}
       </Table>
     </div>
   );
