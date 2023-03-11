@@ -1,7 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import * as S from "components/Table/Table.styled";
 import { Body2 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
+import Checkbox from "components/Checkbox/Checkbox";
 
 interface TableHeaderProps {
   sortable?: boolean;
@@ -12,7 +13,7 @@ export const TableHeader = ({ columns }: { columns: TableHeaderProps[] }) => {
   return (
     <S.TableHeader>
       <S.TableCell>
-        <input type="checkbox" />
+        <Checkbox />
       </S.TableCell>
       {columns.map(({ text, sortable }) => {
         return (
@@ -30,10 +31,15 @@ export const TableRow = ({ children }: { children: ReactNode[] }) => {
   return (
     <S.TableRow>
       <S.TableCell>
-        <input type="checkbox" />
+        <Checkbox />
       </S.TableCell>
       {children.map((el) => {
-        return <S.TableCell>{el}</S.TableCell>;
+        const [blur, setBlur] = useState(false);
+        return (
+          <S.TableCell $blur={blur} onClick={() => setBlur(!blur)}>
+            {el}
+          </S.TableCell>
+        );
       })}
       <S.TableCell>
         <Icon icon="more_vert" size="1.6rem" />

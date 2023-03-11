@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+interface TableCellProps {
+  $blur?: boolean;
+}
+
 export const TableWrapper = styled.div`
   height: 40rem;
   margin-top: 8rem;
@@ -18,13 +22,14 @@ export const TableHeader = styled(TableRow)`
   background-color: ${({ theme }) => theme.colors.primary["50"]};
 `;
 
-export const TableCell = styled.div`
+export const TableCell = styled.div<TableCellProps>`
   display: flex;
   align-items: center;
   gap: 0.4rem;
   width: 14rem;
-
+  filter: ${({ $blur }) => ($blur ? "blur(.2rem)" : "blur(0)")};
+  cursor: pointer;
   &:first-child {
-    width: 1.6rem;
+    width: 1.8rem;
   }
 `;
