@@ -33,10 +33,10 @@ export const TableRow = ({ children }: { children: ReactNode[] }) => {
       <S.TableCell>
         <Checkbox />
       </S.TableCell>
-      {children.map((el) => {
+      {children.map((el, index) => {
         const [blur, setBlur] = useState(false);
         return (
-          <S.TableCell $blur={blur} onClick={() => setBlur(!blur)}>
+          <S.TableCell $blur={blur} onClick={() => setBlur(!blur)} key={index}>
             {el}
           </S.TableCell>
         );
