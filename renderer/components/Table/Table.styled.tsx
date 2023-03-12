@@ -25,11 +25,17 @@ export const TableHeader = styled(TableRow)`
 export const TableCell = styled.div<TableCellProps>`
   display: flex;
   align-items: center;
+  white-space: nowrap;
   gap: 0.4rem;
-  width: 14rem;
+  width: 18rem;
   filter: ${({ $blur }) => ($blur ? "blur(.2rem)" : "blur(0)")};
   cursor: pointer;
+
   &:first-child {
+    width: 1.8rem;
+  }
+  &:last-child {
+    margin-left: auto;
     width: 1.8rem;
   }
 `;
