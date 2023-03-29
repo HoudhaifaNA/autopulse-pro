@@ -15,6 +15,7 @@ export const TableHeader = ({ columns }: { columns: TableHeaderProps[] }) => {
       <S.TableCell>
         <Checkbox />
       </S.TableCell>
+
       {columns.map(({ text, sortable }) => {
         return (
           <S.TableCell key={text}>
@@ -41,7 +42,7 @@ export const TableRow = ({ children }: { children: ReactNode[] }) => {
           </S.TableCell>
         );
       })}
-      <S.TableCell>
+      <S.TableCell style={{ position: "relative" }}>
         <Icon icon="more_vert" size="1.6rem" />
       </S.TableCell>
     </S.TableRow>
