@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
 export const MainContent = styled.div`
   display: flex;
   flex-direction: column;
+  width: 120.5rem;
   flex: 1;
 `;
 
@@ -15,7 +16,6 @@ export const CurrentPage = styled.div`
   flex: 1 1 auto;
   height: 0;
   padding: 2rem 3.2rem;
-  overflow: hidden;
   overflow-y: scroll;
 
   ::-webkit-scrollbar {

@@ -10,15 +10,15 @@ interface StyledNavbarItemProps extends StyledNavbarProps {
 
 const collapse = keyframes`
   0%{
-    width: 23.5rem;
+    min-width: 23.5rem;
   }
   100%{
-    width: 9rem;
+    min-width: 9rem;
   }
 `;
 
 export const NavbarWrapper = styled.div<StyledNavbarProps>`
-  width: 23.5rem;
+  min-width: 23.5rem;
   display: flex;
   flex-direction: column;
   gap: 4rem;
