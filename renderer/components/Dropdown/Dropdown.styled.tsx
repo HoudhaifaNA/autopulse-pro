@@ -5,6 +5,7 @@ export const DropdownWrapper = styled.div`
   max-height: 24rem;
   min-width: fit-content;
   width: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
   overflow: hidden;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
   border-radius: 0.4rem;
