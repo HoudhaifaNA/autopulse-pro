@@ -7,9 +7,10 @@ import { Body2 } from "styles/Typography";
 const HeaderItems = [
   { text: "Date créée", sortable: true },
   { text: "Nom", sortable: true },
-  { text: "Dette" },
+  { text: "Dette", sortable: true },
   { text: "Statut de paiement" },
   { text: "Dernière transaction", sortable: true },
+  { text: "" },
 ];
 
 const TableItems = [
