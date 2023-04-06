@@ -1,27 +1,28 @@
-import styled from "styled-components";
+import { ReactNode } from "react";
+import * as S from "components/Table/TableStyled";
 
-export const Table = styled.table`
-  width: 100%;
-  margin-top: 5rem;
-  border-collapse: collapse;
-  overflow: hidden;
-`;
+export const TableWrapper = S.TableWrapper;
+export const Table = S.Table;
+export const TableRow = S.TableRow;
 
-export const TableRow = styled.tr<{ $header?: boolean }>`
-  height: 5rem;
-  background-color: ${({ $header, theme }) =>
-    $header ? theme.colors.primary[50] : "#fff"};
-  padding: 1.5rem 2rem;
-`;
+export const TableHeader = ({ children }: { children: ReactNode }) => {
+  return <thead>{children}</thead>;
+};
+export const TableBody = ({ children }: { children: ReactNode }) => {
+  return <tbody>{children}</tbody>;
+};
 
-export const TableCol = styled.td`
-  padding: 1rem;
-  div {
-    display: flex;
-    align-items: center;
-  }
-
-  p {
-    white-space: nowrap;
-  }
-`;
+export const TableHeaderCell = ({ children }: { children?: ReactNode }) => {
+  return (
+    <S.TableHeaderCell>
+      <div>{children}</div>
+    </S.TableHeaderCell>
+  );
+};
+export const TableCell = ({ children }: { children: ReactNode }) => {
+  return (
+    <S.TableCell>
+      <div>{children}</div>
+    </S.TableCell>
+  );
+};
