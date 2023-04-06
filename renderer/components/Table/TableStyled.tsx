@@ -28,7 +28,7 @@ export const TableRow = styled.tr`
   td {
     padding: 1rem;
 
-    div {
+    & > div {
       display: flex;
       align-items: center;
     }
@@ -44,3 +44,14 @@ export const TableHeaderCell = styled.th`
   top: 0px;
 `;
 export const TableCell = styled.td``;
+
+export const TableRowActions = styled.div`
+  position: relative;
+
+  & > div {
+    position: absolute;
+    right: 0;
+    top: -1rem;
+    z-index: 5000;
+  }
+`;
