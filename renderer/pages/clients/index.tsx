@@ -6,6 +6,7 @@ import Dropdown from "components/Dropdown/Dropdown";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 import Icon from "components/Icon/Icon";
 import PageHeader from "components/PageHeader/PageHeader";
+import Pagination from "components/Pagination/Pagination";
 import {
   TableWrapper,
   Table,
@@ -76,7 +77,7 @@ const ClientsPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {new Array(10).fill(1).map(() => {
+            {new Array(10).fill(1).map((_, i) => {
               return (
                 <TableRow key={Math.random() * 5}>
                   <TableCell>
@@ -142,6 +143,7 @@ const ClientsPage = () => {
           </TableBody>
         </Table>
       </TableWrapper>
+      <Pagination />
     </div>
   );
 };
