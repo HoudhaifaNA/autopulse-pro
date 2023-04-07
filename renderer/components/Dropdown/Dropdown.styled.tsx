@@ -9,6 +9,7 @@ export const DropdownWrapper = styled.div`
   overflow: hidden;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
   border-radius: 0.4rem;
+  margin-bottom: 1.5rem;
 `;
 
 export const DropdownList = styled.ul`
@@ -30,7 +31,6 @@ export const DropdownItem = styled.li`
   padding: 0.8rem 1rem;
   background-color: ${({ theme }) => theme.colors.white};
   height: 4rem;
-  width: 25.4rem;
   cursor: pointer;
 
   &:hover {
