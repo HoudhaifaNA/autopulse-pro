@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { GhostButton } from "components/Buttons/Button.styled";
 
 export const DropdownWrapper = styled.div`
@@ -48,6 +48,7 @@ export const ButtonItem = styled.div<{ $ghostColor?: string }>`
   ${GhostButton} {
     justify-content: flex-start;
     padding: 0.8rem 1rem;
+    width: 100%;
     color: ${({ $ghostColor }) => $ghostColor};
     border-radius: 0;
 

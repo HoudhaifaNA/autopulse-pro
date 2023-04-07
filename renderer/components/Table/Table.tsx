@@ -1,67 +1,31 @@
 import { ReactNode, useState } from "react";
-import * as S from "components/Table/Table.styled";
-import { Body2 } from "styles/Typography";
-import Icon from "components/Icon/Icon";
-import Checkbox from "components/Checkbox/Checkbox";
+import * as S from "components/Table/TableStyled";
 
-interface TableHeaderProps {
-  sortable?: boolean;
-  text: string;
-}
+export const TableWrapper = S.TableWrapper;
+export const Table = S.Table;
+export const TableRow = S.TableRow;
+export const TableRowActions = S.TableRowActions;
 
-export const TableHeader = ({ columns }: { columns: TableHeaderProps[] }) => {
-  return (
-    <S.TableHeader>
-      <S.TableCell>
-        <Checkbox />
-      </S.TableCell>
-
-      {columns.map(({ text, sortable }) => {
-        return (
-          <S.TableCell key={text}>
-            <Body2>{text}</Body2>
-            {sortable && <Icon icon="expand" size="1.6rem" />}
-          </S.TableCell>
-        );
-      })}
-    </S.TableHeader>
-  );
+export const TableHeader = ({ children }: { children: ReactNode }) => {
+  return <thead>{children}</thead>;
+};
+export const TableBody = ({ children }: { children: ReactNode }) => {
+  return <tbody>{children}</tbody>;
 };
 
-export const TableRow = ({ children }: { children: ReactNode[] }) => {
+export const TableHeaderCell = ({ children }: { children?: ReactNode }) => {
   return (
-    <S.TableRow>
-      <S.TableCell>
-        <Checkbox />
-      </S.TableCell>
-      {children.map((el, index) => {
-        const [blur, setBlur] = useState(false);
-        return (
-          <S.TableCell $blur={blur} onClick={() => setBlur(!blur)} key={index}>
-            {el}
-          </S.TableCell>
-        );
-      })}
-      <S.TableCell style={{ position: "relative" }}>
-        <Icon icon="more_vert" size="1.6rem" />
-      </S.TableCell>
-    </S.TableRow>
+    <S.TableHeaderCell>
+      <div>{children}</div>
+    </S.TableHeaderCell>
   );
 };
+export const TableCell = ({ children }: { children: ReactNode }) => {
+  const [blurred, setBlur] = useState(false);
 
-const Table = ({
-  HeaderItems,
-  children,
-}: {
-  HeaderItems: TableHeaderProps[];
-  children: ReactNode;
-}) => {
   return (
-    <S.TableWrapper>
-      <TableHeader columns={HeaderItems} />
-      {children}
-    </S.TableWrapper>
+    <S.TableCell $blurred={blurred} onClick={() => setBlur(!blurred)}>
+      <div>{children}</div>
+    </S.TableCell>
   );
 };
-
-export default Table;
