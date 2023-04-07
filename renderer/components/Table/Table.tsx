@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import * as S from "components/Table/TableStyled";
+import * as S from "components/Table/Table.styled";
 
 export const TableWrapper = S.TableWrapper;
 export const Table = S.Table;

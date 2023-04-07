@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const TableWrapper = styled.div`
   margin-top: 5rem;
-  height: 60rem;
+  max-height: 60rem;
   overflow: auto;
 
   ::-webkit-scrollbar {
