@@ -21,7 +21,11 @@ export const TableRow = styled.tr`
   background-color: ${({ theme }) => theme.colors.white};
 
   :nth-child(even) {
-    background-color: ${({ theme }) => theme.colors.neutral[300]};
+    background-color: ${({ theme }) => theme.colors.neutral[200]};
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.success[200]};
   }
 
   th,
