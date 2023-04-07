@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 export const TableWrapper = styled.div`
-  margin-top: 5rem;
+  margin-top: 4rem;
+  margin-bottom: 2rem;
   max-height: 60rem;
   overflow: auto;
 
@@ -54,11 +55,11 @@ export const TableCell = styled.td<{ $blurred: boolean }>`
 
 export const TableRowActions = styled.div`
   position: relative;
-
   & > div {
     position: absolute;
     right: 0;
     top: -1rem;
     z-index: 5000;
+    width: 20rem;
   }
 `;
