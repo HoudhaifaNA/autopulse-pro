@@ -27,6 +27,7 @@ export const TableRow = styled.tr`
   th,
   td {
     padding: 1rem;
+    cursor: pointer;
 
     & > div {
       display: flex;
@@ -43,7 +44,9 @@ export const TableHeaderCell = styled.th`
   position: sticky;
   top: 0px;
 `;
-export const TableCell = styled.td``;
+export const TableCell = styled.td<{ $blurred: boolean }>`
+  filter: ${({ $blurred }) => $blurred && "blur(.3rem)"};
+`;
 
 export const TableRowActions = styled.div`
   position: relative;

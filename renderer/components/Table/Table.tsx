@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import * as S from "components/Table/TableStyled";
 
 export const TableWrapper = S.TableWrapper;
@@ -21,8 +21,10 @@ export const TableHeaderCell = ({ children }: { children?: ReactNode }) => {
   );
 };
 export const TableCell = ({ children }: { children: ReactNode }) => {
+  const [blurred, setBlur] = useState(false);
+
   return (
-    <S.TableCell>
+    <S.TableCell $blurred={blurred} onClick={() => setBlur(!blurred)}>
       <div>{children}</div>
     </S.TableCell>
   );
