@@ -47,6 +47,10 @@ export const ModalContent = styled.div`
 `;
 
 export const ModalActions = styled.div`
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   padding: 1rem 2rem;
   display: flex;
   align-items: center;
