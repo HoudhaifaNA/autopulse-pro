@@ -3,7 +3,7 @@ import { Formik, FormikProps, FormikHelpers } from "formik";
 import * as S from "components/ClientForm/ClientForm.styled";
 import { TypedInput } from "components/Input/Input";
 import Button from "components/Buttons/Button";
-import { clientSchema } from "schemas/FormSchemas";
+import { clientSchema } from "Schemas/FormSchemas";
 import Modal from "components/Modal/Modal";
 
 interface Values {
