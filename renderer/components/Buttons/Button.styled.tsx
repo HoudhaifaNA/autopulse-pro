@@ -41,7 +41,7 @@ const Button = styled.button<StyledButtonProps>`
   transition: all 0.1s ease-in-out;
   opacity: ${({ disabled }) => (disabled ? ".6" : "1")};
   cursor: pointer;
-
+  user-select: none;
   // Make transition if not disabled
   &:active {
     &:not([disabled]) {
