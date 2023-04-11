@@ -1,7 +1,9 @@
-import Icon from "components/Icon/Icon";
 import React from "react";
 import styled from "styled-components";
+
+import { setFieldValue } from "components/CarForm/types";
 import { Body1 } from "styles/Typography";
+import Icon from "components/Icon/Icon";
 
 const PlaceFormWrapper = styled.div`
   display: flex;
@@ -28,25 +30,21 @@ export const PlaceItem = styled.div<{ $selected: boolean }>`
 `;
 
 interface PlaceFormProps {
-  type: string;
-  setFieldValue: (
-    field: string,
-    value: any,
-    shouldValidate?: boolean | undefined
-  ) => void;
+  carType: string;
+  setFieldValue: setFieldValue;
 }
 
 const places = ["importé", "locale"];
 
-const PlaceForm = ({ type, setFieldValue }: PlaceFormProps) => {
+const PlaceForm = ({ carType, setFieldValue }: PlaceFormProps) => {
   return (
     <PlaceFormWrapper>
       {places.map((place) => {
         return (
           <PlaceItem
-            onClick={() => setFieldValue("type", place)}
-            $selected={type === place}
             key={place}
+            $selected={carType === place}
+            onClick={() => setFieldValue("carType", place)}
           >
             <Icon icon={place} size="4.8rem" />
             <Body1>{place}</Body1>
