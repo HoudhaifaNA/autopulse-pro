@@ -1,12 +1,3 @@
-import Badge from "components/Badge/Badge";
-import Button from "components/Buttons/Button";
-import Checkbox from "components/Checkbox/Checkbox";
-import ClientForm from "components/ClientForm/ClientForm";
-import Dropdown from "components/Dropdown/Dropdown";
-import { ButtonItem } from "components/Dropdown/Dropdown.styled";
-import Icon from "components/Icon/Icon";
-import PageHeader from "components/PageHeader/PageHeader";
-import Pagination from "components/Pagination/Pagination";
 import {
   TableWrapper,
   Table,
@@ -15,9 +6,16 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  TableRowActions,
 } from "components/Table/Table";
+import Badge from "components/Badge/Badge";
+import Checkbox from "components/Checkbox/Checkbox";
+import ClientForm from "components/ClientForm/ClientForm";
+import Icon from "components/Icon/Icon";
+import PageHeader from "components/PageHeader/PageHeader";
+import Pagination from "components/Pagination/Pagination";
 import { Body2 } from "styles/Typography";
+import EmptyState from "components/EmptyState/EmptyState";
+import Meta from "components/Meta/Meta";
 
 const FAKE_DATA = [
   { text: "Date créée", sortable: true },
@@ -26,46 +24,34 @@ const FAKE_DATA = [
   { text: "Statue de payment", sortable: false },
   { text: "  Dernière transaction", sortable: true },
 ];
-const CARS_FAKE_DATA = [
-  { text: "Date créée", sortable: true },
-  { text: "Nom", sortable: true },
-  { text: "Matricule", sortable: false },
-  { text: "Vendeur", sortable: true },
-  { text: "Prix", sortable: true },
-  { text: "Depenses", sortable: true },
-  { text: "Total", sortable: true },
-  { text: "Categorie", sortable: false },
-  { text: "Achateur", sortable: true },
-  { text: "Pr. vente", sortable: true },
-  { text: "Intérêt", sortable: true },
-];
 
 const ClientsPage = () => {
   return (
     <div>
-      {/* <EmptyState
+      <Meta title="Clients" />
+      <EmptyState
         title="Vous n'avez pas de clients"
         description="Ajoutez des clients pour les voir ici"
         image="clients"
         CTAText="Ajouter un client"
         CTAIcon="add"
-      /> */}
-      <div style={{ position: "relative", zIndex: "8000" }}>
+      />
+      {/* <div style={{ position: "relative", zIndex: "8000" }}>
         <PageHeader
           title="Clients"
           CTAText="Ajouter un client"
           CTAIcon="add"
           CTAonClick={() => console.log("Hello")}
         />
-      </div>
-      <TableWrapper>
+      </div> */}
+      {/* <TableWrapper>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHeaderCell>
                 <Checkbox />
               </TableHeaderCell>
-              {CARS_FAKE_DATA.map((el) => {
+              {FAKE_DATA.map((el) => {
                 return (
                   <TableHeaderCell key={el.text}>
                     <Body2>{el.text}</Body2>
@@ -73,7 +59,9 @@ const ClientsPage = () => {
                   </TableHeaderCell>
                 );
               })}
-              <TableHeaderCell></TableHeaderCell>
+              <TableHeaderCell>
+                <Icon icon="more_vert" size="1.8rem" />
+              </TableHeaderCell>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -84,58 +72,22 @@ const ClientsPage = () => {
                     <Checkbox />
                   </TableCell>
                   <TableCell>
-                    <Body2>04/25/2014</Body2>
+                    <Body2>14/05/2016</Body2>
                   </TableCell>
                   <TableCell>
-                    <Body2>Mercedes CLA 220 ...</Body2>
+                    <Body2>Ahmed Nadhir</Body2>
                   </TableCell>
                   <TableCell>
-                    <Body2>W9FE-VS5</Body2>
+                    <Body2>800000.00</Body2>
                   </TableCell>
                   <TableCell>
-                    <Body2>Tarek Djerfi</Body2>
+                    <Badge type="error">Endette</Badge>
                   </TableCell>
                   <TableCell>
-                    <Body2>7850000.00</Body2>
-                  </TableCell>
-                  <TableCell>
-                    <Body2>400000.00</Body2>
-                  </TableCell>
-                  <TableCell>
-                    <Body2>8000000.00</Body2>
-                  </TableCell>
-                  <TableCell>
-                    <Badge type="warning">Importe</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Body2>Mourad Denfir</Body2>
-                  </TableCell>
-                  <TableCell>
-                    <Body2>45800000.00</Body2>
-                  </TableCell>
-                  <TableCell>
-                    <Body2>913000.00</Body2>
+                    <Body2>30/04/2018</Body2>
                   </TableCell>
                   <TableCell>
                     <Icon icon="more_vert" size="1.8rem" />
-                    {/* {i === 0 && (
-                      <TableRowActions>
-                        <Dropdown
-                          items={[
-                            { mainText: "Vendre", icon: "sell" },
-                            { mainText: "Imprimer", icon: "print" },
-                            { mainText: "Edit", icon: "edit" },
-                          ]}
-                          onItemClick={(str) => console.log(str)}
-                        >
-                          <ButtonItem $ghostColor="red">
-                            <Button variant="ghost" icon="delete">
-                              Supprimer
-                            </Button>
-                          </ButtonItem>
-                        </Dropdown>
-                      </TableRowActions>
-                    )} */}
                   </TableCell>
                 </TableRow>
               );
@@ -143,7 +95,7 @@ const ClientsPage = () => {
           </TableBody>
         </Table>
       </TableWrapper>
-      <Pagination />
+      <Pagination /> */}
     </div>
   );
 };
