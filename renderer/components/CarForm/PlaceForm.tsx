@@ -13,6 +13,7 @@ const PlaceFormWrapper = styled.div`
   height: 20rem;
 `;
 export const PlaceItem = styled.div<{ $selected: boolean }>`
+  position: relative;
   width: 19rem;
   height: 12.5rem;
   display: flex;
@@ -29,6 +30,16 @@ export const PlaceItem = styled.div<{ $selected: boolean }>`
   cursor: pointer;
 `;
 
+const IconWrapper = styled.div`
+  position: absolute;
+  right: -1rem;
+  top: -1rem;
+  background-color: ${({ theme }) => theme.colors.white};
+  svg {
+    fill: ${({ theme }) => theme.colors.primary[500]};
+  }
+`;
+
 interface PlaceFormProps {
   carType: string;
   setFieldValue: setFieldValue;
@@ -40,12 +51,17 @@ const PlaceForm = ({ carType, setFieldValue }: PlaceFormProps) => {
   return (
     <PlaceFormWrapper>
       {places.map((place) => {
+        const isSelected = carType === place;
+
         return (
           <PlaceItem
             key={place}
-            $selected={carType === place}
+            $selected={isSelected}
             onClick={() => setFieldValue("carType", place)}
           >
+            <IconWrapper>
+              {isSelected && <Icon icon="success" size="2.4rem" />}
+            </IconWrapper>
             <Icon icon={place} size="4.8rem" />
             <Body1>{place}</Body1>
           </PlaceItem>
