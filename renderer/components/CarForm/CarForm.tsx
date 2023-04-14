@@ -52,12 +52,13 @@ const renderForm = (
 
 const CarForm = () => {
   const [currentStep, setStep] = useState(1);
+  const [title, setTitle] = useState("Ajouter un voiture");
 
   let schems;
   if (currentStep === 2) schems = carSchemaStepTwo;
 
   return (
-    <Modal title="Ajouter un voiture">
+    <Modal title={title}>
       <Formik
         initialValues={INITIAL_VALUES}
         validationSchema={schems}
@@ -78,6 +79,9 @@ const CarForm = () => {
           useEffect(() => {
             setStep(step);
             props.setTouched({});
+            // !TODO -- Make a utility function to form car name
+            if (step === 3)
+              setTitle(`${values.brand} ${values.serie} ${values.model}`);
           }, [step]);
 
           return (
