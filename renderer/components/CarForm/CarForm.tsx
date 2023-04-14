@@ -1,33 +1,13 @@
 import { useEffect, useState } from "react";
 import { Formik, FormikProps, FormikHelpers } from "formik";
 
+import { setFieldValue, Values } from "components/CarForm/types";
 import * as S from "components/CarForm/CarForm.styled";
+import CarDetailsForm from "components/CarForm/CarDetails";
 import PlaceForm from "components/CarForm/PlaceForm";
-import { carSchemaStep3 } from "Schemas/FormSchemas";
-import { setFieldValue } from "components/CarForm/types";
+import { carSchemaStepTwo } from "Schemas/FormSchemas";
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
-import { TypedInput } from "components/Input/Input";
 import Button from "components/Buttons/Button";
-interface Values {
-  step: number;
-  carType: "locale" | "importé";
-  brand: string;
-  serie: string;
-  model: string;
-  serialNumber: string;
-  registerIdentity: string;
-  color: string;
-  year: string;
-  seller: string;
-  boughtPrice: number;
-  euroPrice: number;
-  lisence: string;
-  depenses: {
-    type: "locale" | "À l'étranger";
-    raison: string;
-    cost: number;
-  }[];
-}
 
 const INITIAL_VALUES: Values = {
   step: 1,
@@ -36,7 +16,7 @@ const INITIAL_VALUES: Values = {
   serie: "",
   model: "",
   serialNumber: "",
-  registerIdentity: "",
+  registrationNumber: "",
   color: "",
   year: "",
   seller: "",
@@ -63,32 +43,18 @@ const renderForm = (
     return <PlaceForm carType={carType} setFieldValue={setFieldValue} />;
   }
   if (step === 2) {
-    return (
-      <TypedInput
-        name="brand"
-        type="text"
-        label="SR"
-        placeholder="Nom du voiture"
-      />
-    );
+    return <CarDetailsForm />;
   }
   if (step === 3) {
-    return (
-      <TypedInput
-        name="serialNumber"
-        type="text"
-        label="Voiture"
-        placeholder="Nom du voiture"
-      />
-    );
+    return <h1>Step 3</h1>;
   }
 };
 
 const CarForm = () => {
-  const [step, setStep] = useState(1);
+  const [currentStep, setStep] = useState(1);
 
   let schems;
-  if (step === 3) schems = carSchemaStep3;
+  if (currentStep === 2) schems = carSchemaStepTwo;
 
   return (
     <Modal title="Ajouter un voiture">
@@ -108,8 +74,10 @@ const CarForm = () => {
 
           const { step, carType } = values;
 
+          // Set all inputs touched to false when changing the step to hide errors when typing first time
           useEffect(() => {
             setStep(step);
+            props.setTouched({});
           }, [step]);
 
           return (
