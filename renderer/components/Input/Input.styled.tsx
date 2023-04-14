@@ -8,6 +8,8 @@ export const FormGroup = styled.div<FormGroupInterface>`
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
+  height: 8.3rem;
+  width: 100%;
   opacity: ${({ $disabled }) => ($disabled ? ".5" : "1")};
   pointer-events: ${({ $disabled }) => ($disabled ? "none" : "")};
 `;
@@ -29,4 +31,8 @@ export const InputError = styled.p`
   color: ${({ theme }) => theme.colors.error["700"]};
   font-size: 1.2rem;
   font-weight: 500;
+
+  &:first-letter {
+    text-transform: capitalize;
+  }
 `;

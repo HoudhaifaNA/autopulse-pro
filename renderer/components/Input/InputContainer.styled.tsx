@@ -5,6 +5,7 @@ export const InputContainer = styled.div`
   display: flex;
   width: 100%;
   height: 4rem;
+  min-height: 4rem;
   border: 0.1rem solid ${({ theme }) => theme.colors.neutral["500"]};
   border-radius: 0.4rem;
   overflow: hidden;
