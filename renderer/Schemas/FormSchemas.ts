@@ -1,8 +1,9 @@
-import { object, string, number } from "yup";
+import { object, string, number, date } from "yup";
 
 const PASSWORD_RULES = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
 const PHONE_NUMBER_RULES =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
+const currentYear = new Date().getFullYear();
 
 export const loginSchema = object({
   username: string()
@@ -31,4 +32,20 @@ export const clientSchema = object({
     .matches(PHONE_NUMBER_RULES, "Numéro de téléphone est invalide")
     .required("Numéro de téléphone est requis"),
   debt: number().required(),
+});
+
+export const carSchemaStepTwo = object({
+  brand: string().trim().required("Marque est requise"),
+  serie: string().trim().required("Série est requise"),
+  model: string().trim().required("Modèle est requis"),
+  serialNumber: string().trim().required("Numéro de châssis est requis"),
+  registrationNumber: string()
+    .trim()
+    .required("Numéro d'immatriculation est requis"),
+  color: string().trim().required("Coleur est requise"),
+  year: date()
+    .min(1950, "Année doit être postérieur à 1950")
+    .max(currentYear, `Année doit être antérieur à ${currentYear}`)
+    .typeError(() => `Année doit être une date`)
+    .required("Année est requise"),
 });
