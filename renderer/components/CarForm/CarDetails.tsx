@@ -6,7 +6,7 @@ import Dropdown from "components/Dropdown/Dropdown";
 const CarDetailsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
 `;
 
 export const FormGroup = styled.div`
@@ -84,7 +84,7 @@ const CarDetailsForm = () => {
         <TypedInput
           name="color"
           type="text"
-          label="Coleur:"
+          label="Couleur:"
           placeholder="Noir"
         />
 
