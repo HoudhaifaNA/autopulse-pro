@@ -8,6 +8,7 @@ import PlaceForm from "components/CarForm/PlaceForm";
 import { carSchemaStepTwo } from "Schemas/FormSchemas";
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
 import Button from "components/Buttons/Button";
+import SellingDetails from "./SellingDetails";
 
 const INITIAL_VALUES: Values = {
   step: 1,
@@ -36,7 +37,7 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
 
 const renderForm = (
   step: number,
-  carType: string,
+  carType: Values["carType"],
   setFieldValue: setFieldValue
 ) => {
   if (step === 1) {
@@ -46,7 +47,7 @@ const renderForm = (
     return <CarDetailsForm />;
   }
   if (step === 3) {
-    return <h1>Step 3</h1>;
+    return <SellingDetails carType={carType} />;
   }
 };
 
@@ -55,7 +56,7 @@ const CarForm = () => {
   const [title, setTitle] = useState("Ajouter un voiture");
 
   let schems;
-  if (currentStep === 2) schems = carSchemaStepTwo;
+  // if (currentStep === 2) schems = carSchemaStepTwo;
 
   return (
     <Modal title={title}>
@@ -100,7 +101,7 @@ const CarForm = () => {
                   disabled={isSubmitting}
                   onClick={() => setFieldValue("step", step - 1)}
                 >
-                  Annuler
+                  {step === 1 ? "Annuler" : "Retour"}
                 </Button>
                 <Button
                   type="submit"
