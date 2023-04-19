@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -27,7 +27,14 @@ const renderNavItems = (
   currentPath: string
 ) => {
   return items.map(({ text, icon, link }) => {
-    const isActive = link === currentPath;
+    const [isActive, setActive] = useState(false);
+
+    useEffect(() => {
+      // Check if active on normal path or html path when redirecting to a page on production
+      const sameUrl = link === currentPath || `${link}.html` === currentPath;
+      setActive(sameUrl);
+    }, [currentPath]);
+
     return (
       <S.NavbarItem key={text} $active={isActive} $short={short}>
         <Link href={link}>
