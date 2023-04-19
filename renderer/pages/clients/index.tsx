@@ -22,7 +22,7 @@ const FAKE_DATA = [
   { text: "Nom", sortable: true },
   { text: "Dette", sortable: true },
   { text: "Statue de payment", sortable: false },
-  { text: "  Dernière transaction", sortable: true },
+  { text: "Dernière transaction", sortable: true },
 ];
 
 const ClientsPage = () => {
