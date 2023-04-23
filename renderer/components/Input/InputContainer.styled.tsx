@@ -1,5 +1,6 @@
-import { SearchBarContainer } from "components/Header/Header.styled";
 import styled from "styled-components";
+
+import { SearchBarContainer } from "components/Header/Header.styled";
 
 export const InputContainer = styled.div`
   display: flex;
@@ -23,8 +24,9 @@ export const InputContainer = styled.div`
     fill: ${({ theme }) => theme.colors.error["700"]};
   }
 
-  ${SearchBarContainer} & {
-    border-radius: 0.4rem 0.4rem 0 0;
+  ${SearchBarContainer} &:focus-within {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
   }
 `;
 

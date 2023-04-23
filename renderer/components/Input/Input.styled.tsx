@@ -37,13 +37,7 @@ export const InputError = styled.p`
   }
 `;
 
-export const DropdownInputWrapper = styled.div`
+export const DropdownInput = styled.div`
   position: relative;
   width: 100%;
-`;
-export const DropdownWrapper = styled.div`
-  position: absolute;
-  top: 6.2rem;
-  width: 100%;
-  z-index: 5000;
 `;

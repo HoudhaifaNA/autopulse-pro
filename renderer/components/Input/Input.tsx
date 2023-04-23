@@ -1,9 +1,13 @@
 import { useField } from "formik";
 
 import * as S from "components/Input/Input.styled";
-import InputContainer from "./InputContainer";
+import InputContainer from "components/Input/InputContainer";
+import {
+  TypedInputProps,
+  ClickInputProps,
+  DropdownInputProps,
+} from "components/Input/types";
 import { LabelText } from "styles/Typography";
-import { TypedInputProps, ClickInputProps } from "./types";
 
 export const TypedInput = ({ label, disabled, ...props }: TypedInputProps) => {
   const [field, meta] = useField(props);
@@ -21,6 +25,11 @@ export const TypedInput = ({ label, disabled, ...props }: TypedInputProps) => {
   );
 };
 
+export const DropdownInput = ({ children }: DropdownInputProps) => {
+  // First child is the input, second child is the dropdown
+  return <S.DropdownInput>{children}</S.DropdownInput>;
+};
+
 export const ClickInput = ({ label, disabled, ...props }: ClickInputProps) => {
   const [field, meta] = useField(props);
   const { error, touched } = meta;
@@ -28,14 +37,12 @@ export const ClickInput = ({ label, disabled, ...props }: ClickInputProps) => {
   const renderError = error && touched && <S.InputError>{error}</S.InputError>;
 
   return (
-    <>
-      <S.FormGroup $disabled={disabled}>
-        <S.ClickInputContainer>
-          <S.ClickInput id={id} {...props} {...field} />
-          <LabelText htmlFor={id}>{label}</LabelText>
-        </S.ClickInputContainer>
-        {renderError}
-      </S.FormGroup>
-    </>
+    <S.FormGroup $disabled={disabled}>
+      <S.ClickInputContainer>
+        <S.ClickInput id={id} {...props} {...field} />
+        <LabelText htmlFor={id}>{label}</LabelText>
+      </S.ClickInputContainer>
+      {renderError}
+    </S.FormGroup>
   );
 };
