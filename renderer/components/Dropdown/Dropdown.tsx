@@ -1,17 +1,7 @@
-import { ReactElement } from "react";
-
-import * as S from "./Dropdown.styled";
+import * as S from "components/Dropdown/Dropdown.styled";
+import { DropdownItemArgs, DropdownProps } from "components/Dropdown/types";
 import Icon from "components/Icon/Icon";
 import { Body2 } from "styles/Typography";
-
-interface DropdownProps {
-  items: { mainText: string; icon?: string; secondText?: string }[];
-  onItemClick: (text: string) => void;
-  size?: "s" | "l";
-  children?: ReactElement | ReactElement[];
-}
-
-type DropdownItemArgs = Omit<DropdownProps, "children">;
 
 const renderItems = ({ items, onItemClick, size }: DropdownItemArgs) => {
   return items.map(({ mainText, icon, secondText }) => {
@@ -30,14 +20,15 @@ const renderItems = ({ items, onItemClick, size }: DropdownItemArgs) => {
 };
 
 const Dropdown = (props: DropdownProps) => {
-  const { items, size = "s", onItemClick, children } = props;
+  const { items, size = "s", onItemClick, children, ...stylingProps } = props;
+
   return (
-    <S.DropdownWrapper>
+    <S.Dropdown {...stylingProps}>
       <S.DropdownList>
         {renderItems({ items, onItemClick, size })}
       </S.DropdownList>
       {children}
-    </S.DropdownWrapper>
+    </S.Dropdown>
   );
 };
 
