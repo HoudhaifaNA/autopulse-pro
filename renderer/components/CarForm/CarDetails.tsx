@@ -1,27 +1,12 @@
-import styled from "styled-components";
-
-import { TypedInput } from "components/Input/Input";
+import { FormContent, FormGroup } from "components/ui/Form.styled";
+import { DropdownInput, TypedInput } from "components/Input/Input";
 import Dropdown from "components/Dropdown/Dropdown";
-
-const CarDetailsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-`;
-
-export const FormGroup = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-  width: 100%;
-`;
 
 const CarDetailsForm = () => {
   return (
-    <CarDetailsWrapper>
+    <FormContent>
       <FormGroup>
-        <FormGroup>
+        <DropdownInput>
           <TypedInput
             name="brand"
             type="text"
@@ -29,34 +14,26 @@ const CarDetailsForm = () => {
             placeholder="Mercedes-Benz"
             iconRight="expand"
           />
-          {/* <div
-            style={{
-              position: "absolute",
-              top: "6.2rem",
-              width: "100%",
-              zIndex: "5000",
-            }}
-          >
-            <Dropdown
-              items={[
-                { mainText: "Mercedes-Benz" },
-                { mainText: "BMW" },
-                { mainText: "Skoda" },
-              ]}
-              onItemClick={() => 1}
-            />
-          </div> */}
-        </FormGroup>
+          {/* <Dropdown
+            $width="100%"
+            $top="6.2rem"
+            items={[
+              { mainText: "Mercedes-Benz" },
+              { mainText: "BMW" },
+              { mainText: "Skoda" },
+            ]}
+            onItemClick={() => 1}
+          /> */}
+        </DropdownInput>
         <FormGroup>
-          <div style={{ position: "relative" }}>
-            <TypedInput
-              name="serie"
-              type="text"
-              label="Série:"
-              placeholder="CLA"
-              iconRight="expand"
-            />
-          </div>
+          <TypedInput
+            name="serie"
+            type="text"
+            label="Série:"
+            placeholder="CLA"
+            iconRight="expand"
+          />
+
           <TypedInput
             name="model"
             type="text"
@@ -90,7 +67,7 @@ const CarDetailsForm = () => {
 
         <TypedInput name="year" type="text" label="Année:" placeholder="2022" />
       </FormGroup>
-    </CarDetailsWrapper>
+    </FormContent>
   );
 };
 

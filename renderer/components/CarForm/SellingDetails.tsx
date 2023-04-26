@@ -1,31 +1,16 @@
-import styled from "styled-components";
-
+import { FormContent, FormGroup } from "components/ui/Form.styled";
 import { TypedInput } from "components/Input/Input";
 import Dropdown from "components/Dropdown/Dropdown";
 import Button from "components/Buttons/Button";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";
-import { DropdownInputWrapper } from "components/Input/Input.styled";
-import { Values } from "./types";
-
-const SellingDetailsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-`;
-
-export const FormGroup = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-  width: 100%;
-`;
+import { DropdownInput } from "components/Input/Input";
+import { Values } from "components/CarForm/types";
 
 const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
   return (
-    <SellingDetailsWrapper>
+    <FormContent>
       <FormGroup>
-        <DropdownInputWrapper>
+        <DropdownInput>
           <TypedInput
             name="seller"
             type="text"
@@ -33,8 +18,9 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
             placeholder="Nom du vendeur"
             iconRight="expand"
           />
-
           {/* <Dropdown
+            $width="100%"
+            $top="6.2rem"
             items={[
               { mainText: "Lakhder Belaid" },
               { mainText: "Steve Powers" },
@@ -49,8 +35,8 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
               </Button>
             </ButtonItem>
           </Dropdown> */}
-        </DropdownInputWrapper>
-        <DropdownInputWrapper>
+        </DropdownInput>
+        <DropdownInput>
           <TypedInput
             name="lisence"
             type="text"
@@ -73,7 +59,7 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
               </Button>
             </ButtonItem>
           </Dropdown> */}
-        </DropdownInputWrapper>
+        </DropdownInput>
       </FormGroup>
       <FormGroup>
         {carType === "importé" ? (
@@ -103,7 +89,7 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
           </>
         )}
       </FormGroup>
-    </SellingDetailsWrapper>
+    </FormContent>
   );
 };
 
