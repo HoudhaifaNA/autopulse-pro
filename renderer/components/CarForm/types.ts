@@ -12,10 +12,12 @@ export interface Values {
   boughtPrice: number;
   euroPrice: number;
   lisence: string;
-  depenses: {
+  expenses: {
+    id: string;
     type: "locale" | "À l'étranger";
     raison: string;
-    cost: number;
+    euroCost: number;
+    euroPrice: number;
   }[];
 }
 export type setFieldValue = (
