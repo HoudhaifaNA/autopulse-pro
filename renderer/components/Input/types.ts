@@ -12,5 +12,5 @@ interface TextInputProps {
 export type TypedInputProps = TextInputProps & FieldHookConfig<any>;
 export type ClickInputProps = { label: string } & FieldHookConfig<any>;
 export interface DropdownInputProps {
-  children: [ReactElement, ReactElement];
+  children: ReactElement | [ReactElement, ReactElement];
 }
