@@ -70,4 +70,9 @@ export const Input = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.colors.neutral["500"]};
   }
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;
