@@ -1,6 +1,6 @@
 import { Formik, FormikProps, FormikHelpers } from "formik";
 
-import * as S from "components/ClientForm/ClientForm.styled";
+import { Form, FormContent, FormGroup } from "components/ui/Form.styled";
 import { TypedInput } from "components/Input/Input";
 import Button from "components/Buttons/Button";
 import { clientSchema } from "Schemas/FormSchemas";
@@ -39,39 +39,41 @@ const ClientForm = () => {
           return (
             <>
               <ModalContent>
-                <S.Form onSubmit={handleSubmit}>
-                  <S.FormRow>
-                    <TypedInput
-                      name="firstName"
-                      type="text"
-                      label="Prénom"
-                      placeholder="Prénom du client"
-                    />
-                    <TypedInput
-                      name="lastName"
-                      type="text"
-                      label="Nom"
-                      placeholder="Nom du client"
-                    />
-                  </S.FormRow>
-                  <S.FormRow>
-                    <TypedInput
-                      name="phoneNumber"
-                      type="tel"
-                      label="Numéro de téléphone"
-                      placeholder="Numéro de téléphone du client"
-                    />
-                    <TypedInput
-                      name="debt"
-                      type="number"
-                      label="Dette"
-                      placeholder="Dette"
-                      addOn="DZD"
-                    />
-                  </S.FormRow>
-                  {/*Add hidden input to submit button with hitting enter */}
-                  <input type="submit" style={{ display: "none" }} />
-                </S.Form>
+                <Form onSubmit={handleSubmit}>
+                  <FormContent>
+                    <FormGroup>
+                      <TypedInput
+                        name="firstName"
+                        type="text"
+                        label="Prénom"
+                        placeholder="Prénom du client"
+                      />
+                      <TypedInput
+                        name="lastName"
+                        type="text"
+                        label="Nom"
+                        placeholder="Nom du client"
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <TypedInput
+                        name="phoneNumber"
+                        type="tel"
+                        label="Numéro de téléphone"
+                        placeholder="Numéro de téléphone du client"
+                      />
+                      <TypedInput
+                        name="debt"
+                        type="number"
+                        label="Dette"
+                        placeholder="Dette"
+                        addOn="DZD"
+                      />
+                    </FormGroup>
+                    {/*Add hidden input to submit button with hitting enter */}
+                    <input type="submit" style={{ display: "none" }} />
+                  </FormContent>
+                </Form>
               </ModalContent>
               <ModalActions>
                 <Button
