@@ -4,9 +4,9 @@ import Icon from "components/Icon/Icon";
 import { Body2 } from "styles/Typography";
 
 const renderItems = ({ items, onItemClick, size }: DropdownItemArgs) => {
-  return items.map(({ mainText, icon, secondText }) => {
+  return items!.map(({ mainText, icon, secondText }) => {
     return (
-      <S.DropdownItem key={mainText} onClick={() => onItemClick(mainText)}>
+      <S.DropdownItem key={mainText} onClick={() => onItemClick!(mainText)}>
         <S.MainTextWrapper>
           {icon && (
             <Icon icon={icon} size={size === "s" ? "1.8rem" : "2.4rem"} />
@@ -25,7 +25,7 @@ const Dropdown = (props: DropdownProps) => {
   return (
     <S.Dropdown {...stylingProps}>
       <S.DropdownList>
-        {renderItems({ items, onItemClick, size })}
+        {items && renderItems({ items, onItemClick, size })}
       </S.DropdownList>
       {children}
     </S.Dropdown>
