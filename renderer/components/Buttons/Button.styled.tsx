@@ -1,7 +1,6 @@
 import styled, { keyframes } from "styled-components";
 
 interface StyledButtonProps {
-  $danger?: boolean;
   $iconPosition?: "right" | "left";
   $floating?: boolean;
   $width?: string;
@@ -52,10 +51,7 @@ const Button = styled.button<StyledButtonProps>`
 
 export const PrimaryButton = styled(Button)`
   color: ${({ theme }) => theme.colors.white};
-  background-color: ${({ theme, $danger }) =>
-    $danger ? theme.colors.error["500"] : theme.colors.primary["500"]};
-  border-color: ${({ theme, $danger }) =>
-    $danger ? theme.colors.error["500"] : theme.colors.primary["500"]};
+  background-color: ${({ theme }) => theme.colors.primary["500"]};
 
   // Change background color if not disabled
   &:hover,
@@ -75,6 +71,18 @@ export const GhostButton = styled(Button)`
   color: ${({ theme }) => theme.colors.primary["500"]};
   background-color: ${({ theme }) => theme.colors.white};
   border: none;
+`;
+export const DangerButton = styled(Button)`
+  color: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme }) => theme.colors.error["500"]};
+  border-color: ${({ theme }) => theme.colors.error["500"]};
+  // Change background color if not disabled
+  &:hover,
+  &:active {
+    &:not([disabled]) {
+      background-color: ${({ theme }) => theme.colors.error["700"]};
+    }
+  }
 `;
 
 export const Loader = styled.div`
