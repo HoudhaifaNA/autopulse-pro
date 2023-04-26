@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { Formik, FormikProps, FormikHelpers } from "formik";
 
-import { setFieldValue, Values } from "components/CarForm/types";
-import * as S from "components/CarForm/CarForm.styled";
-import CarDetailsForm from "components/CarForm/CarDetails";
-import PlaceForm from "components/CarForm/PlaceForm";
-import { carSchemaStepTwo } from "Schemas/FormSchemas";
+import { Form } from "components/ui/Form.styled";
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
+import PlaceForm from "components/CarForm/PlaceForm";
+import CarDetailsForm from "components/CarForm/CarDetails";
+import SellingDetails from "components/CarForm/SellingDetails";
+import Expenses from "components/CarForm/Expenses";
+import { setFieldValue, Values } from "components/CarForm/types";
 import Button from "components/Buttons/Button";
-import SellingDetails from "./SellingDetails";
+import { carSchemaStepTwo } from "Schemas/FormSchemas";
+import uid from "utils/uniqid";
 
 const INITIAL_VALUES: Values = {
   step: 1,
@@ -24,7 +26,15 @@ const INITIAL_VALUES: Values = {
   boughtPrice: 0,
   euroPrice: 0,
   lisence: "",
-  depenses: [],
+  expenses: [
+    {
+      id: uid(),
+      type: "À l'étranger",
+      raison: "",
+      euroCost: 0,
+      euroPrice: 0,
+    },
+  ],
 };
 
 const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
@@ -35,11 +45,8 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
   }, 1000);
 };
 
-const renderForm = (
-  step: number,
-  carType: Values["carType"],
-  setFieldValue: setFieldValue
-) => {
+const renderForm = (values: Values, setFieldValue: setFieldValue) => {
+  const { step, carType, expenses } = values;
   if (step === 1) {
     return <PlaceForm carType={carType} setFieldValue={setFieldValue} />;
   }
@@ -48,6 +55,9 @@ const renderForm = (
   }
   if (step === 3) {
     return <SellingDetails carType={carType} />;
+  }
+  if (step === 4) {
+    return <Expenses expenses={expenses} setFieldValue={setFieldValue} />;
   }
 };
 
@@ -74,26 +84,25 @@ const CarForm = () => {
             values,
           } = props;
 
-          const { step, carType } = values;
+          const { step, brand, serie, model } = values;
 
-          // Set all inputs touched to false when changing the step to hide errors when typing first time
+          // reset all inputs "touched" to false when step changes
           useEffect(() => {
             setStep(step);
             props.setTouched({});
             // !TODO -- Make a utility function to form car name
-            if (step === 3)
-              setTitle(`${values.brand} ${values.serie} ${values.model}`);
+            if (step === 3) setTitle(`${brand} ${serie} ${model}`);
           }, [step]);
 
           return (
             <>
               <ModalContent>
-                <S.Form onSubmit={handleSubmit}>
-                  {renderForm(step, carType, setFieldValue)}
+                <Form onSubmit={handleSubmit}>
+                  {renderForm(values, setFieldValue)}
 
                   {/*  Hidden input to submit button with hitting enter  */}
                   <input type="submit" style={{ display: "none" }} />
-                </S.Form>
+                </Form>
               </ModalContent>
               <ModalActions>
                 <Button
