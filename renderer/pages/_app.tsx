@@ -1,6 +1,6 @@
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import Inter from "@next/font/local";
+import Inter from "next/font/local";
 import { ThemeProvider } from "styled-components";
 
 import GlobalStyle from "styles/GlobalStyle";
