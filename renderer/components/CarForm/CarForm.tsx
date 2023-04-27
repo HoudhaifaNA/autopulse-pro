@@ -3,12 +3,14 @@ import { Formik, FormikProps, FormikHelpers } from "formik";
 
 import { Form } from "components/ui/Form.styled";
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
-import PlaceForm from "components/CarForm/PlaceForm";
-import CarDetailsForm from "components/CarForm/CarDetails";
+import CarType from "components/CarForm/CarType";
+import CarDetails from "components/CarForm/CarDetails";
 import SellingDetails from "components/CarForm/SellingDetails";
-import Expenses from "components/CarForm/Expenses";
+import ExpenseDetails from "components/CarForm/ExpensesDetails";
+import ConfirmationDetails from "./ConfirmationDetails";
 import { setFieldValue, Values } from "components/CarForm/types";
 import Button from "components/Buttons/Button";
+import onSubmit from "components/CarForm/handleSubmit";
 import { carSchemaStepTwo } from "Schemas/FormSchemas";
 import uid from "utils/uniqid";
 
@@ -23,8 +25,10 @@ const INITIAL_VALUES: Values = {
   color: "",
   year: "",
   seller: "",
-  boughtPrice: 0,
+  euroCost: 0,
   euroPrice: 0,
+  purchasingPrice: 0,
+  totalCost: 0,
   lisence: "",
   expenses: [
     {
@@ -33,31 +37,28 @@ const INITIAL_VALUES: Values = {
       raison: "",
       euroCost: 0,
       euroPrice: 0,
+      totalCost: 0,
     },
   ],
-};
-
-const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
-  setTimeout(() => {
-    console.log(values);
-    actions.setSubmitting(false);
-    actions.setFieldValue("step", values.step + 1);
-  }, 1000);
+  transactionAG: true,
 };
 
 const renderForm = (values: Values, setFieldValue: setFieldValue) => {
   const { step, carType, expenses } = values;
   if (step === 1) {
-    return <PlaceForm carType={carType} setFieldValue={setFieldValue} />;
+    return <CarType carType={carType} setFieldValue={setFieldValue} />;
   }
   if (step === 2) {
-    return <CarDetailsForm />;
+    return <CarDetails />;
   }
   if (step === 3) {
     return <SellingDetails carType={carType} />;
   }
   if (step === 4) {
-    return <Expenses expenses={expenses} setFieldValue={setFieldValue} />;
+    return <ExpenseDetails expenses={expenses} setFieldValue={setFieldValue} />;
+  }
+  if (step === 5) {
+    return <ConfirmationDetails values={values} />;
   }
 };
 
