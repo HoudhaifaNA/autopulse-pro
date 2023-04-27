@@ -18,6 +18,7 @@ export interface Values {
     raison: string;
     euroCost: number;
     euroPrice: number;
+    totalCost: number;
   }[];
 }
 export type setFieldValue = (
