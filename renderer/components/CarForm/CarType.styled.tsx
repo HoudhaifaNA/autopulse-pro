@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
-export const PlaceFormWrapper = styled.div`
+export const CarTypeWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 7rem;
   height: 20rem;
 `;
-export const PlaceItem = styled.div<{ $selected: boolean }>`
+export const CarType = styled.div<{ $selected: boolean }>`
   position: relative;
   width: 19rem;
   height: 12.5rem;

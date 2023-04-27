@@ -1,43 +1,43 @@
 import React from "react";
-import * as S from "components/CarForm/PlaceForm.styled";
+import * as S from "components/CarForm/CarType.styled";
 
 import { setFieldValue } from "components/CarForm/types";
 import { Body1 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 
-interface PlaceFormProps {
+interface CarTypeProps {
   carType: string;
   setFieldValue: setFieldValue;
 }
 
-const places = ["importé", "locale"];
+const CAR_TYPES = ["importé", "locale"];
 
-const renderPlaces = (carType: string, setFieldValue: setFieldValue) => {
-  return places.map((place) => {
-    const isSelected = carType === place;
+const renderCarTypes = (carType: string, setFieldValue: setFieldValue) => {
+  return CAR_TYPES.map((type) => {
+    const isSelected = carType === type;
 
     return (
-      <S.PlaceItem
-        key={place}
+      <S.CarType
+        key={type}
         $selected={isSelected}
-        onClick={() => setFieldValue("carType", place)}
+        onClick={() => setFieldValue("carType", type)}
       >
         <S.IconWrapper>
           {isSelected && <Icon icon="success" size="2.4rem" />}
         </S.IconWrapper>
-        <Icon icon={place} size="4.8rem" />
-        <Body1>{place}</Body1>
-      </S.PlaceItem>
+        <Icon icon={type} size="4.8rem" />
+        <Body1>{type}</Body1>
+      </S.CarType>
     );
   });
 };
 
-const PlaceForm = ({ carType, setFieldValue }: PlaceFormProps) => {
+const CarType = ({ carType, setFieldValue }: CarTypeProps) => {
   return (
-    <S.PlaceFormWrapper>
-      {renderPlaces(carType, setFieldValue)}
-    </S.PlaceFormWrapper>
+    <S.CarTypeWrapper>
+      {renderCarTypes(carType, setFieldValue)}
+    </S.CarTypeWrapper>
   );
 };
 
-export default PlaceForm;
+export default CarType;

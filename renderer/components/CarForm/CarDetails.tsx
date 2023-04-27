@@ -2,7 +2,7 @@ import { FormContent, FormGroup } from "components/ui/Form.styled";
 import { DropdownInput, TypedInput } from "components/Input/Input";
 import Dropdown from "components/Dropdown/Dropdown";
 
-const CarDetailsForm = () => {
+const CarDetails = () => {
   return (
     <FormContent>
       <FormGroup>
@@ -71,4 +71,4 @@ const CarDetailsForm = () => {
   );
 };
 
-export default CarDetailsForm;
+export default CarDetails;
