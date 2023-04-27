@@ -9,8 +9,10 @@ export interface Values {
   color: string;
   year: string;
   seller: string;
-  boughtPrice: number;
+  euroCost: number;
   euroPrice: number;
+  purchasingPrice: number;
+  totalCost: number;
   lisence: string;
   expenses: {
     id: string;
@@ -20,6 +22,8 @@ export interface Values {
     euroPrice: number;
     totalCost: number;
   }[];
+  // Transaction agremment
+  transactionAG: boolean;
 }
 export type setFieldValue = (
   field: string,
