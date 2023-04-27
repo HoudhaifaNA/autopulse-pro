@@ -16,22 +16,23 @@ interface ExpensesProps {
 const EXPENSES_OPTIONS = ["À l'étranger", "Locale"];
 
 const renderAdder = ({ expenses, setFieldValue }: ExpensesProps) => {
-  return EXPENSES_OPTIONS.map((el) => {
+  return EXPENSES_OPTIONS.map((option) => {
     const newExpense = {
       id: uid(),
-      type: el,
+      type: option,
       raison: "",
       euroCost: 0,
       euroPrice: 0,
+      totalCost: 0,
     };
 
-    const icon = el.toLowerCase() === "locale" ? "locale" : "importé";
+    const icon = option.toLowerCase() === "locale" ? "locale" : "importé";
     const onClick = () => setFieldValue("expenses", [...expenses, newExpense]);
 
     return (
-      <ButtonItem key={el}>
+      <ButtonItem key={option}>
         <Button type="button" variant="ghost" icon={icon} onClick={onClick}>
-          {el}
+          {option}
         </Button>
       </ButtonItem>
     );

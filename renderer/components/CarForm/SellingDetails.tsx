@@ -65,7 +65,7 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
         {carType === "importé" ? (
           <>
             <TypedInput
-              name="boughtPrice"
+              name="euroCost"
               type="number"
               label="Prix ​​d'achat:"
               addOn="€"
@@ -81,7 +81,7 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
         ) : (
           <>
             <TypedInput
-              name="boughtPrice"
+              name="purchasingPrice"
               type="text"
               label="Prix ​​d'achat:"
               addOn="DZD"
