@@ -2,13 +2,14 @@ import styled from "styled-components";
 
 interface FormGroupInterface {
   $disabled?: boolean;
+  $height?: string;
 }
 
 export const FormGroup = styled.div<FormGroupInterface>`
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  height: 8.3rem;
+  height: ${({ $height }) => ($height ? $height : "8.3rem")};
   width: 100%;
   opacity: ${({ $disabled }) => ($disabled ? ".5" : "1")};
   pointer-events: ${({ $disabled }) => ($disabled ? "none" : "")};
@@ -16,6 +17,7 @@ export const FormGroup = styled.div<FormGroupInterface>`
 
 export const ClickInputContainer = styled.div`
   display: flex;
+  height: 2rem;
   gap: 1rem;
 `;
 
