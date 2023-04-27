@@ -6,7 +6,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  TableRowActions,
 } from "components/Table/Table";
 import Badge from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -18,6 +17,8 @@ import Dropdown from "components/Dropdown/Dropdown";
 import EmptyState from "components/EmptyState/EmptyState";
 import Meta from "components/Meta/Meta";
 import CarForm from "components/CarForm/CarForm";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
+import Button from "components/Buttons/Button";
 
 const CARS_FAKE_DATA = [
   { text: "Date créée", sortable: true },
@@ -59,7 +60,7 @@ const CarsPage = () => {
           <TableHeader>
             <TableRow>
               <TableHeaderCell>
-                {/* <Checkbox />
+                <Checkbox />
               </TableHeaderCell>
               {CARS_FAKE_DATA.map((el) => {
                 return (
@@ -71,11 +72,11 @@ const CarsPage = () => {
               })}
               <TableHeaderCell>
                 <Icon icon="more_vert" size="1.8rem" />
-              {/* </TableHeaderCell>
+              </TableHeaderCell>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {/* {new Array(10).fill(1).map((_, i) => {
+            {new Array(10).fill(1).map((_, i) => {
               return (
                 <TableRow key={Math.random() * 5}>
                   <TableCell>
@@ -114,34 +115,35 @@ const CarsPage = () => {
                   <TableCell>
                     <Body2>913000.00</Body2>
                   </TableCell>
-                  <TableCell>
+                  <TableCell blurrable={false}>
                     <Icon icon="more_vert" size="1.8rem" />
-                    {/* {i === 0 && (
-                      <TableRowActions>
-                        <Dropdown
-                          items={[
-                            { mainText: "Vendre", icon: "sell" },
-                            { mainText: "Imprimer", icon: "print" },
-                            { mainText: "Edit", icon: "edit" },
-                          ]}
-                          onItemClick={(str) => console.log(str)}
-                        >
-                          <ButtonItem $ghostColor="red">
-                            <Button variant="ghost" icon="delete">
-                              Supprimer
-                            </Button>
-                          </ButtonItem>
-                        </Dropdown>
-                      </TableRowActions>
-                    )} */}
-      {/* </TableCell>
+                    {i === 0 && (
+                      <Dropdown
+                        $width="20rem"
+                        $right="0"
+                        $top="0"
+                        items={[
+                          { mainText: "Vendre", icon: "sell" },
+                          { mainText: "Imprimer", icon: "print" },
+                          { mainText: "Edit", icon: "edit" },
+                        ]}
+                        onItemClick={(str) => console.log(str)}
+                      >
+                        <ButtonItem $ghostColor="red">
+                          <Button variant="ghost" icon="delete">
+                            Supprimer
+                          </Button>
+                        </ButtonItem>
+                      </Dropdown>
+                    )}
+                  </TableCell>
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
-      </TableWrapper>
-      <Pagination />  */}
+      </TableWrapper> */}
+      {/* <Pagination /> */}
     </div>
   );
 };
