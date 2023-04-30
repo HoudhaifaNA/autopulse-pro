@@ -4,145 +4,110 @@ import { FormContent } from "components/ui/Form.styled";
 import { Values } from "components/CarForm/types";
 import { Body1, Body2, Heading5 } from "styles/Typography";
 import { ClickInput } from "components/Input/Input";
+import calcExpensesCost from "utils/calcExpensesCosts";
 
-interface ConfirmationProps {
-  values: Values;
-}
-
-const formatTotalCost = (
+type costToTextT = (
   type: Values["carType"] | "À l'étranger",
   euroCost: number,
   euroPrice: number,
   totalCost: number
-) => {
-  return type === "importé" || type === "À l'étranger"
-    ? `€${euroCost}.00 × ${euroPrice}.00 = ${totalCost}.00 DZD`
-    : `${totalCost}.00 DZD`;
-};
+) => string;
 
-const ConfirmationDetails = ({ values }: ConfirmationProps) => {
-  const {
-    carType,
-    brand,
-    serie,
-    model,
-    euroPrice,
-    euroCost,
-    purchasingPrice,
-    totalCost,
-  } = values;
-
-  const carPurchasingPriceText = formatTotalCost(
-    carType,
-    euroCost,
-    euroPrice,
-    purchasingPrice
-  );
-
-  const expensesEuroCost = values.expenses.reduce((a, b) => {
-    return a + b.euroCost;
-  }, 0);
-
-  const carEuroCost = euroCost + expensesEuroCost;
-
-  const carDetails = [
-    {
-      sectionName: "Détails de la voiture",
-      items: [
-        {
-          label: "Voiture",
-          value: `${brand} ${serie} ${model}`,
-        },
-        {
-          label: "Numéro de châssis",
-          value: values.serialNumber,
-        },
-        {
-          label: "Matricule",
-          value: values.registrationNumber,
-        },
-        {
-          label: "Couleur",
-          value: values.color,
-        },
-        {
-          label: "Année",
-          value: values.year,
-        },
-      ],
-    },
-    {
-      sectionName: "Détails d'achat",
-      items: [
-        {
-          label: "Vendeur",
-          value: values.seller,
-        },
-        {
-          label: "Prix ​​d'achat",
-          value: carPurchasingPriceText,
-        },
-        {
-          label: "Licence",
-          value: values.lisence,
-        },
-        {
-          label: "Prix ​​de la licence",
-          value: "45000.00 DZD",
-        },
-      ],
-    },
-    {
-      sectionName: "Dépenses",
-      items: values.expenses.map(
-        ({ type, raison, euroPrice, euroCost, totalCost }) => {
-          return {
-            label: raison,
-            value: formatTotalCost(type, euroCost, euroPrice, totalCost),
-          };
-        }
-      ),
-    },
-    {
-      sectionName: "Calculs totaux",
-      items: [
-        {
-          label: "Total en EURO",
-          value: `€${carEuroCost}.00`,
-        },
-        {
-          label: "Total",
-          value: `${totalCost}.00 DZD`,
-        },
-      ],
-    },
-  ];
+const ConfirmationDetails = ({ values }: { values: Values }) => {
+  const carDetails = getCarDetails(values);
   return (
     <S.ConfirmationWrapper>
       <FormContent>
-        {carDetails.map(({ sectionName, items }) => {
+        {carDetails.map((prop) => {
           return (
-            <S.Section key={sectionName}>
-              <Heading5>{sectionName} :</Heading5>
-              {items.map(({ label, value }) => {
-                return (
-                  <S.SectionItem key={label}>
-                    <Body1>{label} :</Body1>
-                    <Body2>{value}</Body2>
-                  </S.SectionItem>
-                );
+            <S.Section key={prop.section}>
+              <Heading5>{prop.section} :</Heading5>
+              {Object.entries(prop).map(([key, value]) => {
+                if (key !== "section") {
+                  return (
+                    <S.SectionItem key={key}>
+                      <Body1>{key} :</Body1>
+                      <Body2>{value}</Body2>
+                    </S.SectionItem>
+                  );
+                }
               })}
             </S.Section>
           );
         })}
         <ClickInput
           type="checkbox"
-          name="transactionAG"
-          label={`Ajouter cette voiture aux transactions de ${values.seller}`}
+          name="transactionAgreement"
+          label={`Ajouter cette voiture aux transactions de b/${values.seller}`}
         />
       </FormContent>
     </S.ConfirmationWrapper>
   );
+};
+
+const costToText: costToTextT = (type, euroCost, euroPrice, totalCost) => {
+  return type === "importé" || type === "À l'étranger"
+    ? `€${euroCost}.00 × ${euroPrice}.00 = ${totalCost}.00 DZD`
+    : `${totalCost}.00 DZD`;
+};
+
+const getCarDetails = (values: Values) => {
+  const {
+    carType,
+    brand,
+    serie,
+    model,
+    serialNumber,
+    registrationNumber,
+    color,
+    year,
+    seller,
+    lisence,
+    expenses,
+    euroAmount,
+    euroCost,
+    euroPrice,
+    purchasingPrice,
+    dzdAmount,
+  } = values;
+
+  // PP ==> Purchasing price
+  const PPText = costToText(carType, euroCost, euroPrice, purchasingPrice);
+
+  const [expensesDZDCost] = calcExpensesCost(expenses);
+
+  let expensesList: { [key: string]: string } = {};
+
+  expenses.forEach(({ type, raison, euroPrice, euroCost, totalCost }) => {
+    const totalCostText = costToText(type, euroCost, euroPrice, totalCost);
+    expensesList[raison] = totalCostText;
+  });
+
+  const carDetails = [
+    {
+      section: "Détails de la voiture",
+      voiture: `${brand} ${serie} ${model}`,
+      "Numéro de châssis": serialNumber,
+      Matricule: registrationNumber,
+      Couleur: color,
+      Année: year,
+    },
+    {
+      section: "Détails d'achat",
+      Vendeur: seller,
+      "Prix ​​d'achat": PPText,
+      Licence: lisence.name,
+      "Prix ​​de la licence": `${lisence.price}.00DZD`,
+    },
+    expensesDZDCost !== 0 ? { section: "Dépenses", ...expensesList } : {},
+    {
+      section: "Calculs totaux",
+      "Total en EURO": `€${euroAmount}.00`,
+      Total: `${dzdAmount}.00 DZD`,
+    },
+  ];
+
+  return carDetails;
 };
 
 export default ConfirmationDetails;
