@@ -1,3 +1,17 @@
+interface Lisence {
+  name: string;
+  price: number;
+}
+
+interface Expenses {
+  id: string;
+  type: "locale" | "À l'étranger";
+  raison: string;
+  euroCost: number;
+  euroPrice: number;
+  totalCost: number;
+}
+
 export interface Values {
   step: number;
   carType: "locale" | "importé";
@@ -12,18 +26,11 @@ export interface Values {
   euroCost: number;
   euroPrice: number;
   purchasingPrice: number;
-  totalCost: number;
-  lisence: string;
-  expenses: {
-    id: string;
-    type: "locale" | "À l'étranger";
-    raison: string;
-    euroCost: number;
-    euroPrice: number;
-    totalCost: number;
-  }[];
-  // Transaction agremment
-  transactionAG: boolean;
+  lisence: Lisence;
+  expenses: Expenses[];
+  euroAmount: number;
+  dzdAmount: number;
+  transactionAgreement: boolean;
 }
 export type setFieldValue = (
   field: string,
