@@ -1,36 +1,47 @@
 import { FormikHelpers } from "formik";
 
 import { Values } from "components/CarForm/types";
-
-const calculateTotalCost = (expenses: Values["expenses"]) => {
-  return expenses.map((expense) => {
-    let { type, euroCost, euroPrice } = expense;
-    if (type === "À l'étranger") expense.totalCost = euroCost * euroPrice;
-    return expense;
-  });
-};
+import calcExpensesCosts from "utils/calcExpensesCosts";
 
 const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
+  const {
+    step,
+    carType,
+    euroCost,
+    euroPrice,
+    expenses,
+    purchasingPrice,
+    lisence,
+  } = values;
+
   setTimeout(() => {
     console.log(values);
     actions.setSubmitting(false);
-    actions.setFieldValue("step", values.step + 1);
+    actions.setFieldValue("step", step + 1);
 
     // Calculate purchasing price if car is imported
-    if (values.step === 3 && values.carType === "importé") {
-      actions.setFieldValue(
-        "purchasingPrice",
-        values.euroCost * values.euroPrice
-      );
+    if (step === 3 && carType === "importé") {
+      // PP ==> Purchasing Price
+      const convertedPP = euroCost * euroPrice;
+      actions.setFieldValue("purchasingPrice", convertedPP);
     }
-    if (values.step === 4) {
-      const expensesWithTotalCost = calculateTotalCost(values.expenses);
-      const dzdExpensesCost = expensesWithTotalCost.reduce((a, b) => {
-        return a + b.totalCost;
-      }, 0);
-      const totalCost = values.purchasingPrice + dzdExpensesCost;
-      actions.setFieldValue("expenses", expensesWithTotalCost);
-      actions.setFieldValue("totalCost", totalCost);
+
+    if (step === 4) {
+      // Calculate total cost of every expense abroad in DZD
+      expenses.forEach((expense) => {
+        const { type, euroCost, euroPrice } = expense;
+        if (type === "À l'étranger") expense.totalCost = euroCost * euroPrice;
+      });
+
+      // Calculate expenses DZD and EUR amout
+      const [expensesDZDcost, expensesEURCost] = calcExpensesCosts(expenses);
+
+      // Calculate total spent DZD and EUR amout (car + expenses + lisence )
+      const euroAmount = euroCost + expensesEURCost;
+      const dzdAmount = purchasingPrice + expensesDZDcost + lisence.price;
+
+      actions.setFieldValue("euroAmount", euroAmount);
+      actions.setFieldValue("dzdAmount", dzdAmount);
     }
   }, 1000);
 };
