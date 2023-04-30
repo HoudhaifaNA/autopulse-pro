@@ -18,26 +18,30 @@ const ConfirmationDetails = ({ values }: { values: Values }) => {
   return (
     <S.ConfirmationWrapper>
       <FormContent>
-        {carDetails.map((prop) => {
-          return (
-            <S.Section key={prop.section}>
-              <Heading5>{prop.section} :</Heading5>
-              {Object.entries(prop).map(([key, value]) => {
-                if (key !== "section") {
-                  return (
-                    <S.SectionItem key={key}>
-                      <Body1>{key} :</Body1>
-                      <Body2>{value}</Body2>
-                    </S.SectionItem>
-                  );
-                }
-              })}
-            </S.Section>
-          );
+        {carDetails.map((details) => {
+          if (details) {
+            return (
+              <S.Section key={details.section}>
+                <Heading5>{details.section} :</Heading5>
+                {Object.entries(details).map(([key, value]) => {
+                  if (key !== "section") {
+                    return (
+                      <S.SectionItem key={key}>
+                        <Body1>{key} :</Body1>
+                        <Body2>{value}</Body2>
+                      </S.SectionItem>
+                    );
+                  }
+                })}
+              </S.Section>
+            );
+          }
         })}
+
         <ClickInput
           type="checkbox"
           name="transactionAgreement"
+          //  [b/] for bolding text
           label={`Ajouter cette voiture aux transactions de b/${values.seller}`}
         />
       </FormContent>
@@ -99,7 +103,7 @@ const getCarDetails = (values: Values) => {
       Licence: lisence.name,
       "Prix ​​de la licence": `${lisence.price}.00DZD`,
     },
-    expensesDZDCost !== 0 ? { section: "Dépenses", ...expensesList } : {},
+    expensesDZDCost !== 0 && { section: "Dépenses", ...expensesList },
     {
       section: "Calculs totaux",
       "Total en EURO": `€${euroAmount}.00`,
