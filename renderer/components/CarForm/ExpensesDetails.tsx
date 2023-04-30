@@ -15,7 +15,7 @@ interface ExpensesProps {
 
 const EXPENSES_OPTIONS = ["À l'étranger", "Locale"];
 
-const renderAdder = ({ expenses, setFieldValue }: ExpensesProps) => {
+const renderExpenseAdder = ({ expenses, setFieldValue }: ExpensesProps) => {
   return EXPENSES_OPTIONS.map((option) => {
     const newExpense = {
       id: uid(),
@@ -54,6 +54,7 @@ const ExpensesDetails = ({ expenses, setFieldValue }: ExpensesProps) => {
                     label="Raison :"
                     placeholder="Raison"
                     iconRight="expand"
+                    autoFocus
                   />
                 </DropdownInput>
                 {type === "À l'étranger" ? (
@@ -106,7 +107,7 @@ const ExpensesDetails = ({ expenses, setFieldValue }: ExpensesProps) => {
           Ajouter une autre dépense
         </Button>
         <Dropdown $width="20rem">
-          {renderAdder({ expenses, setFieldValue })}
+          {renderExpenseAdder({ expenses, setFieldValue })}
         </Dropdown>
       </S.ExpenseAdder>
     </>

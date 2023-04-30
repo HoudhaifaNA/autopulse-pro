@@ -17,6 +17,7 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
             label="Vendeur:"
             placeholder="Nom du vendeur"
             iconRight="expand"
+            autoFocus
           />
           {/* <Dropdown
             $width="100%"
@@ -38,7 +39,7 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
         </DropdownInput>
         <DropdownInput>
           <TypedInput
-            name="lisence"
+            name="lisence.name"
             type="text"
             label="Licence:"
             placeholder="Nom du moujahid"
@@ -73,7 +74,7 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
 
             <TypedInput
               name="euroPrice"
-              type="text"
+              type="number"
               label="Prix ​​de 100€:"
               addOn="DZD"
             />
@@ -82,7 +83,7 @@ const SellingDetails = ({ carType }: Pick<Values, "carType">) => {
           <>
             <TypedInput
               name="purchasingPrice"
-              type="text"
+              type="number"
               label="Prix ​​d'achat:"
               addOn="DZD"
             />

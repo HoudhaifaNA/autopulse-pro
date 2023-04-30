@@ -13,6 +13,7 @@ const CarDetails = () => {
             label="Marque:"
             placeholder="Mercedes-Benz"
             iconRight="expand"
+            autoFocus
           />
           {/* <Dropdown
             $width="100%"
