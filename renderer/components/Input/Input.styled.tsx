@@ -26,6 +26,7 @@ export const ClickInput = styled.input`
   height: 1.6rem;
   accent-color: ${({ theme }) => theme.colors.primary["500"]};
   border: none;
+  outline: none;
   cursor: pointer;
 `;
 
