@@ -36,7 +36,11 @@ export const InputAddOn = styled.div`
   justify-content: center;
   padding: 1rem;
   width: 5rem;
-  background-color: ${({ theme }) => theme.colors.neutral["300"]};
+  background-color: ${({ theme }) => theme.colors.neutral["200"]};
+
+  p {
+    color: ${({ theme }) => theme.colors.black};
+  }
 `;
 
 export const InputWrapper = styled.div`
