@@ -37,7 +37,7 @@ export const ClickInput = ({ label, disabled, ...props }: ClickInputProps) => {
   const renderError = error && touched && <S.InputError>{error}</S.InputError>;
   const [normalLabel, boldLabel] = label.split("b/");
   return (
-    <S.FormGroup $height="fit-content" $disabled={disabled}>
+    <S.FormGroup $height="4rem" $disabled={disabled}>
       <S.ClickInputContainer>
         <S.ClickInput id={id} {...props} {...field} />
         <LabelText htmlFor={id}>
