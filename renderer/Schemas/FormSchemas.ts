@@ -95,9 +95,13 @@ export const carSchemaStepFour = object({
             .min(50, ({ min }) => `Minimum ${min} DZD`)
             .required("Prix ​​de 1 EUR  est requis"),
       }),
-      totalCost: number()
-        .min(500, ({ min }) => `Minimum ${min} DZD`)
-        .required("Coût est requis"),
+      totalCost: number().when("type", {
+        is: "locale",
+        then: () =>
+          number()
+            .min(500, ({ min }) => `Minimum ${min} DZD`)
+            .required("Coût est requis"),
+      }),
     })
   ),
 });
