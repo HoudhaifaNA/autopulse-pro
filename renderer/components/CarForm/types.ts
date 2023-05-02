@@ -32,8 +32,3 @@ export interface Values {
   dzdAmount: number;
   transactionAgreement: boolean;
 }
-export type setFieldValue = (
-  field: string,
-  value: any,
-  shouldValidate?: boolean | undefined
-) => void;
