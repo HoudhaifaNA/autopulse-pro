@@ -1,27 +1,28 @@
 import React from "react";
-import * as S from "components/CarForm/CarType.styled";
+import { useFormikContext } from "formik";
 
-import { setFieldValue } from "components/CarForm/types";
+import * as S from "components/CarForm/CarType.styled";
 import { Body1 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 
 interface CarTypeProps {
   carType: string;
-  setFieldValue: setFieldValue;
 }
 
 const CAR_TYPES = ["importé", "locale"];
 
-const renderCarTypes = (carType: string, setFieldValue: setFieldValue) => {
+const renderCarTypes = (carType: string) => {
+  const { setFieldValue, resetForm } = useFormikContext();
+
   return CAR_TYPES.map((type) => {
     const isSelected = carType === type;
+    const onTypeClick = () => {
+      resetForm();
+      setFieldValue("carType", type);
+    };
 
     return (
-      <S.CarType
-        key={type}
-        $selected={isSelected}
-        onClick={() => setFieldValue("carType", type)}
-      >
+      <S.CarType key={type} $selected={isSelected} onClick={onTypeClick}>
         <S.IconWrapper>
           {isSelected && <Icon icon="success" size="2.4rem" />}
         </S.IconWrapper>
@@ -32,12 +33,8 @@ const renderCarTypes = (carType: string, setFieldValue: setFieldValue) => {
   });
 };
 
-const CarType = ({ carType, setFieldValue }: CarTypeProps) => {
-  return (
-    <S.CarTypeWrapper>
-      {renderCarTypes(carType, setFieldValue)}
-    </S.CarTypeWrapper>
-  );
+const CarType = ({ carType }: CarTypeProps) => {
+  return <S.CarTypeWrapper>{renderCarTypes(carType)}</S.CarTypeWrapper>;
 };
 
 export default CarType;

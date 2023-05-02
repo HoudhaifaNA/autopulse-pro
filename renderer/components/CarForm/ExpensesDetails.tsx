@@ -1,3 +1,5 @@
+import { useFormikContext } from "formik";
+
 import * as S from "components/CarForm/ExpensesDetails.styled";
 import uid from "utils/uniqid";
 import { FormContent, FormGroup } from "components/ui/Form.styled";
@@ -6,16 +8,17 @@ import Dropdown from "components/Dropdown/Dropdown";
 import Button from "components/Buttons/Button";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 import { DropdownInput } from "components/Input/Input";
-import { Values, setFieldValue } from "components/CarForm/types";
+import { Values } from "components/CarForm/types";
 
 interface ExpensesProps {
   expenses: Values["expenses"];
-  setFieldValue: setFieldValue;
 }
 
 const EXPENSES_OPTIONS = ["À l'étranger", "Locale"];
 
-const renderExpenseAdder = ({ expenses, setFieldValue }: ExpensesProps) => {
+const renderExpenseAdder = (expenses: Values["expenses"]) => {
+  const { setFieldValue } = useFormikContext();
+
   return EXPENSES_OPTIONS.map((option) => {
     const newExpense = {
       id: uid(),
@@ -39,7 +42,14 @@ const renderExpenseAdder = ({ expenses, setFieldValue }: ExpensesProps) => {
   });
 };
 
-const ExpensesDetails = ({ expenses, setFieldValue }: ExpensesProps) => {
+const ExpensesDetails = ({ expenses }: ExpensesProps) => {
+  const { setFieldValue, setTouched } = useFormikContext();
+  const deleteExpense = (id: string) => {
+    const filtredExpenses = expenses.filter((expense) => expense.id !== id);
+    setTouched({});
+    setFieldValue("expenses", filtredExpenses);
+  };
+
   return (
     <>
       <S.ExpensesList>
@@ -89,12 +99,7 @@ const ExpensesDetails = ({ expenses, setFieldValue }: ExpensesProps) => {
                     variant="danger"
                     floating={true}
                     icon="delete"
-                    onClick={() =>
-                      setFieldValue(
-                        "expenses",
-                        expenses.filter((expense) => expense.id !== id)
-                      )
-                    }
+                    onClick={() => deleteExpense(id)}
                   />
                 </div>
               </FormGroup>
@@ -106,9 +111,7 @@ const ExpensesDetails = ({ expenses, setFieldValue }: ExpensesProps) => {
         <Button type="button" variant="ghost" icon="add">
           Ajouter une autre dépense
         </Button>
-        <Dropdown $width="20rem">
-          {renderExpenseAdder({ expenses, setFieldValue })}
-        </Dropdown>
+        <Dropdown $width="20rem">{renderExpenseAdder(expenses)}</Dropdown>
       </S.ExpenseAdder>
     </>
   );
