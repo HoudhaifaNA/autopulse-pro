@@ -20,16 +20,17 @@ const renderExpenseAdder = (expenses: Values["expenses"]) => {
   const { setFieldValue } = useFormikContext();
 
   return EXPENSES_OPTIONS.map((option) => {
+    let lowerCaseOption = option.toLocaleLowerCase();
     const newExpense = {
       id: uid(),
-      type: option,
+      type: lowerCaseOption,
       raison: "",
       euroCost: 0,
       euroPrice: 0,
       totalCost: 0,
     };
 
-    const icon = option.toLowerCase() === "locale" ? "locale" : "importé";
+    const icon = lowerCaseOption === "locale" ? "locale" : "importé";
     const onClick = () => setFieldValue("expenses", [...expenses, newExpense]);
 
     return (
