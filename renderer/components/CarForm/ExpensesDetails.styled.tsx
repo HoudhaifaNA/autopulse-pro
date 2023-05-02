@@ -18,10 +18,6 @@ export const ExpensesList = styled.div`
 `;
 
 export const ExpenseAdder = styled.div`
-  position: relative;
-  bottom: 0;
-  left: 0;
-
   & > button {
     padding: 0;
   }
