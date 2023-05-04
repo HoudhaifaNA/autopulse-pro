@@ -1,10 +1,10 @@
 import { Formik, FormikProps, FormikHelpers } from "formik";
 
-import * as S from "components/ClientForm/ClientForm.styled";
+import { Form, FormContent, FormGroup } from "components/ui/Form.styled";
 import { TypedInput } from "components/Input/Input";
 import Button from "components/Buttons/Button";
-import { clientSchema } from "schemas/FormSchemas";
-import Modal from "components/Modal/Modal";
+import { clientSchema } from "Schemas/FormSchemas";
+import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
 
 interface Values {
   firstName: string;
@@ -29,62 +29,69 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
 
 const ClientForm = () => {
   return (
-    <Formik
-      initialValues={INITIAL_VALUES}
-      validationSchema={clientSchema}
-      onSubmit={onSubmit}
-    >
-      {({ handleSubmit, submitForm, isSubmitting }: FormikProps<Values>) => {
-        return (
-          <Modal title="Ajouter un client">
-            <S.Form onSubmit={handleSubmit}>
-              <S.FormRow>
-                <TypedInput
-                  name="firstName"
-                  type="text"
-                  label="Prénom"
-                  placeholder="Prénom du client"
-                />
-                <TypedInput
-                  name="lastName"
-                  type="text"
-                  label="Nom"
-                  placeholder="Nom du client"
-                />
-              </S.FormRow>
-              <S.FormRow>
-                <TypedInput
-                  name="phoneNumber"
-                  type="tel"
-                  label="Numéro de téléphone"
-                  placeholder="Numéro de téléphone du client"
-                />
-                <TypedInput
-                  name="debt"
-                  type="number"
-                  label="Dette"
-                  placeholder="Dette"
-                  addOn="DZD"
-                />
-              </S.FormRow>
-              {/*Add hidden input to submit button with hitting enter */}
-              <input type="submit" style={{ display: "none" }} />
-            </S.Form>
+    <Modal title="Ajouter un client">
+      <Formik
+        initialValues={INITIAL_VALUES}
+        validationSchema={clientSchema}
+        onSubmit={onSubmit}
+      >
+        {({ handleSubmit, submitForm, isSubmitting }: FormikProps<Values>) => {
+          return (
             <>
-              <Button
-                type="submit"
-                variant="primary"
-                loading={isSubmitting}
-                disabled={isSubmitting}
-                onClick={submitForm}
-              >
-                Ajouter
-              </Button>
+              <ModalContent>
+                <Form onSubmit={handleSubmit}>
+                  <FormContent>
+                    <FormGroup>
+                      <TypedInput
+                        name="firstName"
+                        type="text"
+                        label="Prénom"
+                        placeholder="Prénom du client"
+                        autoFocus
+                      />
+                      <TypedInput
+                        name="lastName"
+                        type="text"
+                        label="Nom"
+                        placeholder="Nom du client"
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <TypedInput
+                        name="phoneNumber"
+                        type="tel"
+                        label="Numéro de téléphone"
+                        placeholder="Numéro de téléphone du client"
+                      />
+                      <TypedInput
+                        name="debt"
+                        type="number"
+                        label="Dette"
+                        placeholder="Dette"
+                        addOn="DZD"
+                      />
+                    </FormGroup>
+                    {/*Add hidden input to submit button with hitting enter */}
+                    <input type="submit" style={{ display: "none" }} />
+                  </FormContent>
+                </Form>
+              </ModalContent>
+              <ModalActions>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                  onClick={submitForm}
+                >
+                  Ajouter
+                </Button>
+              </ModalActions>
             </>
-          </Modal>
-        );
-      }}
-    </Formik>
+          );
+        }}
+      </Formik>
+    </Modal>
   );
 };
 

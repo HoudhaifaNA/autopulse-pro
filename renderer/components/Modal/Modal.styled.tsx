@@ -39,14 +39,13 @@ export const ModalHeader = styled.div`
 export const ModalContent = styled.div`
   max-height: 60rem;
   padding: 2rem;
-  overflow-y: scroll;
-
-  &::-webkit-scrollbar {
-    width: 0;
-  }
 `;
 
 export const ModalActions = styled.div`
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   padding: 1rem 2rem;
   display: flex;
   align-items: center;

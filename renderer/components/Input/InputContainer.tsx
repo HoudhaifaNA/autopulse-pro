@@ -1,9 +1,9 @@
 import { FieldInputProps, FieldMetaProps } from "formik";
 
 import * as S from "components/Input/InputContainer.styled";
+import { TypedInputProps } from "components/Input/types";
 import { Body2 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
-import { TypedInputProps } from "./types";
 
 type InputProps = TypedInputProps & {
   meta: FieldMetaProps<any>;
@@ -22,7 +22,7 @@ const InputContainer = (props: InputProps) => {
   const { name, iconLeft, addOn, meta, field, onIconClick, ...allProps } =
     props;
 
-  // If there is an error icon right should be error icon despite the specified icon
+  // If there is an error icon right should be the error icon despite the specified icon
   let { iconRight } = props;
   const isError = meta.error && meta.touched;
   if (isError) iconRight = "error";

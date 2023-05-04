@@ -1,10 +1,12 @@
-import { SearchBarContainer } from "components/Header/Header.styled";
 import styled from "styled-components";
+
+import { SearchBarContainer } from "components/Header/Header.styled";
 
 export const InputContainer = styled.div`
   display: flex;
   width: 100%;
   height: 4rem;
+  min-height: 4rem;
   border: 0.1rem solid ${({ theme }) => theme.colors.neutral["500"]};
   border-radius: 0.4rem;
   overflow: hidden;
@@ -22,8 +24,9 @@ export const InputContainer = styled.div`
     fill: ${({ theme }) => theme.colors.error["700"]};
   }
 
-  ${SearchBarContainer} & {
-    border-radius: 0.4rem 0.4rem 0 0;
+  ${SearchBarContainer} &:focus-within {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
   }
 `;
 
@@ -33,7 +36,11 @@ export const InputAddOn = styled.div`
   justify-content: center;
   padding: 1rem;
   width: 5rem;
-  background-color: ${({ theme }) => theme.colors.neutral["300"]};
+  background-color: ${({ theme }) => theme.colors.neutral["200"]};
+
+  p {
+    color: ${({ theme }) => theme.colors.black};
+  }
 `;
 
 export const InputWrapper = styled.div`
@@ -66,5 +73,10 @@ export const Input = styled.input`
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.neutral["500"]};
+  }
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 `;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,12 +13,12 @@ interface items {
 }
 
 const NAVBAR_ITEMS: items[] = [
-  { text: "Tableau de bord", icon: "dashboard", link: "/tableau" },
-  { text: "Voitures", icon: "car", link: "/voitures" },
+  { text: "Tableau de bord", icon: "dashboard", link: "/dashboard" },
+  { text: "Voitures", icon: "car", link: "/cars" },
   { text: "Clients", icon: "clients", link: "/clients" },
   { text: "Licences", icon: "document", link: "/licences" },
   { text: "Finance", icon: "finance", link: "/finance" },
-  { text: "Paramètres", icon: "setting", link: "/paramètres" },
+  { text: "Paramètres", icon: "setting", link: "/setting" },
 ];
 
 const renderNavItems = (
@@ -27,7 +27,14 @@ const renderNavItems = (
   currentPath: string
 ) => {
   return items.map(({ text, icon, link }) => {
-    const isActive = link === currentPath;
+    const [isActive, setActive] = useState(false);
+
+    useEffect(() => {
+      // Check if active on normal path or html path when redirecting to a page on production
+      const sameUrl = link === currentPath || `${link}.html` === currentPath;
+      setActive(sameUrl);
+    }, [currentPath]);
+
     return (
       <S.NavbarItem key={text} $active={isActive} $short={short}>
         <Link href={link}>

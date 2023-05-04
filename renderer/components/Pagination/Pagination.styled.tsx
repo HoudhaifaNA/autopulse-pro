@@ -29,10 +29,6 @@ export const CurrentRowsNumber = styled.div`
   border-radius: 0.5rem;
   cursor: pointer;
 `;
-export const RowsNumberDropwdown = styled.div`
-  position: absolute;
-  width: 100%;
-`;
 
 export const PaginationBrowser = styled.div`
   display: flex;

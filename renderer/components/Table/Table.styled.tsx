@@ -4,6 +4,7 @@ export const TableWrapper = styled.div`
   margin-top: 4rem;
   margin-bottom: 2rem;
   max-height: 60rem;
+  min-height: 60rem;
   overflow: auto;
 
   ::-webkit-scrollbar {
@@ -37,6 +38,7 @@ export const TableRow = styled.tr`
     & > div {
       display: flex;
       align-items: center;
+      position: relative;
     }
 
     p {
@@ -51,15 +53,4 @@ export const TableHeaderCell = styled.th`
 `;
 export const TableCell = styled.td<{ $blurred: boolean }>`
   filter: ${({ $blurred }) => $blurred && "blur(.3rem)"};
-`;
-
-export const TableRowActions = styled.div`
-  position: relative;
-  & > div {
-    position: absolute;
-    right: 0;
-    top: -1rem;
-    z-index: 5000;
-    width: 20rem;
-  }
 `;

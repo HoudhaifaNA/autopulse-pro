@@ -1,4 +1,5 @@
 import { FieldHookConfig } from "formik";
+import { ReactElement } from "react";
 
 interface TextInputProps {
   label?: string;
@@ -10,3 +11,6 @@ interface TextInputProps {
 
 export type TypedInputProps = TextInputProps & FieldHookConfig<any>;
 export type ClickInputProps = { label: string } & FieldHookConfig<any>;
+export interface DropdownInputProps {
+  children: ReactElement | [ReactElement, ReactElement];
+}

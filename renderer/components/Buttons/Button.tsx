@@ -5,16 +5,15 @@ import { ButtonText } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 
 export interface ButtonProps {
-  variant: "primary" | "secondary" | "ghost";
-  type?: "submit" | "button" | "reset" | undefined;
-  danger?: boolean;
+  variant: "primary" | "secondary" | "ghost" | "danger";
+  type?: "submit" | "button" | "reset";
   width?: string;
   icon?: string;
   iconPostition?: "right" | "left";
   floating?: boolean;
   loading?: boolean;
   disabled?: boolean;
-  onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   children?: string;
 }
 
@@ -22,6 +21,7 @@ const buttonVariants = {
   primary: S.PrimaryButton,
   secondary: S.SecondaryButton,
   ghost: S.GhostButton,
+  danger: S.DangerButton,
 };
 
 const Button = (props: ButtonProps) => {
@@ -30,7 +30,6 @@ const Button = (props: ButtonProps) => {
 
   const {
     variant,
-    danger,
     width,
     icon,
     iconPostition,
@@ -44,7 +43,6 @@ const Button = (props: ButtonProps) => {
 
   return (
     <SelectedButton
-      $danger={danger}
       $iconPosition={iconPostition}
       $floating={floating}
       $width={width}

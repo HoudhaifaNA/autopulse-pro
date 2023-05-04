@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { Menu, app, globalShortcut } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 
@@ -22,6 +22,9 @@ if (isProd) {
   mainWindow.maximize();
   mainWindow.show();
   if (isProd) {
+    const menuTemplate = [];
+    const menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
     await mainWindow.loadURL("app://./");
   } else {
     const port = process.argv[2];
@@ -32,4 +35,9 @@ if (isProd) {
 
 app.on("window-all-closed", () => {
   app.quit();
+});
+
+app.on("browser-window-blur", () => {
+  globalShortcut.unregister("CommandOrControl+R");
+  globalShortcut.unregister("F5");
 });

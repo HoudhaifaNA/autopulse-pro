@@ -13,16 +13,15 @@ const Pagination = () => {
             <Body2>25</Body2>
             <Icon icon="expand" size="1.8rem" />
           </S.CurrentRowsNumber>
-          {/* <S.RowsNumberDropwdown>
-            <Dropdown
-              items={[
-                { mainText: "25" },
-                { mainText: "50" },
-                { mainText: "100" },
-              ]}
-              onItemClick={() => "sd"}
-            />
-          </S.RowsNumberDropwdown> */}
+          <Dropdown
+            $width="100%"
+            items={[
+              { mainText: "25" },
+              { mainText: "50" },
+              { mainText: "100" },
+            ]}
+            onItemClick={() => "sd"}
+          />
         </S.RowsNumberController>
       </S.PaginationRowsOptions>
       <Body2>1-20 sur 406</Body2>

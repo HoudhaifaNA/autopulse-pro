@@ -4,6 +4,7 @@ import { Formik, FormikProps, FormikHelpers } from "formik";
 import * as S from "styles/LoginPage.styled";
 import { TypedInput } from "components/Input/Input";
 import Button from "components/Buttons/Button";
+import convertPath from "utils/convertPath";
 // import { loginSchema } from "schemas/FormSchemas";
 
 interface Values {
@@ -17,7 +18,7 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
   // setTimeout(() => {
   // console.log(values);
   // actions.resetForm();
-  location.assign("/clients");
+  location.assign(convertPath("clients"));
   // }, 2000);
 };
 
