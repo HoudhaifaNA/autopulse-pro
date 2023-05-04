@@ -30,12 +30,15 @@ const renderExpenseAdder = (expenses: Values["expenses"]) => {
       totalCost: 0,
     };
 
+    // Set the correct icon name
     const icon = lowerCaseOption === "locale" ? "locale" : "importé";
-    const onClick = () => setFieldValue("expenses", [...expenses, newExpense]);
+    const addExpense = () => {
+      setFieldValue("expenses", [...expenses, newExpense]);
+    };
 
     return (
       <ButtonItem key={option}>
-        <Button type="button" variant="ghost" icon={icon} onClick={onClick}>
+        <Button type="button" variant="ghost" icon={icon} onClick={addExpense}>
           {option}
         </Button>
       </ButtonItem>
@@ -45,6 +48,7 @@ const renderExpenseAdder = (expenses: Values["expenses"]) => {
 
 const ExpensesDetails = ({ expenses }: ExpensesProps) => {
   const { setFieldValue, setTouched } = useFormikContext();
+
   const deleteExpense = (id: string) => {
     const filtredExpenses = expenses.filter((expense) => expense.id !== id);
     setTouched({});
