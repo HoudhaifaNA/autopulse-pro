@@ -17,7 +17,7 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
   setTimeout(() => {
     console.log(values);
     actions.setSubmitting(false);
-    actions.setFieldValue("step", step + 1);
+    if (step < 5) actions.setFieldValue("step", step + 1);
 
     // Calculate purchasing price if car is imported
     if (step === 3 && carType === "importé") {
