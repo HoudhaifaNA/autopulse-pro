@@ -21,6 +21,7 @@ export const ModalWrapper = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 0.8rem;
   animation: ${show} 0.15s ease forwards;
+  overflow: hidden;
 `;
 
 export const ModalHeader = styled.div`
@@ -45,6 +46,7 @@ export const ModalActions = styled.div`
   position: relative;
   bottom: 0;
   left: 0;
+  background-color: ${({ theme }) => theme.colors.white};
   width: 100%;
   padding: 1rem 2rem;
   display: flex;
