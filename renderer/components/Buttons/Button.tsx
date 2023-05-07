@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, ReactNode } from "react";
 
 import * as S from "components/Buttons/Button.styled";
 import { ButtonText } from "styles/Typography";
@@ -14,7 +14,7 @@ export interface ButtonProps {
   loading?: boolean;
   disabled?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;
-  children?: string;
+  children?: ReactNode;
 }
 
 const buttonVariants = {
