@@ -12,13 +12,13 @@ export const CheckboxWrapper = styled.div<CheckboxProps>`
   justify-content: center;
   border-radius: 0.2rem;
   background-color: ${({ $checked, theme }) =>
-    $checked ? theme.colors.primary["500"] : "#fff"};
+    $checked ? theme.colors.primary["500"] : theme.colors.white};
   border: 0.2rem solid
     ${({ $checked, theme }) =>
       $checked ? theme.colors.primary["500"] : theme.colors.neutral["500"]};
   cursor: pointer;
 
   svg {
-    fill: #fff;
+    fill: ${({ theme }) => theme.colors.white};
   }
 `;

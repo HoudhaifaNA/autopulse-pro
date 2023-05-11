@@ -24,7 +24,7 @@ export const clientSchema = object({
     .required("Prénom est requis"),
   lastName: string()
     .trim()
-    .min(3, "Nom doit comporter au moins 4 caractères")
+    .min(3, "Nom doit comporter au moins 3 caractères")
     .required("Nom est requis"),
   phoneNumber: string()
     .trim()
@@ -50,7 +50,10 @@ export const carSchemaStepTwo = object({
     .required("Année est requise"),
 });
 export const carSchemaStepThree = object({
-  seller: string().trim().required("Vendeur est requis"),
+  seller: string()
+    .trim()
+    .min(3, `Vendeur doit comporter au moins 3 caractères`)
+    .required("Vendeur est requis"),
   lisence: object({
     name: string().trim().required("lisence est requise"),
   }),
@@ -104,4 +107,19 @@ export const carSchemaStepFour = object({
       }),
     })
   ),
+});
+
+export const licenceSchema = object({
+  seller: string()
+    .trim()
+    .min(3, `Vendeur doit comporter au moins 3 caractères`)
+    .required("Vendeur est requis"),
+  moudjahid: string()
+    .trim()
+    .min(3, "Moudjahid doit comporter au moins 3 caractères")
+    .required("Moudjahid est requis"),
+  wilaya: string().trim().required("Wilaya est requis"),
+  price: number()
+    .min(4000, ({ min }) => `Minimum ${min} DZD`)
+    .required(),
 });
