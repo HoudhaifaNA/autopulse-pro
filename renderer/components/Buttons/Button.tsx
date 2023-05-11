@@ -1,10 +1,10 @@
-import { MouseEventHandler, ReactNode } from "react";
+import { MouseEventHandler, ReactNode, Ref, forwardRef } from "react";
 
 import * as S from "components/Buttons/Button.styled";
 import { ButtonText } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 
-export interface ButtonProps {
+interface ButtonProps {
   variant: "primary" | "secondary" | "ghost" | "danger";
   type?: "submit" | "button" | "reset";
   width?: string;
@@ -17,6 +17,8 @@ export interface ButtonProps {
   children?: ReactNode;
 }
 
+type BtnRef = Ref<HTMLButtonElement | undefined>;
+
 const buttonVariants = {
   primary: S.PrimaryButton,
   secondary: S.SecondaryButton,
@@ -24,7 +26,8 @@ const buttonVariants = {
   danger: S.DangerButton,
 };
 
-const Button = (props: ButtonProps) => {
+// Added Ref for react-dropzone issue
+const Button = (props: ButtonProps, ref: BtnRef) => {
   // ...allProps will equalt to type and disabled and onClick.
   // we can show them with the element in the browser so we don't use $. ex: type={type}
 
@@ -55,4 +58,4 @@ const Button = (props: ButtonProps) => {
   );
 };
 
-export default Button;
+export default forwardRef(Button);
