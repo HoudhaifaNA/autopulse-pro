@@ -28,7 +28,7 @@ const Dropzone = () => {
       {...getRootProps({ type: "button", variant: "primary", icon: "upload" })}
     >
       <input {...getInputProps()} style={{ display: "none" }} />
-      Ajouter un document
+      Ajouter des documents
     </Button>
   );
 };

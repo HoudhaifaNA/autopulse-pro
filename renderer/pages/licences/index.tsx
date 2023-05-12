@@ -24,7 +24,7 @@ const FAKE_DATA = [
   { text: "Prix", sortable: true },
 ];
 
-const ClientsPage = () => {
+const LicencesPage = () => {
   return (
     <div>
       <Meta title="Licences" />
@@ -101,4 +101,4 @@ const ClientsPage = () => {
   );
 };
 
-export default ClientsPage;
+export default LicencesPage;
