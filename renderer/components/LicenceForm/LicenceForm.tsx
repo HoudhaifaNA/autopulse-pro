@@ -35,7 +35,7 @@ const renderAttachments = (attachments: Values["attachments"]) => {
 
 const LicenceForm = () => {
   return (
-    <Modal title="Ajouter un client">
+    <Modal title="Ajouter une licence">
       <Formik
         initialValues={INITIAL_VALUES}
         validationSchema={licenceSchema}
