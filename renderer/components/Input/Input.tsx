@@ -31,11 +31,10 @@ export const DropdownInput = ({ children }: DropdownInputProps) => {
 };
 
 export const ClickInput = ({ label, disabled, ...props }: ClickInputProps) => {
-  const [field, meta] = useField(props);
-  const { error, touched } = meta;
+  const [field] = useField(props);
   const id = props.value || props.name;
-  const renderError = error && touched && <S.InputError>{error}</S.InputError>;
   const [normalLabel, boldLabel] = label.split("b/");
+
   return (
     <S.FormGroup $height="4rem" $disabled={disabled}>
       <S.ClickInputContainer>
@@ -45,7 +44,6 @@ export const ClickInput = ({ label, disabled, ...props }: ClickInputProps) => {
           <b>{boldLabel}</b>
         </LabelText>
       </S.ClickInputContainer>
-      {renderError}
     </S.FormGroup>
   );
 };
