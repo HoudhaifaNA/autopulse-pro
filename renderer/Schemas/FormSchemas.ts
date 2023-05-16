@@ -3,7 +3,20 @@ import { object, array, string, number, date } from "yup";
 const PASSWORD_RULES = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
 const PHONE_NUMBER_RULES =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
-const currentYear = new Date().getFullYear();
+const today = new Date();
+const currentYear = today.getFullYear();
+
+const getTodayDate = () => {
+  const [day, month, year] = [
+    today.getDate() + 1,
+    today.getMonth() + 1,
+    today.getFullYear(),
+  ];
+
+  return `${year}-${month}-${day}`;
+};
+
+const MAX_DATE = new Date(getTodayDate());
 
 export const loginSchema = object({
   username: string()
@@ -122,4 +135,23 @@ export const licenceSchema = object({
   price: number()
     .min(4000, ({ min }) => `Minimum ${min} DZD`)
     .required(),
+});
+
+export const transactionSchema = object({
+  date: date()
+    .min(2014, ({ min }) => `La date doit être postérieure à ${min}`)
+    .max(MAX_DATE, `La date ne peut pas être postérieure à aujourd'hui`)
+    .typeError(() => `La date doit être une date`)
+    .required("La date est requise"),
+  client: string()
+    .trim()
+    .min(3, `Client doit comporter au moins 3 caractères`)
+    .required("Client est requis"),
+  method: string()
+    .oneOf(["espèces", "chèque", "virement bancaire", "carte de débit"])
+    .required(),
+  amount: number()
+    .min(500, ({ min }) => `Minimum ${min} EUR/DZD`)
+    .required(),
+  type: string().oneOf(["entrante", "sortante"]).required(),
 });
