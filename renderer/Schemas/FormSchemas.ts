@@ -10,7 +10,7 @@ const getTodayDate = () => {
   const [day, month, year] = [
     today.getDate() + 1,
     today.getMonth() + 1,
-    today.getFullYear(),
+    currentYear,
   ];
 
   return `${year}-${month}-${day}`;
@@ -148,6 +148,7 @@ export const transactionSchema = object({
     .min(3, `Client doit comporter au moins 3 caractères`)
     .required("Client est requis"),
   method: string()
+    .lowercase()
     .oneOf(["espèces", "chèque", "virement bancaire", "carte de débit"])
     .required(),
   amount: number()
