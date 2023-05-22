@@ -1,9 +1,9 @@
-import { ReactNode } from "react";
 import Image from "next/image";
 
-import * as S from "./EmptyState.style";
-import Button from "components/Buttons/Button";
+import * as S from "components/EmptyState/EmptyState.styled";
 import { Body1, Heading3 } from "styles/Typography";
+
+import Button from "components/Button/Button";
 
 interface EmptyStateProps {
   title: string;

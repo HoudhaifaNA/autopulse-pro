@@ -1,3 +1,6 @@
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
+import { Body2 } from "styles/Typography";
+
 import {
   TableWrapper,
   Table,
@@ -11,13 +14,11 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Icon from "components/Icon/Icon";
 import PageHeader from "components/PageHeader/PageHeader";
 import Pagination from "components/Pagination/Pagination";
-import { Body2 } from "styles/Typography";
 import EmptyState from "components/EmptyState/EmptyState";
+import TransactionForm from "components/FinanceForm/TransactionForm";
 import Meta from "components/Meta/Meta";
 import Dropdown from "components/Dropdown/Dropdown";
-import Button from "components/Buttons/Button";
-import { ButtonItem } from "components/Dropdown/Dropdown.styled";
-import TransactionForm from "components/FinanceForm/TransactionForm";
+import Button from "components/Button/Button";
 
 const FAKE_DATA = [
   { text: "Date créée", sortable: true },

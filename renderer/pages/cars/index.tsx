@@ -1,3 +1,6 @@
+import { Body2 } from "styles/Typography";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
+
 import {
   TableWrapper,
   Table,
@@ -12,13 +15,12 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Icon from "components/Icon/Icon";
 import PageHeader from "components/PageHeader/PageHeader";
 import Pagination from "components/Pagination/Pagination";
-import { Body2 } from "styles/Typography";
+
+import CarForm from "components/CarForm/CarForm";
 import Dropdown from "components/Dropdown/Dropdown";
 import EmptyState from "components/EmptyState/EmptyState";
 import Meta from "components/Meta/Meta";
-import CarForm from "components/CarForm/CarForm";
-import { ButtonItem } from "components/Dropdown/Dropdown.styled";
-import Button from "components/Buttons/Button";
+import Button from "components/Button/Button";
 
 const CARS_FAKE_DATA = [
   { text: "Date créée", sortable: true },

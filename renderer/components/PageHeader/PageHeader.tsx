@@ -1,6 +1,7 @@
-import Button from "components/Buttons/Button";
+import { Wrapper } from "components/PageHeader/PageHeader.styled";
 import { Heading3 } from "styles/Typography";
-import { Wrapper } from "./PageHeader.styled";
+
+import Button from "components/Button/Button";
 
 interface PageHeaderProps {
   title: string;
