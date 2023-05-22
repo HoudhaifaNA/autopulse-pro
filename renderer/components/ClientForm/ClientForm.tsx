@@ -1,10 +1,12 @@
 import { Formik, FormikProps, FormikHelpers } from "formik";
 
 import { Form, FormContent, FormGroup } from "components/ui/Form.styled";
+
 import { TypedInput } from "components/Input/Input";
-import Button from "components/Buttons/Button";
-import { clientSchema } from "Schemas/FormSchemas";
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
+import Button from "components/Button/Button";
+
+import { clientSchema } from "Schemas/FormSchemas";
 
 interface Values {
   firstName: string;
