@@ -13,6 +13,14 @@ export const FormGroup = styled.div<FormGroupInterface>`
   width: 100%;
   opacity: ${({ $disabled }) => ($disabled ? ".5" : "1")};
   pointer-events: ${({ $disabled }) => ($disabled ? "none" : "")};
+
+  label::first-letter {
+    text-transform: capitalize;
+  }
+
+  &.dropdown-active svg {
+    transform: rotate(0.5turn);
+  }
 `;
 
 export const ClickInputContainer = styled.div`
@@ -30,6 +38,11 @@ export const ClickInput = styled.input`
   cursor: pointer;
 `;
 
+export const SelectInput = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
 export const InputError = styled.p`
   color: ${({ theme }) => theme.colors.error["700"]};
   font-size: 1.2rem;
@@ -38,9 +51,4 @@ export const InputError = styled.p`
   &:first-letter {
     text-transform: capitalize;
   }
-`;
-
-export const DropdownInput = styled.div`
-  position: relative;
-  width: 100%;
 `;
