@@ -1,9 +1,11 @@
 import { FieldInputProps, FieldMetaProps } from "formik";
 
 import * as S from "components/Input/InputContainer.styled";
-import { TypedInputProps } from "components/Input/types";
 import { Body2 } from "styles/Typography";
+
 import Icon from "components/Icon/Icon";
+
+import { TypedInputProps } from "components/Input/types";
 
 type InputProps = TypedInputProps & {
   meta: FieldMetaProps<any>;
@@ -19,23 +21,30 @@ const InputAddOn = ({ addOn }: { addOn: string }) => {
 };
 
 const InputContainer = (props: InputProps) => {
-  const { name, iconLeft, addOn, meta, field, onIconClick, ...allProps } =
-    props;
+  let {
+    name,
+    leftIcon,
+    rightIcon,
+    addOn,
+    meta,
+    field,
+    onIconClick,
+    ...allProps
+  } = props;
 
   // If there is an error icon right should be the error icon despite the specified icon
-  let { iconRight } = props;
   const isError = meta.error && meta.touched;
-  if (isError) iconRight = "error";
+  if (isError) rightIcon = "error";
 
   return (
     <S.InputContainer className={isError ? "error" : ""}>
       {addOn && <InputAddOn addOn={addOn} />}
       <S.InputWrapper>
-        {iconLeft && <Icon icon={iconLeft} size="1.8rem" />}
+        {leftIcon && <Icon icon={leftIcon} size="1.8rem" />}
         <S.Input id={name} {...allProps} {...field} />
-        {iconRight && (
+        {rightIcon && (
           <div onClick={onIconClick}>
-            <Icon icon={iconRight} size="1.8rem" />
+            <Icon icon={rightIcon} size="1.8rem" />
           </div>
         )}
       </S.InputWrapper>
