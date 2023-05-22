@@ -1,71 +1,35 @@
 import { Formik, FormikProps, FormikHelpers } from "formik";
-import { DatePickerInput } from "@mantine/dates";
 
 import { Form, FormContent, FormGroup } from "components/ui/Form.styled";
+
+import DateInput from "components/FinanceForm/DateInput";
+import TransactionType from "components/FinanceForm/TransactionType";
+import { TypedInput, SelectInput } from "components/Input/Input";
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
-import { DropdownInput, TypedInput } from "components/Input/Input";
-import Button from "components/Buttons/Button";
-import { LabelText } from "styles/Typography";
-import updateLocale from "dayjs/plugin/updateLocale";
-import dayjs from "dayjs";
-import "dayjs/locale/fr";
-import Icon from "components/Icon/Icon";
+import Button from "components/Button/Button";
 
-dayjs.extend(updateLocale);
-dayjs.updateLocale("fr", {
-  months: [
-    "Janvier",
-    "Février",
-    "Mars",
-    "Avril",
-    "Mai",
-    "Juin",
-    "Juillet",
-    "Août",
-    "Septembre",
-    "Octobre",
-    "Novembre",
-    "Décembre",
-  ],
-});
+import { INITIAL_VALUES, METHOD_ITEMS } from "components/FinanceForm/constants";
+import { transactionSchema } from "Schemas/FormSchemas";
 
-interface Values {
-  date: Date;
-  seller: string;
-  method:
-    | string
-    | "Espèces"
-    | "Chèque"
-    | "Carte de débit"
-    | "Virement bancaire";
-  amount: number;
-}
-const INITIAL_VALUES: Values = {
-  date: new Date(),
-  seller: "",
-  method: "",
-  amount: 0,
-};
+import { Values } from "components/FinanceForm/types";
 
 const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
   setTimeout(() => {
-    console.log(values);
+    console.log("Value:", values);
     actions.resetForm();
   }, 1000);
 };
 
-const LicenceForm = () => {
+const TransactionForm = () => {
   return (
-    <Modal title="Ajouter un client">
-      <Formik initialValues={INITIAL_VALUES} onSubmit={onSubmit}>
+    <Modal title="Effectuer une transaction">
+      <Formik
+        initialValues={INITIAL_VALUES}
+        validationSchema={transactionSchema}
+        onSubmit={onSubmit}
+      >
         {(props: FormikProps<Values>) => {
-          const {
-            handleSubmit,
-            submitForm,
-            isSubmitting,
-            values,
-            setFieldValue,
-          } = props;
+          const { handleSubmit, submitForm, isSubmitting } = props;
 
           return (
             <>
@@ -73,43 +37,22 @@ const LicenceForm = () => {
                 <Form onSubmit={handleSubmit}>
                   <FormContent>
                     <FormGroup>
-                      <div style={{ width: "100%", height: "6.2rem" }}>
-                        <DatePickerInput
-                          label={<LabelText>Date :</LabelText>}
-                          placeholder="Pick date"
-                          value={values.date}
-                          onChange={(value) => setFieldValue("date", value)}
-                          size="xl"
-                          h={60.2}
-                          locale="fr"
-                          minDate={new Date("2010")}
-                          maxDate={new Date()}
-                          monthsListFormat="MMMM"
-                          icon={<Icon icon="calendar" size="1.8rem" />}
-                          weekendDays={[5]}
-                          firstDayOfWeek={6}
-                        />
-                      </div>
-                      <DropdownInput>
-                        <TypedInput
-                          name="seller"
-                          type="text"
-                          label="Vendeur :"
-                          placeholder="Nom de vendeur"
-                          iconRight="expand"
-                        />
-                      </DropdownInput>
+                      <DateInput />
+                      <SelectInput
+                        label="Client :"
+                        placeholder="Entrez le nom"
+                        name="client"
+                        items={[]}
+                      />
                     </FormGroup>
                     <FormGroup>
-                      <DropdownInput>
-                        <TypedInput
-                          name="method"
-                          type="string"
-                          label="Méthode :"
-                          placeholder="Entrez la méthode"
-                          iconRight="expand"
-                        />
-                      </DropdownInput>
+                      <SelectInput
+                        label="Méthode :"
+                        placeholder="Choisissez une méthode"
+                        name="method"
+                        items={METHOD_ITEMS}
+                        elementAs="div"
+                      />
                       <TypedInput
                         name="amount"
                         type="number"
@@ -118,7 +61,9 @@ const LicenceForm = () => {
                         addOn="DZD"
                       />
                     </FormGroup>
-
+                    <FormGroup>
+                      <TransactionType />
+                    </FormGroup>
                     {/*Add hidden input to submit button with hitting enter */}
                     <input type="submit" style={{ display: "none" }} />
                   </FormContent>
@@ -143,4 +88,4 @@ const LicenceForm = () => {
   );
 };
 
-export default LicenceForm;
+export default TransactionForm;
