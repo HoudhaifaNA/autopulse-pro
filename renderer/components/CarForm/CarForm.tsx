@@ -2,22 +2,24 @@ import { useEffect, useState } from "react";
 import { Formik, FormikProps } from "formik";
 
 import { Form } from "components/ui/Form.styled";
+
 import CarType from "components/CarForm/CarType";
 import CarDetails from "components/CarForm/CarDetails";
 import SellingDetails from "components/CarForm/SellingDetails";
 import ExpenseDetails from "components/CarForm/ExpensesDetails";
 import ConfirmationDetails from "components/CarForm/ConfirmationDetails";
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
-import Button from "components/Buttons/Button";
+import Button from "components/Button/Button";
 
 import { INITIAL_VALUES } from "components/CarForm/constants";
-import { Values } from "components/CarForm/types";
 import onSubmit from "components/CarForm/handleSubmit";
 import {
   carSchemaStepTwo,
   carSchemaStepThree,
   carSchemaStepFour,
 } from "Schemas/FormSchemas";
+
+import { Values } from "components/CarForm/types";
 
 const renderForm = (values: Values) => {
   const { step, carType, expenses } = values;

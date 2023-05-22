@@ -1,5 +1,6 @@
 import uid from "utils/uniqid";
-import { Values } from "./types";
+
+import { Values } from "components/CarForm/types";
 
 export const INITIAL_VALUES: Values = {
   step: 1,
@@ -15,7 +16,7 @@ export const INITIAL_VALUES: Values = {
   euroCost: 0,
   euroPrice: 0,
   purchasingPrice: 0,
-  lisence: { name: "", price: 0 },
+  licence: { name: "", price: 0 },
   expenses: [
     {
       id: uid(),

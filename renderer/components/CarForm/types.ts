@@ -1,4 +1,4 @@
-interface Lisence {
+interface Licence {
   name: string;
   price: number;
 }
@@ -26,7 +26,7 @@ export interface Values {
   euroCost: number;
   euroPrice: number;
   purchasingPrice: number;
-  lisence: Lisence;
+  licence: Licence;
   expenses: Expenses[];
   euroAmount: number;
   dzdAmount: number;
