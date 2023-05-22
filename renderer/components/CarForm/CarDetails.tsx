@@ -1,38 +1,32 @@
 import { FormContent, FormGroup } from "components/ui/Form.styled";
-import { DropdownInput, TypedInput } from "components/Input/Input";
-import Dropdown from "components/Dropdown/Dropdown";
+
+import { TypedInput, SelectInput } from "components/Input/Input";
 
 const CarDetails = () => {
   return (
     <FormContent>
       <FormGroup>
-        <DropdownInput>
-          <TypedInput
-            name="brand"
-            type="text"
-            label="Marque:"
-            placeholder="Mercedes-Benz"
-            iconRight="expand"
-            autoFocus
-          />
-          {/* <Dropdown
-            $width="100%"
-            $top="6.2rem"
-            items={[
-              { mainText: "Mercedes-Benz" },
-              { mainText: "BMW" },
-              { mainText: "Skoda" },
-            ]}
-            onItemClick={() => 1}
-          /> */}
-        </DropdownInput>
+        <SelectInput
+          label="Marque:"
+          name="brand"
+          placeholder="Mercedes-Benz"
+          autoFocus
+          items={[
+            { mainText: "Mercedes-Benz" },
+            { mainText: "BMW" },
+            { mainText: "Skoda" },
+          ]}
+        />
         <FormGroup>
-          <TypedInput
-            name="serie"
-            type="text"
+          <SelectInput
             label="Série:"
+            name="serie"
             placeholder="CLA"
-            iconRight="expand"
+            items={[
+              { mainText: "C" },
+              { mainText: "CLA" },
+              { mainText: "GLK" },
+            ]}
           />
 
           <TypedInput
