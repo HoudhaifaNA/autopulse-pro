@@ -10,17 +10,21 @@ import filterDropdownItems from "utils/filterDropdownItems";
 
 import * as T from "components/Input/types";
 
-const getInputValue = (values: unknown, name: string) => {
+const getInputData = (values: any, errors: any, name: string) => {
   const namePath = name.split(".");
 
   // We get neseted values
   // ex: expenses.i.raison ---> values[expenses] ---> values[expenses][i] ---> values[expenses][i][raison]
   const value = namePath.reduce(
-    (path: any, key: string) => (path ? path[key] : undefined),
+    (path: any, key: string) => (path ? path[key] : ""),
     values
   );
+  const error = namePath.reduce(
+    (path: any, key: string) => (path ? path[key] : undefined),
+    errors
+  );
 
-  return value as string;
+  return [value, error];
 };
 
 const SelectInput = (props: T.SelectInputProps) => {
@@ -30,12 +34,12 @@ const SelectInput = (props: T.SelectInputProps) => {
   const { label, placeholder, name, autoFocus, items, buttons, elementAs } =
     props;
 
-  const inputValue = getInputValue(values, name);
+  const [inputValue, inputError] = getInputData(values, errors, name);
   const filtredItems = filterDropdownItems(items!, inputValue);
   const dropdownItems = elementAs === "div" ? items : filtredItems;
 
   //@ts-ignore
-  const hasError = Boolean(errors[name]);
+  const hasError = Boolean(inputError);
 
   const inputProps = {
     label,
