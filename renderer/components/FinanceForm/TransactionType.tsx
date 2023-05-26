@@ -3,28 +3,30 @@ import { useFormikContext } from "formik";
 import { ClickInput } from "components/Input/Input";
 import { InputError } from "components/Input/Input.styled";
 
-import { Values } from "components/FinanceForm/types";
+import * as T from "components/FinanceForm/types";
 
-const TransactionType = () => {
-  const { errors } = useFormikContext<Values>();
+type TErrors = T.TransactionValues | T.EuroTransferValues;
+interface TransactionTypeProps {
+  options: string[];
+}
+
+const TransactionType = ({ options }: TransactionTypeProps) => {
+  const { errors } = useFormikContext<TErrors>();
   const { type } = errors;
 
   return (
     <div>
-      <ClickInput
-        key="entrante"
-        label="entrante"
-        type="radio"
-        name="type"
-        value="entrante"
-      />
-      <ClickInput
-        key="sortante"
-        label="sortante"
-        type="radio"
-        name="type"
-        value="sortante"
-      />
+      {options.map((opt) => {
+        return (
+          <ClickInput
+            key={opt}
+            type="radio"
+            name="type"
+            label={opt}
+            value={opt}
+          />
+        );
+      })}
 
       {type && <InputError>{type}</InputError>}
     </div>
