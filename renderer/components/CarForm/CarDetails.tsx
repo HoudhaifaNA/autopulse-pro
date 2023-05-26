@@ -1,6 +1,7 @@
 import { FormGroup } from "components/Form/Form.styled";
 
 import { TypedInput, SelectInput } from "components/Input/Input";
+import { COLORS_LIST } from "./constants";
 
 const CarDetails = () => {
   return (
@@ -53,14 +54,14 @@ const CarDetails = () => {
         />
       </FormGroup>
       <FormGroup>
-        <TypedInput
+        <SelectInput
           label="Couleur :"
           name="color"
-          type="text"
           placeholder="Noir"
+          items={COLORS_LIST}
         />
 
-        <TypedInput name="year" type="text" label="Année:" placeholder="2022" />
+        <TypedInput name="year" type="text" label="Année:" placeholder="2023" />
       </FormGroup>
     </>
   );

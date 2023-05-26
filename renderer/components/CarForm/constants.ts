@@ -31,3 +31,23 @@ export const INITIAL_VALUES: Values = {
   dzdAmount: 0,
   transactionAgreement: true,
 };
+
+const CAR_COLORS = [
+  "Noir",
+  "Bleue",
+  "Blanche",
+  "Jaune",
+  "Argent",
+  "Rouge",
+  "Verte",
+  "Grise",
+  "Orange",
+  "Bronze",
+];
+
+export const COLORS_LIST = CAR_COLORS.map((color) => {
+  return {
+    icon: color.toLowerCase(),
+    mainText: color,
+  };
+});
