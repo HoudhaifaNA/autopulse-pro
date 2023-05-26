@@ -92,7 +92,7 @@ export const carSchemaStepThree = object({
     then: () =>
       number()
         .min(50, ({ min }) => `Minimum ${min} DZD`)
-        .required("Prix ​​de 1 EUR  est requis"),
+        .required("Prix ​​de 100 EUR  est requis"),
   }),
   purchasingPrice: number().when("carType", {
     is: "locale",
@@ -111,18 +111,18 @@ export const carSchemaStepFour = object({
         .matches(/^([^0-9]*)$/, "Raison ne doit pas avoir de numéro")
         .required("Raison est requise"),
       euroCost: number().when("type", {
-        is: "À l'étranger",
+        is: "à l'étranger",
         then: () =>
           number()
             .min(5, ({ min }) => `Minimum ${min} euros`)
             .required("Coût est requis"),
       }),
       euroPrice: number().when("type", {
-        is: "À l'étranger",
+        is: "à l'étranger",
         then: () =>
           number()
             .min(50, ({ min }) => `Minimum ${min} DZD`)
-            .required("Prix ​​de 1 EUR  est requis"),
+            .required("Prix ​​de 100 EUR  est requis"),
       }),
       totalCost: number().when("type", {
         is: "locale",
@@ -183,5 +183,35 @@ export const transactionSchema = object({
       ["entrante", "sortante"],
       "Type doit être l'une des options répertoriées"
     )
+    .required("Type de transaction est requis"),
+});
+
+export const euroTransferSchema = object({
+  date: date()
+    .min(2014, ({ min }) => `La date doit être postérieure à ${min}`)
+    .max(todayDate, `La date ne peut pas être postérieure à aujourd'hui`)
+    .typeError(() => `La date doit être une date`)
+    .required("La date est requise"),
+  client: string()
+    .trim()
+    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
+    .min(3, `Client doit comporter au moins 3 caractères`)
+    .required("Client est requis"),
+  amount: number()
+    .min(40, ({ min }) => `Minimum ${min} euros`)
+    .required("Montant est requis"),
+  euroPrice: number()
+    .min(50, ({ min }) => `Minimum ${min} DZD`)
+    .required("Prix ​​de 100 EUR  est requis"),
+  total: number().required("Total est requis"),
+  method: string()
+    .lowercase()
+    .oneOf(
+      ["espèces", "chèque", "virement bancaire", "carte de débit"],
+      "Méthode doit être l'une des options répertoriées"
+    )
+    .required("Méthode est requise"),
+  type: string()
+    .oneOf(["acheté", "vendu"], "Type doit être l'une des options répertoriées")
     .required("Type de transaction est requis"),
 });
