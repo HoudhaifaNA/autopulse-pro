@@ -24,7 +24,8 @@ const EuroTransferForm = () => {
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
 
   const values = formProps?.values ?? C.EURO_TRANSFER_VALUES;
-  const { euroPrice, amount, total } = values;
+  const { euroPrice, amount, total, type } = values;
+  const buttonText = type === "acheté" ? "Acheter" : "Vendre";
 
   useEffect(() => {
     formProps?.setFieldValue("total", amount * euroPrice);
@@ -36,6 +37,7 @@ const EuroTransferForm = () => {
       initials={C.EURO_TRANSFER_VALUES}
       validation={euroTransferSchema}
       onSubmit={onSubmit}
+      buttonText={buttonText}
       getFormProps={(prop: FormikProps<any>) => setFormProps(prop)}
     >
       <>

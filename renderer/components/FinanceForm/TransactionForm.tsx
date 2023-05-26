@@ -2,6 +2,7 @@ import { FormikHelpers } from "formik";
 
 import { FormGroup } from "components/Form/Form.styled";
 
+import Form from "components/Form/Form";
 import DateInput from "components/FinanceForm/DateInput";
 import TransactionType from "components/FinanceForm/TransactionType";
 import { TypedInput, SelectInput } from "components/Input/Input";
@@ -10,7 +11,6 @@ import * as C from "components/FinanceForm/constants";
 import { transactionSchema } from "Schemas/FormSchemas";
 
 import { TransactionValues as Values } from "components/FinanceForm/types";
-import Form from "components/Form/Form";
 
 const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
   setTimeout(() => {
@@ -25,6 +25,7 @@ const TransactionForm = () => {
       title="Effectuer une transaction"
       initials={C.TRANSACTION_VALUES}
       validation={transactionSchema}
+      buttonText="Transfert"
       onSubmit={onSubmit}
     >
       <FormGroup>

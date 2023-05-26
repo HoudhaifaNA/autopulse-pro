@@ -15,6 +15,7 @@ interface FormProps {
   onSubmit: any;
   getFormProps?: (props: FormikProps<any>) => void;
   Actions?: (props: ActionsProps) => JSX.Element;
+  buttonText?: string;
   children: ReactNode;
 }
 
@@ -26,6 +27,7 @@ const Form = (props: FormProps) => {
     onSubmit,
     getFormProps,
     Actions,
+    buttonText,
     children,
   } = props;
 
@@ -69,7 +71,7 @@ const Form = (props: FormProps) => {
                     disabled={isSubmitting}
                     onClick={submitForm}
                   >
-                    Ajouter
+                    {buttonText ?? "Ajouter"}
                   </Button>
                 )}
               </ModalActions>
