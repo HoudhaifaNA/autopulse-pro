@@ -44,8 +44,8 @@ const renderAttachments = (attachments: Values["attachments"]) => {
 const LicenceForm = () => {
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
 
-  const values = formProps?.values;
-  const { attachments } = values ?? INITIAL_VALUES;
+  const values = formProps?.values ?? INITIAL_VALUES;
+  const { attachments } = values;
 
   return (
     <Form

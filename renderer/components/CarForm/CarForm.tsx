@@ -75,8 +75,8 @@ const CarForm = () => {
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const [title, setTitle] = useState("Ajouter un voiture");
 
-  const values = formProps?.values;
-  const { step, brand, serie, model } = values ?? INITIAL_VALUES;
+  const values = formProps?.values ?? INITIAL_VALUES;
+  const { step, brand, serie, model } = values;
   const validation = [carSchemaStepTwo, carSchemaStepThree, carSchemaStepFour];
 
   // reset all inputs "touched" to false when step changes
