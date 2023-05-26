@@ -1,5 +1,6 @@
+import { useFormikContext } from "formik";
+
 import * as S from "components/CarForm/ConfirmationDetails.styled";
-import { FormContent } from "components/ui/Form.styled";
 import { Body1, Body2, Heading5 } from "styles/Typography";
 
 import { ClickInput } from "components/Input/Input";
@@ -32,18 +33,19 @@ const renderCarDetails = () => {
   });
 };
 
-const ConfirmationDetails = ({ values }: { values: Values }) => {
+const ConfirmationDetails = () => {
+  const { values } = useFormikContext<Values>();
+  const { seller } = values;
+
   return (
     <S.ConfirmationWrapper>
-      <FormContent>
-        {renderCarDetails()}
-        <ClickInput
-          type="checkbox"
-          name="transactionAgreement"
-          //  [b/] for bolding text
-          label={`Ajouter cette voiture aux transactions de b/${values.seller}`}
-        />
-      </FormContent>
+      {renderCarDetails()}
+      <ClickInput
+        type="checkbox"
+        name="transactionAgreement"
+        //  [b/] for bolding text
+        label={`Ajouter cette voiture aux transactions de b/${seller}`}
+      />
     </S.ConfirmationWrapper>
   );
 };

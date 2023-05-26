@@ -5,7 +5,7 @@ interface Licence {
 
 interface Expenses {
   id: string;
-  type: "locale" | "À l'étranger";
+  type: "locale" | "à l'étranger";
   raison: string;
   euroCost: number;
   euroPrice: number;

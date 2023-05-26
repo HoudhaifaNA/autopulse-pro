@@ -20,7 +20,7 @@ export const INITIAL_VALUES: Values = {
   expenses: [
     {
       id: uid(),
-      type: "À l'étranger",
+      type: "à l'étranger",
       raison: "",
       euroCost: 0,
       euroPrice: 0,

@@ -1,4 +1,6 @@
-import { FormContent, FormGroup } from "components/ui/Form.styled";
+import { useFormikContext } from "formik";
+
+import { FormGroup } from "components/Form/Form.styled";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 
 import { TypedInput, SelectInput } from "components/Input/Input";
@@ -6,14 +8,15 @@ import Button from "components/Button/Button";
 
 import { Values } from "components/CarForm/types";
 
-type SellingDatailsProps = Pick<Values, "carType">;
+const SellingDetails = () => {
+  const { values } = useFormikContext<Values>();
+  const { carType } = values;
 
-const SellingDetails = ({ carType }: SellingDatailsProps) => {
   return (
-    <FormContent>
+    <>
       <FormGroup>
         <SelectInput
-          label="Vendeur:"
+          label="Vendeur :"
           name="seller"
           placeholder="Nom du vendeur"
           autoFocus
@@ -27,8 +30,8 @@ const SellingDetails = ({ carType }: SellingDatailsProps) => {
           }
         />
         <SelectInput
+          label="Licence :"
           name="licence.name"
-          label="Licence:"
           placeholder="Nom du moujahid"
           items={[]}
           buttons={
@@ -44,31 +47,31 @@ const SellingDetails = ({ carType }: SellingDatailsProps) => {
         {carType === "importé" ? (
           <>
             <TypedInput
+              label="Prix ​​d'achat :"
               name="euroCost"
               type="number"
-              label="Prix ​​d'achat:"
               addOn="€"
             />
 
             <TypedInput
+              label="Prix ​​de €100 :"
               name="euroPrice"
               type="number"
-              label="Prix ​​de 100€:"
               addOn="DZD"
             />
           </>
         ) : (
           <>
             <TypedInput
+              label="Prix ​​d'achat :"
               name="purchasingPrice"
               type="number"
-              label="Prix ​​d'achat:"
               addOn="DZD"
             />
           </>
         )}
       </FormGroup>
-    </FormContent>
+    </>
   );
 };
 

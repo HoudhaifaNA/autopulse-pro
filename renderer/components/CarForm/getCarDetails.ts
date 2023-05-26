@@ -5,14 +5,14 @@ import calcExpensesCost from "utils/calcExpensesCosts";
 import { Values } from "components/CarForm/types";
 
 type TcostToText = (
-  type: Values["carType"] | "À l'étranger",
+  type: Values["carType"] | "à l'étranger",
   euroCost: number,
   euroPrice: number,
   totalCost: number
 ) => string;
 
 const costToText: TcostToText = (type, euroCost, euroPrice, totalCost) => {
-  return type === "importé" || type === "À l'étranger"
+  return type === "importé" || type === "à l'étranger"
     ? `€${euroCost}.00 × ${euroPrice}.00 = ${totalCost}.00 DZD`
     : `${totalCost}.00 DZD`;
 };

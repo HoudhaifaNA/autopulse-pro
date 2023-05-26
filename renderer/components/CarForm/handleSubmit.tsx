@@ -30,7 +30,7 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
       // Calculate total cost of every expense abroad in DZD
       expenses.forEach((expense) => {
         const { type, euroCost, euroPrice } = expense;
-        if (type === "À l'étranger") expense.totalCost = euroCost * euroPrice;
+        if (type === "à l'étranger") expense.totalCost = euroCost * euroPrice;
       });
 
       // Calculate expenses DZD and EUR amout

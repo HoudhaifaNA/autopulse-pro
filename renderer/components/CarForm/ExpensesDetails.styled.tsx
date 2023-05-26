@@ -1,6 +1,9 @@
 import styled from "styled-components";
 
 export const ExpensesList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   max-height: 50rem;
   padding-right: 1rem;
   overflow-y: scroll;
