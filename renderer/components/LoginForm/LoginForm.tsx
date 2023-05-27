@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Formik, FormikProps, FormikHelpers } from "formik";
 
 import * as S from "styles/LoginPage.styled";
+
 import { TypedInput } from "components/Input/Input";
-import Button from "components/Buttons/Button";
+import Button from "components/Button/Button";
+
 import convertPath from "utils/convertPath";
 // import { loginSchema } from "schemas/FormSchemas";
 
@@ -45,7 +47,7 @@ const LoginForm = () => {
               type={visiblity ? "text" : "password"}
               label="Mot de passe"
               placeholder="Entrez votre mot de pass"
-              iconRight={visiblity ? "visibility_off" : "visibility"}
+              rightIcon={visiblity ? "visibility_off" : "visibility"}
               onIconClick={() => setVisibility(!visiblity)}
             />
             <Button

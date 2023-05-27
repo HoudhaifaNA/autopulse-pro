@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import { Formik, FormikProps } from "formik";
+import { FormikProps } from "formik";
 
-import { Form } from "components/ui/Form.styled";
+import Form from "components/Form/Form";
+
 import CarType from "components/CarForm/CarType";
 import CarDetails from "components/CarForm/CarDetails";
 import SellingDetails from "components/CarForm/SellingDetails";
 import ExpenseDetails from "components/CarForm/ExpensesDetails";
 import ConfirmationDetails from "components/CarForm/ConfirmationDetails";
-import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
-import Button from "components/Buttons/Button";
+import Button from "components/Button/Button";
 
 import { INITIAL_VALUES } from "components/CarForm/constants";
-import { Values } from "components/CarForm/types";
 import onSubmit from "components/CarForm/handleSubmit";
 import {
   carSchemaStepTwo,
@@ -19,89 +18,85 @@ import {
   carSchemaStepFour,
 } from "Schemas/FormSchemas";
 
-const renderForm = (values: Values) => {
-  const { step, carType, expenses } = values;
+import { Values } from "components/CarForm/types";
+
+interface ActionsProps {
+  step: number;
+  buttonProps: Partial<FormikProps<any>>;
+}
+
+const renderForm = (step: number) => {
   if (step === 1) {
-    return <CarType carType={carType} />;
+    return <CarType />;
   }
   if (step === 2) {
     return <CarDetails />;
   }
   if (step === 3) {
-    return <SellingDetails carType={carType} />;
+    return <SellingDetails />;
   }
   if (step === 4) {
-    return <ExpenseDetails expenses={expenses} />;
+    return <ExpenseDetails />;
   }
   if (step === 5) {
-    return <ConfirmationDetails values={values} />;
+    return <ConfirmationDetails />;
   }
 };
 
-const CarForm = () => {
-  const [currentStep, setStep] = useState(1);
-  const [title, setTitle] = useState("Ajouter un voiture");
-
-  let validation = [carSchemaStepTwo, carSchemaStepThree, carSchemaStepFour];
+const Actions = ({ step, buttonProps }: ActionsProps) => {
+  const { isSubmitting, setFieldValue, submitForm } = buttonProps;
 
   return (
-    <Modal title={title}>
-      <Formik
-        initialValues={INITIAL_VALUES}
-        validationSchema={validation[currentStep - 2]}
-        onSubmit={onSubmit}
+    <>
+      {step > 1 && (
+        <Button
+          variant="ghost"
+          disabled={isSubmitting}
+          onClick={() => setFieldValue && setFieldValue("step", step - 1)}
+        >
+          Retour
+        </Button>
+      )}
+
+      <Button
+        type="submit"
+        variant="primary"
+        loading={isSubmitting}
+        disabled={isSubmitting}
+        onClick={submitForm}
       >
-        {(props: FormikProps<Values>) => {
-          const {
-            handleSubmit,
-            submitForm,
-            isSubmitting,
-            setFieldValue,
-            values,
-          } = props;
+        {step === 5 ? "Confirmer" : "Suivant"}
+      </Button>
+    </>
+  );
+};
 
-          const { step, brand, serie, model } = values;
+const CarForm = () => {
+  const [formProps, setFormProps] = useState<FormikProps<Values>>();
+  const [title, setTitle] = useState("Ajouter un voiture");
 
-          // reset all inputs "touched" to false when step changes
-          useEffect(() => {
-            setStep(step);
-            props.setTouched({});
-            if (step === 1) setTitle("Ajouter un voiture");
-            if (step === 3) setTitle(`${brand} ${serie} ${model}`);
-          }, [step]);
+  const values = formProps?.values ?? INITIAL_VALUES;
+  const { step, brand, serie, model } = values;
+  const validation = [carSchemaStepTwo, carSchemaStepThree, carSchemaStepFour];
 
-          return (
-            <>
-              <ModalContent>
-                <Form onSubmit={handleSubmit}>
-                  {renderForm(values)}
-                  {/*  Hidden input to submit button with hitting enter  */}
-                  <input type="submit" style={{ display: "none" }} />
-                </Form>
-              </ModalContent>
-              <ModalActions>
-                <Button
-                  variant="ghost"
-                  disabled={isSubmitting}
-                  onClick={() => step !== 1 && setFieldValue("step", step - 1)}
-                >
-                  {step === 1 ? "Annuler" : "Retour"}
-                </Button>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  loading={isSubmitting}
-                  disabled={isSubmitting}
-                  onClick={submitForm}
-                >
-                  {step === 5 ? "Confirmer" : "Suivant"}
-                </Button>
-              </ModalActions>
-            </>
-          );
-        }}
-      </Formik>
-    </Modal>
+  // reset all inputs "touched" to false when step changes
+  useEffect(() => {
+    formProps?.setTouched({});
+    if (step === 1) setTitle("Ajouter un voiture");
+    if (step === 3) setTitle(`${brand} ${serie} ${model}`);
+  }, [step]);
+
+  return (
+    <Form
+      title={title}
+      initials={INITIAL_VALUES}
+      validation={validation[step - 2]}
+      onSubmit={onSubmit}
+      getFormProps={(formProps) => setFormProps(formProps)}
+      Actions={(props) => <Actions step={step} buttonProps={props} />}
+    >
+      {renderForm(step)}
+    </Form>
   );
 };
 

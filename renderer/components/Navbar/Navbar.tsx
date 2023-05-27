@@ -17,7 +17,7 @@ const NAVBAR_ITEMS: items[] = [
   { text: "Voitures", icon: "car", link: "/cars" },
   { text: "Clients", icon: "clients", link: "/clients" },
   { text: "Licences", icon: "document", link: "/licences" },
-  { text: "Finance", icon: "finance", link: "/finance" },
+  { text: "Finances", icon: "finance", link: "/finances" },
   { text: "Paramètres", icon: "setting", link: "/setting" },
 ];
 

@@ -1,5 +1,6 @@
 import uid from "utils/uniqid";
-import { Values } from "./types";
+
+import { Values } from "components/CarForm/types";
 
 export const INITIAL_VALUES: Values = {
   step: 1,
@@ -15,11 +16,11 @@ export const INITIAL_VALUES: Values = {
   euroCost: 0,
   euroPrice: 0,
   purchasingPrice: 0,
-  lisence: { name: "", price: 0 },
+  licence: { name: "", price: 0 },
   expenses: [
     {
       id: uid(),
-      type: "À l'étranger",
+      type: "à l'étranger",
       raison: "",
       euroCost: 0,
       euroPrice: 0,
@@ -30,3 +31,23 @@ export const INITIAL_VALUES: Values = {
   dzdAmount: 0,
   transactionAgreement: true,
 };
+
+const CAR_COLORS = [
+  "Noir",
+  "Bleue",
+  "Blanche",
+  "Jaune",
+  "Argent",
+  "Rouge",
+  "Verte",
+  "Grise",
+  "Orange",
+  "Bronze",
+];
+
+export const COLORS_LIST = CAR_COLORS.map((color) => {
+  return {
+    icon: color.toLowerCase(),
+    mainText: color,
+  };
+});

@@ -1,6 +1,6 @@
 import { MouseEventHandler, ReactNode, Ref, forwardRef } from "react";
 
-import * as S from "components/Buttons/Button.styled";
+import * as S from "components/Button/Button.styled";
 import { ButtonText } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { GhostButton } from "components/Buttons/Button.styled";
+import { GhostButton } from "components/Button/Button.styled";
 import { SDropdownProps } from "components/Dropdown/types";
 
 export const Dropdown = styled.div<SDropdownProps>`

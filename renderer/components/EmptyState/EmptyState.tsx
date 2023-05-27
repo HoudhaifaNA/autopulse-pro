@@ -1,8 +1,9 @@
 import Image from "next/image";
 
-import * as S from "./EmptyState.style";
-import Button from "components/Buttons/Button";
+import * as S from "components/EmptyState/EmptyState.styled";
 import { Body1, Heading3 } from "styles/Typography";
+
+import Button from "components/Button/Button";
 
 interface EmptyStateProps {
   title: string;
@@ -10,10 +11,12 @@ interface EmptyStateProps {
   image: string;
   CTAText: string;
   CTAIcon: string;
+  IconP?: "right" | "left";
 }
 
 const EmptyState = (props: EmptyStateProps) => {
-  const { image, title, description, CTAText, CTAIcon } = props;
+  const { image, title, description, CTAText, CTAIcon, IconP } = props;
+
   return (
     <S.EmptyStateWrapper>
       <S.EmptyStateImage>
@@ -28,7 +31,7 @@ const EmptyState = (props: EmptyStateProps) => {
         <Heading3>{title}</Heading3>
         <Body1>{description}</Body1>
       </S.EmptyStateText>
-      <Button variant="primary" icon={CTAIcon}>
+      <Button variant="primary" icon={CTAIcon} iconPostition={IconP}>
         {CTAText}
       </Button>
     </S.EmptyStateWrapper>

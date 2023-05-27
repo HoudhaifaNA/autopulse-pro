@@ -1,23 +1,21 @@
-import React from "react";
 import { useFormikContext } from "formik";
 
 import * as S from "components/CarForm/CarType.styled";
 import { Body1 } from "styles/Typography";
+
 import Icon from "components/Icon/Icon";
 
-interface CarTypeProps {
-  carType: string;
-}
+import { Values } from "components/CarForm/types";
 
 const CAR_TYPES = ["importé", "locale"];
 
-const renderCarTypes = (carType: string) => {
+const renderCarTypes = (carType: Values["carType"]) => {
   const { setFieldValue, resetForm } = useFormikContext();
 
   return CAR_TYPES.map((type) => {
     const isSelected = carType === type;
     const onTypeClick = () => {
-      resetForm();
+      if (carType !== type) resetForm();
       setFieldValue("carType", type);
     };
 
@@ -33,7 +31,10 @@ const renderCarTypes = (carType: string) => {
   });
 };
 
-const CarType = ({ carType }: CarTypeProps) => {
+const CarType = () => {
+  const { values } = useFormikContext<Values>();
+  const { carType } = values;
+
   return <S.CarTypeWrapper>{renderCarTypes(carType)}</S.CarTypeWrapper>;
 };
 

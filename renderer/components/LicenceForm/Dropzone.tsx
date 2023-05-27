@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { useFormikContext } from "formik";
 
-import { Values } from "components/LicenceForm/types";
-import Button from "components/Buttons/Button";
+import Button from "components/Button/Button";
+
 import uid from "utils/uniqid";
+
+import { Values } from "components/LicenceForm/types";
 
 const Dropzone = () => {
   const { setFieldValue, values } = useFormikContext<Values>();
@@ -28,7 +30,7 @@ const Dropzone = () => {
       {...getRootProps({ type: "button", variant: "primary", icon: "upload" })}
     >
       <input {...getInputProps()} style={{ display: "none" }} />
-      Ajouter un document
+      Ajouter des documents
     </Button>
   );
 };

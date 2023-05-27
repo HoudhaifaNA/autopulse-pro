@@ -11,7 +11,7 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
     euroPrice,
     expenses,
     purchasingPrice,
-    lisence,
+    licence,
   } = values;
 
   setTimeout(() => {
@@ -30,15 +30,15 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
       // Calculate total cost of every expense abroad in DZD
       expenses.forEach((expense) => {
         const { type, euroCost, euroPrice } = expense;
-        if (type === "À l'étranger") expense.totalCost = euroCost * euroPrice;
+        if (type === "à l'étranger") expense.totalCost = euroCost * euroPrice;
       });
 
       // Calculate expenses DZD and EUR amout
       const [expensesDZDcost, expensesEURCost] = calcExpensesCosts(expenses);
 
-      // Calculate total spent DZD and EUR amout (car + expenses + lisence )
+      // Calculate total spent DZD and EUR amout (car + expenses + licence )
       const euroAmount = euroCost + expensesEURCost;
-      const dzdAmount = purchasingPrice + expensesDZDcost + lisence.price;
+      const dzdAmount = purchasingPrice + expensesDZDcost + licence.price;
 
       actions.setFieldValue("euroAmount", euroAmount);
       actions.setFieldValue("dzdAmount", dzdAmount);

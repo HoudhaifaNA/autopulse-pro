@@ -1,12 +1,16 @@
 import * as S from "components/Dropdown/Dropdown.styled";
-import { DropdownItemArgs, DropdownProps } from "components/Dropdown/types";
-import Icon from "components/Icon/Icon";
 import { Body2 } from "styles/Typography";
 
+import Icon from "components/Icon/Icon";
+
+import { DropdownItemArgs, DropdownProps } from "components/Dropdown/types";
+
 const renderItems = ({ items, onItemClick, size }: DropdownItemArgs) => {
-  return items!.map(({ mainText, icon, secondText }) => {
+  return items!.map(({ mainText, icon, secondText }, i) => {
+    const onOptionClick = onItemClick ? () => onItemClick(mainText) : () => 1;
+
     return (
-      <S.DropdownItem key={mainText} onClick={() => onItemClick!(mainText)}>
+      <S.DropdownItem key={i} onClick={onOptionClick}>
         <S.MainTextWrapper>
           {icon && (
             <Icon icon={icon} size={size === "s" ? "1.8rem" : "2.4rem"} />

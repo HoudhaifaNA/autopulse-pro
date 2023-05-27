@@ -1,16 +1,25 @@
 import { FieldHookConfig } from "formik";
-import { ReactElement } from "react";
+
+import { DropdownProps } from "components/Dropdown/types";
 
 interface TextInputProps {
   label?: string;
-  iconLeft?: string;
-  iconRight?: string;
+  leftIcon?: string;
+  rightIcon?: string;
   addOn?: string;
   onIconClick?: () => void;
 }
 
 export type TypedInputProps = TextInputProps & FieldHookConfig<any>;
 export type ClickInputProps = { label: string } & FieldHookConfig<any>;
-export interface DropdownInputProps {
-  children: ReactElement | [ReactElement, ReactElement];
+
+type BaseInputFields = Pick<
+  TypedInputProps,
+  "label" | "name" | "placeholder" | "autoFocus"
+>;
+
+export interface SelectInputProps extends BaseInputFields {
+  items: DropdownProps["items"];
+  buttons?: DropdownProps["children"];
+  elementAs?: "input" | "div";
 }

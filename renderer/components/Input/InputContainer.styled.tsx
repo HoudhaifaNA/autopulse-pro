@@ -10,6 +10,7 @@ export const InputContainer = styled.div`
   border: 0.1rem solid ${({ theme }) => theme.colors.neutral["500"]};
   border-radius: 0.4rem;
   overflow: hidden;
+  cursor: pointer;
 
   &:focus-within {
     border: 0.1rem solid ${({ theme }) => theme.colors.primary["500"]};
@@ -52,6 +53,7 @@ export const InputWrapper = styled.div`
 
   svg {
     fill: ${({ theme }) => theme.colors.neutral["500"]};
+    transition: all 0.2s;
   }
   svg:last-child {
     cursor: pointer;

@@ -1,74 +1,74 @@
-import { FormContent, FormGroup } from "components/ui/Form.styled";
-import { DropdownInput, TypedInput } from "components/Input/Input";
-import Dropdown from "components/Dropdown/Dropdown";
+import { FormGroup } from "components/Form/Form.styled";
+
+import { TypedInput, SelectInput } from "components/Input/Input";
+import { COLORS_LIST } from "./constants";
 
 const CarDetails = () => {
   return (
-    <FormContent>
+    <>
       <FormGroup>
-        <DropdownInput>
-          <TypedInput
-            name="brand"
-            type="text"
-            label="Marque:"
-            placeholder="Mercedes-Benz"
-            iconRight="expand"
-            autoFocus
-          />
-          {/* <Dropdown
-            $width="100%"
-            $top="6.2rem"
-            items={[
-              { mainText: "Mercedes-Benz" },
-              { mainText: "BMW" },
-              { mainText: "Skoda" },
-            ]}
-            onItemClick={() => 1}
-          /> */}
-        </DropdownInput>
+        <SelectInput
+          label="Marque :"
+          name="brand"
+          placeholder="Mercedes-Benz"
+          autoFocus
+          items={[
+            { mainText: "Mercedes-Benz" },
+            { mainText: "BMW" },
+            { mainText: "Skoda" },
+          ]}
+        />
         <FormGroup>
-          <TypedInput
+          <SelectInput
+            label="Série :"
             name="serie"
-            type="text"
-            label="Série:"
             placeholder="CLA"
-            iconRight="expand"
+            items={[
+              { mainText: "C" },
+              { mainText: "CLA" },
+              { mainText: "GLK" },
+            ]}
           />
 
           <TypedInput
+            label="Modèle :"
             name="model"
             type="text"
-            label="Modèle:"
             placeholder="250"
           />
         </FormGroup>
       </FormGroup>
       <FormGroup>
         <TypedInput
+          label="Numéro de châssis :"
           name="serialNumber"
           type="text"
-          label="Numéro de châssis:"
           placeholder="W1KZF8GB8NB093XXX"
         />
 
         <TypedInput
+          label="Matricule :"
           name="registrationNumber"
           type="text"
-          label="Matricule:"
           placeholder="WG69 NXF"
         />
       </FormGroup>
       <FormGroup>
-        <TypedInput
+        <SelectInput
+          label="Couleur :"
           name="color"
-          type="text"
-          label="Couleur:"
           placeholder="Noir"
+          items={COLORS_LIST}
         />
 
-        <TypedInput name="year" type="text" label="Année:" placeholder="2022" />
+        <TypedInput
+          name="year"
+          type="text"
+          label="Année:"
+          placeholder={`${new Date().getFullYear()}`}
+        />
       </FormGroup>
-    </FormContent>
+    </>
   );
 };
 

@@ -1,6 +1,9 @@
 import styled from "styled-components";
 
 export const ConfirmationWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
   max-height: 50rem;
   overflow-y: scroll;
   ::-webkit-scrollbar {

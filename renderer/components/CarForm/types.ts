@@ -1,11 +1,11 @@
-interface Lisence {
+interface Licence {
   name: string;
   price: number;
 }
 
 interface Expenses {
   id: string;
-  type: "locale" | "À l'étranger";
+  type: "locale" | "à l'étranger";
   raison: string;
   euroCost: number;
   euroPrice: number;
@@ -26,7 +26,7 @@ export interface Values {
   euroCost: number;
   euroPrice: number;
   purchasingPrice: number;
-  lisence: Lisence;
+  licence: Licence;
   expenses: Expenses[];
   euroAmount: number;
   dzdAmount: number;
