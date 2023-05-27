@@ -1,4 +1,4 @@
-import * as T from "components/FinanceForm/types";
+import * as T from "components/FinancesForm/types";
 
 export const TRANSACTION_VALUES: T.TransactionValues = {
   date: new Date(),

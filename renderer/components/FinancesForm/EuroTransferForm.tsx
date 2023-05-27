@@ -4,14 +4,14 @@ import { FormikProps, FormikHelpers } from "formik";
 import { FormGroup } from "components/Form/Form.styled";
 
 import Form from "components/Form/Form";
-import DateInput from "components/FinanceForm/DateInput";
-import TransactionType from "components/FinanceForm/TransactionType";
+import DateInput from "components/FinancesForm/DateInput";
+import TransactionType from "components/FinancesForm/TransactionType";
 import { TypedInput, SelectInput } from "components/Input/Input";
 
-import * as C from "components/FinanceForm/constants";
+import * as C from "components/FinancesForm/constants";
 import { euroTransferSchema } from "Schemas/FormSchemas";
 
-import { EuroTransferValues as Values } from "components/FinanceForm/types";
+import { EuroTransferValues as Values } from "components/FinancesForm/types";
 
 const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
   setTimeout(() => {

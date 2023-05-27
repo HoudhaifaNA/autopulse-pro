@@ -4,11 +4,11 @@ import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import "dayjs/locale/fr";
 
-import * as S from "components/FinanceForm/DateInput.styled";
+import * as S from "components/FinancesForm/DateInput.styled";
 import { LabelText } from "styles/Typography";
 import { InputError } from "components/Input/Input.styled";
 import Icon from "components/Icon/Icon";
-import { Values } from "components/FinanceForm/types";
+import { Values } from "components/FinancesForm/types";
 
 // Update the months list because the default has lowcase months
 dayjs.extend(updateLocale);

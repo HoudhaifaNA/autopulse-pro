@@ -3,7 +3,7 @@ import { useFormikContext } from "formik";
 import { ClickInput } from "components/Input/Input";
 import { InputError } from "components/Input/Input.styled";
 
-import * as T from "components/FinanceForm/types";
+import * as T from "components/FinancesForm/types";
 
 type TErrors = T.TransactionValues | T.EuroTransferValues;
 interface TransactionTypeProps {
