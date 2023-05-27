@@ -61,7 +61,12 @@ const CarDetails = () => {
           items={COLORS_LIST}
         />
 
-        <TypedInput name="year" type="text" label="Année:" placeholder="2023" />
+        <TypedInput
+          name="year"
+          type="text"
+          label="Année:"
+          placeholder={`${new Date().getFullYear()}`}
+        />
       </FormGroup>
     </>
   );
