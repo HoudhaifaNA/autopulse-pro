@@ -18,7 +18,7 @@ const NAVBAR_ITEMS: items[] = [
   { text: "Clients", icon: "clients", link: "/clients" },
   { text: "Licences", icon: "document", link: "/licences" },
   { text: "Finances", icon: "finance", link: "/finances" },
-  { text: "Paramètres", icon: "setting", link: "/setting" },
+  { text: "Paramètres", icon: "account_settings", link: "/profile" },
 ];
 
 const renderNavItems = (
