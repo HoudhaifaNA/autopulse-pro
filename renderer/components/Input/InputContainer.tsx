@@ -40,12 +40,16 @@ const InputContainer = (props: InputProps) => {
     <S.InputContainer className={isError ? "error" : ""}>
       {addOn && <InputAddOn addOn={addOn} />}
       <S.InputWrapper>
-        {leftIcon && <Icon icon={leftIcon} size="1.8rem" />}
+        {leftIcon && (
+          <S.InputIcon>
+            <Icon icon={leftIcon} size="1.8rem" />
+          </S.InputIcon>
+        )}
         <S.Input id={name} {...allProps} {...field} />
         {rightIcon && (
-          <div onClick={onIconClick}>
+          <S.InputIcon onClick={onIconClick}>
             <Icon icon={rightIcon} size="1.8rem" />
-          </div>
+          </S.InputIcon>
         )}
       </S.InputWrapper>
     </S.InputContainer>
