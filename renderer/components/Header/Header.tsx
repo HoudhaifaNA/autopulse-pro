@@ -84,7 +84,9 @@ const Header = () => {
       <S.SearchBarContainer ref={searchListRef}>
         <InputStyle.InputContainer>
           <InputStyle.InputWrapper>
-            <Icon icon="search" size="1.8rem" />
+            <InputStyle.InputIcon>
+              <Icon icon="search" size="1.8rem" />
+            </InputStyle.InputIcon>
             <InputStyle.Input
               type="text"
               placeholder="Search"
@@ -97,10 +99,12 @@ const Header = () => {
         )}
       </S.SearchBarContainer>
       <S.UserOverview>
-        <Body1>Saber Zehani</Body1>
-        <S.UserPicture>
-          <Heading5>S</Heading5>
-        </S.UserPicture>
+        <Link href="/profile">
+          <Body1>Saber Zehani</Body1>
+          <S.UserPicture>
+            <Heading5>S</Heading5>
+          </S.UserPicture>
+        </Link>
       </S.UserOverview>
     </S.Header>
   );
