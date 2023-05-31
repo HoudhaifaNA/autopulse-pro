@@ -7,7 +7,7 @@ import { TypedInput } from "components/Input/Input";
 import Button from "components/Button/Button";
 
 import convertPath from "utils/convertPath";
-// import { loginSchema } from "schemas/FormSchemas";
+// import { loginSchema } from "Schemas/FormSchemas";
 
 interface Values {
   username: string;
