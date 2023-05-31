@@ -7,6 +7,7 @@ export const InputContainer = styled.div`
   width: 100%;
   height: 4rem;
   min-height: 4rem;
+  background-color: ${({ theme }) => theme.colors.white};
   border: 0.1rem solid ${({ theme }) => theme.colors.neutral["500"]};
   border-radius: 0.4rem;
   overflow: hidden;
@@ -46,7 +47,7 @@ export const InputAddOn = styled.div`
 
 export const InputWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: stretch;
   flex: 1;
   gap: 0.8rem;
   padding: 0 1rem;
@@ -81,4 +82,9 @@ export const Input = styled.input`
     -webkit-appearance: none;
     margin: 0;
   }
+`;
+
+export const InputIcon = styled.div`
+  display: flex;
+  align-items: center;
 `;

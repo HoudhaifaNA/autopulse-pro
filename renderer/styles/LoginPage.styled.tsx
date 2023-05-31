@@ -21,5 +21,5 @@ export const Form = styled.form`
   width: 30rem;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
 `;

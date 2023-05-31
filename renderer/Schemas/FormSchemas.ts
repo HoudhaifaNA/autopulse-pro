@@ -18,10 +18,37 @@ export const loginSchema = object({
     .min(4, "Nom d'utilisateur doit être d'au moins 4 caractères")
     .required("Nom d'utilisateur est requis"),
   password: string()
-    .trim()
     .min(5, "Mot de passe doit être d'au moins 5 caractères")
     .matches(PASSWORD_RULES, "Mot de passe doit être fort (A-a-1)")
     .required("Mot de pass est requis"),
+});
+
+export const updateUsername = object({
+  username: string()
+    .trim()
+    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
+    .min(4, "Nom d'utilisateur doit être d'au moins 4 caractères")
+    .required("Nom d'utilisateur est requis"),
+});
+
+export const updateUserPassword = object({
+  currentPassword: string()
+    .min(5, "Mot de passe doit être d'au moins 5 caractères")
+    .matches(PASSWORD_RULES, "Mot de passe doit être fort (A-a-1)")
+    .required("Mot de passe actuel requis"),
+  newPassword: string()
+    .min(5, "Mot de passe doit être d'au moins 5 caractères")
+    .matches(PASSWORD_RULES, "Mot de passe doit être fort (A-a-1)")
+    .required("Nouveau mot de passe requis"),
+  confirmPassword: string()
+    .test({
+      name: "Password matching",
+      message: "Les mots de passe ne correspondent pas",
+      test: function (value) {
+        return value === this.parent.newPassword;
+      },
+    })
+    .required("Confirmation du mot de passe requise"),
 });
 
 export const clientSchema = object({

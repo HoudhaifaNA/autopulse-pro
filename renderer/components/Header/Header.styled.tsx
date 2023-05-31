@@ -61,13 +61,16 @@ export const CategoryItem = styled.div`
 `;
 
 export const UserOverview = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 2rem;
+  a {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    text-decoration: none;
+  }
 
-  h5 {
+  p {
     text-transform: capitalize;
-    color: ${({ theme }) => theme.colors.white};
+    color: ${({ theme }) => theme.colors.black};
   }
 `;
 
@@ -77,6 +80,8 @@ export const UserPicture = styled.div`
   justify-content: center;
   width: 3.6rem;
   height: 3.6rem;
+  text-transform: capitalize;
+  color: ${({ theme }) => theme.colors.white};
   border-radius: 10rem;
   background-color: ${({ theme }) => theme.colors.warning["700"]};
 `;
