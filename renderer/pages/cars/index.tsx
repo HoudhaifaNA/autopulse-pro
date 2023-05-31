@@ -21,6 +21,7 @@ import Dropdown from "components/Dropdown/Dropdown";
 import EmptyState from "components/EmptyState/EmptyState";
 import Meta from "components/Meta/Meta";
 import Button from "components/Button/Button";
+import CarDocument from "components/CarDocument/CarDocument";
 
 const CARS_FAKE_DATA = [
   { text: "Date créée", sortable: true },
@@ -42,6 +43,7 @@ const CarsPage = () => {
       <Meta title="Voitures" />
       <div className="background-black" />
       <CarForm />
+      {/* <CarDocument /> */}
       {/* <EmptyState
         title="Vous n'avez pas de voitures"
         description="Ajoutez des voitures pour les voir ici"
@@ -144,8 +146,8 @@ const CarsPage = () => {
             })}
           </TableBody>
         </Table>
-      </TableWrapper> */}
-      {/* <Pagination /> */}
+      </TableWrapper>
+      <Pagination /> */}
     </div>
   );
 };
