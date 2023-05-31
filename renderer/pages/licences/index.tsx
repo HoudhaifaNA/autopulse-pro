@@ -15,6 +15,7 @@ import Pagination from "components/Pagination/Pagination";
 import { Body2 } from "styles/Typography";
 import EmptyState from "components/EmptyState/EmptyState";
 import Meta from "components/Meta/Meta";
+import LicenceDocument from "components/LicenceDocument/LicenceDocument";
 
 const FAKE_DATA = [
   { text: "Date créée", sortable: true },
@@ -28,6 +29,7 @@ const LicencesPage = () => {
   return (
     <div>
       <Meta title="Licences" />
+      <LicenceDocument />
       {/* <div className="background-black" />
       <LicenceForm /> */}
       {/* <EmptyState

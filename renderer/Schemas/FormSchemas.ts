@@ -10,16 +10,6 @@ const WILAYAS_OPTIONS = wilayas.map((wilaya) => wilaya.name.toLowerCase());
 
 const today = new Date();
 const currentYear = today.getFullYear();
-const getTodayDate = () => {
-  const [day, month, year] = [
-    today.getDate() + 1,
-    today.getMonth() + 1,
-    currentYear,
-  ];
-
-  return `${year}-${month}-${day}`;
-};
-const todayDate = new Date(getTodayDate());
 
 export const loginSchema = object({
   username: string()
@@ -159,7 +149,7 @@ export const licenceSchema = object({
 export const transactionSchema = object({
   date: date()
     .min(2014, ({ min }) => `La date doit être postérieure à ${min}`)
-    .max(todayDate, `La date ne peut pas être postérieure à aujourd'hui`)
+    .max(today, `La date ne peut pas être postérieure à aujourd'hui`)
     .typeError(() => `La date doit être une date`)
     .required("La date est requise"),
   client: string()
@@ -189,7 +179,7 @@ export const transactionSchema = object({
 export const euroTransferSchema = object({
   date: date()
     .min(2014, ({ min }) => `La date doit être postérieure à ${min}`)
-    .max(todayDate, `La date ne peut pas être postérieure à aujourd'hui`)
+    .max(today, `La date ne peut pas être postérieure à aujourd'hui`)
     .typeError(() => `La date doit être une date`)
     .required("La date est requise"),
   client: string()

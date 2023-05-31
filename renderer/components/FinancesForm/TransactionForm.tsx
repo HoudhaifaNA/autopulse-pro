@@ -22,7 +22,7 @@ const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
 const TransactionForm = () => {
   return (
     <Form
-      title="Effectuer une transaction"
+      title="Effectuer un transfert"
       initials={C.TRANSACTION_VALUES}
       validation={transactionSchema}
       buttonText="Transfert"

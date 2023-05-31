@@ -8,7 +8,10 @@ import * as S from "components/FinancesForm/DateInput.styled";
 import { LabelText } from "styles/Typography";
 import { InputError } from "components/Input/Input.styled";
 import Icon from "components/Icon/Icon";
-import { Values } from "components/FinancesForm/types";
+
+import * as T from "components/FinancesForm/types";
+
+type Values = T.TransactionValues | T.EuroTransferValues;
 
 // Update the months list because the default has lowcase months
 dayjs.extend(updateLocale);
@@ -33,7 +36,7 @@ const DateInput = () => {
   const { values, errors, setFieldValue } = useFormikContext<Values>();
   const hasError = Boolean(errors.date);
   const MIN_DATE = new Date("2014");
-  const today = new Date();
+  const MAX_DATE = new Date();
 
   const Label = <LabelText>Date :</LabelText>;
   const DateIcon = <Icon icon="calendar" size="1.8rem" />;
@@ -50,7 +53,7 @@ const DateInput = () => {
         label={Label}
         value={values.date}
         minDate={MIN_DATE}
-        maxDate={today}
+        maxDate={MAX_DATE}
         monthsListFormat="MMMM"
         weekendDays={[5]}
         firstDayOfWeek={6}

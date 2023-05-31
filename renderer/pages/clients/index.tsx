@@ -16,6 +16,7 @@ import Pagination from "components/Pagination/Pagination";
 import { Body2 } from "styles/Typography";
 import EmptyState from "components/EmptyState/EmptyState";
 import Meta from "components/Meta/Meta";
+import ClientDocument from "components/ClientDocument/ClientDocument";
 
 const FAKE_DATA = [
   { text: "Date créée", sortable: true },
@@ -31,6 +32,7 @@ const ClientsPage = () => {
       <Meta title="Clients" />
       {/* <div className="background-black" />
       <ClientForm /> */}
+      <ClientDocument />
       <EmptyState
         title="Vous n'avez pas de clients"
         description="Ajoutez des clients pour les voir ici"

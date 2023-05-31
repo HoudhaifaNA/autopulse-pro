@@ -69,7 +69,7 @@ export const SecondaryButton = styled(Button)`
 
 export const GhostButton = styled(Button)`
   color: ${({ theme }) => theme.colors.primary["500"]};
-  background-color: ${({ theme }) => theme.colors.white};
+  background-color: transparent;
   border: none;
 `;
 export const DangerButton = styled(Button)`
