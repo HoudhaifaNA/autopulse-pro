@@ -30,6 +30,13 @@ export const ModalHeader = styled.div`
   padding: 1rem 2rem;
   border-bottom: 0.1rem solid ${({ theme }) => theme.colors.neutral["300"]};
 
+  h5 {
+    white-space: nowrap;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   & > svg {
     fill: ${({ theme }) => theme.colors.neutral["700"]};
     cursor: pointer;

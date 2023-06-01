@@ -18,7 +18,7 @@ const Modal = ({ title, children }: ModalProps) => {
       <div className="background-black" />
       <S.ModalWrapper>
         <S.ModalHeader>
-          <Heading5>{title}</Heading5>
+          <Heading5 title={title}>{title}</Heading5>
           <Icon icon="close" size="2.4rem" />
         </S.ModalHeader>
         {children}
