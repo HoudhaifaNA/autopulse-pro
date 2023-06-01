@@ -41,7 +41,6 @@ const CarsPage = () => {
   return (
     <div>
       <Meta title="Voitures" />
-      <div className="background-black" />
       <CarForm />
       {/* <CarDocument /> */}
       {/* <EmptyState

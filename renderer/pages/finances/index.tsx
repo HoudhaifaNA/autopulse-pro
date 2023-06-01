@@ -10,7 +10,7 @@ import Dropdown from "components/Dropdown/Dropdown";
 import Button from "components/Button/Button";
 
 const TransferOptions = () => (
-  <Dropdown $right="0" $width="24rem">
+  <Dropdown $right="0" $top="100%" $width="24rem">
     <ButtonItem>
       <Button variant="ghost" icon="exchange">
         Effectuer une transaction
@@ -28,9 +28,8 @@ const FinancePage = () => {
   return (
     <div>
       <Meta title="Finances" />
-      {/* <div className="background-black" /> */}
-      {/* <TransactionForm />
-      <EuroTransferForm /> */}
+      {/* <TransactionForm /> */}
+      {/* <EuroTransferForm /> */}
 
       <div style={{ position: "relative", zIndex: "8000" }}>
         <div>
