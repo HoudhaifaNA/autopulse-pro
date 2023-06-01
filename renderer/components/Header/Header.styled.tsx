@@ -18,6 +18,7 @@ export const SearchList = styled.div`
   position: absolute;
   top: 4rem;
   left: 0;
+  z-index: 80000;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
