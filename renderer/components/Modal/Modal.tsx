@@ -1,8 +1,11 @@
 import { ReactNode } from "react";
 
-import Icon from "components/Icon/Icon";
 import * as S from "components/Modal/Modal.styled";
 import { Heading5 } from "styles/Typography";
+
+import Icon from "components/Icon/Icon";
+
+import truncateText from "utils/truncate";
 
 interface ModalProps {
   title: string;
@@ -18,7 +21,7 @@ const Modal = ({ title, children }: ModalProps) => {
       <div className="background-black" />
       <S.ModalWrapper>
         <S.ModalHeader>
-          <Heading5 title={title}>{title}</Heading5>
+          <Heading5 title={title}>{truncateText(title, 40)}</Heading5>
           <Icon icon="close" size="2.4rem" />
         </S.ModalHeader>
         {children}

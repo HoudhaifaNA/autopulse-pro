@@ -17,7 +17,6 @@ export const ModalWrapper = styled.div`
   top: 50%;
   transform: translate(-50%, -52.5%) scale(0.9);
   z-index: 1000;
-  min-width: 65rem;
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 0.8rem;
   animation: ${show} 0.15s ease forwards;
@@ -27,15 +26,9 @@ export const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 2rem;
   padding: 1rem 2rem;
   border-bottom: 0.1rem solid ${({ theme }) => theme.colors.neutral["300"]};
-
-  h5 {
-    white-space: nowrap;
-    width: 90%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   & > svg {
     fill: ${({ theme }) => theme.colors.neutral["700"]};
