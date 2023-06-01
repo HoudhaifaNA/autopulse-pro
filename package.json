@@ -20,7 +20,6 @@
     "@mantine/dates": "^6.0.7",
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.35",
-    "@types/react-dom": "^18.2.4",
     "@types/react-pdf": "^6.2.0",
     "@types/styled-components": "^5.1.26",
     "babel-plugin-styled-components": "^2.1.1",
