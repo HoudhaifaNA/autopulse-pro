@@ -3,14 +3,18 @@ import styled from "styled-components";
 import { GhostButton } from "components/Button/Button.styled";
 import { SDropdownProps } from "components/Dropdown/types";
 
-export const Dropdown = styled.div<SDropdownProps>`
+export const DropdownWrapper = styled.div<SDropdownProps>`
   position: absolute;
   top: ${({ $top }) => ($top ? $top : "")};
   bottom: ${({ $bottom }) => ($bottom ? $bottom : "")};
   left: ${({ $left }) => ($left ? $left : "")};
   right: ${({ $right }) => ($right ? $right : "")};
-  z-index: 10000;
   width: ${({ $width }) => ($width ? $width : "")};
+  z-index: 10000;
+`;
+
+export const Dropdown = styled.div<SDropdownProps>`
+  position: relative;
   max-height: 24rem;
   min-width: fit-content;
   background-color: ${({ theme }) => theme.colors.white};
