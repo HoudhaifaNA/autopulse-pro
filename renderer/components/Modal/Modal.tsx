@@ -14,13 +14,16 @@ export const ModalActions = S.ModalActions;
 
 const Modal = ({ title, children }: ModalProps) => {
   return (
-    <S.ModalWrapper>
-      <S.ModalHeader>
-        <Heading5>{title}</Heading5>
-        <Icon icon="close" size="2.4rem" />
-      </S.ModalHeader>
-      {children}
-    </S.ModalWrapper>
+    <>
+      <div className="background-black" />
+      <S.ModalWrapper>
+        <S.ModalHeader>
+          <Heading5>{title}</Heading5>
+          <Icon icon="close" size="2.4rem" />
+        </S.ModalHeader>
+        {children}
+      </S.ModalWrapper>
+    </>
   );
 };
 
