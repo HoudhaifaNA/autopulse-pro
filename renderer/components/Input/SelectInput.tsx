@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef } from "react";
 import { useFormikContext } from "formik";
 
 import * as S from "components/Input/Input.styled";
@@ -7,6 +7,8 @@ import TypedInput from "components/Input/TypedInput";
 import Dropdown from "components/Dropdown/Dropdown";
 
 import filterDropdownItems from "utils/filterDropdownItems";
+
+import useClickOutside from "hooks/useClickOutside";
 
 import * as T from "components/Input/types";
 
@@ -29,7 +31,8 @@ const getInputData = (values: any, errors: any, name: string) => {
 
 const SelectInput = (props: T.SelectInputProps) => {
   const { setFieldValue, values, errors } = useFormikContext();
-  const [isDropdownActive, toggleDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isFocused, setFocus] = useClickOutside(dropdownRef);
 
   const { label, placeholder, name, autoFocus, items, buttons, elementAs } =
     props;
@@ -47,13 +50,13 @@ const SelectInput = (props: T.SelectInputProps) => {
     name,
     autoFocus,
     rightIcon: "expand",
-    className: isDropdownActive && !hasError ? "dropdown-active" : "",
-    onClick: () => toggleDropdown(!isDropdownActive),
+    className: isFocused && !hasError ? "dropdown-active" : "",
+    onClick: () => setFocus(!isFocused),
   };
 
   const onClickOption = (item: string) => {
     setFieldValue(name, item);
-    toggleDropdown(false);
+    setFocus(false);
   };
 
   const Select =
@@ -66,9 +69,9 @@ const SelectInput = (props: T.SelectInputProps) => {
     );
 
   return (
-    <S.SelectInput>
+    <S.SelectInput ref={dropdownRef}>
       {Select}
-      {isDropdownActive && (
+      {isFocused && (
         <Dropdown
           $top="6.3rem"
           $width="100%"
