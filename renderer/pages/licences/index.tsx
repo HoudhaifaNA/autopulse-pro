@@ -30,8 +30,7 @@ const LicencesPage = () => {
     <div>
       <Meta title="Licences" />
       <LicenceDocument />
-      {/* <div className="background-black" />
-      <LicenceForm /> */}
+      {/* <LicenceForm /> */}
       {/* <EmptyState
         title="Vous n'avez pas de licences"
         description="Ajoutez des licences pour les voir ici"

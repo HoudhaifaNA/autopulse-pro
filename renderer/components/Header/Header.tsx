@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 
-import Icon from "components/Icon/Icon";
 import * as InputStyle from "components/Input/InputContainer.styled";
 import * as S from "./Header.styled";
 import { Body1, Body2, Heading5 } from "styles/Typography";
+
+import Icon from "components/Icon/Icon";
+
+import useClickOutside from "hooks/useClickOutside";
 
 // !TODO NEED REFACTORE
 
@@ -66,18 +69,8 @@ const renderSearchedItems = (categories: SearchCategories[]) => {
 };
 
 const Header = () => {
-  const [focus, setFocus] = useState(false);
   const searchListRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const onClickOutsiedSearch = (e: MouseEvent) => {
-      const { current } = searchListRef;
-      /**@ts-ignore */
-      if (current && !current.contains(e.target)) setFocus(false);
-    };
-
-    document.addEventListener("click", onClickOutsiedSearch);
-    return () => document.removeEventListener("click", onClickOutsiedSearch);
-  }, []);
+  const [focus, setFocus] = useClickOutside(searchListRef);
 
   return (
     <S.Header>

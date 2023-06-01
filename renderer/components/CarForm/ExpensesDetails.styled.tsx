@@ -4,6 +4,7 @@ export const ExpensesList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  min-height: 20rem;
   max-height: 50rem;
   padding-right: 1rem;
   overflow-y: scroll;
@@ -21,6 +22,8 @@ export const ExpensesList = styled.div`
 `;
 
 export const ExpenseAdder = styled.div`
+  width: fit-content;
+
   & > button {
     padding: 0;
   }

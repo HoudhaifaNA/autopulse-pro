@@ -27,12 +27,14 @@ const Dropdown = (props: DropdownProps) => {
   const { items, size = "s", onItemClick, children, ...stylingProps } = props;
 
   return (
-    <S.Dropdown {...stylingProps}>
-      <S.DropdownList>
-        {items && renderItems({ items, onItemClick, size })}
-      </S.DropdownList>
-      {children}
-    </S.Dropdown>
+    <S.DropdownWrapper {...stylingProps}>
+      <S.Dropdown>
+        <S.DropdownList>
+          {items && renderItems({ items, onItemClick, size })}
+        </S.DropdownList>
+        {children}
+      </S.Dropdown>
+    </S.DropdownWrapper>
   );
 };
 

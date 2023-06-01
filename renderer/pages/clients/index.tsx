@@ -30,8 +30,7 @@ const ClientsPage = () => {
   return (
     <div>
       <Meta title="Clients" />
-      {/* <div className="background-black" />
-      <ClientForm /> */}
+      {/* <ClientForm /> */}
       <ClientDocument />
       <EmptyState
         title="Vous n'avez pas de clients"
