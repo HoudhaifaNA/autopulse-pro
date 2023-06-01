@@ -1,4 +1,5 @@
-import { useFormikContext } from "formik";
+import { useRef } from "react";
+import { useFormikContext, FormikContextType } from "formik";
 
 import * as S from "components/CarForm/ExpensesDetails.styled";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";
@@ -6,14 +7,17 @@ import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 import Button from "components/Button/Button";
 import Dropdown from "components/Dropdown/Dropdown";
 
+import useClickOutside from "hooks/useClickOutside";
 import uid from "utils/uniqid";
 
 import { Values } from "components/CarForm/types";
 
 const EXPENSES_OPTIONS = ["À l'étranger", "Locale"];
 
-const renderExpenses = () => {
-  const { setFieldValue, values } = useFormikContext<Values>();
+type formikContextT = FormikContextType<Values>;
+
+const renderExpenses = (setFocus: any, formikContext: formikContextT) => {
+  const { setFieldValue, values } = formikContext;
   const { expenses } = values;
 
   return EXPENSES_OPTIONS.map((option) => {
@@ -31,6 +35,7 @@ const renderExpenses = () => {
 
     const addExpense = () => {
       setFieldValue("expenses", [...expenses, newExpense]);
+      setFocus(false);
     };
 
     return (
@@ -44,12 +49,25 @@ const renderExpenses = () => {
 };
 
 const ExpenseAdder = () => {
+  const dropdownRef = useRef(null);
+  const formikContext = useFormikContext<Values>();
+  const [isFocused, setFocus] = useClickOutside(dropdownRef);
+
   return (
-    <S.ExpenseAdder>
-      <Button type="button" variant="ghost" icon="add">
+    <S.ExpenseAdder ref={dropdownRef}>
+      <Button
+        type="button"
+        variant="ghost"
+        icon="add"
+        onClick={() => setFocus(true)}
+      >
         Ajouter une autre dépense
       </Button>
-      <Dropdown $width="20rem">{renderExpenses()}</Dropdown>;
+      {isFocused && (
+        <Dropdown $width="20rem">
+          {renderExpenses(setFocus, formikContext)}
+        </Dropdown>
+      )}
     </S.ExpenseAdder>
   );
 };
