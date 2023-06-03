@@ -1,6 +1,8 @@
 import { Menu, app, globalShortcut } from "electron";
 import serve from "electron-serve";
+
 import { createWindow } from "./helpers";
+import "../server/server";
 
 const isProd: boolean = process.env.NODE_ENV === "production";
 
