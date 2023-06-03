@@ -4,6 +4,11 @@ copyright: Copyright © 2022 Houdhaifa Lebbad
 directories:
   output: dist
   buildResources: resources
+extraResources:
+  - from: "db"
+    to: db
+    filter:
+      - "**/*"
 files:
   - from: .
     filter:

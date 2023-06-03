@@ -4,6 +4,7 @@ node_modules
 .next
 
 /app
+db
 dist
 renderer/build
 
