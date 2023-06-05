@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useFormikContext } from "formik";
 
 import { FormGroup } from "components/Form/Form.styled";
@@ -16,10 +16,12 @@ import { Values } from "components/CarForm/types";
 const CarDetails = () => {
   const { values, setFieldValue } = useFormikContext<Values>();
   const { brand } = values;
+  const brandRef = useRef<string>(brand);
   const seriesList = CAR_SERIES[brand] ?? [];
 
   useEffect(() => {
-    setFieldValue("serie", "");
+    if (brand !== brandRef.current) setFieldValue("serie", "");
+    brandRef.current = brand;
   }, [brand]);
 
   return (
