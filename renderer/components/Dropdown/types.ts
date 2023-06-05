@@ -11,11 +11,11 @@ export interface SDropdownProps {
 export interface DropdownProps extends SDropdownProps {
   items?: { mainText: string; icon?: string; secondText?: string }[];
   onItemClick?: (text: string) => void;
-  size?: "s" | "l";
+  iconSize?: "s" | "l";
   children?: ReactElement | ReactElement[];
 }
 
 export type DropdownItemArgs = Pick<
   DropdownProps,
-  "items" | "onItemClick" | "size"
+  "items" | "onItemClick" | "iconSize"
 >;

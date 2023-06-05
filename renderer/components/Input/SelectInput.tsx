@@ -34,8 +34,16 @@ const SelectInput = (props: T.SelectInputProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isFocused, setFocus] = useClickOutside(dropdownRef);
 
-  const { label, placeholder, name, autoFocus, items, buttons, elementAs } =
-    props;
+  const {
+    label,
+    placeholder,
+    name,
+    autoFocus,
+    items,
+    iconSize,
+    buttons,
+    elementAs,
+  } = props;
 
   const [inputValue, inputError] = getInputData(values, errors, name);
   const filtredItems = filterDropdownItems(items!, inputValue);
@@ -76,6 +84,7 @@ const SelectInput = (props: T.SelectInputProps) => {
           $top="6.3rem"
           $width="100%"
           items={dropdownItems}
+          iconSize={iconSize}
           onItemClick={onClickOption}
         >
           {buttons}
