@@ -1,25 +1,22 @@
 import express from "express";
 import cors from "cors";
 
-import db from "./database";
+import clientsRoutes from "./routes/clientRoutes";
+import licenceRoutes from "./routes/licenceRoutes";
 
 const app = express();
 
 app.use(cors());
 
-app.get("/api/cars", (_, res) => {
-  db.each(`SELECT * FROM cars`, [], function (err, rows) {
-    if (err) {
-      console.log(err.message);
-      return res.status(401).json({ message: "error", err: err.message });
-    }
-    return res.status(200).json({ message: "success ", rows });
-  });
+app.use(express.json({ limit: "10kb" }));
 
-  db.close((err) => {
-    if (err) console.log(err.message);
-    console.log("Closed database successfully ✔");
-  });
+app.use("/api/clients", clientsRoutes);
+app.use("/api/licences", licenceRoutes);
+
+app.all("*", (req, res) => {
+  res
+    .status(404)
+    .json({ status: "error", message: "No api endpoint with this url" });
 });
 
 export default app;
