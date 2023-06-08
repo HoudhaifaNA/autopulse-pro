@@ -19,4 +19,9 @@ app.all("*", (req, res) => {
     .json({ status: "error", message: "No api endpoint with this url" });
 });
 
+app.use((err, req, res, next) => {
+  console.log(`ERROR 🔥🔥 :  ${err.message}`);
+  return res.status(400).json({ status: "error", message: err.message });
+});
+
 export default app;
