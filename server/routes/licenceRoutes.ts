@@ -7,7 +7,7 @@ const router = express.Router();
 router
   .route("/")
   .get(controller.getAllLicences)
-  .post(controller.createLicence)
+  .post(controller.uploadAttachments, controller.createLicence)
   .delete(controller.deleteLicences);
 
 router
