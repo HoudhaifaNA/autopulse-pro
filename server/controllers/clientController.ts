@@ -1,102 +1,71 @@
-import { NextFunction, Request, Response } from "express";
+import * as S from "./statments";
+import tryCatch from "../utils/tryCatch";
+import { isValidPhoneNumber, validateName } from "../utils/validations";
 
-import db from "../database";
-import * as SQLs from "./sqls";
+export const getAllClients = tryCatch((req, res) => {
+  const clients = S.getClients.all();
 
-type Controller = (req: Request, res: Response, next: NextFunction) => void;
+  return res.status(200).json({ status: "success", clients });
+});
 
-db.run(SQLs.CREATE_CLIENTS_TABLE);
-// db.run("DROP TABLE clients");
-
-const isValidPhoneNumber = (phoneNumber: string) => {
-  const pattern = /^\+?[0-9]{1,3}[0-9]{3}[0-9]{3,14}$/;
-
-  return pattern.test(phoneNumber);
-};
-
-const handleDBError = (err: Error, res: Response, status: number = 400) => {
-  console.log(`ERROR 🔥🔥 :  ${err.message}`);
-  return res.status(status).json({ status: "error", message: err.message });
-};
-
-export const getAllClients: Controller = (req, res) => {
-  db.all(SQLs.GET_ALL_CLIENTS, (err, rows) => {
-    if (err) return handleDBError(err, res);
-
-    return res.status(200).json({ status: "success", clients: rows });
-  });
-};
-
-export const getClientByID: Controller = (req, res) => {
+export const getClientByID = tryCatch((req, res) => {
   const { id } = req.params;
 
-  db.get(SQLs.GET_CLIENT_BY_ID, [id], (err, row) => {
-    if (err) return handleDBError(err, res);
-    if (!row) {
-      return handleDBError(new Error("No client with this id"), res, 404);
-    }
+  const client = S.getClientById.get(id);
 
-    return res.status(201).json({ status: "success", client: row });
-  });
-};
+  if (!client) throw Error("Client doesn't exist");
 
-export const createClient: Controller = (req, res) => {
+  return res.status(200).json({ status: "success", client });
+});
+
+export const createClient = tryCatch((req, res) => {
   const { fullName, phoneNumber, balance = 0 } = req.body;
-  const trimmedName = fullName.replace(/\s{2,}/g, " ").trim();
+  const [trimmedName, isValid] = validateName(fullName);
+
+  if (!isValid) throw Error("Please, provide correct name");
+  if (!isValidPhoneNumber(phoneNumber)) throw Error("Invalid phone number");
+
   const params = [trimmedName, phoneNumber, balance];
 
-  if (!isValidPhoneNumber(phoneNumber))
-    return handleDBError(new Error("Invalid phone number"), res, 400);
+  const { lastInsertRowid } = S.createClient.run(params);
+  const newClient = S.getClientById.get(lastInsertRowid);
 
-  db.run(SQLs.CREATE_A_CLIENT, params, function (err) {
-    if (err) return handleDBError(err, res);
+  return res.status(201).json({ status: "success", client: newClient });
+});
 
-    db.get(SQLs.GET_CLIENT_BY_ID, [this.lastID], (err, row) => {
-      return res.status(201).json({ status: "success", client: row });
-    });
-  });
-};
-
-export const updateClient: Controller = (req, res, next) => {
+export const updateClient = tryCatch((req, res) => {
   const { id } = req.params;
   const { fullName, phoneNumber, balance } = req.body;
-  const params = [fullName, phoneNumber, balance, id];
+  const [trimmedName, isValid] = validateName(fullName);
 
-  if (phoneNumber && !isValidPhoneNumber(phoneNumber))
-    return handleDBError(new Error("Invalid phone number"), res, 400);
+  if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
+    throw Error("Invalid phone number");
+  }
+  if (trimmedName && !isValid) {
+    throw Error("Please, provide correct name");
+  }
 
-  db.run(SQLs.UPDATE_CLIENT, params, function (err) {
-    if (err) return handleDBError(err, res);
+  const params = [trimmedName, phoneNumber, balance, id];
 
-    // IF NO ROW HAS BEEN EFFECTED
-    if (this.changes === 0) {
-      return handleDBError(new Error("No client with this id"), res);
-    }
+  const { changes } = S.updateClient.run(params);
+  if (changes === 0) throw Error("No client with this id");
 
-    return db.get(SQLs.GET_CLIENT_BY_ID, [id], (err, row) => {
-      return res.status(200).json({ status: "success", client: row });
-    });
-  });
-};
+  const updatedClient = S.getClientById.get(id);
 
-export const deleteClientById: Controller = (req, res) => {
+  return res.status(200).json({ status: "success", client: updatedClient });
+});
+
+export const deleteClientById = tryCatch((req, res) => {
   const { id } = req.params;
 
-  db.run(SQLs.DELETE_CLIENT_BY_ID, [id], function (err) {
-    if (err) return handleDBError(err, res);
+  const { changes } = S.deleteClientById.run(id);
+  if (changes === 0) throw Error("Client doesn't exist");
 
-    if (this.changes === 0) {
-      return handleDBError(new Error("No client with this id"), res);
-    }
+  return res.status(204).json({ status: "success" });
+});
 
-    return res.status(204).json({ status: "success" });
-  });
-};
+export const deleteClients = tryCatch((req, res) => {
+  S.deleteClients.run();
 
-export const deleteClients: Controller = (req, res) => {
-  db.run(SQLs.DELETE_CLIENTS, (err) => {
-    if (err) return handleDBError(err, res);
-
-    return res.status(204).json({ status: "success" });
-  });
-};
+  return res.status(204).json({ status: "success" });
+});

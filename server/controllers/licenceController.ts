@@ -1,91 +1,126 @@
-import { NextFunction, Request, Response } from "express";
+import fs from "fs";
+import path from "path";
 
-import db from "../database";
-import * as SQLs from "./sqls";
+import multer from "multer";
 
-db.run(SQLs.CREATE_LICENCES_TABLE);
-// db.run("DROP TABLE licences");
+import * as S from "./statments";
+import tryCatch from "../utils/tryCatch";
+import { isWilaya, validateName } from "../utils/validations";
 
-type Controller = (req: Request, res: Response, next: NextFunction) => void;
+const storage = multer.memoryStorage();
 
-const handleDBError = (err: Error, res: Response, status: number = 400) => {
-  console.log(err);
-  return res.status(status).json({ status: "error", message: err.message });
+const multerFilter = (req, file, cb) => {
+  const { mimetype } = file;
+  const isImageOrPDF = mimetype.startsWith("image") || mimetype.endsWith("pdf");
+
+  if (!isImageOrPDF) {
+    return cb(
+      new Error("Invalid document. Please upload only images or pdfs.")
+    );
+  }
+  return cb(null, true);
 };
 
-export const getAllLicences: Controller = (req, res) => {
-  db.all(SQLs.GET_ALL_LICENCES, (err, rows) => {
-    if (err) return handleDBError(err, res);
+const upload = multer({ storage: storage, fileFilter: multerFilter });
 
-    return res.status(200).json({
-      status: "success",
-      licences: rows,
+export const uploadAttachments = upload.array("attachments");
+
+export const createLicence = tryCatch((req, res) => {
+  const files = req.files as Express.Multer.File[];
+  const { seller, moudjahid, wilaya, price } = req.body;
+  const [trimmedName, isValid] = validateName(moudjahid);
+  const attachments = [];
+
+  if (files.length > 0) {
+    const setFilesNames = ({ fieldname, mimetype }) => {
+      const fileExtension = mimetype.split("/")[1];
+      attachments.push(`${fieldname}-${Date.now()}.${fileExtension}`);
+    };
+    files.forEach(setFilesNames);
+  }
+
+  if (!isValid) throw Error("Please, provide a valid moudjahid name");
+  if (!isWilaya(wilaya)) throw Error("Please, provide a valid wilaya");
+
+  const params = [
+    seller,
+    trimmedName,
+    wilaya,
+    price,
+    JSON.stringify(attachments),
+  ];
+
+  const { lastInsertRowid } = S.createLicence.run(params);
+  const newLicence = S.getLicenceById.get(lastInsertRowid);
+
+  res.status(201).json({ status: "success", licence: newLicence });
+
+  // If licence has been created save attachments
+  files.forEach((file, i) => {
+    const filePath = path.join(path.resolve(), "uploads", attachments[i]);
+
+    fs.writeFile(filePath, file.buffer, (err) => {
+      if (err) console.log(`Error saving files 🔥 ${err.message}`);
     });
   });
-};
+});
 
-export const getLicenceById: Controller = (req, res) => {
+export const getAllLicences = tryCatch((req, res) => {
+  const licences = S.getLicences.all();
+
+  return res.status(200).json({ status: "success", licences });
+});
+
+export const getLicenceById = tryCatch((req, res) => {
   const { id } = req.params;
 
-  db.get(SQLs.GET_LICENCE_BY_ID, [id], (err, row) => {
-    if (err) return handleDBError(err, res);
-    if (!row) return handleDBError(new Error("Licence doesn't exist"), res);
+  const licence: { attachments?: string } = S.getLicenceById.get(id);
+  if (!licence) throw Error("Licence doesn't exist");
 
-    return res.status(200).json({ status: "success", licence: row });
-  });
-};
+  const attachments = JSON.parse(licence.attachments);
 
-export const createLicence: Controller = (req, res) => {
-  const { seller, moudjahid, wilaya, price } = req.body;
-  const trimmedName = moudjahid.replace(/\s{2,}/g, " ").trim();
-  const params = [seller, trimmedName, wilaya, price];
+  return res
+    .status(200)
+    .json({ status: "success", licence: { ...licence, attachments } });
+});
 
-  db.run(SQLs.CREATE_LICENCE, params, function (err) {
-    if (err) return handleDBError(err, res);
-
-    db.get(SQLs.GET_LICENCE_BY_ID, [this.lastID], (err, row) => {
-      return res.status(201).json({ status: "success", licence: row });
-    });
-  });
-};
-
-export const updateLicence: Controller = (req, res) => {
+export const updateLicence = tryCatch((req, res) => {
   const { id } = req.params;
   const { moudjahid, wilaya, price } = req.body;
-  const params = [moudjahid, wilaya, price, id];
+  const [trimmedName, isValid] = moudjahid ? validateName(moudjahid) : [];
 
-  db.run(SQLs.UPDATE_LICENCE, params, function (err) {
-    if (err) return handleDBError(err, res);
+  if (moudjahid && !isValid) {
+    throw Error("Please, provide valid moudjahid name");
+  }
+  if (wilaya && !isWilaya(wilaya)) {
+    throw Error("Please, provide a valid wilaya");
+  }
 
-    // IF NO ROW HAS BEEN EFFECTED
-    if (this.changes === 0) {
-      return handleDBError(new Error("licence doesn't exist"), res);
-    }
+  if (!moudjahid && !wilaya && !price) {
+    throw Error("No fields has been specified");
+  }
 
-    return db.get(SQLs.GET_LICENCE_BY_ID, [id], (err, row) => {
-      return res.status(200).json({ status: "success", licence: row });
-    });
-  });
-};
+  const params = [trimmedName, wilaya, price, id];
 
-export const deleteLicenceById: Controller = (req, res) => {
+  const { changes } = S.updateLicence.run(params);
+  if (changes === 0) throw Error("No licence with this id");
+
+  const updatedLicence = S.getLicenceById.get(id);
+
+  return res.status(200).json({ status: "success", licence: updatedLicence });
+});
+
+export const deleteLicenceById = tryCatch((req, res) => {
   const { id } = req.params;
 
-  db.run(SQLs.DELETE_LICENCE_BY_ID, [id], function (err) {
-    if (err) return handleDBError(err, res);
+  const { changes } = S.deleteLicenceById.run(id);
+  if (changes === 0) throw Error("licence doesn't exist");
 
-    if (this.changes === 0) {
-      return handleDBError(new Error("licence doesn't exist"), res);
-    }
+  return res.status(204).json({ status: "success" });
+});
 
-    return res.status(204).json({ status: "success" });
-  });
-};
+export const deleteLicences = tryCatch((req, res) => {
+  S.deleteLicences.run();
 
-export const deleteLicences: Controller = (req, res) => {
-  db.run(SQLs.DELETE_LICENCES, (err) => {
-    if (err) return handleDBError(err, res);
-
-    return res.status(204).json({ status: "success" });
-  });
-};
+  return res.status(204).json({ status: "success" });
+});
