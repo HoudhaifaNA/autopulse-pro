@@ -1,5 +1,4 @@
 import path from "path";
-// import sqlite from "sqlite3";
 import Database from "better-sqlite3";
 
 const isProd: boolean = process.env.NODE_ENV === "production";
