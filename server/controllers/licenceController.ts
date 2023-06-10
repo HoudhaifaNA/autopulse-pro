@@ -3,7 +3,7 @@ import path from "path";
 
 import multer from "multer";
 
-import * as S from "./statments";
+import * as S from "../statments/licenceStatments";
 import tryCatch from "../utils/tryCatch";
 import { isWilaya, validateName } from "../utils/validations";
 
@@ -26,10 +26,21 @@ const upload = multer({ storage: storage, fileFilter: multerFilter });
 export const uploadAttachments = upload.array("attachments");
 
 export const createLicence = tryCatch((req, res) => {
-  const files = req.files as Express.Multer.File[];
-  const { seller, moudjahid, wilaya, price } = req.body;
-  const [trimmedName, isValid] = validateName(moudjahid);
   const attachments = [];
+  const files = req.files as Express.Multer.File[];
+  const { seller, moudjahid, wilaya, price, releasedDate } = req.body;
+  const [trimmedName, isValid] = validateName(moudjahid);
+
+  if (!isValid) throw Error("Please, provide a valid moudjahid name");
+  if (!isWilaya(wilaya)) throw Error("Please, provide a valid wilaya");
+
+  const licence = S.getLicenceByMoudjahid.get(moudjahid);
+
+  // Check if there is an active licence with the same moudjahid
+  //@ts-ignore
+  if (licence && licence.isExpirated === "false") {
+    throw Error("Active licence with same moudjahid exists");
+  }
 
   if (files.length > 0) {
     const setFilesNames = ({ fieldname, mimetype }) => {
@@ -39,15 +50,13 @@ export const createLicence = tryCatch((req, res) => {
     files.forEach(setFilesNames);
   }
 
-  if (!isValid) throw Error("Please, provide a valid moudjahid name");
-  if (!isWilaya(wilaya)) throw Error("Please, provide a valid wilaya");
-
   const params = [
     seller,
     trimmedName,
     wilaya,
     price,
     JSON.stringify(attachments),
+    releasedDate,
   ];
 
   const { lastInsertRowid } = S.createLicence.run(params);

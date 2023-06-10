@@ -9,7 +9,7 @@ const IS_VALID = `
    CASE
     WHEN datetime('now') < validUntil AND carId IS NULL THEN 'true'
     ELSE 'false'
-    END AS valid`;
+    END AS isValid`;
 
 const IS_EXPIRATED = `
     CASE
