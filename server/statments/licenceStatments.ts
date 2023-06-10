@@ -1,7 +1,7 @@
 import db from "../database";
 
-const IS_NUMBER = (field) =>
-  `CHECK (typeof(${field}) = 'integer' OR typeof(${field}) = 'real')`;
+const IS_VALID_PRICE = (field) =>
+  `CHECK (typeof(${field}) = 'integer' OR typeof(${field}) = 'real' )`;
 
 // db.prepare("DROP TABLE licences").run();
 
@@ -27,7 +27,7 @@ db.prepare(
     wilaya TEXT NOT NULL,
     price INTEGER NOT NULL
       CHECK (price >= 4000) 
-      ${IS_NUMBER("price")},
+      ${IS_VALID_PRICE("price")},
     attachments TEXT,
     carId TEXT,
     validUntil TEXT NOT NULL,

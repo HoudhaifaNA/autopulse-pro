@@ -3,6 +3,8 @@ import db from "../database";
 const IS_NUMBER = (field) =>
   `CHECK (typeof(${field}) = 'integer' OR typeof(${field}) = 'real')`;
 
+// db.prepare("DROP TABLE clients").run();
+
 db.prepare(
   `CREATE TABLE IF NOT EXISTS clients(
     id INTEGER NOT NULL PRIMARY KEY,
