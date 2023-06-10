@@ -16,6 +16,6 @@ router
   .patch(controller.updateCar)
   .delete(controller.deleteCarById);
 
-router.route("/sell/:carId").patch(controller.sellCar);
+router.patch("/sell/:carId", controller.sellCar);
 
 export default router;

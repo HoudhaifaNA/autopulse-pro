@@ -33,7 +33,7 @@ export const createCar = tryCatch((req, res) => {
     registrationNumber,
     color,
     year,
-    seller,
+    sellerId,
     licenceId,
     costInEuros,
     euroPrice,
@@ -58,7 +58,7 @@ export const createCar = tryCatch((req, res) => {
     registrationNumber,
     color,
     year,
-    seller,
+    sellerId,
     licenceId,
     costInEuros,
     euroPrice,
@@ -117,16 +117,16 @@ export const updateCar = tryCatch((req, res) => {
 
 export const sellCar = tryCatch((req, res) => {
   const { carId } = req.params;
-  const { buyer, soldPrice } = req.body;
+  const { buyerId, soldPrice } = req.body;
 
   const car = S.getCarById.get(carId);
 
   //@ts-ignore
   if (car.soldPrice > 0) throw Error("Car has been sold");
 
-  if (!buyer || !soldPrice) throw Error("Bad params");
+  if (!buyerId || !soldPrice) throw Error("Bad params");
 
-  const { changes } = S.sellCar.run([buyer, soldPrice, carId]);
+  const { changes } = S.sellCar.run([buyerId, soldPrice, carId]);
   if (changes === 0) throw Error("Car doesn't exist");
 
   const soldCar = S.getCarById.get(carId);

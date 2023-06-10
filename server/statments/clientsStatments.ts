@@ -26,9 +26,13 @@ export const getClientById = db.prepare(`SELECT * FROM clients WHERE id = ?`);
 
 export const updateClient = db.prepare(`UPDATE clients 
     SET fullName = COALESCE(?, fullName),
-    phoneNumber = COALESCE(?, phoneNumber),
-    balance = COALESCE(balance + ?, balance)
+    phoneNumber = COALESCE(?, phoneNumber)
     WHERE id = ? `);
+
+export const updateBalance = db.prepare(`UPDATE clients
+  SET balance = balance + ?
+  WHERE id = ?
+`);
 
 export const deleteClientById = db.prepare(`DELETE FROM clients WHERE id = ?`);
 

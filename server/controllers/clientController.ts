@@ -35,7 +35,7 @@ export const createClient = tryCatch((req, res) => {
 
 export const updateClient = tryCatch((req, res) => {
   const { id } = req.params;
-  const { fullName, phoneNumber, balance } = req.body;
+  const { fullName, phoneNumber } = req.body;
   const [trimmedName, isValid] = validateName(fullName);
 
   if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
@@ -45,7 +45,7 @@ export const updateClient = tryCatch((req, res) => {
     throw Error("Please, provide correct name");
   }
 
-  const params = [trimmedName, phoneNumber, balance, id];
+  const params = [trimmedName, phoneNumber, id];
 
   const { changes } = S.updateClient.run(params);
   if (changes === 0) throw Error("No client with this id");
@@ -53,6 +53,18 @@ export const updateClient = tryCatch((req, res) => {
   const updatedClient = S.getClientById.get(id);
 
   return res.status(200).json({ status: "success", client: updatedClient });
+});
+
+export const updateBalance = tryCatch((req, res) => {
+  const { id } = req.params;
+  const { balance } = req.body;
+
+  const { changes } = S.updateBalance.run([balance, id]);
+  if (changes === 0) throw Error("No client with this id");
+
+  const client = S.getClientById.get(id);
+
+  return res.status(200).json({ status: "success", client });
 });
 
 export const deleteClientById = tryCatch((req, res) => {

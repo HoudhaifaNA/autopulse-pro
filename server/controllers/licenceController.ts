@@ -28,7 +28,7 @@ export const uploadAttachments = upload.array("attachments");
 export const createLicence = tryCatch((req, res) => {
   const attachments = [];
   const files = req.files as Express.Multer.File[];
-  const { seller, moudjahid, wilaya, price, releasedDate } = req.body;
+  const { sellerId, moudjahid, wilaya, price, releasedDate } = req.body;
   const [trimmedName, isValid] = validateName(moudjahid);
 
   if (!isValid) throw Error("Please, provide a valid moudjahid name");
@@ -51,7 +51,7 @@ export const createLicence = tryCatch((req, res) => {
   }
 
   const params = [
-    seller,
+    sellerId,
     trimmedName,
     wilaya,
     price,

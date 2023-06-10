@@ -16,4 +16,6 @@ router
   .patch(controller.updateClient)
   .delete(controller.deleteClientById);
 
+router.patch("/balance/:id", controller.updateBalance);
+
 export default router;
