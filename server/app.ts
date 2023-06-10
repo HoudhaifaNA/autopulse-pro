@@ -3,6 +3,7 @@ import cors from "cors";
 
 import clientsRoutes from "./routes/clientRoutes";
 import licenceRoutes from "./routes/licenceRoutes";
+import carRoutes from "./routes/carRoutes";
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json({ limit: "10kb" }));
 
 app.use("/api/clients", clientsRoutes);
 app.use("/api/licences", licenceRoutes);
+app.use("/api/cars", carRoutes);
 
 app.all("*", (req, res) => {
   res
@@ -20,7 +22,7 @@ app.all("*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log(`ERROR 🔥🔥 :  ${err.message}`);
+  console.log(`ERROR 🔥🔥 :  ${err}`);
   return res.status(400).json({ status: "error", message: err.message });
 });
 
