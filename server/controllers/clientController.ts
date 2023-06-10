@@ -1,4 +1,4 @@
-import * as S from "./statments";
+import * as S from "../statments/clientsStatments";
 import tryCatch from "../utils/tryCatch";
 import { isValidPhoneNumber, validateName } from "../utils/validations";
 
