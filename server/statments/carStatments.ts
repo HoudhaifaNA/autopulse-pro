@@ -23,7 +23,7 @@ db.prepare(
     registrationNumber TEXT NOT NULL,
     color TEXT NOT NULL,
     year TEXT NOT NULL,
-    seller TEXT NOT NULL,
+    sellerId INTEGER NOT NULL,
     licenceId INTEGER NOT NULL,
     costInEuros INTEGER ${IS_VALID_PRICE("costInEuros")},
     euroPrice INTEGER ${IS_VALID_PRICE("euroPrice")},
@@ -31,36 +31,42 @@ db.prepare(
     expenses TEXT,
     totalEurosAmount INTEGER NOT NULL ${IS_VALID_PRICE("totalEurosAmount")},
     totalCost INTEGER NOT NULL ${IS_VALID_PRICE("totalCost")},
-    buyer TEXT,
+    buyerId INTEGER,
     soldPrice INTEGER NOT NULL DEFAULT 0 ${IS_VALID_PRICE("soldPrice")} ,
     profit INTEGER AS (CASE WHEN soldPrice != 0 THEN soldPrice - totalCost ELSE 0 END) STORED,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (seller)
-       REFERENCES clients (fullName)
+      FOREIGN KEY (sellerId)
+       REFERENCES clients (id)
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
       FOREIGN KEY (licenceId)
        REFERENCES licences (id)
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
-      FOREIGN KEY (buyer)
-        REFERENCES clients (fullName)
+      FOREIGN KEY (buyerId)
+        REFERENCES clients (id)
         ON UPDATE NO ACTION
         ON DELETE CASCADE
 )`
 ).run();
 
-export const getCars = db.prepare(`SELECT  
-*,
-datetime(created_at,'localtime') AS created_at, 
-datetime(updated_at,'localtime') AS updated_at
-FROM cars`);
-
-export const getCarById =
-  db.prepare(`SELECT cars.*, moudjahid, licences.price AS licencePrice 
+const SELECT_STMT = `SELECT cars.*, 
+  moudjahid,
+  licences.price AS licencePrice,
+  clients.fullName AS seller,
+  CASE WHEN cars.buyerId IS NULL THEN NULL ELSE buyers.fullName END AS buyer,
+  datetime(created_at,'localtime') AS created_at, 
+  datetime(updated_at,'localtime') AS updated_at
   FROM cars
-  INNER JOIN licences on licences.id = licenceId
+  INNER JOIN licences ON licences.id = licenceId
+  INNER JOIN clients ON clients.id = cars.sellerId
+  LEFT JOIN clients AS buyers ON buyers.id = cars.buyerId
+`;
+
+export const getCars = db.prepare(SELECT_STMT);
+
+export const getCarById = db.prepare(`${SELECT_STMT}
   WHERE cars.id = ?
 `);
 
@@ -73,7 +79,7 @@ export const creatCar = db.prepare(`INSERT INTO cars(
   registrationNumber,
   color,
   year,
-  seller, 
+  sellerId, 
   licenceId,
   costInEuros,
   euroPrice,
@@ -103,7 +109,7 @@ export const updateCar = db.prepare(`UPDATE cars
 `);
 
 export const sellCar = db.prepare(`UPDATE cars 
- SET buyer = ?,
+ SET buyerId = ?,
      soldPrice = ?
      WHERE id = ?
  `);

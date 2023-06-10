@@ -17,12 +17,18 @@ const IS_EXPIRATED = `
     ELSE 'false'
     END AS isExpirated`;
 
-const SELECT_BASE_QUERY = `SELECT *, ${IS_VALID}, ${IS_EXPIRATED} FROM licences`;
+const SELECT_BASE_QUERY = `SELECT licences.*,
+  ${IS_VALID}, 
+  ${IS_EXPIRATED},
+  clients.fullName AS seller
+ FROM licences
+  INNER JOIN clients on clients.id = sellerId
+  `;
 
 db.prepare(
   `CREATE TABLE IF NOT EXISTS licences(
     id INTEGER PRIMARY KEY,
-    seller TEXT NOT NULL,
+    sellerId TEXT NOT NULL,
     moudjahid TEXT NOT NULL,
     wilaya TEXT NOT NULL,
     price INTEGER NOT NULL
@@ -31,8 +37,8 @@ db.prepare(
     attachments TEXT,
     carId TEXT,
     validUntil TEXT NOT NULL,
-    FOREIGN KEY (seller)
-     REFERENCES clients (fullName)
+    FOREIGN KEY (sellerId)
+     REFERENCES clients (id)
        ON UPDATE NO ACTION
        ON DELETE CASCADE
     FOREIGN KEY (carId)
@@ -44,14 +50,16 @@ db.prepare(
 
 export const getLicences = db.prepare(SELECT_BASE_QUERY);
 
-export const getLicenceById = db.prepare(`${SELECT_BASE_QUERY} WHERE id = ?`);
+export const getLicenceById = db.prepare(
+  `${SELECT_BASE_QUERY} WHERE licences.id = ?`
+);
 
 export const getLicenceByMoudjahid = db.prepare(
   `${SELECT_BASE_QUERY} WHERE moudjahid = ?`
 );
 
 export const createLicence = db.prepare(`INSERT INTO licences(
-    seller,
+    sellerId,
     moudjahid,
     wilaya,
     price,
