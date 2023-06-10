@@ -5,7 +5,9 @@ import { isValidPhoneNumber, validateName } from "../utils/validations";
 export const getAllClients = tryCatch((req, res) => {
   const clients = S.getClients.all();
 
-  return res.status(200).json({ status: "success", clients });
+  return res
+    .status(200)
+    .json({ status: "success", results: clients.length, clients });
 });
 
 export const getClientByID = tryCatch((req, res) => {

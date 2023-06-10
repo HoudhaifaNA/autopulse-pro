@@ -77,20 +77,18 @@ export const createLicence = tryCatch((req, res) => {
 export const getAllLicences = tryCatch((req, res) => {
   const licences = S.getLicences.all();
 
-  return res.status(200).json({ status: "success", licences });
+  return res
+    .status(200)
+    .json({ status: "success", results: licences.length, licences });
 });
 
 export const getLicenceById = tryCatch((req, res) => {
   const { id } = req.params;
 
-  const licence: { attachments?: string } = S.getLicenceById.get(id);
+  const licence = S.getLicenceById.get(id);
   if (!licence) throw Error("Licence doesn't exist");
 
-  const attachments = JSON.parse(licence.attachments);
-
-  return res
-    .status(200)
-    .json({ status: "success", licence: { ...licence, attachments } });
+  return res.status(200).json({ status: "success", licence });
 });
 
 export const updateLicence = tryCatch((req, res) => {

@@ -10,7 +10,9 @@ interface Licence {
 export const getCars = tryCatch((req, res) => {
   const cars = S.getCars.all();
 
-  return res.status(201).json({ status: "success", message: cars });
+  return res
+    .status(201)
+    .json({ status: "success", results: cars.length, message: cars });
 });
 
 export const getCarById = tryCatch((req, res) => {
