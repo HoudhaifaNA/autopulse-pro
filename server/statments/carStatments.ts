@@ -1,8 +1,16 @@
 import db from "../database";
 
-const IS_NUMBER = (field) =>
-  `CHECK (typeof(${field}) = 'integer' OR typeof(${field}) = 'real')`;
 // db.prepare("DROP TABLE cars").run();
+
+const IS_VALID_PRICE = (field) => {
+  return `
+  CHECK (${field} >= 0)
+  CHECK (typeof(${field}) = 'integer' OR typeof(${field}) = 'real')`;
+};
+
+const optionalUpdate = (field) => {
+  return `${field} = COALESCE(?, ${field})`;
+};
 
 db.prepare(
   `CREATE TABLE IF NOT EXISTS cars(
@@ -15,17 +23,17 @@ db.prepare(
     registrationNumber TEXT NOT NULL,
     color TEXT NOT NULL,
     year TEXT NOT NULL,
-    seller TEXT NOT NULL, 
+    seller TEXT NOT NULL,
     licenceId INTEGER NOT NULL,
-    costInEuro INTEGER,
-    euroPrice INTEGER,
-    purchasingPrice INTEGER NOT NULL,
+    costInEuros INTEGER ${IS_VALID_PRICE("costInEuros")},
+    euroPrice INTEGER ${IS_VALID_PRICE("euroPrice")},
+    purchasingPrice INTEGER NOT NULL ${IS_VALID_PRICE("purchasingPrice")},
     expenses TEXT,
-    totalEurosAmount INTEGER NOT NULL,
-    totalCost INTEGER NOT NULL,
-    soldPrice INTEGER ,
-    profit INTEGER AS (CASE WHEN soldPrice IS NOT NULL THEN soldPrice - purchasingPrice ELSE 0 END) STORED,
+    totalEurosAmount INTEGER NOT NULL ${IS_VALID_PRICE("totalEurosAmount")},
+    totalCost INTEGER NOT NULL ${IS_VALID_PRICE("totalCost")},
     buyer TEXT,
+    soldPrice INTEGER NOT NULL DEFAULT 0 ${IS_VALID_PRICE("soldPrice")} ,
+    profit INTEGER AS (CASE WHEN soldPrice != 0 THEN soldPrice - totalCost ELSE 0 END) STORED,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (seller)
@@ -67,7 +75,7 @@ export const creatCar = db.prepare(`INSERT INTO cars(
   year,
   seller, 
   licenceId,
-  costInEuro,
+  costInEuros,
   euroPrice,
   purchasingPrice,
   expenses,
@@ -78,9 +86,27 @@ export const creatCar = db.prepare(`INSERT INTO cars(
 
 export const updateCar = db.prepare(`UPDATE cars 
   SET updated_at = CURRENT_TIMESTAMP,
-   soldPrice = COALESCE(?, soldPrice)
+    ${optionalUpdate("brand")},
+    ${optionalUpdate("serie")},
+    ${optionalUpdate("model")},
+    ${optionalUpdate("serialNumber")},
+    ${optionalUpdate("registrationNumber")},
+    ${optionalUpdate("color")}, 
+    ${optionalUpdate("year")}, 
+    ${optionalUpdate("costInEuros")}, 
+    ${optionalUpdate("euroPrice")}, 
+    ${optionalUpdate("purchasingPrice")}, 
+    ${optionalUpdate("expenses")}, 
+    ${optionalUpdate("totalEurosAmount")}, 
+    ${optionalUpdate("totalCost")}
    WHERE id = ?
 `);
+
+export const sellCar = db.prepare(`UPDATE cars 
+ SET buyer = ?,
+     soldPrice = ?
+     WHERE id = ?
+ `);
 
 export const deleteCarById = db.prepare(`DELETE FROM cars WHERE id = ?`);
 
@@ -88,7 +114,7 @@ export const deleteAllCars = db.prepare(`DELETE FROM cars`);
 
 // onInserCarTrigger
 db.prepare(
-  `CREATE TRIGGER IF NOT EXISTS set_expirationDate
+  `CREATE TRIGGER IF NOT EXISTS setCarId
     AFTER INSERT ON cars
     FOR EACH ROW
       BEGIN
