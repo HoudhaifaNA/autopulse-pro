@@ -14,6 +14,7 @@ import {
 import tryCatch from "../utils/tryCatch";
 import { isWilaya, validateName } from "../utils/validations";
 import uid from "../../renderer/utils/uniqid";
+import AppError from "../utils/AppError";
 
 const storage = multer.memoryStorage();
 
@@ -23,7 +24,10 @@ const multerFilter = (req, file, cb) => {
 
   if (!isImageOrPDF) {
     return cb(
-      new Error("Invalid document. Please upload only images or pdfs.")
+      new AppError(
+        "Document invalide. Veuillez télécharger uniquement des images ou des fichiers PDF",
+        400
+      )
     );
   }
   return cb(null, true);
@@ -33,21 +37,28 @@ const upload = multer({ storage: storage, fileFilter: multerFilter });
 
 export const uploadAttachments = upload.array("attachments");
 
-export const createLicence = tryCatch((req, res) => {
+export const createLicence = tryCatch((req, res, next) => {
   const attachments = [];
   const files = req.files as Express.Multer.File[];
   const { sellerId, moudjahid, wilaya, price, releasedDate } = req.body;
   const [trimmedName, isValid] = validateName(moudjahid);
 
-  if (!isValid) throw Error("Please, provide a valid moudjahid name");
-  if (!isWilaya(wilaya)) throw Error("Please, provide a valid wilaya");
+  if (!isValid) {
+    return next(new AppError("Nom moudjahid incorrect", 400));
+  }
+  if (!wilaya || !isWilaya(wilaya)) {
+    return next(new AppError("Nom de wilaya incorrect", 400));
+  }
 
   const licence = S.getLicenceByMoudjahid.get(moudjahid);
 
   // Check if there is an active licence with the same moudjahid
+
   //@ts-ignore
   if (licence && licence.isExpirated === "false") {
-    throw Error("Active licence with same moudjahid exists");
+    return next(
+      new AppError("Une licence active avec le même moudjahid existe", 403)
+    );
   }
 
   if (files.length > 0) {
@@ -93,12 +104,12 @@ export const createLicence = tryCatch((req, res) => {
     const filePath = path.join(path.resolve(), "uploads", attachments[i]);
 
     fs.writeFile(filePath, file.buffer, (err) => {
-      if (err) console.log(`Error saving files 🔥 ${err.message}`);
+      if (err) return console.log(`Error saving files 📁 ${err}`);
     });
   });
 });
 
-export const getAllLicences = tryCatch((req, res) => {
+export const getAllLicences = tryCatch((req, res, next) => {
   const licences = S.getLicences.all();
 
   return res
@@ -106,35 +117,32 @@ export const getAllLicences = tryCatch((req, res) => {
     .json({ status: "success", results: licences.length, licences });
 });
 
-export const getLicenceById = tryCatch((req, res) => {
+export const getLicenceById = tryCatch((req, res, next) => {
   const { id } = req.params;
 
   const licence = S.getLicenceById.get(id);
-  if (!licence) throw Error("Licence doesn't exist");
+  if (!licence) return next(new AppError("Licence n'existe pas", 404));
 
   return res.status(200).json({ status: "success", licence });
 });
 
-export const updateLicence = tryCatch((req, res) => {
+export const updateLicence = tryCatch((req, res, next) => {
   const { id } = req.params;
   const { moudjahid, wilaya, price } = req.body;
-  const [trimmedName, isValid] = moudjahid ? validateName(moudjahid) : [];
+  const [trimmedName, isValid] = validateName(moudjahid);
 
   if (moudjahid && !isValid) {
-    throw Error("Please, provide valid moudjahid name");
-  }
-  if (wilaya && !isWilaya(wilaya)) {
-    throw Error("Please, provide a valid wilaya");
+    return next(new AppError("Nom moudjahid incorrect", 400));
   }
 
-  if (!moudjahid && !wilaya && !price) {
-    throw Error("No fields has been specified");
+  if (wilaya && !isWilaya(wilaya)) {
+    return next(new AppError("Nom de wilaya incorrect", 400));
   }
 
   const params = [trimmedName, wilaya, price, id];
 
   const { changes } = S.updateLicence.run(params);
-  if (changes === 0) throw Error("No licence with this id");
+  if (changes === 0) return next(new AppError("Licence n'existe pas", 404));
 
   const updatedLicence = S.getLicenceById.get(id);
 
@@ -147,17 +155,17 @@ const deleteAttachments = async (file) => {
     try {
       await unlink(deleteFile);
     } catch (err) {
-      console.log("Error deleting files");
+      return console.log(`Error deleting files 📁 ${err}`);
     }
   }
 };
 
-export const deleteLicenceById = tryCatch((req, res) => {
+export const deleteLicenceById = tryCatch((req, res, next) => {
   const { id } = req.params;
 
   const licence = S.getLicenceById.get(id);
 
-  if (!licence) throw Error("licence doesn't exist");
+  if (!licence) return next(new AppError("Licence n'existe pas", 404));
 
   S.deleteLicenceById.run(id);
 
@@ -172,16 +180,18 @@ export const deleteLicenceById = tryCatch((req, res) => {
   return res.status(204).json({ status: "success" });
 });
 
-export const deleteLicences = tryCatch(async (req, res) => {
+export const deleteLicences = tryCatch((req, res) => {
   S.deleteLicences.run();
-  deleteTransactionByType.run(["licence"]);
+  deleteTransactionByType.run("licence");
 
   const uploadDir = path.join(path.resolve(), "uploads");
 
   // Delete all attachments
-  await Promise.all(
-    (await readdir(uploadDir)).map((file) => deleteAttachments(file))
-  );
+  (async () => {
+    await Promise.all(
+      (await readdir(uploadDir)).map((file) => deleteAttachments(file))
+    );
+  })();
 
   return res.status(204).json({ status: "success" });
 });

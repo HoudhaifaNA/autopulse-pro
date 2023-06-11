@@ -6,6 +6,7 @@ import licenceRoutes from "./routes/licenceRoutes";
 import carRoutes from "./routes/carRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
 import attachmentController from "./controllers/attachmentController";
+import errorController from "./controllers/errorController";
 
 const app = express();
 
@@ -25,9 +26,6 @@ app.all("*", (req, res) => {
     .json({ status: "error", message: "No API endpoint with this url" });
 });
 
-app.use((err, req, res, next) => {
-  console.log(`ERROR 🔥🔥 :  ${err}`);
-  return res.status(400).json({ status: "error", message: err.message });
-});
+app.use(errorController);
 
 export default app;

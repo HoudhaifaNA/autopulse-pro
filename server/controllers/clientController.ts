@@ -1,8 +1,9 @@
 import * as S from "../statments/clientStatments";
+import AppError from "../utils/AppError";
 import tryCatch from "../utils/tryCatch";
 import { isValidPhoneNumber, validateName } from "../utils/validations";
 
-export const getAllClients = tryCatch((req, res) => {
+export const getAllClients = tryCatch((req, res, next) => {
   const clients = S.getClients.all();
 
   return res
@@ -10,22 +11,23 @@ export const getAllClients = tryCatch((req, res) => {
     .json({ status: "success", results: clients.length, clients });
 });
 
-export const getClientByID = tryCatch((req, res) => {
+export const getClientByID = tryCatch((req, res, next) => {
   const { id } = req.params;
 
   const client = S.getClientById.get(id);
 
-  if (!client) throw Error("Client doesn't exist");
+  if (!client) return next(new AppError("Client n'existe pas", 404));
 
   return res.status(200).json({ status: "success", client });
 });
 
-export const createClient = tryCatch((req, res) => {
+export const createClient = tryCatch((req, res, next) => {
   const { fullName, phoneNumber, balance = 0 } = req.body;
   const [trimmedName, isValid] = validateName(fullName);
 
-  if (!isValid) throw Error("Please, provide correct name");
-  if (!isValidPhoneNumber(phoneNumber)) throw Error("Invalid phone number");
+  if (!isValid) return next(new AppError("Nom incorrect", 400));
+  if (!isValidPhoneNumber(phoneNumber))
+    return next(new AppError("Numéro de téléphone invalide", 400));
 
   const params = [trimmedName, phoneNumber, balance];
 
@@ -35,45 +37,46 @@ export const createClient = tryCatch((req, res) => {
   return res.status(201).json({ status: "success", client: newClient });
 });
 
-export const updateClient = tryCatch((req, res) => {
+export const updateClient = tryCatch((req, res, next) => {
   const { id } = req.params;
   const { fullName, phoneNumber } = req.body;
   const [trimmedName, isValid] = validateName(fullName);
 
-  if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
-    throw Error("Invalid phone number");
-  }
   if (trimmedName && !isValid) {
-    throw Error("Please, provide correct name");
+    return next(new AppError("Please, provide correct name", 400));
+  }
+
+  if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
+    return next(new AppError("Numéro de téléphone invalide", 400));
   }
 
   const params = [trimmedName, phoneNumber, id];
 
   const { changes } = S.updateClient.run(params);
-  if (changes === 0) throw Error("No client with this id");
+  if (changes === 0) return next(new AppError("Client n'existe pas", 404));
 
   const updatedClient = S.getClientById.get(id);
 
   return res.status(200).json({ status: "success", client: updatedClient });
 });
 
-export const updateBalance = tryCatch((req, res) => {
+export const updateBalance = tryCatch((req, res, next) => {
   const { id } = req.params;
   const { balance } = req.body;
 
   const { changes } = S.updateBalance.run([balance, id]);
-  if (changes === 0) throw Error("No client with this id");
+  if (changes === 0) return next(new AppError("Client n'existe pas", 404));
 
   const client = S.getClientById.get(id);
 
   return res.status(200).json({ status: "success", client });
 });
 
-export const deleteClientById = tryCatch((req, res) => {
+export const deleteClientById = tryCatch((req, res, next) => {
   const { id } = req.params;
 
   const { changes } = S.deleteClientById.run(id);
-  if (changes === 0) throw Error("Client doesn't exist");
+  if (changes === 0) return next(new AppError("Client n'existe pas", 404));
 
   return res.status(204).json({ status: "success" });
 });

@@ -8,6 +8,7 @@ import {
   deleteTransactionByType,
 } from "../statments/transactionStatments";
 import tryCatch from "../utils/tryCatch";
+import AppError from "../utils/AppError";
 
 interface Licence {
   isValid?: string;
@@ -22,17 +23,17 @@ export const getCars = tryCatch((req, res) => {
     .json({ status: "success", results: cars.length, message: cars });
 });
 
-export const getCarById = tryCatch((req, res) => {
+export const getCarById = tryCatch((req, res, next) => {
   const { carId } = req.params;
 
   const car = S.getCarById.get(carId);
 
-  if (!car) throw Error("Car doesn't exist");
+  if (!car) return next(new AppError("Voiture n'existe pas", 404));
 
   return res.status(201).json({ status: "success", car });
 });
 
-export const createCar = tryCatch((req, res) => {
+export const createCar = tryCatch((req, res, next) => {
   const {
     type,
     brand,
@@ -55,7 +56,7 @@ export const createCar = tryCatch((req, res) => {
   const currLicence: Licence = getLicenceById.get(licenceId);
 
   if (!currLicence || currLicence.isValid === "false") {
-    throw Error("Invalid licence");
+    return next(new AppError("Licence invalide", 400));
   }
 
   const { lastInsertRowid } = S.creatCar.run([
@@ -97,7 +98,7 @@ export const createCar = tryCatch((req, res) => {
   return res.status(201).json({ status: "success", car: newCar });
 });
 
-export const updateCar = tryCatch((req, res) => {
+export const updateCar = tryCatch((req, res, next) => {
   const { carId } = req.params;
   const {
     brand,
@@ -132,28 +133,29 @@ export const updateCar = tryCatch((req, res) => {
     carId,
   ]);
 
-  if (changes === 0) throw Error("Car doesn't exist");
+  if (changes === 0) return next(new AppError("Voiture n'existe pas", 404));
 
   const updatedCar = S.getCarById.get(carId);
 
   return res.status(200).json({ status: "success", car: updatedCar });
 });
 
-export const sellCar = tryCatch((req, res) => {
+export const sellCar = tryCatch((req, res, next) => {
   const { carId } = req.params;
   const { buyerId, soldPrice } = req.body;
 
   const car = S.getCarById.get(carId);
 
-  if (!car) throw Error("Car doesn't  exist");
+  if (!car) return next(new AppError("Voiture n'existe pas", 404));
 
   //@ts-ignore
   const { brand, serie, color, registrationNumber, year } = car;
 
   //@ts-ignore
-  if (car.soldPrice > 0) throw Error("Car has been sold");
+  if (car.soldPrice > 0) return next(new AppError("Voiture a été vendue", 403));
 
-  if (!buyerId || !soldPrice) throw Error("Bad params");
+  if (!buyerId || !soldPrice)
+    return next(new AppError("Mauvais paramètres", 400));
 
   S.sellCar.run([buyerId, soldPrice, carId]);
 
@@ -178,11 +180,11 @@ export const sellCar = tryCatch((req, res) => {
   return res.status(200).json({ status: "success", car: soldCar });
 });
 
-export const deleteCarById = tryCatch((req, res) => {
+export const deleteCarById = tryCatch((req, res, next) => {
   const { carId } = req.params;
 
   const { changes } = S.deleteCarById.run(carId);
-  if (changes === 0) throw Error("Car doesn't exist");
+  if (changes === 0) return next(new AppError("Voiture n'existe pas", 404));
 
   deleteTransactionByProduct.run([carId, "car"]);
 
