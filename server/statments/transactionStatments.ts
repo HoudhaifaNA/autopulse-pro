@@ -66,6 +66,9 @@ export const createTransaction = db.prepare(`INSERT INTO transactions(
 export const deleteTransactionByProduct = db.prepare(`DELETE FROM transactions 
     WHERE productId = ? AND type = ?`);
 
+export const deleteTransactionByType = db.prepare(`DELETE FROM transactions 
+    WHERE  type = ?`);
+
 export const deleteTransactionById = db.prepare(`DELETE FROM transactions
     WHERE id = ?
 `);
