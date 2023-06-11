@@ -1,11 +1,19 @@
 import fs from "fs";
+import { readdir, unlink } from "fs/promises";
 import path from "path";
 
 import multer from "multer";
+import dayjs from "dayjs";
 
 import * as S from "../statments/licenceStatments";
+import {
+  createTransaction,
+  deleteTransactionByProduct,
+  deleteTransactionByType,
+} from "../statments/transactionStatments";
 import tryCatch from "../utils/tryCatch";
 import { isWilaya, validateName } from "../utils/validations";
+import uid from "../../renderer/utils/uniqid";
 
 const storage = multer.memoryStorage();
 
@@ -45,7 +53,7 @@ export const createLicence = tryCatch((req, res) => {
   if (files.length > 0) {
     const setFilesNames = ({ fieldname, mimetype }) => {
       const fileExtension = mimetype.split("/")[1];
-      attachments.push(`${fieldname}-${Date.now()}.${fileExtension}`);
+      attachments.push(`${fieldname}-${uid()}-${Date.now()}.${fileExtension}`);
     };
     files.forEach(setFilesNames);
   }
@@ -60,6 +68,22 @@ export const createLicence = tryCatch((req, res) => {
   ];
 
   const { lastInsertRowid } = S.createLicence.run(params);
+
+  const today = dayjs(new Date()).format("YYYY-MM-DD");
+  const transacrtionParams = [
+    lastInsertRowid,
+    sellerId,
+    today,
+    "licence",
+    `LIC ${trimmedName}`,
+    wilaya,
+    "--",
+    "--",
+    price,
+    "entrante",
+  ];
+  createTransaction.run(transacrtionParams);
+
   const newLicence = S.getLicenceById.get(lastInsertRowid);
 
   res.status(201).json({ status: "success", licence: newLicence });
@@ -117,17 +141,47 @@ export const updateLicence = tryCatch((req, res) => {
   return res.status(200).json({ status: "success", licence: updatedLicence });
 });
 
+const deleteAttachments = async (file) => {
+  const deleteFile = path.join(path.resolve(), "uploads", file);
+  if (fs.existsSync(deleteFile)) {
+    try {
+      await unlink(deleteFile);
+    } catch (err) {
+      console.log("Error deleting files");
+    }
+  }
+};
+
 export const deleteLicenceById = tryCatch((req, res) => {
   const { id } = req.params;
 
-  const { changes } = S.deleteLicenceById.run(id);
-  if (changes === 0) throw Error("licence doesn't exist");
+  const licence = S.getLicenceById.get(id);
+
+  if (!licence) throw Error("licence doesn't exist");
+
+  S.deleteLicenceById.run(id);
+
+  deleteTransactionByProduct.run([id, "licence"]);
+
+  // Delete all attachment's related to this licence
+  //@ts-ignore
+  const attachments = JSON.parse(licence.attachments);
+
+  attachments.forEach((at) => deleteAttachments(at));
 
   return res.status(204).json({ status: "success" });
 });
 
-export const deleteLicences = tryCatch((req, res) => {
+export const deleteLicences = tryCatch(async (req, res) => {
   S.deleteLicences.run();
+  deleteTransactionByType.run(["licence"]);
+
+  const uploadDir = path.join(path.resolve(), "uploads");
+
+  // Delete all attachments
+  await Promise.all(
+    (await readdir(uploadDir)).map((file) => deleteAttachments(file))
+  );
 
   return res.status(204).json({ status: "success" });
 });
