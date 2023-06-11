@@ -4,6 +4,7 @@ import cors from "cors";
 import clientsRoutes from "./routes/clientRoutes";
 import licenceRoutes from "./routes/licenceRoutes";
 import carRoutes from "./routes/carRoutes";
+import transactionRoutes from "./routes/transactionRoutes";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json({ limit: "10kb" }));
 app.use("/api/clients", clientsRoutes);
 app.use("/api/licences", licenceRoutes);
 app.use("/api/cars", carRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 app.all("*", (req, res) => {
   res
