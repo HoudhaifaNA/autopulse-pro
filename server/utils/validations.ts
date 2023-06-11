@@ -10,6 +10,8 @@ export const validateName = (name: string) => {
   const CONSECUTIVE_WHITE_SPACES = /\s+/g;
   const VALID_NAME = /^(?!\s)([a-z ,.'-]+)$/i;
 
+  if (!name) return ["", false] as const;
+
   const trimmedName = name.replace(CONSECUTIVE_WHITE_SPACES, " ").trim();
   const isValid = VALID_NAME.test(trimmedName);
 
