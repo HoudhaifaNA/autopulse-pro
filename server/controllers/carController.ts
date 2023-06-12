@@ -58,9 +58,11 @@ export const createCar = tryCatch((req, res, next) => {
   if (!currLicence || currLicence.isValid === "false") {
     return next(new AppError("Licence invalide", 400));
   }
+  const carFullName = `${brand} ${serie} ${model}`;
 
   const { lastInsertRowid } = S.creatCar.run([
     type,
+    carFullName,
     brand,
     serie,
     model,
@@ -83,7 +85,7 @@ export const createCar = tryCatch((req, res, next) => {
     sellerId,
     `${today}`,
     "car",
-    `${brand} ${serie}`,
+    carFullName,
     color,
     registrationNumber,
     year,
@@ -116,7 +118,11 @@ export const updateCar = tryCatch((req, res, next) => {
     totalCost,
   } = req.body;
 
+  let carFullName = null;
+
+  if (brand && serie && model) carFullName = `${brand} ${serie} ${model}`;
   const { changes } = S.updateCar.run([
+    carFullName,
     brand,
     serie,
     model,

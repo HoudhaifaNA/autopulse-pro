@@ -16,6 +16,7 @@ db.prepare(
   `CREATE TABLE IF NOT EXISTS cars(
     id INTEGER PRIMARY KEY,
     type TEXT NOT NULL,
+    name TEXT NOT NULL,
     brand TEXT NOT NULL,
     serie TEXT NOT NULL,
     model TEXT NOT NULL,
@@ -72,6 +73,7 @@ export const getCarById = db.prepare(`${SELECT_STMT}
 
 export const creatCar = db.prepare(`INSERT INTO cars(
   type,
+  name,
   brand,
   serie,
   model,
@@ -87,11 +89,12 @@ export const creatCar = db.prepare(`INSERT INTO cars(
   expenses,
   totalEurosAmount,
   totalCost
-) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `);
 
 export const updateCar = db.prepare(`UPDATE cars 
   SET updated_at = CURRENT_TIMESTAMP,
+    ${optionalUpdate("name")},
     ${optionalUpdate("brand")},
     ${optionalUpdate("serie")},
     ${optionalUpdate("model")},
