@@ -10,7 +10,8 @@ db.prepare(
     id INTEGER NOT NULL PRIMARY KEY,
     fullName TEXT NOT NULL UNIQUE COLLATE NOCASE,
     phoneNumber TEXT NOT NULL UNIQUE,
-    balance INTEGER NOT NULL ${IS_NUMBER("balance")}
+    balance INTEGER NOT NULL ${IS_NUMBER("balance")},
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
 )`
 ).run();
 

@@ -56,8 +56,8 @@ const SELECT_STMT = `SELECT cars.*,
   licences.price AS licencePrice,
   clients.fullName AS seller,
   CASE WHEN cars.buyerId IS NULL THEN NULL ELSE buyers.fullName END AS buyer,
-  datetime(created_at,'localtime') AS created_at, 
-  datetime(updated_at,'localtime') AS updated_at
+  datetime(cars.created_at,'localtime') AS created_at, 
+  datetime(cars.updated_at,'localtime') AS updated_at
   FROM cars
   INNER JOIN licences ON licences.id = licenceId
   INNER JOIN clients ON clients.id = cars.sellerId

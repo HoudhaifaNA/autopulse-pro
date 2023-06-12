@@ -37,6 +37,7 @@ db.prepare(
     attachments TEXT,
     carId TEXT,
     validUntil TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (sellerId)
      REFERENCES clients (id)
        ON UPDATE NO ACTION

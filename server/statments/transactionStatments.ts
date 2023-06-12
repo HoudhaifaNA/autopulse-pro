@@ -26,6 +26,7 @@ db.prepare(
     info4 TEXT,
     total INTEGER NOT NULL,
     way TEXT NOT NULL CHECK (way IN ('sortante', 'entrante')),
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (productId, type, way),
     FOREIGN KEY (clientId)
      REFERENCES clients (id)
