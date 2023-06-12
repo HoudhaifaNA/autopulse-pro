@@ -1,19 +1,26 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import clientsRoutes from "./routes/clientRoutes";
 import licenceRoutes from "./routes/licenceRoutes";
 import carRoutes from "./routes/carRoutes";
 import transactionRoutes from "./routes/transactionRoutes";
+import userRoutes from "./routes/userRoutes";
 import attachmentController from "./controllers/attachmentController";
 import errorController from "./controllers/errorController";
+import * as authController from "./controllers/authController";
 
 const app = express();
 
 app.use(cors());
 
+app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
 
+app.use("/api/users", userRoutes);
+
+app.use(authController.protect);
 app.use("/api/clients", clientsRoutes);
 app.use("/api/licences", licenceRoutes);
 app.use("/api/cars", carRoutes);
