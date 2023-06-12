@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
+import searchController from "./controllers/searchController";
 import clientsRoutes from "./routes/clientRoutes";
 import licenceRoutes from "./routes/licenceRoutes";
 import carRoutes from "./routes/carRoutes";
@@ -21,6 +22,7 @@ app.use(express.json({ limit: "10kb" }));
 app.use("/api/users", userRoutes);
 
 app.use(authController.protect);
+app.get("/api/search", searchController);
 app.use("/api/clients", clientsRoutes);
 app.use("/api/licences", licenceRoutes);
 app.use("/api/cars", carRoutes);
