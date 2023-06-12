@@ -44,6 +44,14 @@ const handleNullError = (err) => {
   return new AppError(message, 400);
 };
 
+const handleJWTError = () => {
+  return new AppError("Jeton invalide. Veuillez vous reconnecter", 401);
+};
+
+const handleExpiredJWT = () => {
+  return new AppError("Jeton a expiré. Veuillez vous reconnecter", 401);
+};
+
 //-------------------------//
 
 const sendErroDev: TErrorController = (err, req, res) => {
@@ -84,6 +92,9 @@ const errorController: TErrorController = (err, req, res, next) => {
       error = handleForeignKeyError();
     if (error.message.startsWith("CHECK")) error = handleCheckError(err);
     if (error.message.startsWith("NOT NULL")) error = handleNullError(err);
+    if (error.message.startsWith("JsonWebTokenError")) error = handleJWTError();
+    if (error.message.startsWith("TokenExpiredError"))
+      error = handleExpiredJWT();
 
     sendErrorProd(error, req, res);
   }
