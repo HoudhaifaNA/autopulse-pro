@@ -20,7 +20,7 @@ export const getCars = tryCatch((req, res) => {
 
   return res
     .status(200)
-    .json({ status: "success", results: cars.length, message: cars });
+    .json({ status: "success", results: cars.length, cars });
 });
 
 export const getCarById = tryCatch((req, res, next) => {
