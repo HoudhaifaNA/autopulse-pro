@@ -6,26 +6,32 @@ import Form from "components/Form/Form";
 import { TypedInput } from "components/Input/Input";
 
 import { clientSchema } from "Schemas/FormSchemas";
+import API from "utils/API";
 
 interface Values {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  debt: number;
+  balance: number;
 }
 
 const INITIAL_VALUES = {
   firstName: "",
   lastName: "",
   phoneNumber: "",
-  debt: 0,
+  balance: 0,
 };
 
-const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
-  setTimeout(() => {
-    console.log(values);
+const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
+  const { firstName, lastName, phoneNumber, balance } = values;
+  const fullName = `${firstName} ${lastName}`;
+  try {
+    await API.post("/clients", { fullName, phoneNumber, balance });
+
     actions.resetForm();
-  }, 1000);
+  } catch (err: any) {
+    console.log(err.response.data.message);
+  }
 };
 
 const ClientForm = () => {
@@ -54,15 +60,15 @@ const ClientForm = () => {
       <FormGroup>
         <TypedInput
           name="phoneNumber"
-          type="tel"
+          type="text"
           label="Numéro de téléphone"
           placeholder="Numéro de téléphone du client"
         />
         <TypedInput
-          name="debt"
+          name="balance"
           type="number"
-          label="Dette"
-          placeholder="Dette"
+          label="Solde"
+          placeholder="Solde"
           addOn="DZD"
         />
       </FormGroup>
