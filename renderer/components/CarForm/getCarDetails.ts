@@ -61,10 +61,10 @@ const getCarDetails = () => {
     },
     {
       section: "Détails d'achat",
-      Vendeur: seller,
+      Vendeur: seller.name,
       "Prix ​​d'achat": PPText,
       Licence: licence.name,
-      "Prix ​​de la licence": `${licence.price}.00DZD`,
+      "Prix ​​de la licence": `${licence.price}.00 DZD`,
     },
     expensesDZDCost !== 0 && { section: "Dépenses", ...expensesList },
     {
