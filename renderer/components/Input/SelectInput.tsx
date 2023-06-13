@@ -38,6 +38,7 @@ const SelectInput = (props: T.SelectInputProps) => {
     label,
     placeholder,
     name,
+    relatedFields,
     autoFocus,
     items,
     iconSize,
@@ -62,8 +63,11 @@ const SelectInput = (props: T.SelectInputProps) => {
     onClick: () => setFocus(!isFocused),
   };
 
-  const onClickOption = (item: string) => {
-    setFieldValue(name, item);
+  const onClickOption = (item: any) => {
+    setFieldValue(name, item.mainText);
+    relatedFields?.forEach((fld, i) => {
+      setFieldValue(fld, item.relatedValues[i]);
+    });
     setFocus(false);
   };
 

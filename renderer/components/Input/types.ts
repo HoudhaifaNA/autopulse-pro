@@ -20,6 +20,7 @@ type BaseInputFields = Pick<
 
 export interface SelectInputProps extends BaseInputFields {
   items: DropdownProps["items"];
+  relatedFields?: string[];
   iconSize?: DropdownProps["iconSize"];
   buttons?: DropdownProps["children"];
   elementAs?: "input" | "div";
