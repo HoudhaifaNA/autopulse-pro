@@ -6,8 +6,11 @@ import Icon from "components/Icon/Icon";
 import { DropdownItemArgs, DropdownProps } from "components/Dropdown/types";
 
 const renderItems = ({ items, onItemClick, iconSize }: DropdownItemArgs) => {
-  return items!.map(({ mainText, icon, secondText }, i) => {
-    const onOptionClick = onItemClick ? () => onItemClick(mainText) : () => 1;
+  return items!.map(({ mainText, icon, relatedValues, secondText }, i) => {
+    let onOptionClick;
+    if (onItemClick) {
+      onOptionClick = () => onItemClick({ mainText, relatedValues });
+    }
 
     return (
       <S.DropdownItem key={i} onClick={onOptionClick}>
