@@ -7,7 +7,8 @@ import { TypedInput } from "components/Input/Input";
 import Button from "components/Button/Button";
 
 import convertPath from "utils/convertPath";
-// import { loginSchema } from "Schemas/FormSchemas";
+import { loginSchema } from "Schemas/FormSchemas";
+import API from "utils/API";
 
 interface Values {
   username: string;
@@ -16,12 +17,19 @@ interface Values {
 
 const INITIAL_VALUES = { username: "", password: "" };
 
-const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
-  // setTimeout(() => {
-  // console.log(values);
-  // actions.resetForm();
-  location.assign(convertPath("clients"));
-  // }, 2000);
+const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
+  const { username, password } = values;
+  try {
+    await API.post("/users/login", { username, password });
+
+    actions.resetForm();
+
+    setTimeout(() => {
+      location.assign(convertPath("clients"));
+    }, 500);
+  } catch (err: any) {
+    console.log(err.response.data.message);
+  }
 };
 
 const LoginForm = () => {
@@ -30,7 +38,7 @@ const LoginForm = () => {
   return (
     <Formik
       initialValues={INITIAL_VALUES}
-      // validationSchema={loginSchema}
+      validationSchema={loginSchema}
       onSubmit={onSubmit}
     >
       {({ handleSubmit, isSubmitting }: FormikProps<Values>) => {
