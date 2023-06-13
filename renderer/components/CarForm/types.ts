@@ -1,6 +1,11 @@
 interface Licence {
+  id: number;
   name: string;
   price: number;
+}
+interface Seller {
+  id: number;
+  name: string;
 }
 
 interface Expenses {
@@ -22,7 +27,7 @@ export interface Values {
   registrationNumber: string;
   color: string;
   year: string;
-  seller: string;
+  seller: Seller;
   euroCost: number;
   euroPrice: number;
   purchasingPrice: number;

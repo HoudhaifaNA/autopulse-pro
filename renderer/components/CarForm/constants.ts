@@ -3,7 +3,7 @@ import uid from "utils/uniqid";
 import { Values } from "components/CarForm/types";
 
 export const INITIAL_VALUES: Values = {
-  step: 1,
+  step: 3,
   carType: "importé",
   brand: "",
   serie: "",
@@ -12,11 +12,11 @@ export const INITIAL_VALUES: Values = {
   registrationNumber: "",
   color: "",
   year: "",
-  seller: "",
+  seller: { id: 0, name: "" },
   euroCost: 0,
   euroPrice: 0,
   purchasingPrice: 0,
-  licence: { name: "", price: 0 },
+  licence: { id: 0, name: "", price: 0 },
   expenses: [
     {
       id: uid(),
@@ -65,18 +65,16 @@ interface TCarsData {
 }
 
 // Return car brands list in the dropdown form
-export const CAR_BRANDS_LIST = cars
-  .sort((prev, curr) => prev.brand.localeCompare(curr.brand))
-  .map(({ brand }) => {
-    return { mainText: brand, icon: slugify(brand) };
-  });
+export const CAR_BRANDS_LIST = cars.map(({ brand }) => {
+  return { mainText: brand, icon: slugify(brand) };
+});
 
 // Return car brands with their series to be selected dynamically in the dropdown
 // ex: {'mercedes': [{mainText: 'C'},{mainText: 'CLA'}]}
 export let CAR_SERIES: TCarsData = {};
 
 cars.forEach(({ brand, series }) => {
-  const seriesList = series.sort(Intl.Collator().compare).map((serie) => {
+  const seriesList = series.map((serie) => {
     return { mainText: serie };
   });
 
