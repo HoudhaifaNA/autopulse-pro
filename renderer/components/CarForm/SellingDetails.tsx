@@ -1,46 +1,58 @@
 import { useFormikContext } from "formik";
+import useSWR from "swr";
 
 import { FormGroup } from "components/Form/Form.styled";
-import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 
 import { TypedInput, SelectInput } from "components/Input/Input";
-import Button from "components/Button/Button";
 
 import { Values } from "components/CarForm/types";
+import { fetcher } from "utils/API";
+
+const getItems = () => {
+  const licencesRes = useSWR("/licences", fetcher);
+  const clientsRes = useSWR("/clients", fetcher);
+  let licencesItems = [];
+  let clientsItems = [];
+
+  if (clientsRes.data) {
+    clientsItems = clientsRes.data.clients.map(({ id, fullName }: any) => {
+      return { mainText: fullName, relatedValues: [id] };
+    });
+  }
+
+  if (licencesRes.data) {
+    licencesItems = licencesRes.data.licences
+      .filter(({ isValid }: any) => isValid === "true")
+      .map(({ id, price, moudjahid }: any) => {
+        return { mainText: moudjahid, relatedValues: [id, price] };
+      });
+  }
+
+  return [clientsItems, licencesItems] as const;
+};
 
 const SellingDetails = () => {
   const { values } = useFormikContext<Values>();
   const { carType } = values;
+  const [clientsItems, licencesItems] = getItems();
 
   return (
     <>
       <FormGroup>
         <SelectInput
           label="Vendeur :"
-          name="seller"
+          name="seller.name"
+          relatedFields={["seller.id"]}
           placeholder="Nom du vendeur"
           autoFocus
-          items={[]}
-          buttons={
-            <ButtonItem>
-              <Button variant="ghost" icon="add">
-                Créer un nouveau client
-              </Button>
-            </ButtonItem>
-          }
+          items={clientsItems}
         />
         <SelectInput
           label="Licence :"
           name="licence.name"
+          relatedFields={["licence.id", "licence.price"]}
           placeholder="Nom du moujahid"
-          items={[]}
-          buttons={
-            <ButtonItem>
-              <Button variant="ghost" icon="add">
-                Créer une nouvelle licence
-              </Button>
-            </ButtonItem>
-          }
+          items={licencesItems}
         />
       </FormGroup>
       <FormGroup>
