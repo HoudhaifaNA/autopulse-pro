@@ -19,7 +19,7 @@ export const getCars = tryCatch((req, res) => {
   const cars = S.getCars.all();
 
   return res
-    .status(201)
+    .status(200)
     .json({ status: "success", results: cars.length, message: cars });
 });
 
@@ -30,7 +30,7 @@ export const getCarById = tryCatch((req, res, next) => {
 
   if (!car) return next(new AppError("Voiture n'existe pas", 404));
 
-  return res.status(201).json({ status: "success", car });
+  return res.status(200).json({ status: "success", car });
 });
 
 export const createCar = tryCatch((req, res, next) => {
