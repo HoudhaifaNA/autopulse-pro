@@ -63,7 +63,7 @@ export const protect = tryCatch((req, res, next) => {
 
   if (req.cookies.tkn) {
     token = req.cookies.tkn;
-  } else if (authorization && authorization.startsWith["Bearer"]) {
+  } else if (authorization && authorization.startsWith("Bearer")) {
     token = authorization.split(" ")[1];
   }
 
