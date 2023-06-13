@@ -65,7 +65,7 @@ const SELECT_STMT = `SELECT cars.*,
   LEFT JOIN clients AS buyers ON buyers.id = cars.buyerId
 `;
 
-export const getCars = db.prepare(SELECT_STMT);
+export const getCars = db.prepare(`${SELECT_STMT} ORDER BY created_at DESC`);
 
 export const getCarById = db.prepare(`${SELECT_STMT}
   WHERE cars.id = ?

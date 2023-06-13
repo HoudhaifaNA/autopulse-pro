@@ -21,7 +21,9 @@ export const createClient = db.prepare(`INSERT INTO clients(
     balance
 ) VALUES (?,?,?)`);
 
-export const getClients = db.prepare(`SELECT * FROM clients`);
+export const getClients = db.prepare(
+  `SELECT * FROM clients ORDER BY created_at DESC`
+);
 
 export const getClientById = db.prepare(`SELECT * FROM clients WHERE id = ?`);
 

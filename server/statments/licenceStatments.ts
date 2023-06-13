@@ -21,7 +21,7 @@ const SELECT_BASE_QUERY = `SELECT licences.*,
   ${IS_VALID}, 
   ${IS_EXPIRATED},
   clients.fullName AS seller
- FROM licences
+  FROM licences
   INNER JOIN clients on clients.id = sellerId
   `;
 
@@ -49,7 +49,9 @@ db.prepare(
 )`
 ).run();
 
-export const getLicences = db.prepare(SELECT_BASE_QUERY);
+export const getLicences = db.prepare(
+  `${SELECT_BASE_QUERY} ORDER BY created_at DESC`
+);
 
 export const getLicenceById = db.prepare(
   `${SELECT_BASE_QUERY} WHERE licences.id = ?`

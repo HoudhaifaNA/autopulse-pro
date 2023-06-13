@@ -41,10 +41,13 @@ const SELECT_STMT = `SELECT transactions.*,
     INNER JOIN clients ON clients.id = clientId
     `;
 
-export const getTransactions = db.prepare(SELECT_STMT);
+export const getTransactions = db.prepare(
+  `${SELECT_STMT} ORDER BY created_at DESC`
+);
 
 export const getTransactionsByClient = db.prepare(`SELECT * FROM transactions 
     WHERE clientId = ?
+    ORDER BY created_at DESC
 `);
 
 export const getTransactionById = db.prepare(
