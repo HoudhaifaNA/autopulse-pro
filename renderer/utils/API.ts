@@ -5,4 +5,6 @@ const API = axios.create({
   withCredentials: true,
 });
 
+export const fetcher = (url: string) => API.get(url).then((res) => res.data);
+
 export default API;
