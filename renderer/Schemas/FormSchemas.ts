@@ -2,7 +2,6 @@ import { object, array, string, number, date } from "yup";
 
 import wilayas from "data/wilayas.json";
 
-const PASSWORD_RULES = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$/;
 const PHONE_NUMBER_RULES =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
@@ -18,8 +17,7 @@ export const loginSchema = object({
     .min(4, "Nom d'utilisateur doit être d'au moins 4 caractères")
     .required("Nom d'utilisateur est requis"),
   password: string()
-    .min(5, "Mot de passe doit être d'au moins 5 caractères")
-    .matches(PASSWORD_RULES, "Mot de passe doit être fort (A-a-1)")
+    .min(4, "Mot de passe doit être d'au moins 4 caractères")
     .required("Mot de pass est requis"),
 });
 
@@ -33,12 +31,10 @@ export const updateUsername = object({
 
 export const updateUserPassword = object({
   currentPassword: string()
-    .min(5, "Mot de passe doit être d'au moins 5 caractères")
-    .matches(PASSWORD_RULES, "Mot de passe doit être fort (A-a-1)")
+    .min(4, "Mot de passe doit être d'au moins 4 caractères")
     .required("Mot de passe actuel requis"),
   newPassword: string()
-    .min(5, "Mot de passe doit être d'au moins 5 caractères")
-    .matches(PASSWORD_RULES, "Mot de passe doit être fort (A-a-1)")
+    .min(4, "Mot de passe doit être d'au moins 4 caractères")
     .required("Nouveau mot de passe requis"),
   confirmPassword: string()
     .test({
