@@ -42,6 +42,9 @@ export const TableRow = styled.tr`
     p {
       white-space: nowrap;
     }
+    p::first-letter {
+      text-transform: capitalize;
+    }
   }
 `;
 export const TableHeaderCell = styled.th`
