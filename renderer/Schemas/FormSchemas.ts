@@ -199,7 +199,7 @@ export const transactionSchema = object({
     .min(500, ({ min }) => `Minimum ${min} DZD`)
     .integer("Montant doit être un entier")
     .required("Montant est requis"),
-  type: string()
+  direction: string()
     .oneOf(
       ["entrante", "sortante"],
       "Type doit être l'une des options répertoriées"
@@ -234,7 +234,10 @@ export const euroTransferSchema = object({
       "Méthode doit être l'une des options répertoriées"
     )
     .required("Méthode est requise"),
-  type: string()
-    .oneOf(["acheté", "vendu"], "Type doit être l'une des options répertoriées")
+  direction: string()
+    .oneOf(
+      ["entrante", "sortante"],
+      "Type doit être l'une des options répertoriées"
+    )
     .required("Type de transaction est requis"),
 });
