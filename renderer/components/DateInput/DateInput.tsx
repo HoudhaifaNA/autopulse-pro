@@ -4,14 +4,16 @@ import dayjs from "dayjs";
 import updateLocale from "dayjs/plugin/updateLocale";
 import "dayjs/locale/fr";
 
-import * as S from "components/FinancesForm/DateInput.styled";
+import * as S from "components/DateInput/DateInput.styled";
 import { LabelText } from "styles/Typography";
 import { InputError } from "components/Input/Input.styled";
 import Icon from "components/Icon/Icon";
 
-import * as T from "components/FinancesForm/types";
-
-type Values = T.TransactionValues | T.EuroTransferValues;
+interface IDateInput {
+  label?: string;
+  name: string;
+  minDate: string;
+}
 
 // Update the months list because the default has lowcase months
 dayjs.extend(updateLocale);
@@ -32,17 +34,17 @@ dayjs.updateLocale("fr", {
   ],
 });
 
-const DateInput = () => {
-  const { values, errors, setFieldValue } = useFormikContext<Values>();
-  const hasError = Boolean(errors.date);
-  const MIN_DATE = new Date("2014");
+const DateInput = ({ label = "Date", name, minDate }: IDateInput) => {
+  const { values, errors, setFieldValue } = useFormikContext<any>();
+  const hasError = Boolean(errors[name]);
+  const MIN_DATE = new Date(minDate);
   const MAX_DATE = new Date();
 
-  const Label = <LabelText>Date :</LabelText>;
+  const Label = <LabelText>{label} :</LabelText>;
   const DateIcon = <Icon icon="calendar" size="1.8rem" />;
   const DateError = hasError && (
     <InputError>
-      <>{errors.date}</>
+      <>{errors[name]}</>
     </InputError>
   );
 
@@ -51,7 +53,7 @@ const DateInput = () => {
       <DatePickerInput
         icon={DateIcon}
         label={Label}
-        value={values.date}
+        value={values[name]}
         minDate={MIN_DATE}
         maxDate={MAX_DATE}
         monthsListFormat="MMMM"
@@ -59,7 +61,7 @@ const DateInput = () => {
         firstDayOfWeek={6}
         size="xl"
         locale="fr"
-        onChange={(value) => setFieldValue("date", value)}
+        onChange={(value) => setFieldValue(name, value)}
         autoFocus
       />
       {DateError}

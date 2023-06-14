@@ -3,7 +3,7 @@ import { FormikHelpers } from "formik";
 import { FormGroup } from "components/Form/Form.styled";
 
 import Form from "components/Form/Form";
-import DateInput from "components/FinancesForm/DateInput";
+import DateInput from "components/DateInput/DateInput";
 import TransactionType from "components/FinancesForm/TransactionType";
 import { TypedInput, SelectInput } from "components/Input/Input";
 
@@ -29,7 +29,7 @@ const TransactionForm = () => {
       onSubmit={onSubmit}
     >
       <FormGroup>
-        <DateInput />
+        <DateInput name="date" minDate="2014" />
         <SelectInput
           label="Client :"
           placeholder="Entrez le nom"
