@@ -66,7 +66,7 @@ const sendErrorProd: TErrorController = (err, req, res) => {
   if (err.isOperational) {
     return res
       .status(err.statusCode)
-      .json({ title: "error", message: err.message });
+      .json({ status: "error", message: err.message });
   }
 
   console.log(`ERROR 🔥🔥 :  ${err}`);
