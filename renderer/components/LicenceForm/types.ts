@@ -3,8 +3,14 @@ export interface Attachment {
   file: File;
 }
 
+interface Seller {
+  id: number;
+  name: string;
+}
+
 export interface Values {
-  seller: string;
+  releasedDate: Date;
+  seller: Seller;
   moudjahid: string;
   wilaya: string;
   price: number;

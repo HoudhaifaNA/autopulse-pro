@@ -43,7 +43,7 @@ const Preview = ({ attachment }: { attachment: Attachment }) => {
             <Icon icon="delete" size="2.4rem" />
           </S.DeleteButton>
           {extension === "pdf" ? (
-            <PDFPreview file={thumbnail} />
+            <PDFPreview file={attachment.file} />
           ) : (
             <Image src={thumbnail} fill={true} alt={attachment.file.name} />
           )}
