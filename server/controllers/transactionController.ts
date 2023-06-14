@@ -2,7 +2,7 @@ import * as S from "../statments/transactionStatments";
 import AppError from "../utils/AppError";
 import tryCatch from "../utils/tryCatch";
 
-export const getAllTransactions = tryCatch((req, res, next) => {
+export const getAllTransactions = tryCatch((req, res) => {
   const transactions = S.getTransactions.all();
 
   return res
@@ -18,6 +18,15 @@ export const getTransactionById = tryCatch((req, res, next) => {
   if (!transaction) return next(new AppError("Transaction n'existe pas", 404));
 
   return res.status(200).json({ status: "success", transaction });
+});
+
+export const getMoneyTransactions = tryCatch((req, res) => {
+  const moneyTransactions = S.getMoneyTransactions.all();
+  const eurosTransactions = S.getEUROsTransactions.all();
+
+  return res
+    .status(200)
+    .json({ status: "success", moneyTransactions, eurosTransactions });
 });
 
 export const getTransactionsByClient = tryCatch((req, res) => {
@@ -41,7 +50,7 @@ export const createTransaction = tryCatch((req, res) => {
     info3,
     info4,
     total,
-    way,
+    direction,
   } = req.body;
 
   const params = [
@@ -54,7 +63,7 @@ export const createTransaction = tryCatch((req, res) => {
     info3,
     info4,
     total,
-    way,
+    direction,
   ];
 
   const { lastInsertRowid } = S.createTransaction.run(params);

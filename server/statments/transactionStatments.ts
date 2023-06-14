@@ -25,9 +25,9 @@ db.prepare(
     info3 TEXT,
     info4 TEXT,
     total INTEGER NOT NULL,
-    way TEXT NOT NULL CHECK (way IN ('sortante', 'entrante')),
+    direction TEXT NOT NULL CHECK (direction IN ('sortante', 'entrante')),
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (productId, type, way),
+    UNIQUE (productId, type, direction),
     FOREIGN KEY (clientId)
      REFERENCES clients (id)
      ON UPDATE NO ACTION
@@ -44,6 +44,22 @@ const SELECT_STMT = `SELECT transactions.*,
 export const getTransactions = db.prepare(
   `${SELECT_STMT} ORDER BY created_at DESC`
 );
+
+export const getMoneyTransactions = db.prepare(`
+  ${SELECT_STMT}
+  WHERE  type = 'money'
+`);
+export const getEUROsTransactions = db.prepare(`
+    SELECT transactions.*,
+    transactions.info2 AS method,
+    CAST(transactions.info3 AS INTEGER) AS eurosAmount,
+    CAST(transactions.info4 AS INTEGER) AS euroPrice,
+    clients.fullName AS client
+    FROM transactions
+    INNER JOIN clients ON clients.id = clientId
+    WHERE  type = 'euros'
+    ORDER BY created_at DESC
+`);
 
 export const getTransactionsByClient = db.prepare(`SELECT * FROM transactions 
     WHERE clientId = ?
@@ -64,7 +80,7 @@ export const createTransaction = db.prepare(`INSERT INTO transactions(
     info3,
     info4,
     total,
-    way 
+    direction 
 ) VALUES(?,?,?,?,?,?,?,?,?,?)`);
 
 export const deleteTransactionByProduct = db.prepare(`DELETE FROM transactions 
@@ -88,7 +104,7 @@ db.prepare(
       FOR EACH ROW
         BEGIN
           UPDATE clients
-          SET balance = IIF(NEW.way = 'entrante', clients.balance + NEW.total, clients.balance - NEW.total)
+          SET balance = IIF(NEW.direction = 'entrante', clients.balance + NEW.total, clients.balance - NEW.total)
           WHERE clients.id = NEW.clientId ;
         END;`
 ).run();
@@ -99,7 +115,7 @@ db.prepare(
       FOR EACH ROW
         BEGIN
           UPDATE clients
-          SET balance = IIF(OLD.way = 'entrante', clients.balance - OLD.total, clients.balance + OLD.total)
+          SET balance = IIF(OLD.direction = 'entrante', clients.balance - OLD.total, clients.balance + OLD.total)
           WHERE clients.id = OLD.clientId ;
         END;`
 ).run();

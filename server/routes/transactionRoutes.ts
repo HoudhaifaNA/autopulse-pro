@@ -16,6 +16,8 @@ router.delete(
   controller.deleteTransactionById
 );
 
+router.get("/money", controller.getMoneyTransactions);
+
 router
   .route("/:transactionId")
   .get(controller.getTransactionById)
