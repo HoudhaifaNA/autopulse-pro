@@ -4,6 +4,7 @@ import wilayas from "data/wilayas.json";
 
 const PHONE_NUMBER_RULES =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
+const FULLNAME_RULES = /^[A-Za-z']+(?:\s[A-Za-z']+)*$/;
 
 const WILAYAS_OPTIONS = wilayas.map((wilaya) => wilaya.name.toLowerCase());
 
@@ -13,7 +14,7 @@ const currentYear = today.getFullYear();
 export const loginSchema = object({
   username: string()
     .trim()
-    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
+    .matches(FULLNAME_RULES, "Indiquez un nom correct")
     .min(4, "Nom d'utilisateur doit être d'au moins 4 caractères")
     .required("Nom d'utilisateur est requis"),
   password: string()
@@ -24,7 +25,7 @@ export const loginSchema = object({
 export const updateUsername = object({
   username: string()
     .trim()
-    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
+    .matches(FULLNAME_RULES, "Indiquez un nom correct")
     .min(4, "Nom d'utilisateur doit être d'au moins 4 caractères")
     .required("Nom d'utilisateur est requis"),
 });
@@ -50,12 +51,12 @@ export const updateUserPassword = object({
 export const clientSchema = object({
   firstName: string()
     .trim()
-    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
+    .matches(FULLNAME_RULES, "Indiquez un nom correct")
     .min(3, `Prénom doit comporter au moins 3 caractères`)
     .required("Prénom est requis"),
   lastName: string()
     .trim()
-    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
+    .matches(FULLNAME_RULES, "Indiquez un nom correct")
     .min(3, "Nom doit comporter au moins 3 caractères")
     .required("Nom est requis"),
   phoneNumber: string()
@@ -63,7 +64,7 @@ export const clientSchema = object({
     .min(10, "Numéro de téléphone doit comporter au moins 10 chiffres")
     .matches(PHONE_NUMBER_RULES, "Numéro de téléphone est invalide")
     .required("Numéro de téléphone est requis"),
-  debt: number().required(),
+  balance: number().required("Solde est requis"),
 });
 
 export const carSchemaStepTwo = object({
@@ -82,15 +83,17 @@ export const carSchemaStepTwo = object({
     .required("Année est requise"),
 });
 export const carSchemaStepThree = object({
-  seller: string()
-    .trim()
-    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
-    .min(3, `Vendeur doit comporter au moins 3 caractères`)
-    .required("Vendeur est requis"),
+  seller: object({
+    name: string()
+      .trim()
+      .matches(FULLNAME_RULES, "Indiquez un nom correct")
+      .min(3, `Vendeur doit comporter au moins 3 caractères`)
+      .required("Vendeur est requis"),
+  }),
   licence: object({
     name: string()
       .trim()
-      .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
+      .matches(FULLNAME_RULES, "Indiquez un nom correct")
       .required("licence est requise"),
   }),
   euroCost: number().when("carType", {
@@ -121,7 +124,7 @@ export const carSchemaStepFour = object({
     object({
       raison: string()
         .trim()
-        .matches(/^([^0-9]*)$/, "Raison ne doit pas avoir de numéro")
+        .matches(FULLNAME_RULES, "Raison ne doit pas avoir de numéro")
         .required("Raison est requise"),
       euroCost: number().when("type", {
         is: "à l'étranger",
@@ -149,14 +152,16 @@ export const carSchemaStepFour = object({
 });
 
 export const licenceSchema = object({
-  seller: string()
-    .trim()
-    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
-    .min(3, `Vendeur doit comporter au moins 3 caractères`)
-    .required("Vendeur est requis"),
+  seller: object({
+    name: string()
+      .trim()
+      .matches(FULLNAME_RULES, "Indiquez un nom correct")
+      .min(3, `Vendeur doit comporter au moins 3 caractères`)
+      .required("Vendeur est requis"),
+  }),
   moudjahid: string()
     .trim()
-    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
+    .matches(FULLNAME_RULES, "Indiquez un nom correct")
     .min(3, "Moudjahid doit comporter au moins 3 caractères")
     .required("Moudjahid est requis"),
   wilaya: string()
@@ -175,11 +180,14 @@ export const transactionSchema = object({
     .max(today, `La date ne peut pas être postérieure à aujourd'hui`)
     .typeError(() => `La date doit être une date`)
     .required("La date est requise"),
-  client: string()
-    .trim()
-    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
-    .min(3, `Client doit comporter au moins 3 caractères`)
-    .required("Client est requis"),
+  client: object({
+    name: string()
+      .trim()
+      .matches(FULLNAME_RULES, "Indiquez un nom correct")
+      .min(3, `Client doit comporter au moins 3 caractères`)
+      .required("Client est requis"),
+  }),
+
   method: string()
     .lowercase()
     .oneOf(
@@ -205,11 +213,13 @@ export const euroTransferSchema = object({
     .max(today, `La date ne peut pas être postérieure à aujourd'hui`)
     .typeError(() => `La date doit être une date`)
     .required("La date est requise"),
-  client: string()
-    .trim()
-    .matches(/^([^0-9]*)$/, "Nom ne doit pas avoir de numéro")
-    .min(3, `Client doit comporter au moins 3 caractères`)
-    .required("Client est requis"),
+  client: object({
+    name: string()
+      .trim()
+      .matches(FULLNAME_RULES, "Indiquez un nom correct")
+      .min(3, `Client doit comporter au moins 3 caractères`)
+      .required("Client est requis"),
+  }),
   amount: number()
     .min(40, ({ min }) => `Minimum ${min} euros`)
     .required("Montant est requis"),
