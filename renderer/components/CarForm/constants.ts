@@ -3,7 +3,7 @@ import uid from "utils/uniqid";
 import { Values } from "components/CarForm/types";
 
 export const INITIAL_VALUES: Values = {
-  step: 3,
+  step: 1,
   carType: "importé",
   brand: "",
   serie: "",
