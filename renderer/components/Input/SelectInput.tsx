@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useFormikContext } from "formik";
 
 import * as S from "components/Input/Input.styled";
@@ -44,11 +44,25 @@ const SelectInput = (props: T.SelectInputProps) => {
     iconSize,
     buttons,
     elementAs,
+    sorted,
   } = props;
 
   const [inputValue, inputError] = getInputData(values, errors, name);
-  const filtredItems = filterDropdownItems(items!, inputValue);
+  const filtredItems = filterDropdownItems(items!, inputValue, sorted);
   const dropdownItems = elementAs === "div" ? items : filtredItems;
+
+  useEffect(() => {
+    const currentInput = dropdownItems?.find(
+      ({ mainText }) => mainText === inputValue
+    );
+
+    if (relatedFields) {
+      relatedFields.forEach((field, i) => {
+        const value = currentInput ? currentInput.relatedValues?.[i] : "";
+        setFieldValue(field, value);
+      });
+    }
+  }, [inputValue]);
 
   //@ts-ignore
   const hasError = Boolean(inputError);
@@ -64,10 +78,7 @@ const SelectInput = (props: T.SelectInputProps) => {
   };
 
   const onClickOption = (item: any) => {
-    setFieldValue(name, item.mainText);
-    relatedFields?.forEach((fld, i) => {
-      setFieldValue(fld, item.relatedValues[i]);
-    });
+    setFieldValue(name, item);
     setFocus(false);
   };
 

@@ -1,11 +1,19 @@
-type TItems = { mainText: string }[];
+import { SelectOption } from "components/Input/types";
 
-const filterDropdownItems = (items: TItems, query: string) => {
-  return items
-    .filter(({ mainText }) => {
-      return mainText.toLowerCase().includes(query.toLowerCase());
-    })
-    .sort((prev, curr) => prev.mainText.localeCompare(curr.mainText));
+type TFilterDropdownItems = (
+  items: SelectOption[],
+  query: string,
+  sorted?: boolean
+) => SelectOption[];
+
+const filterDropdownItems: TFilterDropdownItems = (items, query, sorted) => {
+  const dropdownList = sorted
+    ? items.sort((prev, curr) => prev.mainText.localeCompare(curr.mainText))
+    : items;
+
+  return dropdownList.filter(({ mainText }) => {
+    return mainText.toLowerCase().includes(query.toLowerCase());
+  });
 };
 
 export default filterDropdownItems;

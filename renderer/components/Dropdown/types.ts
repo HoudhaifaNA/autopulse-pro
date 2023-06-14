@@ -8,15 +8,14 @@ export interface SDropdownProps {
   $right?: string;
 }
 
-interface Item {
+export interface DropdownItem {
   mainText: string;
   icon?: string;
   secondText?: string;
-  relatedValues?: string[];
 }
 
 export interface DropdownProps extends SDropdownProps {
-  items?: Item[];
+  items?: DropdownItem[];
   onItemClick?: (values: any) => void;
   iconSize?: "s" | "l";
   children?: ReactElement | ReactElement[];
