@@ -14,7 +14,7 @@ import * as authController from "./controllers/authController";
 
 const app = express();
 
-app.use(cors({ credentials: true, origin: "http://localhost:8888" }));
+app.use(cors({ credentials: true, origin: "*" }));
 
 app.use(cookieParser());
 app.use(express.json({ limit: "10kb" }));
