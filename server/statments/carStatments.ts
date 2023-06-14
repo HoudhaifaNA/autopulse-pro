@@ -30,7 +30,8 @@ db.prepare(
     euroPrice INTEGER ${IS_VALID_PRICE("euroPrice")},
     purchasingPrice INTEGER NOT NULL ${IS_VALID_PRICE("purchasingPrice")},
     expenses TEXT,
-    totalEurosAmount INTEGER NOT NULL ${IS_VALID_PRICE("totalEurosAmount")},
+    totalExpensesCost INTEGER ${IS_VALID_PRICE("totalExpensesCost")},
+    totalEurosAmount INTEGER  ${IS_VALID_PRICE("totalEurosAmount")},
     totalCost INTEGER NOT NULL ${IS_VALID_PRICE("totalCost")},
     buyerId INTEGER,
     soldPrice INTEGER NOT NULL DEFAULT 0 ${IS_VALID_PRICE("soldPrice")} ,
@@ -87,9 +88,10 @@ export const creatCar = db.prepare(`INSERT INTO cars(
   euroPrice,
   purchasingPrice,
   expenses,
+  totalExpensesCost,
   totalEurosAmount,
   totalCost
-) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `);
 
 export const updateCar = db.prepare(`UPDATE cars 
@@ -106,6 +108,7 @@ export const updateCar = db.prepare(`UPDATE cars
     ${optionalUpdate("euroPrice")}, 
     ${optionalUpdate("purchasingPrice")}, 
     ${optionalUpdate("expenses")}, 
+    ${optionalUpdate("totalExpensesCost")}, 
     ${optionalUpdate("totalEurosAmount")}, 
     ${optionalUpdate("totalCost")}
    WHERE id = ?

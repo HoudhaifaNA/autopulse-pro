@@ -49,6 +49,7 @@ export const createCar = tryCatch((req, res, next) => {
     euroPrice,
     purchasingPrice,
     expenses,
+    totalExpensesCost,
     totalEurosAmount,
     totalCost,
   } = req.body;
@@ -75,7 +76,8 @@ export const createCar = tryCatch((req, res, next) => {
     costInEuros,
     euroPrice,
     purchasingPrice,
-    expenses,
+    JSON.stringify(expenses),
+    totalExpensesCost,
     totalEurosAmount,
     totalCost,
   ]);
@@ -114,6 +116,7 @@ export const updateCar = tryCatch((req, res, next) => {
     euroPrice,
     purchasingPrice,
     expenses,
+    totalExpensesCost,
     totalEurosAmount,
     totalCost,
   } = req.body;
@@ -133,8 +136,9 @@ export const updateCar = tryCatch((req, res, next) => {
     costInEuros,
     euroPrice,
     purchasingPrice,
-    expenses,
+    JSON.stringify(expenses),
     totalEurosAmount,
+    totalExpensesCost,
     totalCost,
     carId,
   ]);
