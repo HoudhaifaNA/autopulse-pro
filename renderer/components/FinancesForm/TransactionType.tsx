@@ -12,7 +12,7 @@ interface TransactionTypeProps {
 
 const TransactionType = ({ options }: TransactionTypeProps) => {
   const { errors } = useFormikContext<TErrors>();
-  const { type } = errors;
+  const { direction } = errors;
 
   return (
     <div>
@@ -21,14 +21,14 @@ const TransactionType = ({ options }: TransactionTypeProps) => {
           <ClickInput
             key={opt}
             type="radio"
-            name="type"
+            name="direction"
             label={opt}
             value={opt}
           />
         );
       })}
 
-      {type && <InputError>{type}</InputError>}
+      {direction && <InputError>{direction}</InputError>}
     </div>
   );
 };

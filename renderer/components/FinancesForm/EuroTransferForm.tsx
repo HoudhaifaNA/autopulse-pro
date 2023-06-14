@@ -1,3 +1,4 @@
+import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { FormikProps, FormikHelpers } from "formik";
 
@@ -12,20 +13,50 @@ import * as C from "components/FinancesForm/constants";
 import { euroTransferSchema } from "Schemas/FormSchemas";
 
 import { EuroTransferValues as Values } from "components/FinancesForm/types";
+import API, { fetcher } from "utils/API";
 
-const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
-  setTimeout(() => {
-    console.log("Value:", values);
+const getClients = () => {
+  const clientsRes = useSWR("/clients", fetcher);
+  let CLIENTS_LIST = [];
+
+  if (clientsRes.data) {
+    CLIENTS_LIST = clientsRes.data.clients.map(({ id, fullName }: any) => {
+      return { mainText: fullName, relatedValues: [id] };
+    });
+  }
+
+  return CLIENTS_LIST;
+};
+
+const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
+  const { date, client, method, amount, euroPrice, total, direction } = values;
+  const data = {
+    date,
+    clientId: client.id,
+    type: "euros",
+    info1: "Euros",
+    info2: method,
+    info3: amount,
+    info4: euroPrice,
+    total,
+    direction,
+  };
+  try {
+    await API.post("/transactions", data);
+
     actions.resetForm();
-  }, 1000);
+  } catch (err: any) {
+    console.log(err.response.data.message);
+  }
 };
 
 const EuroTransferForm = () => {
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
+  const CLIENTS_LIST = getClients();
 
   const values = formProps?.values ?? C.EURO_TRANSFER_VALUES;
-  const { euroPrice, amount, total, type } = values;
-  const buttonText = type === "acheté" ? "Acheter" : "Vendre";
+  const { euroPrice, amount, total, direction } = values;
+  const buttonText = direction === "entrante" ? "Acheter" : "Vendre";
 
   useEffect(() => {
     formProps?.setFieldValue("total", amount * euroPrice);
@@ -42,12 +73,13 @@ const EuroTransferForm = () => {
     >
       <>
         <FormGroup>
-          <DateInput name="date" minDate={"2014"} />
+          <DateInput name="date" minDate="2014" />
           <SelectInput
             label="Client :"
             placeholder="Entrez le nom"
-            name="client"
-            items={[]}
+            name="client.name"
+            items={CLIENTS_LIST}
+            relatedFields={["client.id"]}
           />
         </FormGroup>
         <FormGroup>
@@ -79,7 +111,7 @@ const EuroTransferForm = () => {
           />
         </FormGroup>
         <FormGroup>
-          <TransactionType options={["acheté", "vendu"]} />
+          <TransactionType options={["entrante", "sortante"]} />
         </FormGroup>
       </>
     </Form>

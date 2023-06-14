@@ -1,16 +1,20 @@
+interface Client {
+  id: number;
+  name: string;
+}
 export interface TransactionValues {
   date: Date;
-  client: string;
+  client: Client;
   method: string;
   amount: number;
-  type: "sortante" | "entrante";
+  direction: "sortante" | "entrante";
 }
 export interface EuroTransferValues {
   date: Date;
-  client: string;
+  client: Client;
   method: string;
   amount: number;
   euroPrice: number;
   total: number;
-  type: "acheté" | "vendu";
+  direction: "sortante" | "entrante";
 }
