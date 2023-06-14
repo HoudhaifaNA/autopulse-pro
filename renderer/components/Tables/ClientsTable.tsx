@@ -42,11 +42,7 @@ const clientStatus = (balance: number) => {
     status = "Créancier";
     color = "warning";
   }
-  return (
-    <TableCell>
-      <Badge type={color}>{status}</Badge>
-    </TableCell>
-  );
+  return <Badge type={color}>{status}</Badge>;
 };
 
 const ClientsTable = ({ clients }: IProps) => {
@@ -73,24 +69,25 @@ const ClientsTable = ({ clients }: IProps) => {
         </TableHeader>
         <TableBody>
           {clients.map((client) => {
+            const { id, created_at, fullName, phoneNumber, balance } = client;
             return (
-              <TableRow key={client.id}>
+              <TableRow key={id}>
                 <TableCell blurrable={false}>
                   <Checkbox />
                 </TableCell>
                 <TableCell>
-                  <Body2>{dayjs(client.created_at).format("DD-MM-YYYY")}</Body2>
+                  <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{client.fullName}</Body2>
+                  <Body2>{fullName}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{client.phoneNumber}</Body2>
+                  <Body2>{phoneNumber}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{Math.abs(client.balance).toLocaleString()}</Body2>
+                  <Body2>{Math.abs(balance).toLocaleString()}</Body2>
                 </TableCell>
-                {clientStatus(client.balance)}
+                <TableCell>{clientStatus(balance)}</TableCell>
                 <TableCell blurrable={false}>
                   <Icon icon="more_vert" size="1.8rem" />
                 </TableCell>
