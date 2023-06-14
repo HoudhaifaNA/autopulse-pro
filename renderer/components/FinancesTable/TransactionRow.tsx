@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 import { Body2 } from "styles/Typography";
 
 import { TableCell, TableRow } from "components/Table/Table";
@@ -5,7 +7,10 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Icon from "components/Icon/Icon";
 import Badge from "components/Badge/Badge";
 
-const TransactionRow = () => {
+const TransactionRow = ({ transaction }: { transaction: any }) => {
+  const { date, client, info2, total, direction } = transaction;
+  const badgeStatus = direction === "sortante" ? "error" : "success";
+
   return (
     <>
       <TableRow>
@@ -13,19 +18,19 @@ const TransactionRow = () => {
           <Checkbox />
         </TableCell>
         <TableCell>
-          <Body2>14/05/2016</Body2>
+          <Body2>{dayjs(date).format("DD-MM-YYYY")}</Body2>
         </TableCell>
         <TableCell>
-          <Body2>Ahmed Nadhir</Body2>
+          <Body2>{client}</Body2>
         </TableCell>
         <TableCell>
-          <Body2>Chèques</Body2>
+          <Body2>{info2}</Body2>
         </TableCell>
         <TableCell>
-          <Badge type="success">Entrant</Badge>
+          <Badge type={badgeStatus}>{direction}</Badge>
         </TableCell>
         <TableCell>
-          <Body2>800000.00</Body2>
+          <Body2>{total.toLocaleString()}</Body2>
         </TableCell>
         <TableCell blurrable={false}>
           <Icon icon="more_vert" size="1.8rem" />
