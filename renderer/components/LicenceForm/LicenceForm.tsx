@@ -68,7 +68,7 @@ const LicenceForm = () => {
       getFormProps={(props) => setFormProps(props)}
     >
       <FormGroup>
-        <DateInput name="releasedDate" minDate={new Date("2015")} />
+        <DateInput name="releasedDate" minDate="2015" />
         <SelectInput
           name="seller.name"
           label="Vendeur :"
