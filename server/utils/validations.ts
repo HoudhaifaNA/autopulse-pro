@@ -8,7 +8,7 @@ export const isValidPhoneNumber = (phoneNumber: string) => {
 
 export const validateName = (name: string) => {
   const CONSECUTIVE_WHITE_SPACES = /\s+/g;
-  const VALID_NAME = /^(?!\s)([a-z ,.'-]+)$/i;
+  const VALID_NAME = /^[A-Za-z']+(?:\s[A-Za-z']+)*$/;
 
   if (!name) return ["", false] as const;
 
