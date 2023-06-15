@@ -5,7 +5,11 @@ import API from "utils/API";
 
 import { Values } from "./types";
 
-const handleSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
+const handleSubmit = async (
+  values: Values,
+  actions: FormikHelpers<Values>,
+  setModal: any
+) => {
   const formData = new FormData();
 
   Object.entries(values).map(([key, value]) => {
@@ -23,6 +27,7 @@ const handleSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
 
   try {
     await API.post("/licences", formData);
+    setModal("");
   } catch (err: any) {
     console.log(err.response.data.message);
   }
