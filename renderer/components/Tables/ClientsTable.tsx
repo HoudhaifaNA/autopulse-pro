@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import dayjs from "dayjs";
 
 import { Body2 } from "styles/Typography";
@@ -16,6 +17,7 @@ import {
 } from "components/Table/Table";
 import { useState } from "react";
 import API from "utils/API";
+import { GlobalContext } from "pages/_app";
 
 interface IProps {
   clients: any[];
@@ -48,6 +50,7 @@ const clientStatus = (balance: number) => {
 };
 
 const ClientsTable = ({ clients }: IProps) => {
+  const { setDocument } = useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
@@ -109,7 +112,12 @@ const ClientsTable = ({ clients }: IProps) => {
               addIds([]);
             };
             return (
-              <TableRow key={id}>
+              <TableRow
+                key={id}
+                onContextMenu={() =>
+                  setDocument({ type: "clients", document: client })
+                }
+              >
                 <TableCell blurrable={false}>
                   <Checkbox
                     isChecked={!(ids.indexOf(id) === -1)}

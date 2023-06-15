@@ -5,6 +5,7 @@ import Link from "next/link";
 import Icon from "components/Icon/Icon";
 import * as S from "./Navbar.styled";
 import { useRouter } from "next/router";
+import API from "utils/API";
 
 interface items {
   text: string;
@@ -13,7 +14,7 @@ interface items {
 }
 
 const NAVBAR_ITEMS: items[] = [
-  { text: "Tableau de bord", icon: "dashboard", link: "/dashboard" },
+  // { text: "Tableau de bord", icon: "dashboard", link: "/dashboard" },
   { text: "Voitures", icon: "car", link: "/cars" },
   { text: "Clients", icon: "clients", link: "/clients" },
   { text: "Licences", icon: "document", link: "/licences" },
@@ -46,6 +47,14 @@ const renderNavItems = (
   });
 };
 
+// const logsdout = async () => {
+//   try {
+//     await API.post("/users/logout");
+//   } catch (err: any) {
+//     console.log(err);
+//   }
+// };
+
 const Navbar = () => {
   const [short, setShort] = useState(false);
   const { asPath } = useRouter();
@@ -60,10 +69,10 @@ const Navbar = () => {
       </S.MainNavbarList>
       <S.SecondaryNavList>
         <S.NavbarItem $active={true} $short={short}>
-          <Link href={"/logout"}>
+          <div>
             <Icon icon="logout" size="2.4rem" />
             {!short && <span>Se déconnecter</span>}
-          </Link>
+          </div>
         </S.NavbarItem>
       </S.SecondaryNavList>
     </S.NavbarWrapper>

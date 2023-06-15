@@ -1,4 +1,6 @@
-import { useRef } from "react";
+"use client";
+import { useContext, useEffect, useRef, useState } from "react";
+import useSWR from "swr";
 import Link from "next/link";
 
 import * as InputStyle from "components/Input/InputContainer.styled";
@@ -8,15 +10,19 @@ import { Body1, Body2, Heading5 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 
 import useClickOutside from "hooks/useClickOutside";
+import { GlobalContext } from "pages/_app";
+import axios from "axios";
+import API, { fetcher } from "utils/API";
+// import { fetcher } from "utils/API";
 
 // !TODO NEED REFACTORE
 
-interface SearchCategories {
-  name: "voitures" | "licences" | "clients";
-  items: { name: string; link: string }[];
+interface SearchCategory {
+  name: "cars" | "licences" | "clients";
+  items: any[];
 }
 
-const CATEGORIES_EXAMPLE: SearchCategories[] = [
+const CATEGORIES_EXAMPLE: SearchCategory[] = [
   {
     name: "clients",
     items: [
@@ -26,7 +32,7 @@ const CATEGORIES_EXAMPLE: SearchCategories[] = [
     ],
   },
   {
-    name: "voitures",
+    name: "cars",
     items: [
       { name: "Mercedes-Benz CLA 45", link: "/" },
       { name: "Audi A3 ", link: "/" },
@@ -34,7 +40,7 @@ const CATEGORIES_EXAMPLE: SearchCategories[] = [
     ],
   },
   {
-    name: "clients",
+    name: "licences",
     items: [
       { name: "Jaylon Curtis", link: "/" },
       { name: "Ryan Vetrovs", link: "/" },
@@ -42,28 +48,40 @@ const CATEGORIES_EXAMPLE: SearchCategories[] = [
     ],
   },
 ];
-const categoryToIcon = (category: SearchCategories["name"]) => {
-  if (category === "voitures") return "car";
+const categoryToIcon = (category: SearchCategory["name"]) => {
+  if (category === "cars") return "car";
   if (category === "licences") return "document";
   return category;
 };
 
-const renderSearchedItems = (categories: SearchCategories[]) => {
+const renderSearchedItems = (categories: SearchCategory[]) => {
+  const { currDocument, setDocument } = useContext(GlobalContext);
+
   return categories.map((category) => {
     return (
-      <S.SearchCategory key={category.name}>
-        <span>{category.name}</span>
-        {category.items.map((item) => {
-          return (
-            <S.CategoryItem key={item.name}>
-              <Link href={item.link}>
-                <Icon icon={categoryToIcon(category.name)} size="2.4rem" />
-                <Body2>{item.name}</Body2>
-              </Link>
-            </S.CategoryItem>
-          );
-        })}
-      </S.SearchCategory>
+      category.items.length > 0 && (
+        <S.SearchCategory key={Math.random() * 10}>
+          <span>{category.name}</span>
+          {category.items.map((item) => {
+            let val;
+            if (category.name === "clients") val = item.fullName;
+            if (category.name === "cars") val = item.name;
+            if (category.name === "licences") val = item.moudjahid;
+            return (
+              <S.CategoryItem key={val}>
+                <div
+                  onClick={() =>
+                    setDocument({ type: category.name, document: item })
+                  }
+                >
+                  <Icon icon={categoryToIcon(category.name)} size="2.4rem" />
+                  <Body2>{val}</Body2>
+                </div>
+              </S.CategoryItem>
+            );
+          })}
+        </S.SearchCategory>
+      )
     );
   });
 };
@@ -71,6 +89,28 @@ const renderSearchedItems = (categories: SearchCategories[]) => {
 const Header = () => {
   const searchListRef = useRef<HTMLDivElement>(null);
   const [focus, setFocus] = useClickOutside(searchListRef);
+  const [query, setQuery] = useState("");
+  const [categories, setCategories] = useState<any[]>([]);
+
+  const handleQuerying = async () => {
+    const { data } = await API.get(`/search?query=${query}`);
+
+    if (data && query.length >= 2) {
+      const categoriesList = Object.entries(data.data).map(
+        ([key, value]: any) => {
+          let items = value.map((el: any) => {
+            return el;
+          });
+          let categories = {
+            name: key,
+            items,
+          };
+          return categories;
+        }
+      );
+      setCategories(categoriesList);
+    }
+  };
 
   return (
     <S.Header>
@@ -83,12 +123,19 @@ const Header = () => {
             <InputStyle.Input
               type="text"
               placeholder="Search"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                handleQuerying();
+              }}
               onFocus={() => setFocus(true)}
             />
           </InputStyle.InputWrapper>
         </InputStyle.InputContainer>
-        {focus && (
-          <S.SearchList>{renderSearchedItems(CATEGORIES_EXAMPLE)}</S.SearchList>
+        {focus && categories.length > 0 && (
+          <S.SearchList>
+            {renderSearchedItems(categories as SearchCategory[])}
+          </S.SearchList>
         )}
       </S.SearchBarContainer>
       <S.UserOverview>

@@ -7,6 +7,9 @@ import { ThemeProvider } from "styled-components";
 import GlobalStyle from "styles/GlobalStyle";
 import theme from "styles/theme";
 import Layout from "components/Layout/Layout";
+import ClientDocument from "components/ClientDocument/ClientDocument";
+import LicenceDocument from "components/LicenceDocument/LicenceDocument";
+import CarDocument from "components/CarDocument/CarDocument";
 
 const inter = Inter({
   src: [
@@ -60,6 +63,15 @@ function MyApp({ Component, pageProps }: AppProps) {
       <main className={inter.className}>
         <ThemeProvider theme={theme}>
           <GlobalStyle />
+          {currDocument.type === "clients" && (
+            <ClientDocument document={currDocument.document} />
+          )}
+          {currDocument.type === "licences" && (
+            <LicenceDocument document={currDocument.document} />
+          )}
+          {currDocument.type === "cars" && (
+            <CarDocument document={currDocument.document} />
+          )}
           {insertPage()}
         </ThemeProvider>
       </main>

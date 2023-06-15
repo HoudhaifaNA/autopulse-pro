@@ -5,6 +5,7 @@ import { Heading3, Body1, Body2, Heading5 } from "styles/Typography";
 
 interface DetailViewerProps {
   title: string;
+  $width?: string;
   children: ReactNode;
 }
 
@@ -43,7 +44,11 @@ export const DetailItem = ({ title, value, $index }: DetailItemProps) => {
   );
 };
 
-const DetailsViewer = ({ title, children }: DetailViewerProps) => {
+const DetailsViewer = ({
+  title,
+  $width = "60%",
+  children,
+}: DetailViewerProps) => {
   const { setDocument } = useContext(GlobalContext);
   return (
     <S.DetailsViewer>
@@ -51,7 +56,7 @@ const DetailsViewer = ({ title, children }: DetailViewerProps) => {
         className="background-black"
         onClick={() => setDocument({ type: "" })}
       />
-      <S.DetailsContainer>
+      <S.DetailsContainer $width={$width}>
         <Heading3>{title}</Heading3>
         {children}
       </S.DetailsContainer>

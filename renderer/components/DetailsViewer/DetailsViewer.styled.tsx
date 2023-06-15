@@ -19,12 +19,12 @@ export const DetailsViewer = styled.div`
   z-index: 80000;
 `;
 
-export const DetailsContainer = styled.div`
+export const DetailsContainer = styled.div<{ $width: string }>`
   position: absolute;
   right: -100%;
   top: 0;
   z-index: 80000;
-  width: 60%;
+  width: ${({ $width }) => $width};
   min-height: 100%;
   max-height: 100%;
   display: flex;

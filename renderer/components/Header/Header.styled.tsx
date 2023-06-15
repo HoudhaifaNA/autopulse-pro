@@ -18,7 +18,7 @@ export const SearchList = styled.div`
   position: absolute;
   top: 4rem;
   left: 0;
-  z-index: 80000;
+  z-index: 8000;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
@@ -43,13 +43,14 @@ export const SearchCategory = styled.div`
 `;
 
 export const CategoryItem = styled.div`
-  a {
+  div {
     display: flex;
     align-items: center;
     gap: 0.8rem;
     padding: 0.4rem 0;
     text-decoration: none;
     color: ${({ theme }) => theme.colors.black};
+    cursor: pointer;
   }
 
   p {

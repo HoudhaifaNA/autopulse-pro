@@ -17,7 +17,7 @@ const IS_EXPIRATED = `
     ELSE 'false'
     END AS isExpirated`;
 
-const SELECT_BASE_QUERY = `SELECT licences.*,
+export const SELECT_BASE_QUERY = `SELECT licences.*,
   ${IS_VALID}, 
   ${IS_EXPIRATED},
   clients.fullName AS seller

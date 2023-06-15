@@ -20,7 +20,6 @@ const INITIAL_VALUES: Values = {
 
 const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
   setTimeout(() => {
-    console.log(values);
     actions.resetForm();
   }, 2000);
 };
@@ -58,15 +57,17 @@ const UpdateUserForm = () => {
         validationSchema={formSchema}
         onSubmit={onSubmit}
       >
-        {({ handleSubmit, isSubmitting }: FormikProps<Values>) => {
+        {({ handleSubmit, isSubmitting, values }: FormikProps<Values>) => {
           return (
             <S.Form onSubmit={handleSubmit}>
               <TypedInput
                 label="Nom"
                 name="username"
-                type="text"
                 placeholder="Entrez votre nom"
-              />
+                as="div"
+              >
+                {values.username}
+              </TypedInput>
               {passwordChange && (
                 <>
                   <PasswordInput

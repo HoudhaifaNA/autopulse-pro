@@ -53,7 +53,8 @@ export const NavbarItem = styled.li<StyledNavbarItemProps>`
     $active ? theme.colors.primary["50"] : theme.colors.white};
   border-radius: 0.8rem;
 
-  a {
+  a,
+  div {
     display: flex;
     align-items: center;
     justify-content: ${({ $short }) => ($short ? "center" : "flex-start")};
@@ -63,6 +64,7 @@ export const NavbarItem = styled.li<StyledNavbarItemProps>`
     color: ${({ theme, $active }) =>
       $active ? theme.colors.primary["500"] : theme.colors.neutral["500"]};
     outline: none;
+    cursor: pointer;
   }
 
   span {

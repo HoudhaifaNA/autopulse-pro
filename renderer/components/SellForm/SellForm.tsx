@@ -69,6 +69,7 @@ const SellForm = ({ id }: { id: number }) => {
       validation={sellCarSchema}
       getFormProps={(formProps) => setFormProps(formProps)}
       onSubmit={onSubmit}
+      buttonText="Vendre"
     >
       <FormGroup>
         <SelectInput
@@ -83,8 +84,8 @@ const SellForm = ({ id }: { id: number }) => {
         <TypedInput
           name="soldPrice"
           type="number"
-          label="Solde"
-          placeholder="Solde"
+          label="Prix de vente"
+          placeholder="50000.00"
           addOn="DZD"
         />
       </FormGroup>

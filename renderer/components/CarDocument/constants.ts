@@ -1,6 +1,5 @@
 const retreiveCarDetails = (car: any) => {
   const expenses = JSON.parse(car.expenses);
-  console.log(car);
 
   const carPrice =
     car.type === "locale"
