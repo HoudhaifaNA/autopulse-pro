@@ -2,12 +2,15 @@ import * as S from "components/Checkbox/Checkbox.styled";
 import Icon from "components/Icon/Icon";
 import { useState } from "react";
 
-const Checkbox = () => {
-  const [checked, setChecked] = useState(false);
+interface CheckboxProps {
+  isChecked: boolean;
+  check: () => void;
+}
 
+const Checkbox = ({ isChecked, check }: CheckboxProps) => {
   return (
-    <S.CheckboxWrapper $checked={checked} onClick={() => setChecked(!checked)}>
-      {checked && <Icon icon="checkmark" size="1.8rem" />}
+    <S.CheckboxWrapper $checked={isChecked} onClick={check}>
+      {isChecked && <Icon icon="checkmark" size="1.8rem" />}
     </S.CheckboxWrapper>
   );
 };

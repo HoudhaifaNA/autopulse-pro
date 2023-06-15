@@ -7,6 +7,7 @@ export const TableRow = S.TableRow;
 
 interface TabelCellProps {
   blurrable?: boolean;
+  onClick?: () => void;
   children: ReactNode;
 }
 
@@ -17,21 +18,28 @@ export const TableBody = ({ children }: { children: ReactNode }) => {
   return <tbody>{children}</tbody>;
 };
 
-export const TableHeaderCell = ({ children }: { children?: ReactNode }) => {
+export const TableHeaderCell = ({ children, onClick }: TabelCellProps) => {
   return (
-    <S.TableHeaderCell>
+    <S.TableHeaderCell onClick={onClick}>
       <div>{children}</div>
     </S.TableHeaderCell>
   );
 };
 
-export const TableCell = ({ blurrable = true, children }: TabelCellProps) => {
+export const TableCell = ({
+  blurrable = true,
+  onClick,
+  children,
+}: TabelCellProps) => {
   const [blurred, setBlur] = useState(false);
 
   return (
     <S.TableCell
       $blurred={blurred}
-      onClick={() => blurrable && setBlur(!blurred)}
+      onClick={() => {
+        blurrable && setBlur(!blurred);
+        if (onClick) onClick();
+      }}
     >
       <div>{children}</div>
     </S.TableCell>

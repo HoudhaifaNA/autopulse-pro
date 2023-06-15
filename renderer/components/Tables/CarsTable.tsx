@@ -13,6 +13,8 @@ import {
   TableRow,
   TableCell,
 } from "components/Table/Table";
+import API from "utils/API";
+import { useState } from "react";
 
 interface IProps {
   cars: any[];
@@ -25,6 +27,7 @@ const TB_HEADER_DATA = [
   { text: "Vendeur", sortable: true },
   { text: "Prix", sortable: true },
   { text: "Depenses", sortable: true },
+  { text: "Pr. licence", sortable: true },
   { text: "Total", sortable: true },
   { text: "Categorie", sortable: false },
   { text: "Achateur", sortable: true },
@@ -33,13 +36,46 @@ const TB_HEADER_DATA = [
 ];
 
 const CarsTable = ({ cars }: IProps) => {
+  const [ids, addIds] = useState<number[]>([]);
+  const checkRow = (id: number) => {
+    if (ids.indexOf(id) === -1) {
+      addIds((ids) => [...ids, id]);
+    } else {
+      addIds((ids) => ids.filter((el) => el !== id));
+    }
+  };
+
+  const checkAllRows = () => {
+    if (cars.length === ids.length) {
+      addIds([]);
+    } else {
+      cars.forEach(({ id }) => {
+        if (ids.indexOf(id) === -1) addIds((prevIds) => [...prevIds, id]);
+      });
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (cars.length === ids.length) {
+      console.log("HELLO THERE");
+      return await API.delete(`/cars/`);
+    } else if (ids.length > 0) {
+      ids.forEach(async (id) => {
+        await API.delete(`/cars/${id}`);
+      });
+    }
+  };
+
   return (
     <TableWrapper>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHeaderCell>
-              <Checkbox />
+              <Checkbox
+                isChecked={cars.length === ids.length}
+                check={checkAllRows}
+              />
             </TableHeaderCell>
             {TB_HEADER_DATA.map((el) => {
               return (
@@ -49,8 +85,8 @@ const CarsTable = ({ cars }: IProps) => {
                 </TableHeaderCell>
               );
             })}
-            <TableHeaderCell>
-              <Icon icon="more_vert" size="1.8rem" />
+            <TableHeaderCell onClick={handleDeleteAll}>
+              <Icon icon="delete" size="1.8rem" />
             </TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -64,16 +100,24 @@ const CarsTable = ({ cars }: IProps) => {
               seller,
               purchasingPrice,
               totalExpensesCost,
+              licencePrice,
               totalCost,
               type,
               buyer,
               soldPrice,
               profit,
             } = car;
+
+            const onDelete = async () => {
+              await API.delete(`/cars/${id}`);
+            };
             return (
               <TableRow key={id}>
                 <TableCell blurrable={false}>
-                  <Checkbox />
+                  <Checkbox
+                    isChecked={!(ids.indexOf(id) === -1)}
+                    check={() => checkRow(id)}
+                  />
                 </TableCell>
                 <TableCell>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
@@ -94,6 +138,9 @@ const CarsTable = ({ cars }: IProps) => {
                   <Body2>{totalExpensesCost.toLocaleString()}</Body2>
                 </TableCell>
                 <TableCell>
+                  <Body2>{licencePrice.toLocaleString()}</Body2>
+                </TableCell>
+                <TableCell>
                   <Body2>{totalCost.toLocaleString()}</Body2>
                 </TableCell>
                 <TableCell>
@@ -108,8 +155,9 @@ const CarsTable = ({ cars }: IProps) => {
                 <TableCell>
                   <Body2>{profit ? profit.toLocaleString() : "--"}</Body2>
                 </TableCell>
-                <TableCell blurrable={false}>
-                  <Icon icon="more_vert" size="1.8rem" />
+
+                <TableCell blurrable={false} onClick={onDelete}>
+                  <Icon icon="delete" size="1.8rem" />
                 </TableCell>
               </TableRow>
             );

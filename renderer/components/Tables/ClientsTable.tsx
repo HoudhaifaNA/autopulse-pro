@@ -14,6 +14,8 @@ import {
   TableRow,
   TableCell,
 } from "components/Table/Table";
+import { useState } from "react";
+import API from "utils/API";
 
 interface IProps {
   clients: any[];
@@ -46,13 +48,45 @@ const clientStatus = (balance: number) => {
 };
 
 const ClientsTable = ({ clients }: IProps) => {
+  const [ids, addIds] = useState<number[]>([]);
+  const checkRow = (id: number) => {
+    if (ids.indexOf(id) === -1) {
+      addIds((ids) => [...ids, id]);
+    } else {
+      addIds((ids) => ids.filter((el) => el !== id));
+    }
+  };
+
+  const checkAllRows = () => {
+    if (clients.length === ids.length) {
+      addIds([]);
+    } else {
+      clients.forEach(({ id }) => {
+        if (ids.indexOf(id) === -1) addIds((prevIds) => [...prevIds, id]);
+      });
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (clients.length === ids.length) {
+      return await API.delete(`/clients/`);
+    } else if (ids.length > 0) {
+      ids.forEach(async (id) => {
+        await API.delete(`/clients/${id}`);
+      });
+    }
+    addIds([]);
+  };
   return (
     <TableWrapper>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHeaderCell>
-              <Checkbox />
+              <Checkbox
+                isChecked={clients.length === ids.length}
+                check={checkAllRows}
+              />
             </TableHeaderCell>
             {TB_HEADER_DATA.map((el) => {
               return (
@@ -62,18 +96,25 @@ const ClientsTable = ({ clients }: IProps) => {
                 </TableHeaderCell>
               );
             })}
-            <TableHeaderCell>
-              <Icon icon="more_vert" size="1.8rem" />
+            <TableHeaderCell onClick={handleDeleteAll}>
+              <Icon icon="delete" size="1.8rem" />
             </TableHeaderCell>
           </TableRow>
         </TableHeader>
         <TableBody>
           {clients.map((client) => {
             const { id, created_at, fullName, phoneNumber, balance } = client;
+            const onDelete = async () => {
+              await API.delete(`/clients/${id}`);
+              addIds([]);
+            };
             return (
               <TableRow key={id}>
                 <TableCell blurrable={false}>
-                  <Checkbox />
+                  <Checkbox
+                    isChecked={!(ids.indexOf(id) === -1)}
+                    check={() => checkRow(id)}
+                  />
                 </TableCell>
                 <TableCell>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
@@ -88,8 +129,8 @@ const ClientsTable = ({ clients }: IProps) => {
                   <Body2>{Math.abs(balance).toLocaleString()}</Body2>
                 </TableCell>
                 <TableCell>{clientStatus(balance)}</TableCell>
-                <TableCell blurrable={false}>
-                  <Icon icon="more_vert" size="1.8rem" />
+                <TableCell blurrable={false} onClick={onDelete}>
+                  <Icon icon="delete" size="1.8rem" />
                 </TableCell>
               </TableRow>
             );
