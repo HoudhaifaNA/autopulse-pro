@@ -22,12 +22,17 @@ const INITIAL_VALUES = {
   balance: 0,
 };
 
-const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
+const onSubmit = async (
+  values: Values,
+  actions: FormikHelpers<Values>,
+  setModal: any
+) => {
   const { firstName, lastName, phoneNumber, balance } = values;
   const fullName = `${firstName} ${lastName}`;
   try {
     await API.post("/clients", { fullName, phoneNumber, balance });
 
+    setModal("");
     actions.resetForm();
   } catch (err: any) {
     console.log(err.response.data.message);

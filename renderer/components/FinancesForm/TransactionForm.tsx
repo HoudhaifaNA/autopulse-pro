@@ -27,7 +27,11 @@ const getClients = () => {
   return CLIENTS_LIST;
 };
 
-const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
+const onSubmit = async (
+  values: Values,
+  actions: FormikHelpers<Values>,
+  setModal: any
+) => {
   const { date, client, method, amount, direction } = values;
   const data = {
     date,
@@ -41,6 +45,7 @@ const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
   try {
     await API.post("/transactions", data);
 
+    setModal("");
     actions.resetForm();
   } catch (err: any) {
     console.log(err.response.data.message);

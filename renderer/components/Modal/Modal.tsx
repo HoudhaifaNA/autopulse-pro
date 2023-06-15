@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 
 import * as S from "components/Modal/Modal.styled";
 import { Heading5 } from "styles/Typography";
@@ -6,6 +6,7 @@ import { Heading5 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 
 import truncateText from "utils/truncate";
+import { GlobalContext } from "pages/_app";
 
 interface ModalProps {
   title: string;
@@ -16,13 +17,18 @@ export const ModalContent = S.ModalContent;
 export const ModalActions = S.ModalActions;
 
 const Modal = ({ title, children }: ModalProps) => {
+  const { _, setModal } = useContext(GlobalContext);
+  const closeModal = () => setModal("");
+
   return (
     <>
-      <div className="background-black" />
+      <div className="background-black" onClick={closeModal} />
       <S.ModalWrapper>
         <S.ModalHeader>
           <Heading5 title={title}>{truncateText(title, 40)}</Heading5>
-          <Icon icon="close" size="2.4rem" />
+          <div onClick={closeModal}>
+            <Icon icon="close" size="2.4rem" />
+          </div>
         </S.ModalHeader>
         {children}
       </S.ModalWrapper>

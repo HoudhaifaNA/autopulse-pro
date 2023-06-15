@@ -1,10 +1,11 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useContext } from "react";
 import { Formik, FormikProps } from "formik";
 
 import * as S from "components/Form/Form.styled";
 
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
 import Button from "components/Button/Button";
+import { GlobalContext } from "pages/_app";
 
 type ActionsProps = Partial<FormikProps<any>>;
 
@@ -20,6 +21,8 @@ interface FormProps {
 }
 
 const Form = (props: FormProps) => {
+  const { _, setModal } = useContext(GlobalContext);
+
   const {
     title,
     initials,
@@ -34,7 +37,8 @@ const Form = (props: FormProps) => {
   const FormikSetup = {
     initialValues: initials,
     validationSchema: validation,
-    onSubmit,
+    //@ts-ignore
+    onSubmit: (actions, values) => onSubmit(actions, values, setModal),
   };
 
   return (

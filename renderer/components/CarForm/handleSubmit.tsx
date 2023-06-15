@@ -4,7 +4,11 @@ import { Values } from "components/CarForm/types";
 import calcExpensesCosts from "utils/calcExpensesCosts";
 import API from "utils/API";
 
-const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
+const onSubmit = async (
+  values: Values,
+  actions: FormikHelpers<Values>,
+  setModal: any
+) => {
   const {
     step,
     carType,
@@ -73,8 +77,8 @@ const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
         totalCost: values.dzdAmount,
       };
 
-      const res = await API.post("/cars", { ...data });
-      console.log(res.data);
+      await API.post("/cars", { ...data });
+      setModal("");
     } catch (err: any) {
       console.log(err.response.data.message);
     }
