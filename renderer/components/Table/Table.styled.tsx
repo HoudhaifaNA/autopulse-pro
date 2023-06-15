@@ -51,6 +51,7 @@ export const TableHeaderCell = styled.th`
   background-color: ${({ theme }) => theme.colors.primary[50]};
   position: sticky;
   top: 0px;
+  z-index: 15;
 `;
 export const TableCell = styled.td<{ $blurred: boolean }>`
   filter: ${({ $blurred }) => $blurred && "blur(.3rem)"};
