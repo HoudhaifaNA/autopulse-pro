@@ -43,6 +43,8 @@ export const createLicence = tryCatch((req, res, next) => {
   const { sellerId, moudjahid, wilaya, price, releasedDate } = req.body;
   const [trimmedName, isValid] = validateName(moudjahid);
 
+  console.log(moudjahid, trimmedName);
+
   if (!isValid) {
     return next(new AppError("Nom moudjahid incorrect", 400));
   }
@@ -50,16 +52,21 @@ export const createLicence = tryCatch((req, res, next) => {
     return next(new AppError("Nom de wilaya incorrect", 400));
   }
 
-  const licence = S.getLicenceByMoudjahid.get(moudjahid);
+  const moudjahidLicences = S.getLicenceByMoudjahid.all(
+    trimmedName.toLowerCase()
+  );
 
+  let isThereOneActive;
   // Check if there is an active licence with the same moudjahid
+  moudjahidLicences.find((lc) => {
+    //@ts-ignore
+    if (lc.isExpirated === "false") isThereOneActive = true;
+  });
 
-  //@ts-ignore
-  if (licence && licence.isExpirated === "false") {
+  if (isThereOneActive)
     return next(
       new AppError("Une licence active avec le même moudjahid existe", 403)
     );
-  }
 
   if (files.length > 0) {
     const setFilesNames = ({ fieldname, mimetype }) => {
@@ -71,7 +78,7 @@ export const createLicence = tryCatch((req, res, next) => {
 
   const params = [
     sellerId,
-    trimmedName,
+    trimmedName.toLowerCase(),
     wilaya,
     price,
     JSON.stringify(attachments),

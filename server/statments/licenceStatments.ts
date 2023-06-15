@@ -58,7 +58,7 @@ export const getLicenceById = db.prepare(
 );
 
 export const getLicenceByMoudjahid = db.prepare(
-  `${SELECT_BASE_QUERY} WHERE moudjahid = ?`
+  `${SELECT_BASE_QUERY} WHERE licences.moudjahid = ?`
 );
 
 export const createLicence = db.prepare(`INSERT INTO licences(
