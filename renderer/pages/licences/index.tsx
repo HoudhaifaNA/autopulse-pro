@@ -11,9 +11,10 @@ import ErrorMessage from "components/ErrorMessage/ErrorMessage";
 
 import { fetcher } from "utils/API";
 import { GlobalContext } from "pages/_app";
+import LicenceDocument from "components/LicenceDocument/LicenceDocument";
 
 const LicencesPage = () => {
-  const { currModal, setModal } = useContext(GlobalContext);
+  const { currModal, setModal, currDocument } = useContext(GlobalContext);
   const { data, isLoading, error } = useSWR("/licences", fetcher, {
     refreshInterval: 5,
   });
@@ -53,6 +54,7 @@ const LicencesPage = () => {
       <Meta title="Licences" />
       {renderPage()}
       {currModal === "licences" && <LicenceForm />}
+      {currDocument.type === "licences" && <LicenceDocument />}
     </>
   );
 };

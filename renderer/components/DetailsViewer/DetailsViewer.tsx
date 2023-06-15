@@ -1,5 +1,6 @@
 import * as S from "components/DetailsViewer/DetailsViewer.styled";
-import { ReactNode } from "react";
+import { GlobalContext } from "pages/_app";
+import { ReactNode, useContext } from "react";
 import { Heading3, Body1, Body2, Heading5 } from "styles/Typography";
 
 interface DetailViewerProps {
@@ -43,9 +44,13 @@ export const DetailItem = ({ title, value, $index }: DetailItemProps) => {
 };
 
 const DetailsViewer = ({ title, children }: DetailViewerProps) => {
+  const { setDocument } = useContext(GlobalContext);
   return (
     <S.DetailsViewer>
-      <div className="background-black" />
+      <div
+        className="background-black"
+        onClick={() => setDocument({ type: "" })}
+      />
       <S.DetailsContainer>
         <Heading3>{title}</Heading3>
         {children}

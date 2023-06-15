@@ -22,7 +22,11 @@ const Modal = ({ title, children }: ModalProps) => {
 
   return (
     <>
-      <div className="background-black" onClick={closeModal} />
+      <div
+        className="background-black"
+        style={{ zIndex: "400000" }}
+        onClick={closeModal}
+      />
       <S.ModalWrapper>
         <S.ModalHeader>
           <Heading5 title={title}>{truncateText(title, 40)}</Heading5>

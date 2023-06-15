@@ -25,6 +25,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     status: string;
     message: string;
   }>({ status: "", message: "" });
+  const [currDocument, setDocument] = useState<{
+    type: string;
+    document?: any;
+  }>({ type: "" });
 
   useEffect(() => {
     setTimeout(() => {
@@ -44,7 +48,14 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <GlobalContext.Provider
-      value={{ currModal, setModal, currNotification, setNotification }}
+      value={{
+        currModal,
+        setModal,
+        currNotification,
+        setNotification,
+        currDocument,
+        setDocument,
+      }}
     >
       <main className={inter.className}>
         <ThemeProvider theme={theme}>

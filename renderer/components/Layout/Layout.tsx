@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <div
           style={{
             position: "fixed",
-            zIndex: "15000",
+            zIndex: "1500000",
             right: "2rem",
             top: "2rem",
           }}

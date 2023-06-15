@@ -16,7 +16,7 @@ export const ModalWrapper = styled.div`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -52.5%) scale(0.9);
-  z-index: 1000;
+  z-index: 1000000;
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 0.8rem;
   animation: ${show} 0.15s ease forwards;

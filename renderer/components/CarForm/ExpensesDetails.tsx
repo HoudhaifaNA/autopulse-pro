@@ -25,17 +25,11 @@ const ExpensesDetails = () => {
         {expenses.map(({ id, type }, i) => {
           return (
             <FormGroup key={id}>
-              <SelectInput
+              <TypedInput
                 label="Raison :"
                 name={`expenses.${i}.raison`}
                 placeholder="Raison"
                 autoFocus
-                items={[
-                  { mainText: "Rent payment" },
-                  { mainText: "Utility bills" },
-                  { mainText: "Grocery shopping" },
-                  { mainText: "Transportation costs" },
-                ]}
               />
               {type === "à l'étranger" ? (
                 <FormGroup>

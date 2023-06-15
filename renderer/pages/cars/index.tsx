@@ -12,9 +12,10 @@ import CarsTable from "components/Tables/CarsTable";
 import Loading from "components/Loading/Loading";
 import ErrorMessage from "components/ErrorMessage/ErrorMessage";
 import { GlobalContext } from "pages/_app";
+import CarDocument from "components/CarDocument/CarDocument";
 
 const CarsPage = () => {
-  const { currModal, setModal } = useContext(GlobalContext);
+  const { currModal, setModal, currDocument } = useContext(GlobalContext);
   const { data, isLoading, error } = useSWR("/cars", fetcher, {
     refreshInterval: 5,
   });
@@ -54,6 +55,9 @@ const CarsPage = () => {
       <Meta title="Voitures" />
       {renderPage()}
       {currModal === "cars" && <CarForm />}
+      {currDocument.type === "cars" && (
+        <CarDocument document={currDocument.document} />
+      )}
     </>
   );
 };

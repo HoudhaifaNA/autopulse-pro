@@ -11,12 +11,13 @@ import ClientsTable from "components/Tables/ClientsTable";
 
 import { fetcher } from "utils/API";
 import { GlobalContext } from "pages/_app";
+import ClientDocument from "components/ClientDocument/ClientDocument";
 
 const ClientsPage = () => {
   const { data, isLoading, error } = useSWR("/clients", fetcher, {
     refreshInterval: 5,
   });
-  const { currModal, setModal } = useContext(GlobalContext);
+  const { currModal, setModal, currDocument } = useContext(GlobalContext);
   const renderPage = () => {
     if (isLoading) return <Loading />;
     if (error) {
@@ -53,6 +54,7 @@ const ClientsPage = () => {
       <Meta title="Clients" />
       {renderPage()}
       {currModal === "clients" && <ClientForm />}
+      {currDocument.type === "clients" && <ClientDocument />}
     </>
   );
 };

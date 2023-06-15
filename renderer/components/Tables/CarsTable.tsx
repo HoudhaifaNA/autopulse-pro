@@ -14,7 +14,8 @@ import {
   TableCell,
 } from "components/Table/Table";
 import API from "utils/API";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { GlobalContext } from "pages/_app";
 
 interface IProps {
   cars: any[];
@@ -36,6 +37,7 @@ const TB_HEADER_DATA = [
 ];
 
 const CarsTable = ({ cars }: IProps) => {
+  const { setDocument } = useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
@@ -57,7 +59,6 @@ const CarsTable = ({ cars }: IProps) => {
 
   const handleDeleteAll = async () => {
     if (cars.length === ids.length) {
-      console.log("HELLO THERE");
       return await API.delete(`/cars/`);
     } else if (ids.length > 0) {
       ids.forEach(async (id) => {
@@ -112,7 +113,12 @@ const CarsTable = ({ cars }: IProps) => {
               await API.delete(`/cars/${id}`);
             };
             return (
-              <TableRow key={id}>
+              <TableRow
+                key={id}
+                onContextMenu={() =>
+                  setDocument({ type: "cars", document: car })
+                }
+              >
                 <TableCell blurrable={false}>
                   <Checkbox
                     isChecked={!(ids.indexOf(id) === -1)}
@@ -153,7 +159,7 @@ const CarsTable = ({ cars }: IProps) => {
                   <Body2>{soldPrice ? soldPrice.toLocaleString() : "--"}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{profit ? profit.toLocaleString() : "--"}</Body2>
+                  <Body2>{buyer ? profit.toLocaleString() : "--"}</Body2>
                 </TableCell>
 
                 <TableCell blurrable={false} onClick={onDelete}>

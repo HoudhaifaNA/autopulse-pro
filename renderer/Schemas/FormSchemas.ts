@@ -153,6 +153,20 @@ export const carSchemaStepFour = object({
   ),
 });
 
+export const sellCarSchema = object({
+  buyer: object({
+    name: string()
+      .trim()
+      .matches(FULLNAME_RULES, "Indiquez un nom correct")
+      .min(3, `Vendeur doit comporter au moins 3 caractères`)
+      .required("Vendeur est requis"),
+  }),
+
+  soldPrice: number()
+    .min(100000, ({ min }) => `Minimum ${min} DZD`)
+    .required("Prix est requis"),
+});
+
 export const licenceSchema = object({
   seller: object({
     name: string()
