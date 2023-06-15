@@ -14,6 +14,8 @@ import {
   TableRow,
   TableCell,
 } from "components/Table/Table";
+import { useState } from "react";
+import API from "utils/API";
 
 interface IProps {
   licences: any[];
@@ -44,13 +46,46 @@ const licenceStatus = (isValid: string) => {
 };
 
 const LicencesTable = ({ licences }: IProps) => {
+  const [ids, addIds] = useState<number[]>([]);
+  const checkRow = (id: number) => {
+    if (ids.indexOf(id) === -1) {
+      addIds((ids) => [...ids, id]);
+    } else {
+      addIds((ids) => ids.filter((el) => el !== id));
+    }
+  };
+
+  const checkAllRows = () => {
+    if (licences.length === ids.length) {
+      addIds([]);
+    } else {
+      licences.forEach(({ id }) => {
+        if (ids.indexOf(id) === -1) addIds((prevIds) => [...prevIds, id]);
+      });
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (licences.length === ids.length) {
+      return await API.delete(`/licences/`);
+    } else if (ids.length > 0) {
+      ids.forEach(async (id) => {
+        await API.delete(`/licences/${id}`);
+      });
+    }
+    addIds([]);
+  };
+
   return (
     <TableWrapper>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHeaderCell>
-              <Checkbox />
+              <Checkbox
+                isChecked={licences.length === ids.length}
+                check={checkAllRows}
+              />
             </TableHeaderCell>
             {TB_HEADER_DATA.map((el) => {
               return (
@@ -60,8 +95,8 @@ const LicencesTable = ({ licences }: IProps) => {
                 </TableHeaderCell>
               );
             })}
-            <TableHeaderCell>
-              <Icon icon="more_vert" size="1.8rem" />
+            <TableHeaderCell onClick={handleDeleteAll}>
+              <Icon icon="delete" size="1.8rem" />
             </TableHeaderCell>
           </TableRow>
         </TableHeader>
@@ -77,10 +112,17 @@ const LicencesTable = ({ licences }: IProps) => {
               isValid,
               validUntil,
             } = licence;
+            const onDelete = async () => {
+              await API.delete(`/licences/${id}`);
+              addIds([]);
+            };
             return (
               <TableRow key={id}>
                 <TableCell blurrable={false}>
-                  <Checkbox />
+                  <Checkbox
+                    isChecked={!(ids.indexOf(id) === -1)}
+                    check={() => checkRow(id)}
+                  />
                 </TableCell>
                 <TableCell>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
@@ -101,8 +143,8 @@ const LicencesTable = ({ licences }: IProps) => {
                 <TableCell>
                   <Body2>{dayjs(validUntil).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
-                <TableCell blurrable={false}>
-                  <Icon icon="more_vert" size="1.8rem" />
+                <TableCell blurrable={false} onClick={onDelete}>
+                  <Icon icon="delete" size="1.8rem" />
                 </TableCell>
               </TableRow>
             );
