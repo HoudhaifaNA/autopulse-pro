@@ -14,8 +14,9 @@ import {
   TableRow,
   TableCell,
 } from "components/Table/Table";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import API from "utils/API";
+import { GlobalContext } from "pages/_app";
 
 interface IProps {
   licences: any[];
@@ -46,6 +47,7 @@ const licenceStatus = (isValid: string) => {
 };
 
 const LicencesTable = ({ licences }: IProps) => {
+  const { setDocument } = useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
@@ -117,7 +119,12 @@ const LicencesTable = ({ licences }: IProps) => {
               addIds([]);
             };
             return (
-              <TableRow key={id}>
+              <TableRow
+                key={id}
+                onContextMenu={() =>
+                  setDocument({ type: "licences", document: licence })
+                }
+              >
                 <TableCell blurrable={false}>
                   <Checkbox
                     isChecked={!(ids.indexOf(id) === -1)}

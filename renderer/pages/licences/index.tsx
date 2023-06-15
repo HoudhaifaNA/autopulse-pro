@@ -54,7 +54,9 @@ const LicencesPage = () => {
       <Meta title="Licences" />
       {renderPage()}
       {currModal === "licences" && <LicenceForm />}
-      {currDocument.type === "licences" && <LicenceDocument />}
+      {currDocument.type === "licences" && (
+        <LicenceDocument document={currDocument.document} />
+      )}
     </>
   );
 };

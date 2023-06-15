@@ -10,29 +10,24 @@ import DetailsViewer, {
   DetailSection,
 } from "components/DetailsViewer/DetailsViewer";
 import PDFPreview from "components/LicenceForm/PDFPreview";
-import Icon from "components/Icon/Icon";
 import FileViewer from "components/FileViewer/FileViewer";
 import PDFViewer from "components/PDFViewer/PDFViewer";
 
-const TEST_IMAGES = [
-  "https://shorturl.at/oxJKU",
-  "https://shorturl.at/xyHK0",
-  "https://shorturl.at/frXY7",
-  "https://shorturl.at/DILMO",
-  "https://shorturl.at/DILMO",
-];
-
-const PDF_URL_TEST = ["https://cdn.filestackcontent.com/wcrjf9qPTCKXV3hMXDwK"];
-
-const LicenceDocument = () => {
+const LicenceDocument = ({ document }: { document: any }) => {
   const [currentImage, setCurrentImage] = useState<string>();
   const [currentPDF, setCurrentPDF] = useState<string>();
+  const attachments = JSON.parse(document.attachments);
 
   const renderFileViewer = () => {
     if (currentImage) {
       return (
         <FileViewer onCloseFile={() => setCurrentImage("")}>
-          <Image src={currentImage} width={0} height={0} alt={"MODAL 1"} />
+          <Image
+            src={currentImage}
+            width={0}
+            height={0}
+            alt={document.moudjahid}
+          />
         </FileViewer>
       );
     } else if (currentPDF) {
@@ -44,6 +39,31 @@ const LicenceDocument = () => {
     }
   };
 
+  const renderAttachments = () => {
+    return attachments.map((atc: any, ind: number) => {
+      const fileType = atc.endsWith("pdf") ? "pdf" : "image";
+      const filePath = `http://localhost:3000/api/attachments/${atc}`;
+      if (fileType === "pdf") {
+        return (
+          <S.Attachement key={ind} onClick={() => setCurrentPDF(filePath)}>
+            <PDFPreview file={filePath} />
+          </S.Attachement>
+        );
+      } else {
+        return (
+          <S.Attachement key={ind}>
+            <Image
+              src={filePath}
+              fill={true}
+              alt={atc}
+              onClick={() => setCurrentImage(filePath)}
+            />
+          </S.Attachement>
+        );
+      }
+    });
+  };
+
   return (
     <>
       {renderFileViewer()}
@@ -51,52 +71,20 @@ const LicenceDocument = () => {
         <DetailSection>
           <DetailHeader title="Détails de la licence" />
           <DetailContent $columns={4}>
-            <DetailItem title="vendeur" value="Ahmed Nadhir" />
-            <DetailItem title="moudjahid" value="Houdhaifa Lebbad" />
-            <DetailItem title="prix" value="15000000.00 DZD" />
-            <DetailItem title="wilaya" value="Annaba" />
+            <DetailItem title="vendeur" value={document.seller} />
+            <DetailItem title="moudjahid" value={document.moudjahid} />
+            <DetailItem
+              title="prix"
+              value={`${document.price.toLocaleString()}.00 DZD`}
+            />
+            <DetailItem title="wilaya" value={document.wilaya} />
           </DetailContent>
         </DetailSection>
         <DetailSection>
           <DetailHeader title="Pièces jointes" />
           <DetailContent $columns={1}>
             <S.LicenceAttachments>
-              {PDF_URL_TEST.map((pdf, i) => {
-                return (
-                  <S.Attachement key={i} onClick={() => setCurrentPDF(pdf)}>
-                    <S.AttachmentController>
-                      <div>
-                        <Icon icon="download" size="2.4rem" />
-                      </div>
-                      <div>
-                        <Icon icon="delete" size="2.4rem" />
-                      </div>
-                    </S.AttachmentController>
-
-                    <PDFPreview file={pdf} />
-                  </S.Attachement>
-                );
-              })}
-              {TEST_IMAGES.map((img, i) => {
-                return (
-                  <S.Attachement key={i}>
-                    <S.AttachmentController>
-                      <div>
-                        <Icon icon="download" size="2.4rem" />
-                      </div>
-                      <div>
-                        <Icon icon="delete" size="2.4rem" />
-                      </div>
-                    </S.AttachmentController>
-                    <Image
-                      src={img}
-                      fill={true}
-                      alt={"MODAL 1"}
-                      onClick={() => setCurrentImage(img)}
-                    />
-                  </S.Attachement>
-                );
-              })}
+              {attachments.length > 0 && renderAttachments()}
             </S.LicenceAttachments>
           </DetailContent>
         </DetailSection>
@@ -104,5 +92,16 @@ const LicenceDocument = () => {
     </>
   );
 };
+
+{
+  /* <S.AttachmentController>
+<div>
+  <Icon icon="download" size="2.4rem" />
+</div>
+<div>
+  <Icon icon="delete" size="2.4rem" />
+</div>
+</S.AttachmentController> */
+}
 
 export default LicenceDocument;
