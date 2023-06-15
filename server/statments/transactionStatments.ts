@@ -48,6 +48,7 @@ export const getTransactions = db.prepare(
 export const getMoneyTransactions = db.prepare(`
   ${SELECT_STMT}
   WHERE  type = 'money'
+  ORDER BY created_at DESC
 `);
 export const getEUROsTransactions = db.prepare(`
     SELECT transactions.*,
