@@ -8,7 +8,9 @@ const FULLNAME_RULES = /^[A-Za-z']+(?:\s[A-Za-z']+)*$/;
 
 const WILAYAS_OPTIONS = wilayas.map((wilaya) => wilaya.name.toLowerCase());
 
-const today = new Date();
+const ONE_DAY_IN_MILLISECONDS = 86400000;
+
+const today = new Date(Date.now() + ONE_DAY_IN_MILLISECONDS);
 const currentYear = today.getFullYear();
 
 export const loginSchema = object({
