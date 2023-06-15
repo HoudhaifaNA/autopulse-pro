@@ -1,3 +1,4 @@
+import { createContext, useState } from "react";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import Inter from "next/font/local";
@@ -15,8 +16,11 @@ const inter = Inter({
   ],
 });
 
+export const GlobalContext = createContext<any>("");
+
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const [currModal, setModal] = useState("");
 
   // Insert Login page without Layout
   const insertPage = () => {
@@ -29,12 +33,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <main className={inter.className}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        {insertPage()}
-      </ThemeProvider>
-    </main>
+    <GlobalContext.Provider value={{ currModal, setModal }}>
+      <main className={inter.className}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          {insertPage()}
+        </ThemeProvider>
+      </main>
+    </GlobalContext.Provider>
   );
 }
 
