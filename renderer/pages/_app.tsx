@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import Inter from "next/font/local";
@@ -21,6 +21,16 @@ export const GlobalContext = createContext<any>("");
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [currModal, setModal] = useState("");
+  const [currNotification, setNotification] = useState<{
+    status: string;
+    message: string;
+  }>({ status: "", message: "" });
+
+  useEffect(() => {
+    setTimeout(() => {
+      setNotification({ status: "", message: "" });
+    }, 1500);
+  }, [currNotification.status]);
 
   // Insert Login page without Layout
   const insertPage = () => {
@@ -33,7 +43,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <GlobalContext.Provider value={{ currModal, setModal }}>
+    <GlobalContext.Provider
+      value={{ currModal, setModal, currNotification, setNotification }}
+    >
       <main className={inter.className}>
         <ThemeProvider theme={theme}>
           <GlobalStyle />

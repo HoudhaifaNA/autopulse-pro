@@ -7,7 +7,8 @@ import API from "utils/API";
 const onSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
-  setModal: any
+  setModal: any,
+  setNotification: any
 ) => {
   const {
     step,
@@ -79,8 +80,10 @@ const onSubmit = async (
 
       await API.post("/cars", { ...data });
       setModal("");
+      setNotification({ status: "success", message: "Voiture a été créée" });
     } catch (err: any) {
       console.log(err.response.data.message);
+      setNotification({ status: "error", message: err.response.data.message });
     }
     actions.setSubmitting(false);
   }

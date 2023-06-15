@@ -25,7 +25,8 @@ const INITIAL_VALUES = {
 const onSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
-  setModal: any
+  setModal: any,
+  setNotification: any
 ) => {
   const { firstName, lastName, phoneNumber, balance } = values;
   const fullName = `${firstName} ${lastName}`;
@@ -34,8 +35,10 @@ const onSubmit = async (
 
     setModal("");
     actions.resetForm();
+    setNotification({ status: "success", message: "Client a été créée" });
   } catch (err: any) {
     console.log(err.response.data.message);
+    setNotification({ status: "error", message: err.response.data.message });
   }
 };
 

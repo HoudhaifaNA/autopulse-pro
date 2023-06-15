@@ -8,7 +8,8 @@ import { Values } from "./types";
 const handleSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
-  setModal: any
+  setModal: any,
+  setNotification: any
 ) => {
   const formData = new FormData();
 
@@ -28,8 +29,10 @@ const handleSubmit = async (
   try {
     await API.post("/licences", formData);
     setModal("");
+    setNotification({ status: "success", message: "Licence a été créée" });
   } catch (err: any) {
     console.log(err.response.data.message);
+    setNotification({ status: "error", message: err.response.data.message });
   }
   actions.setSubmitting(false);
 };

@@ -31,7 +31,8 @@ const getClients = () => {
 const onSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
-  setModal: any
+  setModal: any,
+  setNotification: any
 ) => {
   const { date, client, method, amount, euroPrice, total, direction } = values;
   const data = {
@@ -49,9 +50,10 @@ const onSubmit = async (
     await API.post("/transactions", data);
 
     setModal("");
-    actions.resetForm();
+    setNotification({ status: "success", message: "Transfert d'euros réussi" });
   } catch (err: any) {
     console.log(err.response.data.message);
+    setNotification({ status: "error", message: err.response.data.message });
   }
 };
 
