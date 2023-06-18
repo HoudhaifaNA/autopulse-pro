@@ -10,6 +10,11 @@ import Layout from "components/Layout/Layout";
 import ClientDocument from "components/ClientDocument/ClientDocument";
 import LicenceDocument from "components/LicenceDocument/LicenceDocument";
 import CarDocument from "components/CarDocument/CarDocument";
+import ClientForm from "components/ClientForm/ClientForm";
+import CarForm from "components/CarForm/CarForm";
+import LicenceForm from "components/LicenceForm/LicenceForm";
+import TransactionForm from "components/FinancesForm/TransactionForm";
+import EuroTransferForm from "components/FinancesForm/EuroTransferForm";
 
 const inter = Inter({
   src: [
@@ -21,17 +26,23 @@ const inter = Inter({
 
 export const GlobalContext = createContext<any>("");
 
+interface Notification {
+  status: string;
+  message: string;
+}
+interface Document {
+  type: string;
+  document?: any;
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [currModal, setModal] = useState("");
-  const [currNotification, setNotification] = useState<{
-    status: string;
-    message: string;
-  }>({ status: "", message: "" });
-  const [currDocument, setDocument] = useState<{
-    type: string;
-    document?: any;
-  }>({ type: "" });
+  const [currNotification, setNotification] = useState<Notification>({
+    status: "",
+    message: "",
+  });
+  const [currDocument, setDocument] = useState<Document>({ type: "" });
 
   useEffect(() => {
     setTimeout(() => {
@@ -63,6 +74,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <main className={inter.className}>
         <ThemeProvider theme={theme}>
           <GlobalStyle />
+          {currModal === "clients" && <ClientForm />}
+          {currModal === "cars" && <CarForm />}
+          {currModal === "licences" && <LicenceForm />}
+          {currModal === "transactions" && <TransactionForm />}
+          {currModal === "euros" && <EuroTransferForm />}
           {currDocument.type === "clients" && (
             <ClientDocument document={currDocument.document} />
           )}

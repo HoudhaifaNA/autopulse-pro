@@ -110,8 +110,6 @@ const FinancePage = () => {
     <>
       <Meta title="Finances" />
       {renderPage()}
-      {currModal === "transactions" && <TransactionForm />}
-      {currModal === "euros" && <EuroTransferForm />}
     </>
   );
 };

@@ -53,7 +53,6 @@ const ClientsPage = () => {
     <>
       <Meta title="Clients" />
       {renderPage()}
-      {currModal === "clients" && <ClientForm />}
     </>
   );
 };

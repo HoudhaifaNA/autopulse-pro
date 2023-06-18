@@ -54,10 +54,6 @@ const CarsPage = () => {
     <>
       <Meta title="Voitures" />
       {renderPage()}
-      {currModal === "cars" && <CarForm />}
-      {currDocument.type === "cars" && (
-        <CarDocument document={currDocument.document} />
-      )}
     </>
   );
 };
