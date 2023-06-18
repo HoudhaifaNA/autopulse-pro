@@ -7,6 +7,8 @@ directories:
 extraResources:
   - from: "db"
     to: db
+  - from: "uploads"
+    to: uploads
     filter:
       - "**/*"
 files:

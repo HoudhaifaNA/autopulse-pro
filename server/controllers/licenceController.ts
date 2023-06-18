@@ -108,8 +108,17 @@ export const createLicence = tryCatch((req, res, next) => {
 
   // If licence has been created save attachments
   files.forEach((file, i) => {
-    const filePath = path.join(path.resolve(), "uploads", attachments[i]);
-
+    // const filePath = path.join(path.resolve(), "uploads", attachments[i]);
+    const isProd: boolean = process.env.NODE_ENV === "production";
+    let filePath = path.join(path.resolve(), "uploads", attachments[i]);
+    if (isProd) {
+      filePath = path.join(
+        path.resolve(),
+        "resources",
+        "uploads",
+        attachments[i]
+      );
+    }
     fs.writeFile(filePath, file.buffer, (err) => {
       if (err) return console.log(`Error saving files 📁 ${err}`);
     });
