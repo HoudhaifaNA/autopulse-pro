@@ -32,6 +32,7 @@ const getClients = () => {
 };
 
 const INITIAL_VALUES: Values = {
+  created_at: new Date(),
   releasedDate: new Date(),
   seller: { id: 0, name: "" },
   moudjahid: "",
@@ -68,7 +69,6 @@ const LicenceForm = () => {
       getFormProps={(props) => setFormProps(props)}
     >
       <FormGroup>
-        <DateInput name="releasedDate" minDate="2015" />
         <SelectInput
           name="seller.name"
           label="Vendeur :"
@@ -77,14 +77,19 @@ const LicenceForm = () => {
           relatedFields={["seller.id"]}
           items={CLIENTS_LIST}
         />
-      </FormGroup>
-      <FormGroup>
         <TypedInput
           name="moudjahid"
           type="text"
           label="Moudjahid :"
           placeholder="Nom du moudjahid"
         />
+      </FormGroup>
+      <FormGroup>
+        <DateInput name="created_at" label="Créé à" minDate="2015" />
+        <DateInput name="releasedDate" label="Date de licence" minDate="2015" />
+      </FormGroup>
+
+      <FormGroup>
         <SelectInput
           name="wilaya"
           label="Wilaya :"
@@ -92,18 +97,13 @@ const LicenceForm = () => {
           items={WILAYAS_ITEMS}
           sorted={false}
         />
-      </FormGroup>
-      <FormGroup>
-        <FormGroup>
-          <TypedInput
-            name="price"
-            type="number"
-            label="Prix :"
-            placeholder="Prix ​​de la licence"
-            addOn="DZD"
-          />
-        </FormGroup>
-        <FormGroup />
+        <TypedInput
+          name="price"
+          type="number"
+          label="Prix :"
+          placeholder="Prix ​​de la licence"
+          addOn="DZD"
+        />
       </FormGroup>
       <FormGroup>
         <Dropzone />

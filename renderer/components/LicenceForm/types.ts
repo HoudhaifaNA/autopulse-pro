@@ -9,6 +9,7 @@ interface Seller {
 }
 
 export interface Values {
+  created_at: Date;
   releasedDate: Date;
   seller: Seller;
   moudjahid: string;
