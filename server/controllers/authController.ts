@@ -12,14 +12,18 @@ interface User {
 
 const signToken = (username) => {
   return jwt.sign({ username }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn: "3d",
   });
 };
 
 const createAndSendToken = (user, res) => {
   const token = signToken(user.username);
 
-  res.cookie("tkn", token, { httpOnly: true });
+  res.cookie("tkn", token, {
+    httpOnly: false,
+    sameSite: "none",
+    secure: true,
+  });
 
   user.password = undefined;
 
@@ -51,7 +55,9 @@ export const logout = tryCatch((req, res, next) => {
 
   res.cookie("tkn", "", {
     expires: new Date(Date.now() + ONE_SECOND),
-    httpOnly: true,
+    httpOnly: false,
+    sameSite: "none",
+    secure: true,
   });
 
   res.status(200).json({ status: "success" });
@@ -108,4 +114,21 @@ export const updateMe = tryCatch((req, res, next) => {
   S.updatePassword.run([hashedPassword, req.user.username]);
 
   createAndSendToken(user, res);
+});
+
+export const confirmDelete = tryCatch((req, res, next) => {
+  const { password } = req.body;
+
+  if (!password) {
+    return next(new AppError("Please, provide valid current passowrd", 403));
+  }
+
+  const user: User = S.getUserPassword.get(req["user"].username);
+
+  const isPasswordCorrect = bcrypt.compareSync(password, user.password);
+
+  if (!isPasswordCorrect)
+    return next(new AppError(`Mot de passe incorrect`, 401));
+
+  next();
 });

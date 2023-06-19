@@ -22,6 +22,7 @@ app.use(express.json({ limit: "10kb" }));
 app.use("/api/users", userRoutes);
 
 app.use(authController.protect);
+app.delete("/api/*", authController.confirmDelete);
 app.get("/api/search", searchController);
 app.use("/api/clients", clientsRoutes);
 app.use("/api/licences", licenceRoutes);
