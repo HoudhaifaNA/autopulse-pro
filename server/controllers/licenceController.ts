@@ -40,10 +40,9 @@ export const uploadAttachments = upload.array("attachments");
 export const createLicence = tryCatch((req, res, next) => {
   const attachments = [];
   const files = req.files as Express.Multer.File[];
-  const { sellerId, moudjahid, wilaya, price, releasedDate } = req.body;
+  const { sellerId, moudjahid, wilaya, price, releasedDate, created_at } =
+    req.body;
   const [trimmedName, isValid] = validateName(moudjahid);
-
-  console.log(moudjahid, trimmedName);
 
   if (!isValid) {
     return next(new AppError("Nom moudjahid incorrect", 400));
@@ -83,19 +82,19 @@ export const createLicence = tryCatch((req, res, next) => {
     price,
     JSON.stringify(attachments),
     releasedDate,
+    created_at,
   ];
 
   const { lastInsertRowid } = S.createLicence.run(params);
 
-  const today = dayjs(new Date()).format("YYYY-MM-DD");
+  const today = dayjs(created_at).format("YYYY-MM-DD");
   const transacrtionParams = [
     lastInsertRowid,
     sellerId,
     today,
     "licence",
-    `LIC ${trimmedName}`,
+    trimmedName,
     wilaya,
-    "--",
     "--",
     price,
     "entrante",

@@ -67,8 +67,9 @@ export const createLicence = db.prepare(`INSERT INTO licences(
     wilaya,
     price,
     attachments,
-    validUntil
-) VALUES(?,?,?,?,?,DATE(?, '+5 years'))`);
+    validUntil,
+    created_at
+) VALUES(?,?,?,?,?,DATE(?, '+3 years'),?)`);
 
 export const updateLicence = db.prepare(`UPDATE licences
  SET moudjahid = COALESCE(?, moudjahid),

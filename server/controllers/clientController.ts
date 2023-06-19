@@ -3,7 +3,7 @@ import AppError from "../utils/AppError";
 import tryCatch from "../utils/tryCatch";
 import { isValidPhoneNumber, validateName } from "../utils/validations";
 
-export const getAllClients = tryCatch((req, res, next) => {
+export const getAllClients = tryCatch((req, res) => {
   const clients = S.getClients.all();
 
   return res
@@ -22,14 +22,14 @@ export const getClientByID = tryCatch((req, res, next) => {
 });
 
 export const createClient = tryCatch((req, res, next) => {
-  const { fullName, phoneNumber, balance = 0 } = req.body;
+  const { fullName, phoneNumber, balance = 0, created_at } = req.body;
   const [trimmedName, isValid] = validateName(fullName);
 
   if (!isValid) return next(new AppError("Nom incorrect", 400));
   if (!isValidPhoneNumber(phoneNumber))
     return next(new AppError("Numéro de téléphone invalide", 400));
 
-  const params = [trimmedName, phoneNumber, balance];
+  const params = [trimmedName, phoneNumber, balance, created_at];
 
   const { lastInsertRowid } = S.createClient.run(params);
   const newClient = S.getClientById.get(lastInsertRowid);

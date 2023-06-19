@@ -18,8 +18,9 @@ db.prepare(
 export const createClient = db.prepare(`INSERT INTO clients(
     fullName,
     phoneNumber,
-    balance
-) VALUES (?,?,?)`);
+    balance,
+    created_at
+) VALUES (?,?,?,?)`);
 
 export const getClients = db.prepare(
   `SELECT * FROM clients ORDER BY created_at DESC`
