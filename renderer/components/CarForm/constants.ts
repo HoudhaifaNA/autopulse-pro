@@ -4,32 +4,34 @@ import { Values } from "components/CarForm/types";
 
 export const INITIAL_VALUES: Values = {
   step: 1,
+  created_at: new Date(),
   carType: "importé",
   brand: "",
-  serie: "",
   model: "",
   serialNumber: "",
   registrationNumber: "",
+  keys: 1,
+  mileage: 0,
   color: "",
   year: "",
+  features: "",
   seller: { id: 0, name: "" },
-  euroCost: 0,
-  euroPrice: 0,
-  purchasingPrice: 0,
-  licence: { id: 0, name: "", price: 0 },
+  euroCost: "",
+  euroPrice: "",
+  purchasingPrice: "",
+  owner: { id: 0, name: "", price: 0 },
   expenses: [
     {
       id: uid(),
       type: "à l'étranger",
       raison: "",
-      euroCost: 0,
-      euroPrice: 0,
-      totalCost: 0,
+      euroCost: "",
+      euroPrice: "",
+      totalCost: "",
     },
   ],
   euroAmount: 0,
   dzdAmount: 0,
-  transactionAgreement: true,
 };
 
 const CAR_COLORS = [
@@ -71,13 +73,13 @@ export const CAR_BRANDS_LIST = cars.map(({ brand }) => {
 
 // Return car brands with their series to be selected dynamically in the dropdown
 // ex: {'mercedes': [{mainText: 'C'},{mainText: 'CLA'}]}
-export let CAR_SERIES: TCarsData = {};
+export let CAR_MODELS: TCarsData = {};
 
-cars.forEach(({ brand, series }) => {
-  const seriesList = series.map((serie) => {
-    return { mainText: serie };
+cars.forEach(({ brand, models }) => {
+  const modelsList = models.map((model) => {
+    return { mainText: model };
   });
 
-  CAR_SERIES = { ...CAR_SERIES, [brand]: seriesList };
-  return CAR_SERIES;
+  CAR_MODELS = { ...CAR_MODELS, [brand]: modelsList };
+  return CAR_MODELS;
 });

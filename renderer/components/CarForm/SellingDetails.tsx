@@ -1,10 +1,14 @@
+import { useContext } from "react";
 import { useFormikContext } from "formik";
 import useSWR from "swr";
 
 import { FormGroup } from "components/Form/Form.styled";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 
 import { TypedInput, SelectInput } from "components/Input/Input";
+import Button from "components/Button/Button";
 
+import { GlobalContext } from "pages/_app";
 import { Values } from "components/CarForm/types";
 import { fetcher } from "utils/API";
 
@@ -33,6 +37,7 @@ const getItems = () => {
 
 const SellingDetails = () => {
   const { values } = useFormikContext<Values>();
+  const { setModal } = useContext(GlobalContext);
   const { carType } = values;
   const [clientsItems, licencesItems] = getItems();
 
@@ -46,13 +51,37 @@ const SellingDetails = () => {
           placeholder="Nom du vendeur"
           autoFocus
           items={clientsItems}
+          buttons={
+            <ButtonItem>
+              <Button
+                type="button"
+                variant="ghost"
+                icon="add"
+                onClick={() => setModal("clients")}
+              >
+                Ajouter un client
+              </Button>
+            </ButtonItem>
+          }
         />
         <SelectInput
-          label="Licence :"
-          name="licence.name"
-          relatedFields={["licence.id", "licence.price"]}
-          placeholder="Nom du moujahid"
+          label="Propriétaire :"
+          name="owner.name"
+          relatedFields={["owner.id", "owner.price"]}
+          placeholder="Nom du propriétaire"
           items={licencesItems}
+          buttons={
+            <ButtonItem>
+              <Button
+                type="button"
+                variant="ghost"
+                icon="add"
+                onClick={() => setModal("licences")}
+              >
+                Ajouter une licence
+              </Button>
+            </ButtonItem>
+          }
         />
       </FormGroup>
       <FormGroup>
@@ -63,6 +92,7 @@ const SellingDetails = () => {
               name="euroCost"
               type="number"
               addOn="€"
+              placeholder="45000"
             />
 
             <TypedInput
@@ -70,6 +100,7 @@ const SellingDetails = () => {
               name="euroPrice"
               type="number"
               addOn="DZD"
+              placeholder="230"
             />
           </>
         ) : (
@@ -79,6 +110,7 @@ const SellingDetails = () => {
               name="purchasingPrice"
               type="number"
               addOn="DZD"
+              placeholder="250000000"
             />
           </>
         )}

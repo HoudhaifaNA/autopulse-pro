@@ -28,9 +28,9 @@ const renderExpenses = (setFocus: any, formikContext: formikContextT) => {
       id: uid(),
       type: lowerCaseOption,
       raison: "",
-      euroCost: 0,
-      euroPrice: 0,
-      totalCost: 0,
+      euroCost: "",
+      euroPrice: "",
+      totalCost: "",
     };
 
     const addExpense = () => {

@@ -22,14 +22,15 @@ const getCarDetails = () => {
   const {
     carType,
     brand,
-    serie,
     model,
     serialNumber,
     registrationNumber,
+    keys,
+    mileage,
     color,
     year,
     seller,
-    licence,
+    owner,
     expenses,
     euroAmount,
     euroCost,
@@ -39,23 +40,39 @@ const getCarDetails = () => {
   } = values;
 
   // PP ==> Purchasing price
-  const PPText = costToText(carType, euroCost, euroPrice, purchasingPrice);
+  const PPText = costToText(
+    carType,
+    Number(euroCost),
+    Number(euroPrice),
+    Number(purchasingPrice)
+  );
 
   const [expensesDZDCost] = calcExpensesCost(expenses);
 
   let expensesList: { [key: string]: string } = {};
 
   expenses.forEach(({ type, raison, euroPrice, euroCost, totalCost }) => {
-    const totalCostText = costToText(type, euroCost, euroPrice, totalCost);
+    const totalCostText = costToText(
+      type,
+      Number(euroCost),
+      Number(euroPrice),
+      Number(totalCost)
+    );
     expensesList[raison] = totalCostText;
   });
+
+  const licencePrice = owner.price
+    ? { "Prix ​​de la licence": `${owner.price}.00 DZD` }
+    : "";
 
   const carDetails = [
     {
       section: "Détails de la voiture",
-      voiture: `${brand} ${serie} ${model}`,
+      voiture: `${brand} ${model}`,
       "Numéro de châssis": serialNumber,
       Matricule: registrationNumber,
+      Clés: keys,
+      Kilométrage: `${mileage} km`,
       Couleur: color,
       Année: year,
     },
@@ -63,8 +80,8 @@ const getCarDetails = () => {
       section: "Détails d'achat",
       Vendeur: seller.name,
       "Prix ​​d'achat": PPText,
-      Licence: licence.name,
-      "Prix ​​de la licence": `${licence.price}.00 DZD`,
+      Propriétaire: owner.name,
+      ...licencePrice,
     },
     expensesDZDCost !== 0 && { section: "Dépenses", ...expensesList },
     {

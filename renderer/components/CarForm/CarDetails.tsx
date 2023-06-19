@@ -4,11 +4,12 @@ import { useFormikContext } from "formik";
 import { FormGroup } from "components/Form/Form.styled";
 
 import { TypedInput, SelectInput } from "components/Input/Input";
+import KeysChecker from "components/CarForm/KeysChecker";
 
 import {
   COLORS_LIST,
   CAR_BRANDS_LIST,
-  CAR_SERIES,
+  CAR_MODELS,
 } from "components/CarForm/constants";
 
 import { Values } from "components/CarForm/types";
@@ -17,10 +18,10 @@ const CarDetails = () => {
   const { values, setFieldValue } = useFormikContext<Values>();
   const { brand } = values;
   const brandRef = useRef<string>(brand);
-  const seriesList = CAR_SERIES[brand] ?? [];
+  const modelsList = CAR_MODELS[brand] ?? [];
 
   useEffect(() => {
-    if (brand !== brandRef.current) setFieldValue("serie", "");
+    if (brand !== brandRef.current) setFieldValue("model", "");
     brandRef.current = brand;
   }, [brand]);
 
@@ -37,34 +38,34 @@ const CarDetails = () => {
         />
         <FormGroup>
           <SelectInput
-            label="Série :"
-            name="serie"
+            label="Modèle :"
+            name="model"
             placeholder="CLA"
-            items={seriesList}
+            items={modelsList}
           />
         </FormGroup>
       </FormGroup>
       <FormGroup>
-        <TypedInput
-          label="Modèle :"
-          name="model"
-          type="text"
-          placeholder="AMG 250"
-        />
         <TypedInput
           label="Numéro de châssis :"
           name="serialNumber"
           type="text"
           placeholder="W1KZF8GB8NB093XXX"
         />
-      </FormGroup>
-      <FormGroup>
         <TypedInput
           label="Matricule :"
           name="registrationNumber"
           type="text"
           placeholder="WG69 NXF"
         />
+      </FormGroup>
+      <FormGroup>
+        <FormGroup>
+          <FormGroup>
+            <KeysChecker />
+          </FormGroup>
+          <TypedInput name="mileage" type="number" label="Kilométrage :" />
+        </FormGroup>
         <FormGroup>
           <SelectInput
             label="Couleur :"

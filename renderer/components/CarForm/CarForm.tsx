@@ -5,6 +5,7 @@ import Form from "components/Form/Form";
 
 import CarType from "components/CarForm/CarType";
 import CarDetails from "components/CarForm/CarDetails";
+import CarFeatures from "components/CarForm/CarFeatures";
 import SellingDetails from "components/CarForm/SellingDetails";
 import ExpenseDetails from "components/CarForm/ExpensesDetails";
 import ConfirmationDetails from "components/CarForm/ConfirmationDetails";
@@ -14,8 +15,8 @@ import { INITIAL_VALUES } from "components/CarForm/constants";
 import onSubmit from "components/CarForm/handleSubmit";
 import {
   carSchemaStepTwo,
-  carSchemaStepThree,
   carSchemaStepFour,
+  carSchemaStepFive,
 } from "Schemas/FormSchemas";
 
 import { Values } from "components/CarForm/types";
@@ -33,12 +34,15 @@ const renderForm = (step: number) => {
     return <CarDetails />;
   }
   if (step === 3) {
-    return <SellingDetails />;
+    return <CarFeatures />;
   }
   if (step === 4) {
-    return <ExpenseDetails />;
+    return <SellingDetails />;
   }
   if (step === 5) {
+    return <ExpenseDetails />;
+  }
+  if (step === 6) {
     return <ConfirmationDetails />;
   }
 };
@@ -65,7 +69,7 @@ const Actions = ({ step, buttonProps }: ActionsProps) => {
         disabled={isSubmitting}
         onClick={submitForm}
       >
-        {step === 5 ? "Confirmer" : "Suivant"}
+        {step === 6 ? "Confirmer" : "Suivant"}
       </Button>
     </>
   );
@@ -76,21 +80,24 @@ const CarForm = () => {
   const [title, setTitle] = useState("Ajouter un voiture");
 
   const values = formProps?.values ?? INITIAL_VALUES;
-  const { step, brand, serie, model } = values;
-  const validation = [carSchemaStepTwo, carSchemaStepThree, carSchemaStepFour];
+  const { step, brand, model } = values;
+  let validation;
+  if (step === 2) validation = carSchemaStepTwo;
+  if (step === 4) validation = carSchemaStepFour;
+  if (step === 5) validation = carSchemaStepFive;
 
   // reset all inputs "touched" to false when step changes
   useEffect(() => {
     formProps?.setTouched({});
     if (step === 1) setTitle("Ajouter un voiture");
-    if (step === 3) setTitle(`${brand} ${serie} ${model}`);
+    if (step === 3) setTitle(`${brand} ${model}`);
   }, [step]);
 
   return (
     <Form
       title={title}
       initials={INITIAL_VALUES}
-      validation={validation[step - 2]}
+      validation={validation}
       onSubmit={onSubmit}
       getFormProps={(formProps) => setFormProps(formProps)}
       Actions={(props) => <Actions step={step} buttonProps={props} />}

@@ -10,13 +10,14 @@ import { Values } from "components/CarForm/types";
 const CAR_TYPES = ["importé", "locale"];
 
 const renderCarTypes = (carType: Values["carType"]) => {
-  const { setFieldValue, resetForm } = useFormikContext();
+  const { setFieldValue, values, resetForm } = useFormikContext<Values>();
 
   return CAR_TYPES.map((type) => {
     const isSelected = carType === type;
     const onTypeClick = () => {
       if (carType !== type) resetForm();
       setFieldValue("carType", type);
+      setFieldValue("step", values.step + 1);
     };
 
     return (

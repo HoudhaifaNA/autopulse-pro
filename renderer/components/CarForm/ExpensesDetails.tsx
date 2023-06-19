@@ -4,7 +4,7 @@ import * as S from "components/CarForm/ExpensesDetails.styled";
 import { FormGroup } from "components/Form/Form.styled";
 
 import ExpenseAdder from "components/CarForm/ExpenseAdder";
-import { TypedInput, SelectInput } from "components/Input/Input";
+import { TypedInput } from "components/Input/Input";
 import Button from "components/Button/Button";
 
 import { Values } from "components/CarForm/types";
@@ -37,14 +37,14 @@ const ExpensesDetails = () => {
                     name={`expenses.${i}.euroCost`}
                     type="number"
                     label="Coût :"
-                    placeholder="45000.00"
+                    placeholder="450"
                     addOn="€"
                   />
                   <TypedInput
                     name={`expenses.${i}.euroPrice`}
                     type="number"
                     label="Prix ​​de €100 :"
-                    placeholder="220.00"
+                    placeholder="220"
                     addOn="DZD"
                   />
                 </FormGroup>
@@ -53,7 +53,7 @@ const ExpensesDetails = () => {
                   name={`expenses.${i}.totalCost`}
                   type="number"
                   label="Coût :"
-                  placeholder="100000.00"
+                  placeholder="10000"
                   addOn="DZD"
                 />
               )}

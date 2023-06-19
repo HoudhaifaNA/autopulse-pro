@@ -12,15 +12,18 @@ const onSubmit = async (
 ) => {
   const {
     step,
+    created_at,
     carType,
     brand,
-    serie,
     model,
     serialNumber,
     registrationNumber,
+    keys,
+    mileage,
     color,
     year,
-    licence,
+    features,
+    owner,
     seller,
     euroCost,
     euroPrice,
@@ -28,47 +31,52 @@ const onSubmit = async (
     expenses,
   } = values;
 
-  if (step < 5) actions.setFieldValue("step", step + 1);
+  if (step < 6) actions.setFieldValue("step", step + 1);
 
   // Calculate purchasing price if car is imported
-  if (step === 3 && carType === "importé") {
+  if (step === 4 && carType === "importé") {
     // PP ==> Purchasing Price
-    const convertedPP = euroCost * euroPrice;
+    const convertedPP = (Number(euroCost) * Number(euroPrice)) / 100;
     actions.setFieldValue("purchasingPrice", convertedPP);
   }
 
-  if (step === 4) {
+  if (step === 5) {
     // Calculate total cost of every expense abroad in DZD
     expenses.forEach((expense) => {
       const { type, euroCost, euroPrice } = expense;
-      if (type === "à l'étranger") expense.totalCost = euroCost * euroPrice;
+      if (type === "à l'étranger")
+        expense.totalCost = (Number(euroCost) * Number(euroPrice)) / 100;
     });
 
     // Calculate expenses DZD and EUR amout
     let [expensesDZDcost, expensesEURCost] = calcExpensesCosts(expenses);
 
     // Calculate total spent DZD and EUR amout (car + expenses + licence )
-    let euroAmount = euroCost + expensesEURCost;
-    let dzdAmount = purchasingPrice + expensesDZDcost + licence.price;
+    let euroAmount = Number(euroCost) + expensesEURCost;
+    let dzdAmount = Number(purchasingPrice) + expensesDZDcost + owner.price;
 
     actions.setFieldValue("euroAmount", euroAmount);
     actions.setFieldValue("dzdAmount", dzdAmount);
   }
-  if (step === 5) {
+  if (step === 6) {
     let [expensesDZDcost] = calcExpensesCosts(expenses);
 
     try {
       const data = {
+        created_at,
         type: carType,
         brand,
-        serie,
         model,
         serialNumber,
         registrationNumber,
+        keys,
+        mileage,
         color,
         year,
+        features,
         sellerId: seller.id,
-        licenceId: licence.id,
+        ownerId: owner.id,
+        ownerName: owner.name,
         costInEuros: euroCost,
         euroPrice,
         purchasingPrice,
