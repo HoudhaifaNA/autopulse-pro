@@ -38,10 +38,10 @@ const Dropdown = (props: DropdownProps) => {
   return (
     <S.DropdownWrapper {...stylingProps}>
       <S.Dropdown>
+        {children}
         <S.DropdownList>
           {items && renderItems({ items, onItemClick, iconSize })}
         </S.DropdownList>
-        {children}
       </S.Dropdown>
     </S.DropdownWrapper>
   );
