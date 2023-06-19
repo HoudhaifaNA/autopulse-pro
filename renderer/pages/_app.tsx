@@ -15,6 +15,7 @@ import CarForm from "components/CarForm/CarForm";
 import LicenceForm from "components/LicenceForm/LicenceForm";
 import TransactionForm from "components/FinancesForm/TransactionForm";
 import EuroTransferForm from "components/FinancesForm/EuroTransferForm";
+import DeleteModal from "components/DeleteModal/DeleteModal";
 
 const inter = Inter({
   src: [
@@ -34,10 +35,15 @@ interface Document {
   type: string;
   document?: any;
 }
+interface ModalDelete {
+  name: string;
+  url: string;
+}
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [currModal, setModal] = useState("");
+  const [modalDelete, toggleModalDelete] = useState<ModalDelete>();
   const [currNotification, setNotification] = useState<Notification>({
     status: "",
     message: "",
@@ -69,11 +75,16 @@ function MyApp({ Component, pageProps }: AppProps) {
         setNotification,
         currDocument,
         setDocument,
+        modalDelete,
+        toggleModalDelete,
       }}
     >
       <main className={inter.className}>
         <ThemeProvider theme={theme}>
           <GlobalStyle />
+          {modalDelete && (
+            <DeleteModal name={modalDelete.name} url={modalDelete.url} />
+          )}
           {currModal === "clients" && <ClientForm />}
           {currModal === "cars" && <CarForm />}
           {currModal === "licences" && <LicenceForm />}

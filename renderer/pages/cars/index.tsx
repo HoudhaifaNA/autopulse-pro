@@ -3,7 +3,6 @@ import useSWR from "swr";
 
 import PageHeader from "components/PageHeader/PageHeader";
 
-import CarForm from "components/CarForm/CarForm";
 import EmptyState from "components/EmptyState/EmptyState";
 import Meta from "components/Meta/Meta";
 
@@ -12,10 +11,9 @@ import CarsTable from "components/Tables/CarsTable";
 import Loading from "components/Loading/Loading";
 import ErrorMessage from "components/ErrorMessage/ErrorMessage";
 import { GlobalContext } from "pages/_app";
-import CarDocument from "components/CarDocument/CarDocument";
 
 const CarsPage = () => {
-  const { currModal, setModal, currDocument } = useContext(GlobalContext);
+  const { setModal, modalDelete } = useContext(GlobalContext);
   const { data, isLoading, error } = useSWR("/cars", fetcher, {
     refreshInterval: 5,
   });
