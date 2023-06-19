@@ -1,6 +1,6 @@
 import db from "../database";
 
-// db.prepare("DROP TABLE cars").run();
+db.prepare("DROP TABLE cars").run();
 
 const IS_VALID_PRICE = (field) => {
   return `
@@ -18,14 +18,16 @@ db.prepare(
     type TEXT NOT NULL,
     name TEXT NOT NULL,
     brand TEXT NOT NULL,
-    serie TEXT NOT NULL,
     model TEXT NOT NULL,
     serialNumber TEXT NOT NULL UNIQUE,
     registrationNumber TEXT NOT NULL,
+    keys INTEGER NOT NULL DEFAULT 1,
+    mileage INTEGER NOT NULL DEFAULT 0,
     color TEXT NOT NULL,
     year TEXT NOT NULL,
     sellerId INTEGER NOT NULL,
-    licenceId INTEGER NOT NULL,
+    ownerId INTEGER NOT NULL,
+    ownerName TEXT,
     costInEuros INTEGER ${IS_VALID_PRICE("costInEuros")},
     euroPrice INTEGER ${IS_VALID_PRICE("euroPrice")},
     purchasingPrice INTEGER NOT NULL ${IS_VALID_PRICE("purchasingPrice")},
@@ -42,10 +44,6 @@ db.prepare(
        REFERENCES clients (id)
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
-      FOREIGN KEY (licenceId)
-       REFERENCES licences (id)
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
       FOREIGN KEY (buyerId)
         REFERENCES clients (id)
         ON UPDATE NO ACTION
@@ -53,22 +51,24 @@ db.prepare(
 )`
 ).run();
 
-const SELECT_STMT = `SELECT cars.*, 
-  moudjahid,
+export const CAR_SELECT_STMT = `SELECT cars.*, 
+  CASE WHEN moudjahid IS NOT NULL THEN moudjahid ELSE ownerName END AS ownerName,
   licences.price AS licencePrice,
   clients.fullName AS seller,
   CASE WHEN cars.buyerId IS NULL THEN NULL ELSE buyers.fullName END AS buyer,
   datetime(cars.created_at,'localtime') AS created_at, 
   datetime(cars.updated_at,'localtime') AS updated_at
   FROM cars
-  INNER JOIN licences ON licences.id = licenceId
+  LEFT JOIN licences ON cars.ownerId > 0 AND cars.ownerId = licences.id
   INNER JOIN clients ON clients.id = cars.sellerId
   LEFT JOIN clients AS buyers ON buyers.id = cars.buyerId
 `;
 
-export const getCars = db.prepare(`${SELECT_STMT} ORDER BY created_at DESC`);
+export const getCars = db.prepare(
+  `${CAR_SELECT_STMT} ORDER BY created_at DESC`
+);
 
-export const getCarById = db.prepare(`${SELECT_STMT}
+export const getCarById = db.prepare(`${CAR_SELECT_STMT}
   WHERE cars.id = ?
 `);
 
@@ -76,32 +76,36 @@ export const creatCar = db.prepare(`INSERT INTO cars(
   type,
   name,
   brand,
-  serie,
   model,
   serialNumber,
   registrationNumber,
+  keys,
+  mileage,
   color,
   year,
   sellerId, 
-  licenceId,
+  ownerId,
+  ownerName,
   costInEuros,
   euroPrice,
   purchasingPrice,
   expenses,
   totalExpensesCost,
   totalEurosAmount,
-  totalCost
-) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+  totalCost,
+  created_at
+) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `);
 
 export const updateCar = db.prepare(`UPDATE cars 
   SET updated_at = CURRENT_TIMESTAMP,
     ${optionalUpdate("name")},
     ${optionalUpdate("brand")},
-    ${optionalUpdate("serie")},
     ${optionalUpdate("model")},
     ${optionalUpdate("serialNumber")},
     ${optionalUpdate("registrationNumber")},
+    ${optionalUpdate("keys")},
+    ${optionalUpdate("mileage")},
     ${optionalUpdate("color")}, 
     ${optionalUpdate("year")}, 
     ${optionalUpdate("costInEuros")}, 
@@ -128,10 +132,10 @@ export const deleteAllCars = db.prepare(`DELETE FROM cars`);
 db.prepare(
   `CREATE TRIGGER IF NOT EXISTS setCarId
     AFTER INSERT ON cars
-    FOR EACH ROW
+    WHEN NEW.ownerId > 0
       BEGIN
         UPDATE licences
         SET carId = NEW.id
-        WHERE licences.id = NEW.licenceId ;
+        WHERE licences.id = NEW.ownerId ;
       END;`
 ).run();
