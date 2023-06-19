@@ -37,14 +37,16 @@ export const createCar = tryCatch((req, res, next) => {
   const {
     type,
     brand,
-    serie,
     model,
     serialNumber,
     registrationNumber,
+    keys,
+    mileage,
     color,
     year,
     sellerId,
-    licenceId,
+    ownerId,
+    ownerName,
     costInEuros,
     euroPrice,
     purchasingPrice,
@@ -52,27 +54,32 @@ export const createCar = tryCatch((req, res, next) => {
     totalExpensesCost,
     totalEurosAmount,
     totalCost,
+    created_at,
   } = req.body;
 
-  const currLicence: Licence = getLicenceById.get(licenceId);
+  if (ownerId !== 0) {
+    const currLicence: Licence = getLicenceById.get(ownerId);
 
-  if (!currLicence || currLicence.isValid === "false") {
-    return next(new AppError("Licence invalide", 400));
+    if (!currLicence || currLicence.isValid === "false") {
+      return next(new AppError("Licence invalide", 400));
+    }
   }
-  const carFullName = `${brand} ${serie} ${model}`;
+  const carName = `${brand} ${model}`;
 
   const { lastInsertRowid } = S.creatCar.run([
     type,
-    carFullName,
+    carName,
     brand,
-    serie,
     model,
     serialNumber,
     registrationNumber,
+    keys,
+    mileage,
     color,
     year,
     sellerId,
-    licenceId,
+    ownerId,
+    ownerName,
     costInEuros,
     euroPrice,
     purchasingPrice,
@@ -80,14 +87,15 @@ export const createCar = tryCatch((req, res, next) => {
     totalExpensesCost,
     totalEurosAmount,
     totalCost,
+    created_at,
   ]);
-  const today = dayjs(new Date()).format("YYYY-MM-DD");
+  const today = dayjs(created_at).format("YYYY-MM-DD");
   const transacrtionParams = [
     lastInsertRowid,
     sellerId,
     `${today}`,
     "car",
-    carFullName,
+    carName,
     color,
     registrationNumber,
     year,
@@ -106,10 +114,11 @@ export const updateCar = tryCatch((req, res, next) => {
   const { carId } = req.params;
   const {
     brand,
-    serie,
     model,
     serialNumber,
     registrationNumber,
+    keys,
+    mileage,
     color,
     year,
     costInEuros,
@@ -121,16 +130,17 @@ export const updateCar = tryCatch((req, res, next) => {
     totalCost,
   } = req.body;
 
-  let carFullName = null;
+  let carName = null;
 
-  if (brand && serie && model) carFullName = `${brand} ${serie} ${model}`;
+  if (brand && model) carName = `${brand} ${model}`;
   const { changes } = S.updateCar.run([
-    carFullName,
+    carName,
     brand,
-    serie,
     model,
     serialNumber,
     registrationNumber,
+    keys,
+    mileage,
     color,
     year,
     costInEuros,
@@ -159,7 +169,7 @@ export const sellCar = tryCatch((req, res, next) => {
   if (!car) return next(new AppError("Voiture n'existe pas", 404));
 
   //@ts-ignore
-  const { brand, serie, color, registrationNumber, year } = car;
+  const { brand, model, color, registrationNumber, year } = car;
 
   //@ts-ignore
   if (car.soldPrice > 0) return next(new AppError("Voiture a été vendue", 403));
@@ -175,7 +185,7 @@ export const sellCar = tryCatch((req, res, next) => {
     buyerId,
     `${today}`,
     "car",
-    `${brand} ${serie}`,
+    `${brand} ${model}`,
     color,
     registrationNumber,
     year,
