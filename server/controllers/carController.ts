@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 
+import db from "../database";
 import * as S from "../statments/carStatments";
 import { getLicenceById } from "../statments/licenceStatments";
 import {
@@ -202,11 +203,14 @@ export const sellCar = tryCatch((req, res, next) => {
 
 export const deleteCarById = tryCatch((req, res, next) => {
   const { carId } = req.params;
+  const ids = carId.split(",");
 
-  const { changes } = S.deleteCarById.run(carId);
-  if (changes === 0) return next(new AppError("Voiture n'existe pas", 404));
-
-  deleteTransactionByProduct.run([carId, "car"]);
+  const placeHolders = carId.replace(/\d+/g, "?");
+  db.prepare(`${S.deleteCarById} (${placeHolders})`).run(ids);
+  db.prepare(`${deleteTransactionByProduct} (${placeHolders})`).run([
+    "car",
+    ...ids,
+  ]);
 
   return res.status(204).json({ status: "success" });
 });

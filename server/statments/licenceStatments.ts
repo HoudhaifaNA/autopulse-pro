@@ -69,7 +69,7 @@ export const createLicence = db.prepare(`INSERT INTO licences(
     attachments,
     validUntil,
     created_at
-) VALUES(?,?,?,?,?,DATE(?, '+3 years'),?)`);
+) VALUES(?,?,?,?,?, DATE(?, '+3 years'), ?)`);
 
 export const updateLicence = db.prepare(`UPDATE licences
  SET moudjahid = COALESCE(?, moudjahid),
@@ -78,7 +78,7 @@ export const updateLicence = db.prepare(`UPDATE licences
  WHERE id = ?
 `);
 
-export const deleteLicenceById = db.prepare(`DELETE FROM licences
-    WHERE id = ?`);
+export const deleteLicenceById = `DELETE FROM licences
+    WHERE id IN `;
 
 export const deleteLicences = db.prepare(`DELETE FROM licences`);

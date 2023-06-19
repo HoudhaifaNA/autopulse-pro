@@ -1,3 +1,4 @@
+import db from "../database";
 import * as S from "../statments/transactionStatments";
 import AppError from "../utils/AppError";
 import tryCatch from "../utils/tryCatch";
@@ -77,17 +78,24 @@ export const createTransaction = tryCatch((req, res) => {
 export const deleteTransactionByProduct = tryCatch((req, res, next) => {
   const { productId, type } = req.body;
 
-  const { changes } = S.deleteTransactionByProduct.run([productId, type]);
-  if (changes === 0) return next(new AppError("Transaction n'existe pas", 404));
+  const ids = productId.split(",");
 
+  const placeHolders = productId.replace(/\d+/g, "?");
+
+  db.prepare(`${S.deleteTransactionByProduct} (${placeHolders})`).run([
+    type,
+    ...ids,
+  ]);
   return res.status(204).json({ status: "success" });
 });
 
-export const deleteTransactionById = tryCatch((req, res, next) => {
-  const { transactionId } = req.params;
+export const deleteTransactionById = tryCatch((req, res) => {
+  const { id } = req.params;
 
-  const { changes } = S.deleteTransactionById.run(transactionId);
-  if (changes === 0) return next(new AppError("Transaction n'existe pas", 404));
+  const ids = id.split(",");
+
+  const placeHolders = id.replace(/\d+/g, "?");
+  db.prepare(`${S.deleteTransactionById} (${placeHolders})`).run(ids);
 
   return res.status(204).json({ status: "success" });
 });

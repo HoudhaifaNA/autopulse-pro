@@ -1,3 +1,4 @@
+import db from "../database";
 import * as S from "../statments/clientStatments";
 import AppError from "../utils/AppError";
 import tryCatch from "../utils/tryCatch";
@@ -72,11 +73,13 @@ export const updateBalance = tryCatch((req, res, next) => {
   return res.status(200).json({ status: "success", client });
 });
 
-export const deleteClientById = tryCatch((req, res, next) => {
+export const deleteClientById = tryCatch((req, res) => {
   const { id } = req.params;
 
-  const { changes } = S.deleteClientById.run(id);
-  if (changes === 0) return next(new AppError("Client n'existe pas", 404));
+  const ids = id.split(",");
+
+  const placeHolders = id.replace(/\d+/g, "?");
+  db.prepare(`${S.deleteClientById} (${placeHolders})`).run(ids);
 
   return res.status(204).json({ status: "success" });
 });

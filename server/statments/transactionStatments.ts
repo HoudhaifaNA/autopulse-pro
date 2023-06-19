@@ -84,15 +84,13 @@ export const createTransaction = db.prepare(`INSERT INTO transactions(
     direction 
 ) VALUES(?,?,?,?,?,?,?,?,?,?)`);
 
-export const deleteTransactionByProduct = db.prepare(`DELETE FROM transactions 
-    WHERE productId = ? AND type = ?`);
+export const deleteTransactionByProduct = `DELETE FROM transactions WHERE type = ? AND productId IN `;
 
-export const deleteTransactionByType = db.prepare(`DELETE FROM transactions 
-    WHERE  type = ?`);
+export const deleteTransactionByType = db.prepare(
+  `DELETE FROM transactions WHERE  type = ?`
+);
 
-export const deleteTransactionById = db.prepare(`DELETE FROM transactions
-    WHERE id = ?
-`);
+export const deleteTransactionById = `DELETE FROM transactions WHERE id IN `;
 
 export const deleteTransactions = db.prepare(`DELETE FROM transactions`);
 

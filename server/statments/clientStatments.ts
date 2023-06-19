@@ -38,6 +38,6 @@ export const updateBalance = db.prepare(`UPDATE clients
   WHERE id = ?
 `);
 
-export const deleteClientById = db.prepare(`DELETE FROM clients WHERE id = ?`);
+export const deleteClientById = `DELETE FROM clients WHERE id IN `;
 
 export const deleteClients = db.prepare(`DELETE FROM clients`);

@@ -124,7 +124,7 @@ export const sellCar = db.prepare(`UPDATE cars
      WHERE id = ?
  `);
 
-export const deleteCarById = db.prepare(`DELETE FROM cars WHERE id = ?`);
+export const deleteCarById = `DELETE FROM cars WHERE id IN `;
 
 export const deleteAllCars = db.prepare(`DELETE FROM cars`);
 

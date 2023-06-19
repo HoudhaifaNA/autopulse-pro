@@ -5,6 +5,7 @@ import path from "path";
 import multer from "multer";
 import dayjs from "dayjs";
 
+import db from "../database";
 import * as S from "../statments/licenceStatments";
 import {
   createTransaction,
@@ -96,6 +97,7 @@ export const createLicence = tryCatch((req, res, next) => {
     trimmedName,
     wilaya,
     "--",
+    "--",
     price,
     "entrante",
   ];
@@ -175,22 +177,25 @@ const deleteAttachments = async (file) => {
   }
 };
 
-export const deleteLicenceById = tryCatch((req, res, next) => {
+export const deleteLicenceById = tryCatch((req, res) => {
   const { id } = req.params;
 
-  const licence = S.getLicenceById.get(id);
+  const ids = id.split(",");
+  const licences: any[] = ids.map((id) => S.getLicenceById.get(id));
 
-  if (!licence) return next(new AppError("Licence n'existe pas", 404));
-
-  S.deleteLicenceById.run(id);
-
-  deleteTransactionByProduct.run([id, "licence"]);
+  const placeHolders = id.replace(/\d+/g, "?");
+  db.prepare(`${S.deleteLicenceById} (${placeHolders})`).run(ids);
+  db.prepare(`${deleteTransactionByProduct} (${placeHolders})`).run([
+    "licence",
+    ...ids,
+  ]);
 
   // Delete all attachment's related to this licence
-  //@ts-ignore
-  const attachments = JSON.parse(licence.attachments);
+  licences.forEach(({ attachments }) => {
+    const attachmentsList = JSON.parse(attachments);
 
-  attachments.forEach((at) => deleteAttachments(at));
+    attachmentsList.forEach((at) => deleteAttachments(at));
+  });
 
   return res.status(204).json({ status: "success" });
 });
