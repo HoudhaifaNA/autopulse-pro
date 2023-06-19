@@ -1,3 +1,4 @@
+import { useContext, useEffect, useState } from "react";
 import { Body2 } from "styles/Typography";
 
 import {
@@ -16,8 +17,8 @@ import Icon from "components/Icon/Icon";
 import { HEADERS } from "components/FinancesTable/constants";
 
 import { Page } from "components/FinancesTable/types";
-import { useEffect, useState } from "react";
 import API from "utils/API";
+import { GlobalContext } from "pages/_app";
 
 interface FinanceTBProps {
   currentPage: Page;
@@ -25,6 +26,8 @@ interface FinanceTBProps {
 }
 
 const FinancesTable = ({ currentPage, transactions }: FinanceTBProps) => {
+  const { toggleModalDelete } = useContext(GlobalContext);
+
   const [ids, addIds] = useState<number[]>([]);
   const transactionList = {
     transactions: transactions.moneyTransactions,
@@ -44,11 +47,13 @@ const FinancesTable = ({ currentPage, transactions }: FinanceTBProps) => {
     }
   };
 
-  const handleDeleteAll = async () => {
-    ids.forEach(async (id) => {
-      await API.delete(`/transactions/${id}`);
+  const handleDeleteAll = () => {
+    console.log(ids.join(","));
+    toggleModalDelete({
+      name: `${ids.length} transactions`,
+      url: `/transactions/${ids.join(",")}`,
     });
-    addIds([]);
+    return addIds([]);
   };
 
   const renderTransactions = () => {

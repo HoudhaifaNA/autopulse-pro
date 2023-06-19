@@ -47,7 +47,7 @@ const licenceStatus = (isValid: string) => {
 };
 
 const LicencesTable = ({ licences }: IProps) => {
-  const { setDocument } = useContext(GlobalContext);
+  const { setDocument, toggleModalDelete } = useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
@@ -69,12 +69,17 @@ const LicencesTable = ({ licences }: IProps) => {
 
   const handleDeleteAll = async () => {
     if (licences.length === ids.length) {
-      return await API.delete(`/licences/`);
+      toggleModalDelete({
+        name: `${ids.length} licences`,
+        url: `/licences/`,
+      });
     } else if (ids.length > 0) {
-      ids.forEach(async (id) => {
-        await API.delete(`/licences/${id}`);
+      toggleModalDelete({
+        name: `${ids.length} licences`,
+        url: `/licences/${ids.join(",")}`,
       });
     }
+
     addIds([]);
   };
 
@@ -115,8 +120,11 @@ const LicencesTable = ({ licences }: IProps) => {
               validUntil,
             } = licence;
             const onDelete = async () => {
-              await API.delete(`/licences/${id}`);
-              addIds([]);
+              toggleModalDelete({
+                name: `licence de ${moudjahid}`,
+                url: `/licences/${ids}`,
+              });
+              return addIds([]);
             };
             return (
               <TableRow

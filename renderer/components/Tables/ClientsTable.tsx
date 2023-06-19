@@ -50,7 +50,8 @@ const clientStatus = (balance: number) => {
 };
 
 const ClientsTable = ({ clients }: IProps) => {
-  const { setDocument } = useContext(GlobalContext);
+  const { setDocument, toggleModalDelete } = useContext(GlobalContext);
+
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
@@ -70,15 +71,19 @@ const ClientsTable = ({ clients }: IProps) => {
     }
   };
 
-  const handleDeleteAll = async () => {
+  const handleDeleteAll = () => {
     if (clients.length === ids.length) {
-      return await API.delete(`/clients/`);
+      toggleModalDelete({
+        name: `${ids.length} client`,
+        url: `/clients/`,
+      });
     } else if (ids.length > 0) {
-      ids.forEach(async (id) => {
-        await API.delete(`/clients/${id}`);
+      toggleModalDelete({
+        name: `${ids.length} client`,
+        url: `/clients/${ids.join(",")}`,
       });
     }
-    addIds([]);
+    return addIds([]);
   };
   return (
     <TableWrapper>
@@ -107,9 +112,12 @@ const ClientsTable = ({ clients }: IProps) => {
         <TableBody>
           {clients.map((client) => {
             const { id, created_at, fullName, phoneNumber, balance } = client;
-            const onDelete = async () => {
-              await API.delete(`/clients/${id}`);
-              addIds([]);
+            const onDelete = () => {
+              toggleModalDelete({
+                name: `${fullName} et sa transactions (voitures, licences, transferts d'argent)`,
+                url: `/clients/${id}`,
+              });
+              return addIds([]);
             };
             return (
               <TableRow

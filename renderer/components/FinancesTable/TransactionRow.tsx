@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import dayjs from "dayjs";
 
 import { Body2 } from "styles/Typography";
@@ -7,6 +8,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Icon from "components/Icon/Icon";
 import Badge from "components/Badge/Badge";
 import API from "utils/API";
+import { GlobalContext } from "pages/_app";
 
 const TransactionRow = ({
   transaction,
@@ -15,6 +17,8 @@ const TransactionRow = ({
   transaction: any;
   checkState: any;
 }) => {
+  const { toggleModalDelete } = useContext(GlobalContext);
+
   const { id, date, client, info2, total, direction } = transaction;
   const badgeStatus = direction === "sortante" ? "error" : "success";
   const { ids, addIds } = checkState;
@@ -28,7 +32,10 @@ const TransactionRow = ({
   };
 
   const onDelete = async () => {
-    await API.delete(`/transactions/${id}`);
+    toggleModalDelete({
+      name: `cette transaction`,
+      url: `/transactions/${id}`,
+    });
     addIds([]);
   };
   return (

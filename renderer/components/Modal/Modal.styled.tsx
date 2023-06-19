@@ -37,6 +37,7 @@ export const ModalHeader = styled.div`
 `;
 
 export const ModalContent = styled.div`
+  min-width: 60rem;
   max-height: 60rem;
   padding: 2rem;
 `;

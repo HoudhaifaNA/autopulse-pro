@@ -37,7 +37,7 @@ const TB_HEADER_DATA = [
 ];
 
 const CarsTable = ({ cars }: IProps) => {
-  const { setDocument } = useContext(GlobalContext);
+  const { setDocument, toggleModalDelete } = useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
@@ -59,10 +59,14 @@ const CarsTable = ({ cars }: IProps) => {
 
   const handleDeleteAll = async () => {
     if (cars.length === ids.length) {
-      return await API.delete(`/cars/`);
+      return toggleModalDelete({
+        name: `${ids.length} voitures`,
+        url: `/cars/`,
+      });
     } else if (ids.length > 0) {
-      ids.forEach(async (id) => {
-        await API.delete(`/cars/${id}`);
+      return toggleModalDelete({
+        name: `${ids.length} voitures`,
+        url: `/cars/${ids.join(",")}`,
       });
     }
   };
@@ -109,8 +113,12 @@ const CarsTable = ({ cars }: IProps) => {
               profit,
             } = car;
 
-            const onDelete = async () => {
-              await API.delete(`/cars/${id}`);
+            const onDelete = () => {
+              toggleModalDelete({
+                name: `${name}`,
+                url: `/cars/${id}`,
+              });
+              return addIds([]);
             };
             return (
               <TableRow
@@ -144,7 +152,9 @@ const CarsTable = ({ cars }: IProps) => {
                   <Body2>{totalExpensesCost.toLocaleString()}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{licencePrice.toLocaleString()}</Body2>
+                  <Body2>
+                    {licencePrice ? licencePrice.toLocaleString() : "--"}
+                  </Body2>
                 </TableCell>
                 <TableCell>
                   <Body2>{totalCost.toLocaleString()}</Body2>

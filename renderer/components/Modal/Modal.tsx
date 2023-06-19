@@ -17,8 +17,11 @@ export const ModalContent = S.ModalContent;
 export const ModalActions = S.ModalActions;
 
 const Modal = ({ title, children }: ModalProps) => {
-  const { _, setModal } = useContext(GlobalContext);
-  const closeModal = () => setModal("");
+  const { setModal, toggleModalDelete } = useContext(GlobalContext);
+  const closeModal = () => {
+    setModal("");
+    toggleModalDelete("");
+  };
 
   return (
     <>
