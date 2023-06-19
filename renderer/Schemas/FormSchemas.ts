@@ -71,20 +71,23 @@ export const clientSchema = object({
 
 export const carSchemaStepTwo = object({
   brand: string().trim().required("Marque est requise"),
-  serie: string().trim().required("Série est requise"),
   model: string().trim().required("Modèle est requis"),
   serialNumber: string().trim().required("Numéro de châssis est requis"),
   registrationNumber: string()
     .trim()
     .required("Numéro d'immatriculation est requis"),
-  color: string().trim().required("Coleur est requise"),
+  keys: number()
+    .min(1, "Minimum de clés est de 1")
+    .max(4, "Maximum de clés est de 4"),
+  mileage: number().min(0, "Kilométrage minimum est de 0"),
+  color: string().trim().required("Couleur est requise"),
   year: date()
     .min(1950, "Année doit être postérieur à 1950")
     .max(currentYear, `Année doit être antérieur à ${currentYear}`)
     .typeError(() => `Année doit être une date`)
     .required("Année est requise"),
 });
-export const carSchemaStepThree = object({
+export const carSchemaStepFour = object({
   seller: object({
     name: string()
       .trim()
@@ -92,7 +95,7 @@ export const carSchemaStepThree = object({
       .min(3, `Vendeur doit comporter au moins 3 caractères`)
       .required("Vendeur est requis"),
   }),
-  licence: object({
+  owner: object({
     name: string()
       .trim()
       .matches(FULLNAME_RULES, "Indiquez un nom correct")
@@ -121,7 +124,7 @@ export const carSchemaStepThree = object({
   }),
 });
 
-export const carSchemaStepFour = object({
+export const carSchemaStepFive = object({
   expenses: array().of(
     object({
       raison: string()
