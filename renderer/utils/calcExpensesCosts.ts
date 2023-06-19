@@ -6,8 +6,8 @@ const calcExpensesCosts = (expenses: Values["expenses"]) => {
 
   // Calculate total DZD and EUR costs of expenses
   expenses.forEach((expense) => {
-    expensesEURCost += expense.euroCost;
-    expensesDZDcost += expense.totalCost;
+    expensesEURCost += Number(expense.euroCost);
+    expensesDZDcost += Number(expense.totalCost);
   });
 
   return [expensesDZDcost, expensesEURCost];

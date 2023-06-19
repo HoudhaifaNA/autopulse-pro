@@ -45,7 +45,12 @@ const retreiveCarDetails = (car: any) => {
   let profit = `${car.profit}.00 DZD`;
   if (car.profit < 0) profit += " _RD";
   if (car.profit > 0) profit += " _GR";
-
+  const licencePrice =
+    car.licencePrice > 0
+      ? {
+          "prix ​​de la licence": `${car.licencePrice.toLocaleString()}.00 DZD`,
+        }
+      : "";
   return [
     {
       columns: 3,
@@ -64,8 +69,8 @@ const retreiveCarDetails = (car: any) => {
       details: {
         vendeur: car.seller,
         carPrice,
-        licence: car.moudjahid,
-        "prix ​​de la licence": `${car.licencePrice.toLocaleString()}.00 DZD`,
+        Propriétaire: car.ownerName,
+        ...licencePrice,
       },
     },
     {
