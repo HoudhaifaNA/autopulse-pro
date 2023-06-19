@@ -90,11 +90,11 @@ export const deleteTransactionByProduct = tryCatch((req, res, next) => {
 });
 
 export const deleteTransactionById = tryCatch((req, res) => {
-  const { id } = req.params;
+  const { transactionId } = req.params;
 
-  const ids = id.split(",");
+  const ids = transactionId.split(",");
 
-  const placeHolders = id.replace(/\d+/g, "?");
+  const placeHolders = transactionId.replace(/\d+/g, "?");
   db.prepare(`${S.deleteTransactionById} (${placeHolders})`).run(ids);
 
   return res.status(204).json({ status: "success" });
