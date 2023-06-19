@@ -68,6 +68,7 @@ export const createCar = tryCatch((req, res, next) => {
   }
   const carName = `${brand} ${model}`;
 
+  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
   const { lastInsertRowid } = S.creatCar.run([
     type,
     carName,
@@ -90,13 +91,12 @@ export const createCar = tryCatch((req, res, next) => {
     totalExpensesCost,
     totalEurosAmount,
     totalCost,
-    created_at,
+    createdAtDate,
   ]);
-  const today = dayjs(created_at).format("YYYY-MM-DD");
   const transacrtionParams = [
     lastInsertRowid,
     sellerId,
-    `${today}`,
+    createdAtDate,
     "car",
     carName,
     color,

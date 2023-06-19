@@ -76,6 +76,7 @@ export const createLicence = tryCatch((req, res, next) => {
     files.forEach(setFilesNames);
   }
 
+  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
   const params = [
     sellerId,
     trimmedName.toLowerCase(),
@@ -83,20 +84,19 @@ export const createLicence = tryCatch((req, res, next) => {
     price,
     JSON.stringify(attachments),
     releasedDate,
-    created_at,
+    createdAtDate,
   ];
 
   const { lastInsertRowid } = S.createLicence.run(params);
 
-  const today = dayjs(created_at).format("YYYY-MM-DD");
   const transacrtionParams = [
     lastInsertRowid,
     sellerId,
-    today,
+    createdAtDate,
+    "licence",
     "licence",
     trimmedName,
     wilaya,
-    "--",
     "--",
     price,
     "entrante",

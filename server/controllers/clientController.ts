@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import db from "../database";
 import * as S from "../statments/clientStatments";
 import AppError from "../utils/AppError";
@@ -29,8 +30,9 @@ export const createClient = tryCatch((req, res, next) => {
   if (!isValid) return next(new AppError("Nom incorrect", 400));
   if (!isValidPhoneNumber(phoneNumber))
     return next(new AppError("Numéro de téléphone invalide", 400));
+  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
 
-  const params = [trimmedName, phoneNumber, balance, created_at];
+  const params = [trimmedName, phoneNumber, balance, createdAtDate];
 
   const { lastInsertRowid } = S.createClient.run(params);
   const newClient = S.getClientById.get(lastInsertRowid);
