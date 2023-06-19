@@ -12,14 +12,14 @@ interface Values {
   firstName: string;
   lastName: string;
   phoneNumber: string;
-  balance: number;
+  balance: number | number;
 }
 
 const INITIAL_VALUES = {
   firstName: "",
   lastName: "",
   phoneNumber: "",
-  balance: 0,
+  balance: "",
 };
 
 const onSubmit = async (
@@ -76,7 +76,7 @@ const ClientForm = () => {
           name="balance"
           type="number"
           label="Solde"
-          placeholder="Solde"
+          placeholder="0"
           addOn="DZD"
         />
       </FormGroup>

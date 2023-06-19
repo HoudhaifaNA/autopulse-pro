@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useSWR from "swr";
 import { FormikProps } from "formik";
 
@@ -17,6 +17,9 @@ import { fetcher } from "utils/API";
 import handleSubmit from "./handleSubmit";
 
 import { Values } from "components/LicenceForm/types";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
+import Button from "components/Button/Button";
+import { GlobalContext } from "pages/_app";
 
 const getClients = () => {
   const clientsRes = useSWR("/clients", fetcher);
@@ -37,7 +40,7 @@ const INITIAL_VALUES: Values = {
   seller: { id: 0, name: "" },
   moudjahid: "",
   wilaya: "",
-  price: 0,
+  price: "",
   attachments: [],
 };
 
@@ -54,6 +57,7 @@ const renderAttachments = (attachments: Values["attachments"]) => {
 };
 
 const LicenceForm = () => {
+  const { setModal } = useContext(GlobalContext);
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const CLIENTS_LIST = getClients();
 
@@ -76,6 +80,18 @@ const LicenceForm = () => {
           autoFocus
           relatedFields={["seller.id"]}
           items={CLIENTS_LIST}
+          buttons={
+            <ButtonItem>
+              <Button
+                type="button"
+                variant="ghost"
+                icon="add"
+                onClick={() => setModal("clients")}
+              >
+                Ajouter un client
+              </Button>
+            </ButtonItem>
+          }
         />
         <TypedInput
           name="moudjahid"
@@ -101,7 +117,7 @@ const LicenceForm = () => {
           name="price"
           type="number"
           label="Prix :"
-          placeholder="Prix ​​de la licence"
+          placeholder="0"
           addOn="DZD"
         />
       </FormGroup>

@@ -14,6 +14,6 @@ export interface Values {
   seller: Seller;
   moudjahid: string;
   wilaya: string;
-  price: number;
+  price: number | string;
   attachments: Attachment[];
 }
