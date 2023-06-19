@@ -1,6 +1,6 @@
 import db from "../database";
 
-db.prepare("DROP TABLE cars").run();
+// db.prepare("DROP TABLE cars").run();
 
 const IS_VALID_PRICE = (field) => {
   return `
@@ -25,6 +25,7 @@ db.prepare(
     mileage INTEGER NOT NULL DEFAULT 0,
     color TEXT NOT NULL,
     year TEXT NOT NULL,
+    features TEXT,
     sellerId INTEGER NOT NULL,
     ownerId INTEGER NOT NULL,
     ownerName TEXT,
@@ -83,6 +84,7 @@ export const creatCar = db.prepare(`INSERT INTO cars(
   mileage,
   color,
   year,
+  features,
   sellerId, 
   ownerId,
   ownerName,
@@ -94,7 +96,7 @@ export const creatCar = db.prepare(`INSERT INTO cars(
   totalEurosAmount,
   totalCost,
   created_at
-) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `);
 
 export const updateCar = db.prepare(`UPDATE cars 
@@ -108,6 +110,7 @@ export const updateCar = db.prepare(`UPDATE cars
     ${optionalUpdate("mileage")},
     ${optionalUpdate("color")}, 
     ${optionalUpdate("year")}, 
+    ${optionalUpdate("features")}, 
     ${optionalUpdate("costInEuros")}, 
     ${optionalUpdate("euroPrice")}, 
     ${optionalUpdate("purchasingPrice")}, 
