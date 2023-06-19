@@ -74,7 +74,7 @@ const SellForm = ({ id }: { id: number }) => {
       <FormGroup>
         <SelectInput
           name="buyer.name"
-          label="Vendeur :"
+          label="Acheteur :"
           placeholder="Nom de vendeur"
           autoFocus
           relatedFields={["buyer.id"]}
