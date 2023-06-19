@@ -65,7 +65,6 @@ const TransactionForm = () => {
       onSubmit={onSubmit}
     >
       <FormGroup>
-        <DateInput name="date" minDate="2014" />
         <SelectInput
           label="Client :"
           placeholder="Entrez le nom"
@@ -75,6 +74,7 @@ const TransactionForm = () => {
         />
       </FormGroup>
       <FormGroup>
+        <DateInput name="date" minDate="2014" />
         <SelectInput
           label="Méthode :"
           placeholder="Choisissez une méthode"
@@ -86,12 +86,16 @@ const TransactionForm = () => {
           name="amount"
           type="number"
           label="Montant :"
-          placeholder="150000.00"
+          placeholder="150000"
           addOn="DZD"
         />
       </FormGroup>
       <FormGroup>
-        <TransactionType options={["entrante", "sortante"]} />
+        <FormGroup />
+        <FormGroup />
+        <FormGroup>
+          <TransactionType options={["entrante", "sortante"]} />
+        </FormGroup>
       </FormGroup>
     </Form>
   );

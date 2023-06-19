@@ -4,18 +4,25 @@ import { ClickInput } from "components/Input/Input";
 import { InputError } from "components/Input/Input.styled";
 
 import * as T from "components/FinancesForm/types";
+import styled from "styled-components";
 
 type TErrors = T.TransactionValues | T.EuroTransferValues;
 interface TransactionTypeProps {
   options: string[];
 }
 
+const TransactiontTypesList = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 2rem;
+`;
+
 const TransactionType = ({ options }: TransactionTypeProps) => {
   const { errors } = useFormikContext<TErrors>();
   const { direction } = errors;
 
   return (
-    <div>
+    <TransactiontTypesList>
       {options.map((opt) => {
         return (
           <ClickInput
@@ -29,7 +36,7 @@ const TransactionType = ({ options }: TransactionTypeProps) => {
       })}
 
       {direction && <InputError>{direction}</InputError>}
-    </div>
+    </TransactiontTypesList>
   );
 };
 

@@ -6,15 +6,15 @@ export interface TransactionValues {
   date: Date;
   client: Client;
   method: string;
-  amount: number;
+  amount: number | string;
   direction: "sortante" | "entrante";
 }
 export interface EuroTransferValues {
   date: Date;
   client: Client;
   method: string;
-  amount: number;
-  euroPrice: number;
+  amount: number | string;
+  euroPrice: number | string;
   total: number;
   direction: "sortante" | "entrante";
 }

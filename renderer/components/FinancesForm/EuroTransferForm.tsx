@@ -66,7 +66,10 @@ const EuroTransferForm = () => {
   const buttonText = direction === "entrante" ? "Acheter" : "Vendre";
 
   useEffect(() => {
-    formProps?.setFieldValue("total", amount * euroPrice);
+    formProps?.setFieldValue(
+      "total",
+      (Number(amount) * Number(euroPrice)) / 100
+    );
   }, [euroPrice, amount]);
 
   return (
@@ -80,7 +83,6 @@ const EuroTransferForm = () => {
     >
       <>
         <FormGroup>
-          <DateInput name="date" minDate="2014" />
           <SelectInput
             label="Client :"
             placeholder="Entrez le nom"
@@ -90,25 +92,7 @@ const EuroTransferForm = () => {
           />
         </FormGroup>
         <FormGroup>
-          <TypedInput
-            name="amount"
-            type="number"
-            label="Montant :"
-            placeholder="150000.00"
-            addOn="€"
-          />
-          <TypedInput
-            name="euroPrice"
-            type="number"
-            label="Prix ​​de €100 :"
-            placeholder="200.00"
-            addOn="€"
-          />
-        </FormGroup>
-        <FormGroup>
-          <TypedInput name="total" label="Total :" addOn="DZD" as="div">
-            {total.toLocaleString()}
-          </TypedInput>
+          <DateInput name="date" minDate="2014" />
           <SelectInput
             label="Méthode :"
             placeholder="Choisissez une méthode"
@@ -118,7 +102,30 @@ const EuroTransferForm = () => {
           />
         </FormGroup>
         <FormGroup>
-          <TransactionType options={["entrante", "sortante"]} />
+          <TypedInput
+            name="amount"
+            type="number"
+            label="Montant :"
+            placeholder="150000"
+            addOn="€"
+          />
+          <TypedInput
+            name="euroPrice"
+            type="number"
+            label="Prix ​​de €100 :"
+            placeholder="200"
+            addOn="€"
+          />
+          <TypedInput name="total" label="Total :" addOn="DZD" as="div">
+            {total.toLocaleString()}
+          </TypedInput>
+        </FormGroup>
+        <FormGroup>
+          <FormGroup />
+          <FormGroup />
+          <FormGroup>
+            <TransactionType options={["entrante", "sortante"]} />
+          </FormGroup>
         </FormGroup>
       </>
     </Form>
