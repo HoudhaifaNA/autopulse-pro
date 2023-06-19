@@ -1,12 +1,10 @@
-import path from "path";
 import dotenv from "dotenv";
 
 import app from "./app";
 
-const envPath = path.join(path.resolve(), "server", ".env");
-dotenv.config({ path: envPath, override: true });
+dotenv.config({});
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 const server = app.listen(PORT, () => {
   console.log(`Server is listening on PORT ${PORT}`);
