@@ -38,7 +38,6 @@ const InputContainer = (props: InputProps) => {
 
   return (
     <S.InputContainer className={isError ? "error" : ""}>
-      {addOn && <InputAddOn addOn={addOn} />}
       <S.InputWrapper>
         {leftIcon && (
           <S.InputIcon>
@@ -52,6 +51,7 @@ const InputContainer = (props: InputProps) => {
           </S.InputIcon>
         )}
       </S.InputWrapper>
+      {addOn && <InputAddOn addOn={addOn} />}
     </S.InputContainer>
   );
 };

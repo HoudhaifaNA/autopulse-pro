@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import useSWR from "swr";
 
 import * as S from "components/ClientDocument/ClientDocument.styled";
@@ -15,6 +15,7 @@ import DetailsViewer, {
 import { fetcher } from "utils/API";
 import truncateText from "utils/truncate";
 import dayjs from "dayjs";
+import { GlobalContext } from "pages/_app";
 
 const clientStatus = (balance: number) => {
   let status: string = "";
@@ -34,17 +35,11 @@ const clientStatus = (balance: number) => {
   return <Badge type={color}>{status}</Badge>;
 };
 
-const TransactionCell = ({ children }: { children: ReactNode }) => {
-  return (
-    <S.TransactionCell>
-      {typeof children === "string" ? <Body2>{children}</Body2> : children}
-    </S.TransactionCell>
-  );
-};
-
 const keys = ["date", "info1", "info2", "info3", "info4", "total"];
 
 const renderTransactionsList = (transactions: any[]) => {
+  const { setDocument } = useContext(GlobalContext);
+
   return transactions.map((transaction, ind) => {
     return (
       <S.TransactionRow key={ind}>
@@ -54,30 +49,32 @@ const renderTransactionsList = (transactions: any[]) => {
             if (key === "date") newVal = dayjs(value).format("DD-MM-YYYY");
             if (key === "info1") newVal = truncateText(value, 25);
             if (Number(value) && key !== "info4")
-              newVal = `${value.toLocaleString()}.00 DZD`;
+              newVal = `${value.toLocaleString()}.00 DA`;
             if (transaction["type"] === "euros" && key === "info3") {
-              newVal = `€${(value * 1).toLocaleString()}.00`;
+              newVal = `${(value * 1).toLocaleString()}.00 €`;
             }
             if (transaction["type"] === "euros" && key === "info4") {
-              newVal = `${(value * 1).toLocaleString()}.00 DZD`;
+              newVal = `${(value * 1).toLocaleString()}.00 DA`;
             }
-
+            const goToProduct = () => {
+              if (transaction.type === "car" && key === "info1") {
+                setDocument({ type: "cars", id: transaction.productId });
+              } else if (transaction.type === "licence" && key === "info2") {
+                setDocument({ type: "licences", id: transaction.productId });
+              }
+            };
             return (
-              <TransactionCell key={key}>
-                <S.TransactionCell title={value}>
-                  <Body2>{newVal}</Body2>
-                </S.TransactionCell>
-              </TransactionCell>
+              <S.TransactionCell key={key} title={value} onClick={goToProduct}>
+                <Body2>{newVal}</Body2>
+              </S.TransactionCell>
             );
           } else if (key === "direction") {
             return (
-              <TransactionCell key={key}>
-                <S.TransactionCell>
-                  <Badge type={value === "sortante" ? "error" : "success"}>
-                    {value}
-                  </Badge>
-                </S.TransactionCell>
-              </TransactionCell>
+              <S.TransactionCell key={key}>
+                <Badge type={value === "sortante" ? "error" : "success"}>
+                  {value}
+                </Badge>
+              </S.TransactionCell>
             );
           }
         })}
@@ -86,13 +83,14 @@ const renderTransactionsList = (transactions: any[]) => {
   });
 };
 
-const ClientDocument = ({ document }: { document: any }) => {
-  const { data, isLoading, error } = useSWR(
-    `/transactions/client/${document.id}`,
-    fetcher
-  );
+const ClientDocument = () => {
+  const { currDocument } = useContext(GlobalContext);
+  const { data: clientData } = useSWR(`/clients/${currDocument.id}`, fetcher);
+  const { data } = useSWR(`/transactions/client/${currDocument.id}`, fetcher);
 
-  const balanceText = Math.abs(document.balance).toLocaleString();
+  const balanceText = clientData
+    ? Math.abs(clientData.client.balance).toLocaleString()
+    : "";
 
   function calculateTotals(transactions: any[]) {
     let entranteBalance = 0;
@@ -112,50 +110,60 @@ const ClientDocument = ({ document }: { document: any }) => {
   const [entranteTotal, sortanteTotal] =
     data && data.transactions ? calculateTotals(data.transactions) : [0, 0];
 
-  let profit = `${(entranteTotal - sortanteTotal).toLocaleString()}.00 DZD`;
+  let profit = `${(entranteTotal - sortanteTotal).toLocaleString()}.00 DA`;
   if (entranteTotal - sortanteTotal < 0) profit += " _RD";
   if (entranteTotal - sortanteTotal > 0) profit += " _GR";
-
   return (
-    <DetailsViewer title="Document de client" $width="80%">
-      <DetailSection>
-        <DetailHeader title="Détails du client" />
-        <DetailContent $columns={3}>
-          <DetailItem title="nom" value={document.fullName} />
-          <DetailItem title="solde" value={`${balanceText} DZD`} />
-          <DetailItem title="statut" value={clientStatus(document.balance)} />
-        </DetailContent>
-      </DetailSection>
-      {data && data.transactions.length > 0 && (
-        <>
+    <>
+      {clientData && (
+        <DetailsViewer title="Document de client" $width="80%">
           <DetailSection>
-            <DetailHeader title="Transactions" />
-            <DetailContent $columns={1}>
-              <S.TransactionsTable>
-                {renderTransactionsList(data.transactions)}
-              </S.TransactionsTable>
+            <DetailHeader title="Détails du client" />
+            <DetailContent $columns={4}>
+              <DetailItem title="nom" value={clientData.client.fullName} />
+              <DetailItem
+                title="Numéro de téléphone"
+                value={clientData.client.phoneNumber}
+              />
+              <DetailItem title="solde" value={`${balanceText}.00 DA`} />
+              <DetailItem
+                title="statut"
+                value={clientStatus(clientData.client.balance)}
+              />
             </DetailContent>
           </DetailSection>
-          <DetailSection>
-            <DetailHeader title="Totaux" />
-            <DetailContent $columns={3}>
-              {/* <DetailItem title="total des euros vendus" value="Є700000.00" />
+          {data && data.transactions.length > 0 && (
+            <>
+              <DetailSection>
+                <DetailHeader title="Transactions" />
+                <DetailContent $columns={1}>
+                  <S.TransactionsTable>
+                    {renderTransactionsList(data.transactions)}
+                  </S.TransactionsTable>
+                </DetailContent>
+              </DetailSection>
+              <DetailSection>
+                <DetailHeader title="Totaux" />
+                <DetailContent $columns={3}>
+                  {/* <DetailItem title="total des euros vendus" value="Є700000.00" />
                <DetailItem title="total des euros achetés" value="Є200000.00" />
                <DetailItem title="somme d'euros" value="Є500000.00 _GR" /> */}
-              <DetailItem
-                title="total des entrants:"
-                value={`${entranteTotal.toLocaleString()}.00 DZD`}
-              />
-              <DetailItem
-                title="total des sortants"
-                value={`${sortanteTotal.toLocaleString()}.00 DZD`}
-              />
-              <DetailItem title="Total" value={profit} />
-            </DetailContent>
-          </DetailSection>
-        </>
+                  <DetailItem
+                    title="total des entrants:"
+                    value={`${entranteTotal.toLocaleString()}.00 DA`}
+                  />
+                  <DetailItem
+                    title="total des sortants"
+                    value={`${sortanteTotal.toLocaleString()}.00 DA`}
+                  />
+                  <DetailItem title="Total" value={profit} />
+                </DetailContent>
+              </DetailSection>
+            </>
+          )}
+        </DetailsViewer>
       )}
-    </DetailsViewer>
+    </>
   );
 };
 

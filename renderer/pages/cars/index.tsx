@@ -13,7 +13,7 @@ import ErrorMessage from "components/ErrorMessage/ErrorMessage";
 import { GlobalContext } from "pages/_app";
 
 const CarsPage = () => {
-  const { setModal, modalDelete } = useContext(GlobalContext);
+  const { setModal } = useContext(GlobalContext);
   const { data, isLoading, error } = useSWR("/cars", fetcher, {
     refreshInterval: 5,
   });

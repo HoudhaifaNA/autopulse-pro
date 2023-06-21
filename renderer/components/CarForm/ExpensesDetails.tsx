@@ -43,9 +43,9 @@ const ExpensesDetails = () => {
                   <TypedInput
                     name={`expenses.${i}.euroPrice`}
                     type="number"
-                    label="Prix ​​de €100 :"
+                    label="Prix ​​de 100 € :"
                     placeholder="220"
-                    addOn="DZD"
+                    addOn="DA"
                   />
                 </FormGroup>
               ) : (
@@ -54,7 +54,7 @@ const ExpensesDetails = () => {
                   type="number"
                   label="Coût :"
                   placeholder="10000"
-                  addOn="DZD"
+                  addOn="DA"
                 />
               )}
               <div>

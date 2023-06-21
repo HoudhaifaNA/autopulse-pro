@@ -26,14 +26,20 @@ const onSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
   setModal: any,
-  setNotification: any
+  setNotification: any,
+  addUpModal: any,
+  setAddUpModal: any
 ) => {
   const { firstName, lastName, phoneNumber, balance } = values;
   const fullName = `${firstName} ${lastName}`;
   try {
     await API.post("/clients", { fullName, phoneNumber, balance });
 
-    setModal("");
+    if (addUpModal === "clients") {
+      setAddUpModal("");
+    } else {
+      setModal("");
+    }
     actions.resetForm();
     setNotification({ status: "success", message: "Client a été créée" });
   } catch (err: any) {
@@ -77,7 +83,7 @@ const ClientForm = () => {
           type="number"
           label="Solde"
           placeholder="0"
-          addOn="DZD"
+          addOn="DA"
         />
       </FormGroup>
     </Form>

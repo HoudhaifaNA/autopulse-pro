@@ -18,6 +18,7 @@ export const TransactionCell = styled.div`
   display: flex;
   align-items: center;
   white-space: nowrap;
+  cursor: pointer;
 
   & p::first-letter {
     text-transform: capitalize;

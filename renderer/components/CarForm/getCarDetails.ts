@@ -13,8 +13,8 @@ type TcostToText = (
 
 const costToText: TcostToText = (type, euroCost, euroPrice, totalCost) => {
   return type === "importé" || type === "à l'étranger"
-    ? `€${euroCost}.00 × ${euroPrice}.00 = ${totalCost}.00 DZD`
-    : `${totalCost}.00 DZD`;
+    ? `${euroCost}.00 € × ${euroPrice}.00 DA = ${totalCost}.00 DA`
+    : `${totalCost}.00 DA`;
 };
 
 const getCarDetails = () => {
@@ -47,7 +47,7 @@ const getCarDetails = () => {
     Number(purchasingPrice)
   );
 
-  const [expensesDZDCost] = calcExpensesCost(expenses);
+  const [expensesDACost] = calcExpensesCost(expenses);
 
   let expensesList: { [key: string]: string } = {};
 
@@ -62,7 +62,7 @@ const getCarDetails = () => {
   });
 
   const licencePrice = owner.price
-    ? { "Prix ​​de la licence": `${owner.price}.00 DZD` }
+    ? { "Prix ​​de la licence": `${owner.price}.00 DA` }
     : "";
 
   const carDetails = [
@@ -83,11 +83,11 @@ const getCarDetails = () => {
       Propriétaire: owner.name,
       ...licencePrice,
     },
-    expensesDZDCost !== 0 && { section: "Dépenses", ...expensesList },
+    expensesDACost !== 0 && { section: "Dépenses", ...expensesList },
     {
       section: "Calculs totaux",
-      "Total en EURO": `€${euroAmount}.00`,
-      Total: `${dzdAmount}.00 DZD`,
+      "Total en EURO": `${euroAmount}.00 €`,
+      Total: `${dzdAmount}.00 DA`,
     },
   ];
 

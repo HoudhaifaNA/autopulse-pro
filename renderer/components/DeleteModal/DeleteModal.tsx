@@ -83,7 +83,7 @@ const DeleteModal = ({ name, url }: DeleteModalProps) => {
         </form>
       </ModalContent>
       <ModalActions>
-        <Button type="submit" variant="danger">
+        <Button type="submit" variant="danger" onClick={deleteAction}>
           Suprimmer
         </Button>
       </ModalActions>

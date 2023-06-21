@@ -13,8 +13,8 @@ import { Values } from "components/CarForm/types";
 import { fetcher } from "utils/API";
 
 const getItems = () => {
-  const licencesRes = useSWR("/licences", fetcher);
-  const clientsRes = useSWR("/clients", fetcher);
+  const licencesRes = useSWR("/licences", fetcher, { refreshInterval: 3 });
+  const clientsRes = useSWR("/clients", fetcher, { refreshInterval: 3 });
   let licencesItems = [];
   let clientsItems = [];
 
@@ -27,8 +27,12 @@ const getItems = () => {
   if (licencesRes.data) {
     licencesItems = licencesRes.data.licences
       .filter(({ isValid }: any) => isValid === "true")
-      .map(({ id, price, moudjahid }: any) => {
-        return { mainText: moudjahid, relatedValues: [id, price] };
+      .map(({ id, price, moudjahid, serialNumber }: any) => {
+        return {
+          mainText: moudjahid,
+          secondText: serialNumber,
+          relatedValues: [id, price],
+        };
       });
   }
 
@@ -37,7 +41,7 @@ const getItems = () => {
 
 const SellingDetails = () => {
   const { values } = useFormikContext<Values>();
-  const { setModal } = useContext(GlobalContext);
+  const { setAddUpModal } = useContext(GlobalContext);
   const { carType } = values;
   const [clientsItems, licencesItems] = getItems();
 
@@ -57,7 +61,7 @@ const SellingDetails = () => {
                 type="button"
                 variant="ghost"
                 icon="add"
-                onClick={() => setModal("clients")}
+                onClick={() => setAddUpModal("clients")}
               >
                 Ajouter un client
               </Button>
@@ -76,7 +80,7 @@ const SellingDetails = () => {
                 type="button"
                 variant="ghost"
                 icon="add"
-                onClick={() => setModal("licences")}
+                onClick={() => setAddUpModal("licences")}
               >
                 Ajouter une licence
               </Button>
@@ -96,10 +100,10 @@ const SellingDetails = () => {
             />
 
             <TypedInput
-              label="Prix ​​de €100 :"
+              label="Prix ​​de 100 € :"
               name="euroPrice"
               type="number"
-              addOn="DZD"
+              addOn="DA"
               placeholder="230"
             />
           </>
@@ -109,7 +113,7 @@ const SellingDetails = () => {
               label="Prix ​​d'achat :"
               name="purchasingPrice"
               type="number"
-              addOn="DZD"
+              addOn="DA"
               placeholder="250000000"
             />
           </>

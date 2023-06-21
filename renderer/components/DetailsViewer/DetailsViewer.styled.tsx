@@ -71,12 +71,12 @@ export const DetailContent = styled.div<{ $columns: number }>`
   padding: 1.5rem;
 `;
 
-export const DetailItem = styled.div<{ $index?: number }>`
+export const DetailItem = styled.div<{ $index?: number; $width?: string }>`
   grid-row-start: ${({ $index }) => $index && $index + 1};
   display: flex;
   flex-direction: column;
   gap: 1rem;
-
+  width: ${({ $width }) => ($width ? $width : "auto")};
   & p::first-letter {
     text-transform: capitalize;
   }

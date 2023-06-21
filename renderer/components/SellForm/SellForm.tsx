@@ -8,11 +8,14 @@ import { SelectInput, TypedInput } from "components/Input/Input";
 
 import { sellCarSchema } from "Schemas/FormSchemas";
 import API, { fetcher } from "utils/API";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { GlobalContext } from "pages/_app";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
+import Button from "components/Button/Button";
 
 interface Values {
   buyer: { id: number; name: string };
-  soldPrice: number;
+  soldPrice: number | string;
   carId: number;
 }
 
@@ -21,12 +24,12 @@ const INITIAL_VALUES = {
     id: 0,
     name: "",
   },
-  soldPrice: 0,
+  soldPrice: "",
   carId: 0,
 };
 
 const getClients = () => {
-  const clientsRes = useSWR("/clients", fetcher);
+  const clientsRes = useSWR("/clients", fetcher, { refreshInterval: 3 });
   let CLIENTS_LIST = [];
 
   if (clientsRes.data) {
@@ -42,7 +45,10 @@ const onSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
   setModal: any,
-  setNotification: any
+  setNotification: any,
+  _: any,
+  __: any,
+  setDocument: any
 ) => {
   const { buyer, soldPrice, carId } = values;
   try {
@@ -51,6 +57,7 @@ const onSubmit = async (
     setModal("");
     actions.resetForm();
     setNotification({ status: "success", message: "Voiture a été vendue" });
+    setDocument({});
   } catch (err: any) {
     console.log(err.response.data.message);
     setNotification({ status: "error", message: err.response.data.message });
@@ -58,6 +65,7 @@ const onSubmit = async (
 };
 
 const SellForm = ({ id }: { id: number }) => {
+  const { setAddUpModal } = useContext(GlobalContext);
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const CLIENTS_LIST = getClients();
   formProps?.setFieldValue("carId", id);
@@ -79,6 +87,18 @@ const SellForm = ({ id }: { id: number }) => {
           autoFocus
           relatedFields={["buyer.id"]}
           items={CLIENTS_LIST}
+          buttons={
+            <ButtonItem>
+              <Button
+                type="button"
+                variant="ghost"
+                icon="add"
+                onClick={() => setAddUpModal("clients")}
+              >
+                Ajouter un client
+              </Button>
+            </ButtonItem>
+          }
         />
 
         <TypedInput
@@ -86,7 +106,7 @@ const SellForm = ({ id }: { id: number }) => {
           type="number"
           label="Prix de vente"
           placeholder="50000.00"
-          addOn="DZD"
+          addOn="DA"
         />
       </FormGroup>
     </Form>

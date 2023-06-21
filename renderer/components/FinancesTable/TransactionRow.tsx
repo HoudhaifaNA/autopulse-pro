@@ -7,7 +7,6 @@ import { TableCell, TableRow } from "components/Table/Table";
 import Checkbox from "components/Checkbox/Checkbox";
 import Icon from "components/Icon/Icon";
 import Badge from "components/Badge/Badge";
-import API from "utils/API";
 import { GlobalContext } from "pages/_app";
 
 const TransactionRow = ({
@@ -17,9 +16,9 @@ const TransactionRow = ({
   transaction: any;
   checkState: any;
 }) => {
-  const { toggleModalDelete } = useContext(GlobalContext);
+  const { toggleModalDelete, setDocument } = useContext(GlobalContext);
 
-  const { id, date, client, info2, total, direction } = transaction;
+  const { id, date, client, clientId, info2, total, direction } = transaction;
   const badgeStatus = direction === "sortante" ? "error" : "success";
   const { ids, addIds } = checkState;
 
@@ -46,20 +45,25 @@ const TransactionRow = ({
           check={() => checkRow(id)}
         />
       </TableCell>
-      <TableCell>
+      <TableCell blurrable={false}>
         <Body2>{dayjs(date).format("DD-MM-YYYY")}</Body2>
       </TableCell>
-      <TableCell>
+      <TableCell
+        blurrable={false}
+        onClick={() => {
+          setDocument({ type: "clients", id: clientId });
+        }}
+      >
         <Body2>{client}</Body2>
       </TableCell>
       <TableCell>
         <Body2>{info2}</Body2>
       </TableCell>
-      <TableCell>
+      <TableCell blurrable={false}>
         <Badge type={badgeStatus}>{direction}</Badge>
       </TableCell>
       <TableCell>
-        <Body2>{total.toLocaleString()}</Body2>
+        <Body2>{total.toLocaleString()}.00 DA</Body2>
       </TableCell>
       <TableCell blurrable={false} onClick={onDelete}>
         <Icon icon="delete" size="1.8rem" />

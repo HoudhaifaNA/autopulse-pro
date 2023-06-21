@@ -10,6 +10,16 @@ const show = keyframes`
     transform: translate(-50%, -52.5%) scale(1);
   }
 `;
+const reShow = keyframes`
+  0%{
+    transform: translate(-50%, -52.5%) scale(0.99);
+    
+  }
+  
+  100%{
+    transform: translate(-50%, -52.5%) scale(1);
+  }
+`;
 
 export const ModalWrapper = styled.div`
   position: fixed;
@@ -20,6 +30,10 @@ export const ModalWrapper = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 0.8rem;
   animation: ${show} 0.15s ease forwards;
+
+  &.signal {
+    animation: ${reShow} 0.1s ease forwards;
+  }
 `;
 
 export const ModalHeader = styled.div`

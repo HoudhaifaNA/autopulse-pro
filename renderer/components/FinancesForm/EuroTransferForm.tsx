@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FormikProps, FormikHelpers } from "formik";
 
 import { FormGroup } from "components/Form/Form.styled";
@@ -14,9 +14,12 @@ import { euroTransferSchema } from "Schemas/FormSchemas";
 
 import { EuroTransferValues as Values } from "components/FinancesForm/types";
 import API, { fetcher } from "utils/API";
+import { GlobalContext } from "pages/_app";
+import Button from "components/Button/Button";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 
 const getClients = () => {
-  const clientsRes = useSWR("/clients", fetcher);
+  const clientsRes = useSWR("/clients", fetcher, { refreshInterval: 3 });
   let CLIENTS_LIST = [];
 
   if (clientsRes.data) {
@@ -58,6 +61,7 @@ const onSubmit = async (
 };
 
 const EuroTransferForm = () => {
+  const { setAddUpModal } = useContext(GlobalContext);
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const CLIENTS_LIST = getClients();
 
@@ -89,6 +93,18 @@ const EuroTransferForm = () => {
             name="client.name"
             items={CLIENTS_LIST}
             relatedFields={["client.id"]}
+            buttons={
+              <ButtonItem>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  icon="add"
+                  onClick={() => setAddUpModal("clients")}
+                >
+                  Ajouter un client
+                </Button>
+              </ButtonItem>
+            }
           />
         </FormGroup>
         <FormGroup>
@@ -112,11 +128,11 @@ const EuroTransferForm = () => {
           <TypedInput
             name="euroPrice"
             type="number"
-            label="Prix ​​de €100 :"
+            label="Prix ​​de 100 € :"
             placeholder="200"
             addOn="€"
           />
-          <TypedInput name="total" label="Total :" addOn="DZD" as="div">
+          <TypedInput name="total" label="Total :" addOn="DA" as="div">
             {total.toLocaleString()}
           </TypedInput>
         </FormGroup>

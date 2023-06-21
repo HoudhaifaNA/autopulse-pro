@@ -16,10 +16,19 @@ const EuroTransferRow = ({
   transaction: any;
   checkState: any;
 }) => {
-  const { toggleModalDelete } = useContext(GlobalContext);
+  const { toggleModalDelete, setDocument } = useContext(GlobalContext);
 
-  const { id, date, client, method, eurosAmount, euroPrice, total, direction } =
-    transaction;
+  const {
+    id,
+    date,
+    client,
+    clientId,
+    method,
+    eurosAmount,
+    euroPrice,
+    total,
+    direction,
+  } = transaction;
   const badgeStatus = direction === "sortante" ? "error" : "success";
   const { ids, addIds } = checkState;
 
@@ -46,26 +55,31 @@ const EuroTransferRow = ({
           check={() => checkRow(id)}
         />
       </TableCell>
-      <TableCell>
+      <TableCell blurrable={false}>
         <Body2>{dayjs(date).format("DD-MM-YYYY")}</Body2>
       </TableCell>
-      <TableCell>
+      <TableCell
+        blurrable={false}
+        onClick={() => {
+          setDocument({ type: "clients", id: clientId });
+        }}
+      >
         <Body2>{client}</Body2>
       </TableCell>
       <TableCell>
         <Body2>{method}</Body2>
       </TableCell>
-      <TableCell>
+      <TableCell blurrable={false}>
         <Badge type={badgeStatus}>{direction}</Badge>
       </TableCell>
       <TableCell>
-        <Body2>{eurosAmount.toLocaleString()}</Body2>
+        <Body2>{eurosAmount.toLocaleString()}.00 €</Body2>
       </TableCell>
       <TableCell>
-        <Body2>{euroPrice.toLocaleString()}</Body2>
+        <Body2>{euroPrice.toLocaleString()}.00 DA</Body2>
       </TableCell>
       <TableCell>
-        <Body2>{total.toLocaleString()}</Body2>
+        <Body2>{total.toLocaleString()}.00 DA</Body2>
       </TableCell>
       <TableCell blurrable={false} onClick={onDelete}>
         <Icon icon="delete" size="1.8rem" />

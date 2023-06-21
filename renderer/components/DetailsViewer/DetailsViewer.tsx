@@ -37,7 +37,10 @@ export const DetailItem = ({ title, value, $index }: DetailItemProps) => {
   }
 
   return (
-    <S.DetailItem $index={$index}>
+    <S.DetailItem
+      $index={$index}
+      $width={title === "caractéristiques" ? "80rem" : ""}
+    >
       <Body2>{title} :</Body2>
       {isString ? <Body1 className={className}>{mainText}</Body1> : value}
     </S.DetailItem>

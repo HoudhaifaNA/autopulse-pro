@@ -41,25 +41,25 @@ const onSubmit = async (
   }
 
   if (step === 5) {
-    // Calculate total cost of every expense abroad in DZD
+    // Calculate total cost of every expense abroad inDA
     expenses.forEach((expense) => {
       const { type, euroCost, euroPrice } = expense;
       if (type === "à l'étranger")
         expense.totalCost = (Number(euroCost) * Number(euroPrice)) / 100;
     });
 
-    // Calculate expenses DZD and EUR amout
-    let [expensesDZDcost, expensesEURCost] = calcExpensesCosts(expenses);
+    // Calculate expensesDA and EUR amout
+    let [expensesDAcost, expensesEURCost] = calcExpensesCosts(expenses);
 
-    // Calculate total spent DZD and EUR amout (car + expenses + licence )
+    // Calculate total spentDA and EUR amout (car + expenses + licence )
     let euroAmount = Number(euroCost) + expensesEURCost;
-    let dzdAmount = Number(purchasingPrice) + expensesDZDcost + owner.price;
+    let dzdAmount = Number(purchasingPrice) + expensesDAcost + owner.price;
 
     actions.setFieldValue("euroAmount", euroAmount);
     actions.setFieldValue("dzdAmount", dzdAmount);
   }
   if (step === 6) {
-    let [expensesDZDcost] = calcExpensesCosts(expenses);
+    let [expensesDAcost] = calcExpensesCosts(expenses);
 
     try {
       const data = {
@@ -81,7 +81,7 @@ const onSubmit = async (
         euroPrice,
         purchasingPrice,
         expenses,
-        totalExpensesCost: expensesDZDcost,
+        totalExpensesCost: expensesDAcost,
         totalEurosAmount: values.euroAmount,
         totalCost: values.dzdAmount,
       };

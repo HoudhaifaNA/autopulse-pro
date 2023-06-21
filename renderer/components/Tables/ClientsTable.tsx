@@ -120,29 +120,29 @@ const ClientsTable = ({ clients }: IProps) => {
               return addIds([]);
             };
             return (
-              <TableRow
-                key={id}
-                onContextMenu={() =>
-                  setDocument({ type: "clients", document: client })
-                }
-              >
+              <TableRow key={id}>
                 <TableCell blurrable={false}>
                   <Checkbox
                     isChecked={!(ids.indexOf(id) === -1)}
                     check={() => checkRow(id)}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  blurrable={false}
+                  onClick={() => {
+                    setDocument({ type: "clients", id });
+                  }}
+                >
                   <Body2>{fullName}</Body2>
                 </TableCell>
                 <TableCell>
                   <Body2>{phoneNumber}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{Math.abs(balance).toLocaleString()}</Body2>
+                  <Body2>{Math.abs(balance).toLocaleString()}.00 DA</Body2>
                 </TableCell>
                 <TableCell>{clientStatus(balance)}</TableCell>
                 <TableCell blurrable={false} onClick={onDelete}>

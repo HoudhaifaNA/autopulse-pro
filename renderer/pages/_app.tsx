@@ -16,6 +16,9 @@ import LicenceForm from "components/LicenceForm/LicenceForm";
 import TransactionForm from "components/FinancesForm/TransactionForm";
 import EuroTransferForm from "components/FinancesForm/EuroTransferForm";
 import DeleteModal from "components/DeleteModal/DeleteModal";
+import WarningModal from "components/WarningModal/WarningModal";
+import SellForm from "components/SellForm/SellForm";
+import ExpenseForm from "components/ExpenseForm/ExpenseForm";
 
 const inter = Inter({
   src: [
@@ -33,7 +36,7 @@ interface Notification {
 }
 interface Document {
   type: string;
-  document?: any;
+  id: number;
 }
 interface ModalDelete {
   name: string;
@@ -43,12 +46,16 @@ interface ModalDelete {
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [currModal, setModal] = useState("");
+  const [addUpModal, setAddUpModal] = useState("");
+  const [warningModal, toggleWarningModal] = useState(false);
+  const [toLogout, setToLogout] = useState(false);
+  const [isFormChanged, setFormChanged] = useState(false);
   const [modalDelete, toggleModalDelete] = useState<ModalDelete>();
   const [currNotification, setNotification] = useState<Notification>({
     status: "",
     message: "",
   });
-  const [currDocument, setDocument] = useState<Document>({ type: "" });
+  const [currDocument, setDocument] = useState<Document>({ type: "", id: 0 });
 
   useEffect(() => {
     setTimeout(() => {
@@ -71,12 +78,19 @@ function MyApp({ Component, pageProps }: AppProps) {
       value={{
         currModal,
         setModal,
+        addUpModal,
+        setAddUpModal,
         currNotification,
         setNotification,
         currDocument,
         setDocument,
         modalDelete,
         toggleModalDelete,
+        isFormChanged,
+        setFormChanged,
+        toggleWarningModal,
+        toLogout,
+        setToLogout,
       }}
     >
       <main className={inter.className}>
@@ -90,15 +104,25 @@ function MyApp({ Component, pageProps }: AppProps) {
           {currModal === "licences" && <LicenceForm />}
           {currModal === "transactions" && <TransactionForm />}
           {currModal === "euros" && <EuroTransferForm />}
-          {currDocument.type === "clients" && (
-            <ClientDocument document={currDocument.document} />
+          {currModal === "expenses" && <ExpenseForm />}
+          {currModal === "sell" && <SellForm id={currDocument.id} />}
+
+          {addUpModal === "clients" && (
+            <>
+              <div className="background-black" style={{ zIndex: "1000000" }} />
+              <ClientForm />
+            </>
           )}
-          {currDocument.type === "licences" && (
-            <LicenceDocument document={currDocument.document} />
+          {addUpModal === "licences" && (
+            <>
+              <div className="background-black" style={{ zIndex: "1000000" }} />
+              <LicenceForm />
+            </>
           )}
-          {currDocument.type === "cars" && (
-            <CarDocument document={currDocument.document} />
-          )}
+          {warningModal && <WarningModal />}
+          {currDocument.type === "clients" && <ClientDocument />}
+          {currDocument.type === "licences" && <LicenceDocument />}
+          {currDocument.type === "cars" && <CarDocument />}
           {insertPage()}
         </ThemeProvider>
       </main>

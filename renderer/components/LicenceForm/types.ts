@@ -13,6 +13,7 @@ export interface Values {
   releasedDate: Date;
   seller: Seller;
   moudjahid: string;
+  serialNumber: string;
   wilaya: string;
   price: number | string;
   attachments: Attachment[];

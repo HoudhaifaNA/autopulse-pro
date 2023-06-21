@@ -26,6 +26,7 @@ const TB_HEADER_DATA = [
   { text: "Date créée", sortable: true },
   { text: "Vendeur", sortable: true },
   { text: "Moudjahid", sortable: true },
+  { text: "Numéro de série", sortable: false },
   { text: "Wilaya", sortable: false },
   { text: "Prix", sortable: true },
   { text: "Statut", sortable: false },
@@ -112,8 +113,10 @@ const LicencesTable = ({ licences }: IProps) => {
             const {
               id,
               created_at,
+              sellerId,
               seller,
               moudjahid,
+              serialNumber,
               wilaya,
               price,
               isValid,
@@ -127,35 +130,45 @@ const LicencesTable = ({ licences }: IProps) => {
               return addIds([]);
             };
             return (
-              <TableRow
-                key={id}
-                onContextMenu={() =>
-                  setDocument({ type: "licences", document: licence })
-                }
-              >
+              <TableRow key={id}>
                 <TableCell blurrable={false}>
                   <Checkbox
                     isChecked={!(ids.indexOf(id) === -1)}
                     check={() => checkRow(id)}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  blurrable={false}
+                  onClick={() => {
+                    setDocument({ type: "clients", id: sellerId });
+                  }}
+                >
                   <Body2>{seller}</Body2>
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  blurrable={false}
+                  onClick={() => {
+                    setDocument({ type: "licences", id });
+                  }}
+                >
                   <Body2>{moudjahid}</Body2>
                 </TableCell>
                 <TableCell>
+                  <Body2>{serialNumber}</Body2>
+                </TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{wilaya}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{price.toLocaleString()}</Body2>
+                  <Body2>{price.toLocaleString()}.00 DA</Body2>
                 </TableCell>
-                <TableCell>{licenceStatus(isValid)}</TableCell>
-                <TableCell>
+                <TableCell blurrable={false}>
+                  {licenceStatus(isValid)}
+                </TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{dayjs(validUntil).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
                 <TableCell blurrable={false} onClick={onDelete}>

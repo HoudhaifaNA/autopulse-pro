@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import * as S from "components/Table/Table.styled";
 
 export const TableWrapper = S.TableWrapper;
@@ -32,6 +32,12 @@ export const TableCell = ({
   children,
 }: TabelCellProps) => {
   const [blurred, setBlur] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("keypress", (e) => {
+      if (e.key.toLowerCase() === "h" && blurrable) setBlur((prev) => !prev);
+    });
+  }, []);
 
   return (
     <S.TableCell

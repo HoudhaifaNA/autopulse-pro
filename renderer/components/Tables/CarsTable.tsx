@@ -103,11 +103,13 @@ const CarsTable = ({ cars }: IProps) => {
               name,
               registrationNumber,
               seller,
+              sellerId,
               purchasingPrice,
               totalExpensesCost,
               licencePrice,
               totalCost,
               type,
+              buyerId,
               buyer,
               soldPrice,
               profit,
@@ -121,55 +123,67 @@ const CarsTable = ({ cars }: IProps) => {
               return addIds([]);
             };
             return (
-              <TableRow
-                key={id}
-                onContextMenu={() =>
-                  setDocument({ type: "cars", document: car })
-                }
-              >
+              <TableRow key={id}>
                 <TableCell blurrable={false}>
                   <Checkbox
                     isChecked={!(ids.indexOf(id) === -1)}
                     check={() => checkRow(id)}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  onClick={() => {
+                    setDocument({ type: "cars", id });
+                  }}
+                  blurrable={false}
+                >
                   <Body2>{name}</Body2>
                 </TableCell>
-                <TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{registrationNumber}</Body2>
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  blurrable={false}
+                  onClick={() => setDocument({ type: "clients", id: sellerId })}
+                >
                   <Body2>{seller}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{purchasingPrice.toLocaleString()}</Body2>
+                  <Body2>{purchasingPrice.toLocaleString()}.00 DA</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{totalExpensesCost.toLocaleString()}</Body2>
+                  <Body2>{totalExpensesCost.toLocaleString()}.00 DA</Body2>
                 </TableCell>
                 <TableCell>
                   <Body2>
-                    {licencePrice ? licencePrice.toLocaleString() : "--"}
+                    {licencePrice
+                      ? `${licencePrice.toLocaleString()}.00 DA`
+                      : "--"}
                   </Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{totalCost.toLocaleString()}</Body2>
+                  <Body2>{totalCost.toLocaleString()}.00 DA</Body2>
                 </TableCell>
-                <TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{type}</Body2>
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  blurrable={false}
+                  onClick={() => setDocument({ type: "clients", id: buyerId })}
+                >
                   <Body2>{buyer ? buyer : "--"}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{soldPrice ? soldPrice.toLocaleString() : "--"}</Body2>
+                  <Body2>
+                    {soldPrice ? `${soldPrice.toLocaleString()}.00 DA` : "--"}
+                  </Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{buyer ? profit.toLocaleString() : "--"}</Body2>
+                  <Body2>
+                    {buyer ? `${profit.toLocaleString()}.00 DA` : "--"}
+                  </Body2>
                 </TableCell>
 
                 <TableCell blurrable={false} onClick={onDelete}>

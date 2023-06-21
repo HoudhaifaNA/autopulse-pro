@@ -87,10 +87,15 @@ const renderSearchedItems = (categories: SearchCategory[]) => {
 };
 
 const Header = () => {
+  const { data, isLoading } = useSWR("/users/getMe", fetcher);
   const searchListRef = useRef<HTMLDivElement>(null);
   const [focus, setFocus] = useClickOutside(searchListRef);
   const [query, setQuery] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
+
+  let username = "";
+  if (isLoading) username = "...";
+  if (data) username = data.user.username;
 
   const handleQuerying = async () => {
     const { data } = await API.get(`/search?query=${query}`);
@@ -140,9 +145,9 @@ const Header = () => {
       </S.SearchBarContainer>
       <S.UserOverview>
         <Link href="/profile">
-          <Body1>Saber Zehani</Body1>
+          <Body1>{username}</Body1>
           <S.UserPicture>
-            <Heading5>S</Heading5>
+            <Heading5>{username.split("")[0]}</Heading5>
           </S.UserPicture>
         </Link>
       </S.UserOverview>

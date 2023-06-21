@@ -13,9 +13,13 @@ import { transactionSchema } from "Schemas/FormSchemas";
 
 import { TransactionValues as Values } from "components/FinancesForm/types";
 import API, { fetcher } from "utils/API";
+import { useContext } from "react";
+import { GlobalContext } from "pages/_app";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
+import Button from "components/Button/Button";
 
 const getClients = () => {
-  const clientsRes = useSWR("/clients", fetcher);
+  const clientsRes = useSWR("/clients", fetcher, { refreshInterval: 3 });
   let CLIENTS_LIST = [];
 
   if (clientsRes.data) {
@@ -56,6 +60,8 @@ const onSubmit = async (
 
 const TransactionForm = () => {
   const CLIENTS_LIST = getClients();
+  const { setAddUpModal } = useContext(GlobalContext);
+
   return (
     <Form
       title="Effectuer un transfert"
@@ -71,6 +77,18 @@ const TransactionForm = () => {
           name="client.name"
           items={CLIENTS_LIST}
           relatedFields={["client.id"]}
+          buttons={
+            <ButtonItem>
+              <Button
+                type="button"
+                variant="ghost"
+                icon="add"
+                onClick={() => setAddUpModal("clients")}
+              >
+                Ajouter un client
+              </Button>
+            </ButtonItem>
+          }
         />
       </FormGroup>
       <FormGroup>
@@ -87,7 +105,7 @@ const TransactionForm = () => {
           type="number"
           label="Montant :"
           placeholder="150000"
-          addOn="DZD"
+          addOn="DA"
         />
       </FormGroup>
       <FormGroup>

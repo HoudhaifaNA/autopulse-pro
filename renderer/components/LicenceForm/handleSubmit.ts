@@ -9,7 +9,9 @@ const handleSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
   setModal: any,
-  setNotification: any
+  setNotification: any,
+  addUpModal: any,
+  setAddUpModal: any
 ) => {
   const formData = new FormData();
 
@@ -28,7 +30,11 @@ const handleSubmit = async (
 
   try {
     await API.post("/licences", formData);
-    setModal("");
+    if (addUpModal === "licences") {
+      setAddUpModal("");
+    } else {
+      setModal("");
+    }
     setNotification({ status: "success", message: "Licence a été créée" });
   } catch (err: any) {
     console.log(err.response.data.message);

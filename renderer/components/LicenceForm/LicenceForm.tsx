@@ -22,7 +22,7 @@ import Button from "components/Button/Button";
 import { GlobalContext } from "pages/_app";
 
 const getClients = () => {
-  const clientsRes = useSWR("/clients", fetcher);
+  const clientsRes = useSWR("/clients", fetcher, { refreshInterval: 3 });
   let CLIENTS_LIST = [];
 
   if (clientsRes.data) {
@@ -39,6 +39,7 @@ const INITIAL_VALUES: Values = {
   releasedDate: new Date(),
   seller: { id: 0, name: "" },
   moudjahid: "",
+  serialNumber: "",
   wilaya: "",
   price: "",
   attachments: [],
@@ -57,7 +58,7 @@ const renderAttachments = (attachments: Values["attachments"]) => {
 };
 
 const LicenceForm = () => {
-  const { setModal } = useContext(GlobalContext);
+  const { setAddUpModal } = useContext(GlobalContext);
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const CLIENTS_LIST = getClients();
 
@@ -86,7 +87,7 @@ const LicenceForm = () => {
                 type="button"
                 variant="ghost"
                 icon="add"
-                onClick={() => setModal("clients")}
+                onClick={() => setAddUpModal("clients")}
               >
                 Ajouter un client
               </Button>
@@ -106,6 +107,11 @@ const LicenceForm = () => {
       </FormGroup>
 
       <FormGroup>
+        <TypedInput
+          name="serialNumber"
+          label="Numéro de série :"
+          placeholder="420022"
+        />
         <SelectInput
           name="wilaya"
           label="Wilaya :"
@@ -118,7 +124,7 @@ const LicenceForm = () => {
           type="number"
           label="Prix :"
           placeholder="0"
-          addOn="DZD"
+          addOn="DA"
         />
       </FormGroup>
       <FormGroup>

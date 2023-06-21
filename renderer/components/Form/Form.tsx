@@ -21,7 +21,8 @@ interface FormProps {
 }
 
 const Form = (props: FormProps) => {
-  const { setModal, setNotification } = useContext(GlobalContext);
+  const { setModal, setNotification, addUpModal, setAddUpModal, setDocument } =
+    useContext(GlobalContext);
 
   const {
     title,
@@ -39,7 +40,15 @@ const Form = (props: FormProps) => {
     validationSchema: validation,
     //@ts-ignore
     onSubmit: (actions, values) =>
-      onSubmit(actions, values, setModal, setNotification),
+      onSubmit(
+        actions,
+        values,
+        setModal,
+        setNotification,
+        addUpModal,
+        setAddUpModal,
+        setDocument
+      ),
   };
 
   return (

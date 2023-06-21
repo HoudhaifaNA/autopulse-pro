@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FormikProps } from "formik";
 
 import Form from "components/Form/Form";
@@ -20,6 +20,7 @@ import {
 } from "Schemas/FormSchemas";
 
 import { Values } from "components/CarForm/types";
+import { GlobalContext } from "pages/_app";
 
 interface ActionsProps {
   step: number;
@@ -78,6 +79,7 @@ const Actions = ({ step, buttonProps }: ActionsProps) => {
 const CarForm = () => {
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const [title, setTitle] = useState("Ajouter un voiture");
+  const { setFormChanged } = useContext(GlobalContext);
 
   const values = formProps?.values ?? INITIAL_VALUES;
   const { step, brand, model } = values;
@@ -85,6 +87,12 @@ const CarForm = () => {
   if (step === 2) validation = carSchemaStepTwo;
   if (step === 4) validation = carSchemaStepFour;
   if (step === 5) validation = carSchemaStepFive;
+
+  useEffect(() => {
+    if (JSON.stringify(values) !== JSON.stringify(INITIAL_VALUES)) {
+      setFormChanged(true);
+    }
+  }, [values]);
 
   // reset all inputs "touched" to false when step changes
   useEffect(() => {

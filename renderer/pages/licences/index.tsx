@@ -14,7 +14,7 @@ import { GlobalContext } from "pages/_app";
 import LicenceDocument from "components/LicenceDocument/LicenceDocument";
 
 const LicencesPage = () => {
-  const { currModal, setModal, currDocument } = useContext(GlobalContext);
+  const { setModal } = useContext(GlobalContext);
   const { data, isLoading, error } = useSWR("/licences", fetcher, {
     refreshInterval: 5,
   });

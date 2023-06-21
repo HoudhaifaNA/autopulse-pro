@@ -112,14 +112,14 @@ export const carSchemaStepFour = object({
     is: "importé",
     then: () =>
       number()
-        .min(50, ({ min }) => `Minimum ${min} DZD`)
+        .min(50, ({ min }) => `Minimum ${min}DA`)
         .required("Prix ​​de 100 EUR  est requis"),
   }),
   purchasingPrice: number().when("carType", {
     is: "locale",
     then: () =>
       number()
-        .min(20000, ({ min }) => `Minimum ${min} DZD`)
+        .min(20000, ({ min }) => `Minimum ${min}DA`)
         .required("Prix ​​d'achat est requis"),
   }),
 });
@@ -142,14 +142,14 @@ export const carSchemaStepFive = object({
         is: "à l'étranger",
         then: () =>
           number()
-            .min(50, ({ min }) => `Minimum ${min} DZD`)
+            .min(50, ({ min }) => `Minimum ${min}DA`)
             .required("Prix ​​de 100 EUR  est requis"),
       }),
       totalCost: number().when("type", {
         is: "locale",
         then: () =>
           number()
-            .min(500, ({ min }) => `Minimum ${min} DZD`)
+            .min(500, ({ min }) => `Minimum ${min}DA`)
             .required("Coût est requis"),
       }),
     })
@@ -166,7 +166,7 @@ export const sellCarSchema = object({
   }),
 
   soldPrice: number()
-    .min(100000, ({ min }) => `Minimum ${min} DZD`)
+    .min(100000, ({ min }) => `Minimum ${min}DA`)
     .required("Prix est requis"),
 });
 
@@ -183,13 +183,14 @@ export const licenceSchema = object({
     .matches(FULLNAME_RULES, "Indiquez un nom correct")
     .min(3, "Moudjahid doit comporter au moins 3 caractères")
     .required("Moudjahid est requis"),
+  serialNumber: string().trim().required("Numéro de série est requis"),
   wilaya: string()
     .trim()
     .lowercase()
     .oneOf(WILAYAS_OPTIONS, "Wilaya doit être l'une des options répertoriées.")
     .required("Wilaya est requis"),
   price: number()
-    .min(4000, ({ min }) => `Minimum ${min} DZD`)
+    .min(4000, ({ min }) => `Minimum ${min}DA`)
     .required("Prix est requis"),
 });
 
@@ -215,7 +216,7 @@ export const transactionSchema = object({
     )
     .required("Méthode est requise"),
   amount: number()
-    .min(500, ({ min }) => `Minimum ${min} DZD`)
+    .min(500, ({ min }) => `Minimum ${min}DA`)
     .integer("Montant doit être un entier")
     .required("Montant est requis"),
   direction: string()
@@ -243,7 +244,7 @@ export const euroTransferSchema = object({
     .min(40, ({ min }) => `Minimum ${min} euros`)
     .required("Montant est requis"),
   euroPrice: number()
-    .min(50, ({ min }) => `Minimum ${min} DZD`)
+    .min(50, ({ min }) => `Minimum ${min}DA`)
     .required("Prix ​​de 100 EUR  est requis"),
   total: number().required("Total est requis"),
   method: string()
@@ -259,4 +260,20 @@ export const euroTransferSchema = object({
       "Type doit être l'une des options répertoriées"
     )
     .required("Type de transaction est requis"),
+});
+
+export const expenseSchema = object({
+  raison: string()
+    .trim()
+    .min(3, `Raison doit comporter au moins 3 caractères`)
+    .required("Raison est requis"),
+
+  amount: number()
+    .min(200, ({ min }) => `Minimum ${min} DA`)
+    .required("Montant est requis"),
+  transferred_at: date()
+    .min(2015, ({ min }) => `La date doit être postérieure à ${min}`)
+    .max(today, `La date ne peut pas être postérieure à aujourd'hui`)
+    .typeError(() => `La date doit être une date`)
+    .required("La date est requise"),
 });

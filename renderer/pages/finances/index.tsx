@@ -86,7 +86,7 @@ const FinancePage = () => {
           <PageHeader
             title="Finances"
             CTAText="Ajouter"
-            CTAIcon="expand"
+            CTAIcon="add"
             IconP="right"
             CTAonClick={() =>
               currentPage === "virements des euros"

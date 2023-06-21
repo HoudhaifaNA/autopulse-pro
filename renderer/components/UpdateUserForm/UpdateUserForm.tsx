@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Formik, FormikHelpers, FormikProps } from "formik";
 
 import * as S from "components/UpdateUserForm/UpdateUserForm.styled";
@@ -10,6 +10,8 @@ import Button from "components/Button/Button";
 import { updateUsername, updateUserPassword } from "Schemas/FormSchemas";
 
 import { Values, PasswordInputProps } from "components/UpdateUserForm/types";
+import API from "utils/API";
+import { GlobalContext } from "pages/_app";
 
 const INITIAL_VALUES: Values = {
   username: "Saber Zehani",
@@ -18,10 +20,25 @@ const INITIAL_VALUES: Values = {
   confirmPassword: "",
 };
 
-const onSubmit = (values: Values, actions: FormikHelpers<Values>) => {
-  setTimeout(() => {
-    actions.resetForm();
-  }, 2000);
+const onSubmit = async (
+  values: Values,
+  actions: FormikHelpers<Values>,
+  setNotification: any
+) => {
+  const { currentPassword, newPassword } = values;
+  try {
+    await API.patch("/users/updateMe", {
+      currPassword: currentPassword,
+      newPassword,
+    });
+    setNotification({
+      status: "success",
+      message: "Mot de passe mis à jour avec succès",
+    });
+    actions.resetForm({});
+  } catch (err: any) {
+    setNotification({ status: "error", message: err.response.data.message });
+  }
 };
 
 const PasswordInput = ({ label, name, placeholder }: PasswordInputProps) => {
@@ -43,7 +60,8 @@ const PasswordInput = ({ label, name, placeholder }: PasswordInputProps) => {
   );
 };
 
-const UpdateUserForm = () => {
+const UpdateUserForm = ({ username }: { username: string }) => {
+  const { setNotification } = useContext(GlobalContext);
   const [passwordChange, setPasswordChange] = useState(false);
 
   let formSchema = updateUsername;
@@ -55,9 +73,11 @@ const UpdateUserForm = () => {
       <Formik
         initialValues={INITIAL_VALUES}
         validationSchema={formSchema}
-        onSubmit={onSubmit}
+        onSubmit={(values, actions) =>
+          onSubmit(values, actions, setNotification)
+        }
       >
-        {({ handleSubmit, isSubmitting, values }: FormikProps<Values>) => {
+        {({ handleSubmit, isSubmitting }: FormikProps<Values>) => {
           return (
             <S.Form onSubmit={handleSubmit}>
               <TypedInput
@@ -66,7 +86,7 @@ const UpdateUserForm = () => {
                 placeholder="Entrez votre nom"
                 as="div"
               >
-                {values.username}
+                {username}
               </TypedInput>
               {passwordChange && (
                 <>
