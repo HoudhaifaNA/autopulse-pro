@@ -31,6 +31,7 @@ db.prepare(
     sellerId TEXT NOT NULL,
     moudjahid TEXT NOT NULL,
     wilaya TEXT NOT NULL,
+    serialNumber TEXT NOT NULL UNIQUE,
     price INTEGER NOT NULL
       CHECK (price >= 4000) 
       ${IS_VALID_PRICE("price")},
@@ -64,12 +65,13 @@ export const getLicenceByMoudjahid = db.prepare(
 export const createLicence = db.prepare(`INSERT INTO licences(
     sellerId,
     moudjahid,
+    serialNumber,
     wilaya,
     price,
     attachments,
     validUntil,
     created_at
-) VALUES(?,?,?,?,?, DATE(?, '+3 years'), ?)`);
+) VALUES(?,?,?,?,?,?, DATE(?, '+5 years'), ?)`);
 
 export const updateLicence = db.prepare(`UPDATE licences
  SET moudjahid = COALESCE(?, moudjahid),

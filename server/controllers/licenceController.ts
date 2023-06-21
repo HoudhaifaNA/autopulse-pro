@@ -41,8 +41,15 @@ export const uploadAttachments = upload.array("attachments");
 export const createLicence = tryCatch((req, res, next) => {
   const attachments = [];
   const files = req.files as Express.Multer.File[];
-  const { sellerId, moudjahid, wilaya, price, releasedDate, created_at } =
-    req.body;
+  const {
+    sellerId,
+    moudjahid,
+    serialNumber,
+    wilaya,
+    price,
+    releasedDate,
+    created_at,
+  } = req.body;
   const [trimmedName, isValid] = validateName(moudjahid);
 
   if (!isValid) {
@@ -60,7 +67,9 @@ export const createLicence = tryCatch((req, res, next) => {
   // Check if there is an active licence with the same moudjahid
   moudjahidLicences.find((lc) => {
     //@ts-ignore
-    if (lc.isExpirated === "false") isThereOneActive = true;
+    if (lc.isExpirated === "false" && lc.serialNumber === serialNumber) {
+      isThereOneActive = true;
+    }
   });
 
   if (isThereOneActive)
@@ -80,6 +89,7 @@ export const createLicence = tryCatch((req, res, next) => {
   const params = [
     sellerId,
     trimmedName.toLowerCase(),
+    serialNumber,
     wilaya,
     price,
     JSON.stringify(attachments),
