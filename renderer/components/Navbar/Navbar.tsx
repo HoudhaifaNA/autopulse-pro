@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 
 import Icon from "components/Icon/Icon";
 import * as S from "./Navbar.styled";
-import { useRouter } from "next/router";
-import API from "utils/API";
+import { GlobalContext } from "pages/_app";
 
 interface items {
   text: string;
@@ -19,6 +19,7 @@ const NAVBAR_ITEMS: items[] = [
   { text: "Clients", icon: "clients", link: "/clients" },
   { text: "Licences", icon: "document", link: "/licences" },
   { text: "Finances", icon: "finance", link: "/finances" },
+  { text: "Dépenses", icon: "shopping", link: "/expenses" },
   { text: "Paramètres", icon: "account_settings", link: "/profile" },
 ];
 
@@ -47,15 +48,8 @@ const renderNavItems = (
   });
 };
 
-// const logsdout = async () => {
-//   try {
-//     await API.post("/users/logout");
-//   } catch (err: any) {
-//     console.log(err);
-//   }
-// };
-
 const Navbar = () => {
+  const { setToLogout, toggleWarningModal } = useContext(GlobalContext);
   const [short, setShort] = useState(false);
   const { asPath } = useRouter();
 
@@ -68,7 +62,14 @@ const Navbar = () => {
         {renderNavItems(NAVBAR_ITEMS, short, asPath)}
       </S.MainNavbarList>
       <S.SecondaryNavList>
-        <S.NavbarItem $active={true} $short={short}>
+        <S.NavbarItem
+          $active={true}
+          $short={short}
+          onClick={() => {
+            toggleWarningModal(true);
+            setToLogout(true);
+          }}
+        >
           <div>
             <Icon icon="logout" size="2.4rem" />
             {!short && <span>Se déconnecter</span>}
