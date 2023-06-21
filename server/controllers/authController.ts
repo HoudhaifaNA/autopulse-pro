@@ -116,6 +116,10 @@ export const updateMe = tryCatch((req, res, next) => {
   createAndSendToken(user, res);
 });
 
+export const getMe = tryCatch((req, res) => {
+  res.status(200).json({ status: "success", user: req["user"] });
+});
+
 export const confirmDelete = tryCatch((req, res, next) => {
   const { password } = req.body;
 

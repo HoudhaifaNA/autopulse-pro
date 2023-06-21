@@ -17,6 +17,7 @@ router
 
 router.post("/logout", authController.logout);
 
+router.get("/getMe", authController.getMe);
 router.patch("/updateMe", authController.updateMe);
 
 router.route("/:id").delete(userController.deleteUserById);
