@@ -23,7 +23,15 @@ export const createClient = db.prepare(`INSERT INTO clients(
 ) VALUES (?,?,?,?)`);
 
 export const getClients = db.prepare(
-  `SELECT * FROM clients ORDER BY created_at DESC`
+  `SELECT c.*, t.lastTransactionDate
+    FROM clients AS c
+    LEFT JOIN (
+      SELECT clientId, MAX(date) AS lastTransactionDate
+      FROM transactions
+      GROUP BY clientId
+  ) AS t ON c.id = t.clientId
+  ORDER BY created_at DESC
+  `
 );
 
 export const getClientById = db.prepare(`SELECT * FROM clients WHERE id = ?`);

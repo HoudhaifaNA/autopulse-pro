@@ -64,7 +64,7 @@ export const getEUROsTransactions = db.prepare(`
 
 export const getTransactionsByClient = db.prepare(`SELECT * FROM transactions 
     WHERE clientId = ?
-    ORDER BY created_at DESC
+    ORDER BY date DESC
 `);
 
 export const getTransactionById = db.prepare(
