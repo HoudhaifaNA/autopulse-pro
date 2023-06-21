@@ -14,6 +14,6 @@ router
   .route("/:id")
   .get(controller.getExpenseById)
   .patch(controller.updateExpense)
-  .delete(controller.deleteExpenses);
+  .delete(controller.deleteExpenseById);
 
 export default router;
