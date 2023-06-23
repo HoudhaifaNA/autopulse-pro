@@ -27,9 +27,9 @@ export const createUser = tryCatch((req, res, next) => {
 });
 
 export const deleteUserById = tryCatch((req, res, next) => {
-  const { id } = req.params;
+  const { ids } = req.params;
 
-  const { changes } = S.deleteUserById.run(id);
+  const { changes } = S.deleteUserById.run(ids);
 
   if (changes === 0) return next(new AppError(`User doesn't exist`, 404));
 

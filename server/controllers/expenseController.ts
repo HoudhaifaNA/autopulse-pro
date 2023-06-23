@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import * as S from "../statments/expensesStatments";
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
-import db from "../database";
+import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 
 export const getAllExpenses = tryCatch((req, res) => {
   const expenses = S.getExpenses.all();
@@ -14,9 +14,9 @@ export const getAllExpenses = tryCatch((req, res) => {
 });
 
 export const getExpenseById = tryCatch((req, res, next) => {
-  const { id } = req.params;
+  const { ids } = req.params;
 
-  const expense = S.getExpenseById.get(id);
+  const expense = S.getExpenseById.get(ids);
 
   if (!expense) return next(new AppError("Dépense n'existe pas", 404));
 
@@ -38,25 +38,22 @@ export const createExpense = tryCatch((req, res) => {
 });
 
 export const updateExpense = tryCatch((req, res, next) => {
-  const { id } = req.params;
+  const { ids } = req.params;
   const { raison, amount } = req.body;
-  const params = [raison, amount, id];
+  const params = [raison, amount, ids];
 
   const { changes } = S.updateExpense.run(params);
   if (changes === 0) return next(new AppError("Dépense n'existe pas", 404));
 
-  const updatedExpense = S.getExpenseById.get(id);
+  const updatedExpense = S.getExpenseById.get(ids);
 
   return res.status(200).json({ status: "success", expense: updatedExpense });
 });
 
 export const deleteExpenseById = tryCatch((req, res) => {
-  const { id } = req.params;
+  const { ids } = req.params;
 
-  const ids = id.split(",");
-
-  const placeHolders = id.replace(/\d+/g, "?");
-  db.prepare(`${S.deleteExpenseById} (${placeHolders})`).run(ids);
+  deleteDocumentsByIds(ids, S.deleteExpenseById);
 
   return res.status(204).json({ status: "success" });
 });

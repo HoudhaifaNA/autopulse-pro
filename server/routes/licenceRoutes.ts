@@ -11,7 +11,7 @@ router
   .delete(controller.deleteLicences);
 
 router
-  .route("/:id")
+  .route("/:ids")
   .get(controller.getLicenceById)
   .patch(controller.updateLicence)
   .delete(controller.deleteLicenceById);

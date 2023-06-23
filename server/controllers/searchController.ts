@@ -21,7 +21,7 @@ const searchController = tryCatch((req, res) => {
   const { query } = req.query;
 
   const clients = serachClients.all(`${query}%`);
-  const cars = serachCars.all(`${query}%`, `${query}%`);
+  const cars = serachCars.all([`${query}%`, `${query}%`]);
   const licences = serachLicences.all(`${query}%`);
 
   res.status(200).json({

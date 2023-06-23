@@ -11,7 +11,7 @@ router
   .delete(controller.deleteExpenses);
 
 router
-  .route("/:id")
+  .route("/:ids")
   .get(controller.getExpenseById)
   .patch(controller.updateExpense)
   .delete(controller.deleteExpenseById);

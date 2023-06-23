@@ -11,7 +11,7 @@ router
   .delete(controller.deleteClients);
 
 router
-  .route("/:id")
+  .route("/:ids")
   .get(controller.getClientByID)
   .patch(controller.updateClient)
   .delete(controller.deleteClientById);

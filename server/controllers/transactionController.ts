@@ -1,6 +1,6 @@
-import db from "../database";
 import * as S from "../statments/transactionStatments";
 import AppError from "../utils/AppError";
+import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 import tryCatch from "../utils/tryCatch";
 
 export const getAllTransactions = tryCatch((req, res) => {
@@ -12,9 +12,9 @@ export const getAllTransactions = tryCatch((req, res) => {
 });
 
 export const getTransactionById = tryCatch((req, res, next) => {
-  const { transactionId } = req.params;
+  const { transactionIds } = req.params;
 
-  const transaction = S.getTransactionById.get(transactionId);
+  const transaction = S.getTransactionById.get(transactionIds);
 
   if (!transaction) return next(new AppError("Transaction n'existe pas", 404));
 
@@ -78,24 +78,15 @@ export const createTransaction = tryCatch((req, res) => {
 export const deleteTransactionByProduct = tryCatch((req, res, next) => {
   const { productId, type } = req.body;
 
-  const ids = productId.split(",");
+  deleteDocumentsByIds(productId, S.deleteTransactionByProduct, [type]);
 
-  const placeHolders = productId.replace(/\d+/g, "?");
-
-  db.prepare(`${S.deleteTransactionByProduct} (${placeHolders})`).run([
-    type,
-    ...ids,
-  ]);
   return res.status(204).json({ status: "success" });
 });
 
 export const deleteTransactionById = tryCatch((req, res) => {
-  const { transactionId } = req.params;
+  const { transactionIds } = req.params;
 
-  const ids = transactionId.split(",");
-
-  const placeHolders = transactionId.replace(/\d+/g, "?");
-  db.prepare(`${S.deleteTransactionById} (${placeHolders})`).run(ids);
+  deleteDocumentsByIds(transactionIds, S.deleteTransactionById);
 
   return res.status(204).json({ status: "success" });
 });

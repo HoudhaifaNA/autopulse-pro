@@ -1,9 +1,10 @@
 import dayjs from "dayjs";
-import db from "../database";
+
 import * as S from "../statments/clientStatments";
 import AppError from "../utils/AppError";
 import tryCatch from "../utils/tryCatch";
 import { isValidPhoneNumber, validateName } from "../utils/validations";
+import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 
 export const getAllClients = tryCatch((req, res) => {
   const clients = S.getClients.all();
@@ -14,9 +15,9 @@ export const getAllClients = tryCatch((req, res) => {
 });
 
 export const getClientByID = tryCatch((req, res, next) => {
-  const { id } = req.params;
+  const { ids } = req.params;
 
-  const client = S.getClientById.get(id);
+  const client = S.getClientById.get(ids);
 
   if (!client) return next(new AppError("Client n'existe pas", 404));
 
@@ -25,12 +26,13 @@ export const getClientByID = tryCatch((req, res, next) => {
 
 export const createClient = tryCatch((req, res, next) => {
   const { fullName, phoneNumber, balance = 0, created_at } = req.body;
+  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
   const [trimmedName, isValid] = validateName(fullName);
 
   if (!isValid) return next(new AppError("Nom incorrect", 400));
-  if (phoneNumber && !isValidPhoneNumber(phoneNumber))
+  if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
     return next(new AppError("Numéro de téléphone invalide", 400));
-  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
+  }
 
   const params = [trimmedName, phoneNumber, balance, createdAtDate];
 
@@ -41,7 +43,7 @@ export const createClient = tryCatch((req, res, next) => {
 });
 
 export const updateClient = tryCatch((req, res, next) => {
-  const { id } = req.params;
+  const { ids } = req.params;
   const { fullName, phoneNumber } = req.body;
   const [trimmedName, isValid] = validateName(fullName);
 
@@ -53,12 +55,12 @@ export const updateClient = tryCatch((req, res, next) => {
     return next(new AppError("Numéro de téléphone invalide", 400));
   }
 
-  const params = [trimmedName, phoneNumber, id];
+  const params = [trimmedName, phoneNumber, ids];
 
   const { changes } = S.updateClient.run(params);
   if (changes === 0) return next(new AppError("Client n'existe pas", 404));
 
-  const updatedClient = S.getClientById.get(id);
+  const updatedClient = S.getClientById.get(ids);
 
   return res.status(200).json({ status: "success", client: updatedClient });
 });
@@ -76,12 +78,9 @@ export const updateBalance = tryCatch((req, res, next) => {
 });
 
 export const deleteClientById = tryCatch((req, res) => {
-  const { id } = req.params;
+  const { ids } = req.params;
 
-  const ids = id.split(",");
-
-  const placeHolders = id.replace(/\d+/g, "?");
-  db.prepare(`${S.deleteClientById} (${placeHolders})`).run(ids);
+  deleteDocumentsByIds(ids, S.deleteClientById);
 
   return res.status(204).json({ status: "success" });
 });

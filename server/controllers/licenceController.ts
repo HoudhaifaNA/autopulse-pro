@@ -5,7 +5,6 @@ import path from "path";
 import multer from "multer";
 import dayjs from "dayjs";
 
-import db from "../database";
 import * as S from "../statments/licenceStatments";
 import {
   createTransaction,
@@ -16,6 +15,9 @@ import tryCatch from "../utils/tryCatch";
 import { isWilaya, validateName } from "../utils/validations";
 import uid from "../../renderer/utils/uniqid";
 import AppError from "../utils/AppError";
+import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
+
+const isProd: boolean = process.env.NODE_ENV === "production";
 
 const storage = multer.memoryStorage();
 
@@ -39,7 +41,6 @@ const upload = multer({ storage: storage, fileFilter: multerFilter });
 export const uploadAttachments = upload.array("attachments");
 
 export const createLicence = tryCatch((req, res, next) => {
-  const attachments = [];
   const files = req.files as Express.Multer.File[];
   let {
     sellerId,
@@ -51,11 +52,12 @@ export const createLicence = tryCatch((req, res, next) => {
     created_at,
   } = req.body;
   const [trimmedName, isValid] = validateName(moudjahid);
+  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
 
   if (!price) price = 0;
-  if (!isValid) {
-    return next(new AppError("Nom moudjahid incorrect", 400));
-  }
+
+  if (!isValid) return next(new AppError("Nom moudjahid incorrect", 400));
+
   if (wilaya && !isWilaya(wilaya)) {
     return next(new AppError("Nom de wilaya incorrect", 400));
   }
@@ -64,29 +66,31 @@ export const createLicence = tryCatch((req, res, next) => {
     trimmedName.toLowerCase()
   );
 
-  let isThereOneActive;
+  let isThereOneLicenceActive;
   // Check if there is an active licence with the same moudjahid
-  moudjahidLicences.find((lc) => {
-    //@ts-ignore
+  moudjahidLicences.find((lc: any) => {
     if (lc.isExpirated === "false" && lc.serialNumber === serialNumber) {
-      isThereOneActive = true;
+      isThereOneLicenceActive = true;
     }
   });
 
-  if (isThereOneActive)
+  if (isThereOneLicenceActive) {
     return next(
       new AppError("Une licence active avec le même moudjahid existe", 403)
     );
+  }
+
+  const attachments = [];
 
   if (files.length > 0) {
     const setFilesNames = ({ fieldname, mimetype }) => {
       const fileExtension = mimetype.split("/")[1];
       attachments.push(`${fieldname}-${uid()}-${Date.now()}.${fileExtension}`);
     };
+
     files.forEach(setFilesNames);
   }
 
-  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
   const params = [
     sellerId,
     trimmedName.toLowerCase(),
@@ -120,8 +124,6 @@ export const createLicence = tryCatch((req, res, next) => {
 
   // If licence has been created save attachments
   files.forEach((file, i) => {
-    // const filePath = path.join(path.resolve(), "uploads", attachments[i]);
-    const isProd: boolean = process.env.NODE_ENV === "production";
     let filePath = path.join(path.resolve(), "uploads", attachments[i]);
     if (isProd) {
       filePath = path.join(
@@ -146,17 +148,17 @@ export const getAllLicences = tryCatch((req, res, next) => {
 });
 
 export const getLicenceById = tryCatch((req, res, next) => {
-  const { id } = req.params;
+  const { ids } = req.params;
 
-  const licence = S.getLicenceById.get(id);
+  const licence = S.getLicenceById.get(ids);
   if (!licence) return next(new AppError("Licence n'existe pas", 404));
 
   return res.status(200).json({ status: "success", licence });
 });
 
 export const updateLicence = tryCatch((req, res, next) => {
-  const { id } = req.params;
-  const { moudjahid, wilaya, price } = req.body;
+  const { ids } = req.params;
+  const { moudjahid, serialNumber, wilaya, price } = req.body;
   const [trimmedName, isValid] = validateName(moudjahid);
 
   if (moudjahid && !isValid) {
@@ -167,12 +169,12 @@ export const updateLicence = tryCatch((req, res, next) => {
     return next(new AppError("Nom de wilaya incorrect", 400));
   }
 
-  const params = [trimmedName, wilaya, price, id];
+  const params = [trimmedName, serialNumber, wilaya, price, ids];
 
   const { changes } = S.updateLicence.run(params);
   if (changes === 0) return next(new AppError("Licence n'existe pas", 404));
 
-  const updatedLicence = S.getLicenceById.get(id);
+  const updatedLicence = S.getLicenceById.get(ids);
 
   return res.status(200).json({ status: "success", licence: updatedLicence });
 });
@@ -189,22 +191,15 @@ const deleteAttachments = async (file) => {
 };
 
 export const deleteLicenceById = tryCatch((req, res) => {
-  const { id } = req.params;
+  const { ids } = req.params;
+  const licences: any[] = ids.split(",").map((id) => S.getLicenceById.get(id));
 
-  const ids = id.split(",");
-  const licences: any[] = ids.map((id) => S.getLicenceById.get(id));
-
-  const placeHolders = id.replace(/\d+/g, "?");
-  db.prepare(`${S.deleteLicenceById} (${placeHolders})`).run(ids);
-  db.prepare(`${deleteTransactionByProduct} (${placeHolders})`).run([
-    "licence",
-    ...ids,
-  ]);
+  deleteDocumentsByIds(ids, S.deleteLicenceById);
+  deleteDocumentsByIds(ids, deleteTransactionByProduct, ["licence"]);
 
   // Delete all attachment's related to this licence
   licences.forEach(({ attachments }) => {
     const attachmentsList = JSON.parse(attachments);
-
     attachmentsList.forEach((at) => deleteAttachments(at));
   });
 

@@ -11,7 +11,7 @@ router
   .delete(controller.deleteCars);
 
 router
-  .route("/:carId")
+  .route("/:carIds")
   .get(controller.getCarById)
   .patch(controller.updateCar)
   .delete(controller.deleteCarById);

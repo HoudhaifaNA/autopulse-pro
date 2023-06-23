@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 
-import db from "../database";
 import * as S from "../statments/carStatments";
 import { getLicenceById } from "../statments/licenceStatments";
 import {
@@ -10,6 +9,7 @@ import {
 } from "../statments/transactionStatments";
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
+import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 
 interface Licence {
   isValid?: string;
@@ -59,17 +59,19 @@ export const createCar = tryCatch((req, res, next) => {
     created_at,
   } = req.body;
 
-  if (ownerId !== 0) {
-    const currLicence: Licence = getLicenceById.get(ownerId);
+  const carName = `${brand} ${model}`;
+  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
 
-    if (!currLicence || currLicence.isValid === "false") {
+  // Check if the owner is a moudjahid with licence
+  if (ownerId !== 0) {
+    const licence: Licence = getLicenceById.get(ownerId);
+
+    if (!licence || licence.isValid === "false") {
       return next(new AppError("Licence invalide", 400));
     }
   }
-  const carName = `${brand} ${model}`;
 
-  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
-  const { lastInsertRowid } = S.creatCar.run([
+  const params = [
     type,
     carName,
     brand,
@@ -92,8 +94,12 @@ export const createCar = tryCatch((req, res, next) => {
     totalEurosAmount,
     totalCost,
     createdAtDate,
-  ]);
+  ];
+
+  const { lastInsertRowid } = S.creatCar.run(params);
+
   const transactionAmount = type === "locale" ? totalCost : costInEuros;
+
   const transacrtionParams = [
     lastInsertRowid,
     sellerId,
@@ -115,7 +121,9 @@ export const createCar = tryCatch((req, res, next) => {
 });
 
 export const updateCar = tryCatch((req, res, next) => {
-  const { carId } = req.params;
+  const { carIds } = req.params;
+  let carName;
+
   const {
     brand,
     model,
@@ -134,9 +142,8 @@ export const updateCar = tryCatch((req, res, next) => {
     totalCost,
   } = req.body;
 
-  let carName = null;
-
   if (brand && model) carName = `${brand} ${model}`;
+
   const { changes } = S.updateCar.run([
     carName,
     brand,
@@ -154,12 +161,14 @@ export const updateCar = tryCatch((req, res, next) => {
     totalEurosAmount,
     totalExpensesCost,
     totalCost,
-    carId,
+    carIds,
   ]);
 
   if (changes === 0) return next(new AppError("Voiture n'existe pas", 404));
 
-  const updatedCar = S.getCarById.get(carId);
+  // TODO EDIT THE TRANSACTION
+
+  const updatedCar = S.getCarById.get(carIds);
 
   return res.status(200).json({ status: "success", car: updatedCar });
 });
@@ -168,21 +177,23 @@ export const sellCar = tryCatch((req, res, next) => {
   const { carId } = req.params;
   const { buyerId, soldPrice } = req.body;
 
-  const car = S.getCarById.get(carId);
+  const car: any = S.getCarById.get(carId);
 
   if (!car) return next(new AppError("Voiture n'existe pas", 404));
 
-  //@ts-ignore
   const { brand, model, color, registrationNumber, year } = car;
 
-  //@ts-ignore
   if (car.soldPrice > 0) return next(new AppError("Voiture a été vendue", 403));
 
-  if (!buyerId || !soldPrice)
-    return next(new AppError("Mauvais paramètres", 400));
+  if (!buyerId || !soldPrice) {
+    return next(
+      new AppError("Fournir un acheteur valide et un prix de vente valide", 400)
+    );
+  }
 
   S.sellCar.run([buyerId, soldPrice, carId]);
 
+  // TODO CHANGE DATE NAME
   const today = dayjs(new Date()).format("YYYY-MM-DD");
   const transacrtionParams = [
     carId,
@@ -204,17 +215,11 @@ export const sellCar = tryCatch((req, res, next) => {
   return res.status(200).json({ status: "success", car: soldCar });
 });
 
-export const deleteCarById = tryCatch((req, res, next) => {
-  const { carId } = req.params;
-  const ids = carId.split(",");
+export const deleteCarById = tryCatch((req, res) => {
+  const { carIds } = req.params;
 
-  const placeHolders = carId.replace(/\d+/g, "?");
-  db.prepare(`${S.deleteCarById} (${placeHolders})`).run(ids);
-  db.prepare(`${deleteTransactionByProduct} (${placeHolders})`).run([
-    "car",
-    ...ids,
-  ]);
-
+  deleteDocumentsByIds(carIds, S.deleteCarById);
+  deleteDocumentsByIds(carIds, deleteTransactionByProduct, ["car"]);
   return res.status(204).json({ status: "success" });
 });
 

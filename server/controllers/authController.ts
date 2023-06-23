@@ -10,6 +10,8 @@ interface User {
   password?: string;
 }
 
+const ONE_SECOND = 1000;
+
 const signToken = (username) => {
   return jwt.sign({ username }, process.env.JWT_SECRET, {
     expiresIn: "3d",
@@ -51,8 +53,6 @@ export const login = tryCatch((req, res, next) => {
 });
 
 export const logout = tryCatch((req, res, next) => {
-  const ONE_SECOND = 1000;
-
   res.cookie("tkn", "", {
     expires: new Date(Date.now() + ONE_SECOND),
     httpOnly: false,
@@ -64,8 +64,8 @@ export const logout = tryCatch((req, res, next) => {
 });
 
 export const protect = tryCatch((req, res, next) => {
-  const { authorization } = req.headers;
   let token;
+  const { authorization } = req.headers;
 
   if (req.cookies.tkn) {
     token = req.cookies.tkn;
@@ -83,8 +83,7 @@ export const protect = tryCatch((req, res, next) => {
     return next(new AppError(`L'utilisateur avec ce jeton n'existe plus`, 401));
   }
 
-  // @ts-ignore
-  req.user = user;
+  req["user"] = user;
 
   next();
 });
@@ -110,8 +109,7 @@ export const updateMe = tryCatch((req, res, next) => {
 
   const hashedPassword = bcrypt.hashSync(newPassword, 12);
 
-  //@ts-ignore
-  S.updatePassword.run([hashedPassword, req.user.username]);
+  S.updatePassword.run([hashedPassword, req["user"].username]);
 
   createAndSendToken(user, res);
 });
