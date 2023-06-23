@@ -73,6 +73,7 @@ export const createLicence = db.prepare(`INSERT INTO licences(
 
 export const updateLicence = db.prepare(`UPDATE licences
  SET moudjahid = COALESCE(?, moudjahid),
+ serialNumber = COALESCE(?, serialNumber),
  wilaya = COALESCE(?, wilaya),
  price = COALESCE(?, price)
  WHERE id = ?
