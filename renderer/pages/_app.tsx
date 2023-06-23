@@ -60,8 +60,29 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     setTimeout(() => {
       setNotification({ status: "", message: "" });
-    }, 1500);
+    }, 4000);
   }, [currNotification.status]);
+
+  const currentPath = router.asPath.split("/")[1];
+  const FORM_NAMES = ["clients", "cars", "licences", "expenses"];
+  useEffect(() => {
+    const handleShorcuts = (e: KeyboardEvent) => {
+      if (FORM_NAMES.includes(currentPath)) {
+        if (e.key.toLowerCase() === "n") {
+          setModal(currentPath);
+        }
+      }
+      if (currentPath === "finances") {
+        if (e.key.toLowerCase() === "e" && !currModal) {
+          setModal("euros");
+        } else if (e.key.toLowerCase() === "t" && !currModal) {
+          setModal("transactions");
+        }
+      }
+    };
+    window.addEventListener("keypress", handleShorcuts);
+    return () => window.removeEventListener("keypress", handleShorcuts);
+  }, [currentPath, currModal]);
 
   // Insert Login page without Layout
   const insertPage = () => {

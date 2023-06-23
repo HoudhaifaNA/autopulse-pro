@@ -123,7 +123,11 @@ const ClientDocument = () => {
               <DetailItem title="nom" value={clientData.client.fullName} />
               <DetailItem
                 title="Numéro de téléphone"
-                value={clientData.client.phoneNumber}
+                value={
+                  clientData.client.phoneNumber
+                    ? clientData.client.phoneNumber
+                    : "--"
+                }
               />
               <DetailItem title="solde" value={`${balanceText}.00 DA`} />
               <DetailItem
@@ -145,9 +149,15 @@ const ClientDocument = () => {
               <DetailSection>
                 <DetailHeader title="Totaux" />
                 <DetailContent $columns={3}>
-                  {/* <DetailItem title="total des euros vendus" value="Є700000.00" />
-               <DetailItem title="total des euros achetés" value="Є200000.00" />
-               <DetailItem title="somme d'euros" value="Є500000.00 _GR" /> */}
+                  <DetailItem
+                    title="total des euros vendus"
+                    value="Є700000.00"
+                  />
+                  <DetailItem
+                    title="total des euros achetés"
+                    value="Є200000.00"
+                  />
+                  <DetailItem title="somme d'euros" value="Є500000.00 _GR" />
                   <DetailItem
                     title="total des entrants:"
                     value={`${entranteTotal.toLocaleString()}.00 DA`}

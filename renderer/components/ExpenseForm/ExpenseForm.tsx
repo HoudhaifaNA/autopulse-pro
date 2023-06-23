@@ -60,6 +60,7 @@ const ExpenseForm = () => {
           type="text"
           label="Montant"
           placeholder="15000"
+          addOn="DA"
         />
       </FormGroup>
       <FormGroup>

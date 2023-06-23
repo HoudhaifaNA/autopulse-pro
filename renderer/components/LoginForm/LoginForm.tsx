@@ -25,7 +25,7 @@ const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
     actions.resetForm();
 
     setTimeout(() => {
-      location.assign(convertPath("clients"));
+      location.assign(convertPath("dashboard"));
     }, 500);
   } catch (err: any) {
     console.log(err.response.data.message);

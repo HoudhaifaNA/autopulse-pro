@@ -41,14 +41,12 @@ const SELECT_STMT = `SELECT transactions.*,
     INNER JOIN clients ON clients.id = clientId
     `;
 
-export const getTransactions = db.prepare(
-  `${SELECT_STMT} ORDER BY created_at DESC`
-);
+export const getTransactions = db.prepare(`${SELECT_STMT} ORDER BY date DESC`);
 
 export const getMoneyTransactions = db.prepare(`
   ${SELECT_STMT}
   WHERE  type = 'money'
-  ORDER BY created_at DESC
+  ORDER BY date DESC
 `);
 export const getEUROsTransactions = db.prepare(`
     SELECT transactions.*,
@@ -59,7 +57,7 @@ export const getEUROsTransactions = db.prepare(`
     FROM transactions
     INNER JOIN clients ON clients.id = clientId
     WHERE  type = 'euros'
-    ORDER BY created_at DESC
+    ORDER BY date DESC
 `);
 
 export const getTransactionsByClient = db.prepare(`SELECT * FROM transactions 

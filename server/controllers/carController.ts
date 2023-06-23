@@ -93,6 +93,7 @@ export const createCar = tryCatch((req, res, next) => {
     totalCost,
     createdAtDate,
   ]);
+  const transactionAmount = type === "locale" ? totalCost : costInEuros;
   const transacrtionParams = [
     lastInsertRowid,
     sellerId,
@@ -102,7 +103,7 @@ export const createCar = tryCatch((req, res, next) => {
     color,
     registrationNumber,
     year,
-    totalCost,
+    transactionAmount,
     "entrante",
   ];
 

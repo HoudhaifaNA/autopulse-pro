@@ -28,7 +28,7 @@ export const createClient = tryCatch((req, res, next) => {
   const [trimmedName, isValid] = validateName(fullName);
 
   if (!isValid) return next(new AppError("Nom incorrect", 400));
-  if (!isValidPhoneNumber(phoneNumber))
+  if (phoneNumber && !isValidPhoneNumber(phoneNumber))
     return next(new AppError("Numéro de téléphone invalide", 400));
   const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
 

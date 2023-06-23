@@ -54,9 +54,10 @@ const categoryToIcon = (category: SearchCategory["name"]) => {
   return category;
 };
 
-const renderSearchedItems = (categories: SearchCategory[]) => {
-  const { currDocument, setDocument } = useContext(GlobalContext);
-
+const renderSearchedItems = (
+  categories: SearchCategory[],
+  setDocument: any
+) => {
   return categories.map((category) => {
     return (
       category.items.length > 0 && (
@@ -71,7 +72,7 @@ const renderSearchedItems = (categories: SearchCategory[]) => {
               <S.CategoryItem key={val}>
                 <div
                   onClick={() =>
-                    setDocument({ type: category.name, document: item })
+                    setDocument({ type: category.name, id: item.id })
                   }
                 >
                   <Icon icon={categoryToIcon(category.name)} size="2.4rem" />
@@ -87,6 +88,7 @@ const renderSearchedItems = (categories: SearchCategory[]) => {
 };
 
 const Header = () => {
+  const { setDocument } = useContext(GlobalContext);
   const { data, isLoading } = useSWR("/users/getMe", fetcher);
   const searchListRef = useRef<HTMLDivElement>(null);
   const [focus, setFocus] = useClickOutside(searchListRef);
@@ -98,9 +100,8 @@ const Header = () => {
   if (data) username = data.user.username;
 
   const handleQuerying = async () => {
-    const { data } = await API.get(`/search?query=${query}`);
-
-    if (data && query.length >= 2) {
+    if (query.length >= 2) {
+      const { data } = await API.get(`/search?query=${query}`);
       const categoriesList = Object.entries(data.data).map(
         ([key, value]: any) => {
           let items = value.map((el: any) => {
@@ -117,6 +118,10 @@ const Header = () => {
     }
   };
 
+  useEffect(() => {
+    handleQuerying();
+  }, [query]);
+
   return (
     <S.Header>
       <S.SearchBarContainer ref={searchListRef}>
@@ -131,7 +136,6 @@ const Header = () => {
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
-                handleQuerying();
               }}
               onFocus={() => setFocus(true)}
             />
@@ -139,7 +143,7 @@ const Header = () => {
         </InputStyle.InputContainer>
         {focus && categories.length > 0 && (
           <S.SearchList>
-            {renderSearchedItems(categories as SearchCategory[])}
+            {renderSearchedItems(categories as SearchCategory[], setDocument)}
           </S.SearchList>
         )}
       </S.SearchBarContainer>

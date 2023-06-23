@@ -10,9 +10,11 @@ import Badge from "components/Badge/Badge";
 import { GlobalContext } from "pages/_app";
 
 const TransactionRow = ({
+  ind,
   transaction,
   checkState,
 }: {
+  ind: number;
   transaction: any;
   checkState: any;
 }) => {
@@ -44,6 +46,9 @@ const TransactionRow = ({
           isChecked={!(ids.indexOf(id) === -1)}
           check={() => checkRow(id)}
         />
+      </TableCell>
+      <TableCell blurrable={false}>
+        <Body2>{ind + 1}</Body2>
       </TableCell>
       <TableCell blurrable={false}>
         <Body2>{dayjs(date).format("DD-MM-YYYY")}</Body2>

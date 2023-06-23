@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import searchController from "./controllers/searchController";
+import statsRoutes from "./routes/statsRoutes";
 import clientsRoutes from "./routes/clientRoutes";
 import licenceRoutes from "./routes/licenceRoutes";
 import expensesRoutes from "./routes/expensesRoutes";
@@ -25,6 +26,7 @@ app.use("/api/users", userRoutes);
 app.use(authController.protect);
 app.delete("/api/*", authController.confirmDelete);
 app.get("/api/search", searchController);
+app.use("/api/stats", statsRoutes);
 app.use("/api/clients", clientsRoutes);
 app.use("/api/licences", licenceRoutes);
 app.use("/api/expenses", expensesRoutes);

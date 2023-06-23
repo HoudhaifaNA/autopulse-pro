@@ -1,4 +1,5 @@
 export const TRANSACTIONS_HEADER = [
+  { text: "Indice", sortable: false },
   { text: "Date", sortable: true },
   { text: "Client", sortable: true },
   { text: "Méthode", sortable: false },
@@ -7,6 +8,7 @@ export const TRANSACTIONS_HEADER = [
 ];
 
 export const EUROS_TRANSFERS_HEADER = [
+  { text: "Indice", sortable: false },
   { text: "Date", sortable: true },
   { text: "Client", sortable: true },
   { text: "Méthode", sortable: false },

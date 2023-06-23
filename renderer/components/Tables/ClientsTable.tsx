@@ -24,11 +24,13 @@ interface IProps {
 }
 
 const TB_HEADER_DATA = [
+  { text: "Indice", sortable: false },
   { text: "Date créée", sortable: true },
   { text: "Nom", sortable: true },
   { text: "Numéro de téléphone", sortable: false },
   { text: "Solde du compte", sortable: true },
   { text: "Statue de payment", sortable: false },
+  { text: "Dernière transaction", sortable: true },
 ];
 
 const clientStatus = (balance: number) => {
@@ -110,8 +112,15 @@ const ClientsTable = ({ clients }: IProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {clients.map((client) => {
-            const { id, created_at, fullName, phoneNumber, balance } = client;
+          {clients.map((client, ind) => {
+            const {
+              id,
+              created_at,
+              fullName,
+              phoneNumber,
+              balance,
+              lastTransactionDate,
+            } = client;
             const onDelete = () => {
               toggleModalDelete({
                 name: `${fullName} et sa transactions (voitures, licences, transferts d'argent)`,
@@ -128,6 +137,9 @@ const ClientsTable = ({ clients }: IProps) => {
                   />
                 </TableCell>
                 <TableCell blurrable={false}>
+                  <Body2>{ind + 1}</Body2>
+                </TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
                 <TableCell
@@ -139,12 +151,19 @@ const ClientsTable = ({ clients }: IProps) => {
                   <Body2>{fullName}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{phoneNumber}</Body2>
+                  <Body2>{phoneNumber ? phoneNumber : "--"}</Body2>
                 </TableCell>
                 <TableCell>
                   <Body2>{Math.abs(balance).toLocaleString()}.00 DA</Body2>
                 </TableCell>
                 <TableCell>{clientStatus(balance)}</TableCell>
+                <TableCell blurrable={false}>
+                  <Body2>
+                    {lastTransactionDate
+                      ? dayjs(lastTransactionDate).format("DD-MM-YYYY")
+                      : "--"}
+                  </Body2>
+                </TableCell>
                 <TableCell blurrable={false} onClick={onDelete}>
                   <Icon icon="delete" size="1.8rem" />
                 </TableCell>

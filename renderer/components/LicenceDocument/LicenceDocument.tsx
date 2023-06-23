@@ -79,14 +79,23 @@ const LicenceDocument = () => {
           <DetailsViewer title="Document de licence">
             <DetailSection>
               <DetailHeader title="Détails de la licence" />
-              <DetailContent $columns={4}>
+              <DetailContent $columns={5}>
                 <DetailItem title="vendeur" value={data.licence.seller} />
                 <DetailItem title="moudjahid" value={data.licence.moudjahid} />
                 <DetailItem
                   title="prix"
                   value={`${data.licence.price.toLocaleString()}.00 DA`}
                 />
-                <DetailItem title="wilaya" value={data.licence.wilaya} />
+                <DetailItem
+                  title="wilaya"
+                  value={data.licence.wilaya ? data.licence.wilaya : "--"}
+                />
+                <DetailItem
+                  title="Numéro de série"
+                  value={
+                    data.licence.serialNumber ? data.licence.serialNumber : "--"
+                  }
+                />
               </DetailContent>
             </DetailSection>
             <DetailSection>

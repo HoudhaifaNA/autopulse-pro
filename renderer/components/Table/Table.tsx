@@ -31,7 +31,7 @@ export const TableCell = ({
   onClick,
   children,
 }: TabelCellProps) => {
-  const [blurred, setBlur] = useState(false);
+  const [blurred, setBlur] = useState(blurrable ? true : false);
 
   useEffect(() => {
     window.addEventListener("keypress", (e) => {

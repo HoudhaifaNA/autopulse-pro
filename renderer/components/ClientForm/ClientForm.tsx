@@ -62,7 +62,6 @@ const ClientForm = () => {
           type="text"
           label="Prénom"
           placeholder="Prénom du client"
-          autoFocus
         />
         <TypedInput
           name="lastName"

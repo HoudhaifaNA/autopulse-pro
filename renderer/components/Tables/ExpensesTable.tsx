@@ -22,6 +22,7 @@ interface IProps {
 }
 
 const TB_HEADER_DATA = [
+  { text: "Indice", sortable: false },
   { text: "Date créée", sortable: true },
   { text: "Raison", sortable: false },
   { text: "Montant", sortable: true },
@@ -90,7 +91,7 @@ const ExpensesTable = ({ expenses }: IProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {expenses.map((licence) => {
+          {expenses.map((licence, ind) => {
             const { id, created_at, raison, amount, transferred_at } = licence;
             const onDelete = async () => {
               toggleModalDelete({
@@ -108,18 +109,16 @@ const ExpensesTable = ({ expenses }: IProps) => {
                   />
                 </TableCell>
                 <TableCell blurrable={false}>
+                  <Body2>{ind + 1}</Body2>
+                </TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
-                <TableCell
-                  blurrable={false}
-                  //   onClick={() => {
-                  //     setDocument({ type: "expenses", id });
-                  //   }}
-                >
+                <TableCell blurrable={false}>
                   <Body2>{raison}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{amount}</Body2>
+                  <Body2>{amount}.00 DA</Body2>
                 </TableCell>
                 <TableCell blurrable={false}>
                   <Body2>{dayjs(transferred_at).format("DD-MM-YYYY")}</Body2>

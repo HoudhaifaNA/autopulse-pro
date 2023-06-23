@@ -74,11 +74,17 @@ const LicenceForm = () => {
       getFormProps={(props) => setFormProps(props)}
     >
       <FormGroup>
+        <TypedInput
+          name="moudjahid"
+          type="text"
+          label="Moudjahid :"
+          placeholder="Nom du moudjahid"
+          autoFocus
+        />
         <SelectInput
           name="seller.name"
           label="Vendeur :"
           placeholder="Nom de vendeur"
-          autoFocus
           relatedFields={["seller.id"]}
           items={CLIENTS_LIST}
           buttons={
@@ -93,12 +99,6 @@ const LicenceForm = () => {
               </Button>
             </ButtonItem>
           }
-        />
-        <TypedInput
-          name="moudjahid"
-          type="text"
-          label="Moudjahid :"
-          placeholder="Nom du moudjahid"
         />
       </FormGroup>
       <FormGroup>

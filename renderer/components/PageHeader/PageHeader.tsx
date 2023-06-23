@@ -5,10 +5,10 @@ import Button from "components/Button/Button";
 
 interface PageHeaderProps {
   title: string;
-  CTAText: string;
-  CTAIcon: string;
+  CTAText?: string;
+  CTAIcon?: string;
   IconP?: "right" | "left";
-  CTAonClick: () => void;
+  CTAonClick?: () => void;
 }
 
 const PageHeader = (props: PageHeaderProps) => {
@@ -16,14 +16,18 @@ const PageHeader = (props: PageHeaderProps) => {
   return (
     <Wrapper>
       <Heading3>{title}</Heading3>
-      <Button
-        variant="primary"
-        icon={CTAIcon}
-        iconPostition={IconP}
-        onClick={CTAonClick}
-      >
-        {CTAText}
-      </Button>
+      {CTAText ? (
+        <Button
+          variant="primary"
+          icon={CTAIcon}
+          iconPostition={IconP}
+          onClick={CTAonClick}
+        >
+          {CTAText}
+        </Button>
+      ) : (
+        ""
+      )}
     </Wrapper>
   );
 };

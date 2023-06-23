@@ -10,7 +10,7 @@ const onSubmit = async (
   setModal: any,
   setNotification: any
 ) => {
-  const {
+  let {
     step,
     created_at,
     carType,
@@ -60,7 +60,10 @@ const onSubmit = async (
   }
   if (step === 6) {
     let [expensesDAcost] = calcExpensesCosts(expenses);
-
+    if (!euroCost) {
+      euroCost = 0;
+      euroPrice = 0;
+    }
     try {
       const data = {
         created_at,

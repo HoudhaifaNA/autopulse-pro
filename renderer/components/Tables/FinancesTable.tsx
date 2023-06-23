@@ -58,20 +58,22 @@ const FinancesTable = ({ currentPage, transactions }: FinanceTBProps) => {
 
   const renderTransactions = () => {
     if (currentPage === "transactions") {
-      return transactions.moneyTransactions.map((tx: any) => {
+      return transactions.moneyTransactions.map((tx: any, ind: number) => {
         return (
           <TransactionRow
             key={tx.id}
+            ind={ind}
             transaction={tx}
             checkState={{ ids, addIds }}
           />
         );
       });
     } else {
-      return transactions.eurosTransactions.map((tx: any) => {
+      return transactions.eurosTransactions.map((tx: any, ind: number) => {
         return (
           <EuroTransferRow
             key={tx.id}
+            ind={ind}
             transaction={tx}
             checkState={{ ids, addIds }}
           />

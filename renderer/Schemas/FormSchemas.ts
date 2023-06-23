@@ -64,8 +64,7 @@ export const clientSchema = object({
   phoneNumber: string()
     .trim()
     .min(10, "Numéro de téléphone doit comporter au moins 10 chiffres")
-    .matches(PHONE_NUMBER_RULES, "Numéro de téléphone est invalide")
-    .required("Numéro de téléphone est requis"),
+    .matches(PHONE_NUMBER_RULES, "Numéro de téléphone est invalide"),
   balance: number().required("Solde est requis"),
 });
 
@@ -183,15 +182,12 @@ export const licenceSchema = object({
     .matches(FULLNAME_RULES, "Indiquez un nom correct")
     .min(3, "Moudjahid doit comporter au moins 3 caractères")
     .required("Moudjahid est requis"),
-  serialNumber: string().trim().required("Numéro de série est requis"),
+  serialNumber: string().trim(),
   wilaya: string()
     .trim()
     .lowercase()
-    .oneOf(WILAYAS_OPTIONS, "Wilaya doit être l'une des options répertoriées.")
-    .required("Wilaya est requis"),
-  price: number()
-    .min(4000, ({ min }) => `Minimum ${min}DA`)
-    .required("Prix est requis"),
+    .oneOf(WILAYAS_OPTIONS, "Wilaya doit être l'une des options répertoriées."),
+  price: number().min(4000, ({ min }) => `Minimum ${min}DA`),
 });
 
 export const transactionSchema = object({
@@ -263,6 +259,17 @@ export const euroTransferSchema = object({
 });
 
 export const expenseSchema = object({
+  transferred_at: date()
+    .min(2015, ({ min }) => `La date doit être postérieure à ${min}`)
+    .max(today, `La date ne peut pas être postérieure à aujourd'hui`)
+    .typeError(() => `La date doit être une date`)
+    .required("La date est requise"),
+  type: string()
+    .lowercase()
+    .oneOf(
+      ["locale", "à l'étranger"],
+      "Type doit être l'une des options répertoriées"
+    ),
   raison: string()
     .trim()
     .min(3, `Raison doit comporter au moins 3 caractères`)
@@ -271,9 +278,4 @@ export const expenseSchema = object({
   amount: number()
     .min(200, ({ min }) => `Minimum ${min} DA`)
     .required("Montant est requis"),
-  transferred_at: date()
-    .min(2015, ({ min }) => `La date doit être postérieure à ${min}`)
-    .max(today, `La date ne peut pas être postérieure à aujourd'hui`)
-    .typeError(() => `La date doit être une date`)
-    .required("La date est requise"),
 });

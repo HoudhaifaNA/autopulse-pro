@@ -23,6 +23,7 @@ interface IProps {
 }
 
 const TB_HEADER_DATA = [
+  { text: "Indice", sortable: false },
   { text: "Date créée", sortable: true },
   { text: "Vendeur", sortable: true },
   { text: "Moudjahid", sortable: true },
@@ -109,7 +110,7 @@ const LicencesTable = ({ licences }: IProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {licences.map((licence) => {
+          {licences.map((licence, ind) => {
             const {
               id,
               created_at,
@@ -138,6 +139,9 @@ const LicencesTable = ({ licences }: IProps) => {
                   />
                 </TableCell>
                 <TableCell blurrable={false}>
+                  <Body2>{ind + 1}</Body2>
+                </TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
                 <TableCell
@@ -157,10 +161,10 @@ const LicencesTable = ({ licences }: IProps) => {
                   <Body2>{moudjahid}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{serialNumber}</Body2>
+                  <Body2>{serialNumber ?? "--"}</Body2>
                 </TableCell>
                 <TableCell blurrable={false}>
-                  <Body2>{wilaya}</Body2>
+                  <Body2>{wilaya ?? "--"}</Body2>
                 </TableCell>
                 <TableCell>
                   <Body2>{price.toLocaleString()}.00 DA</Body2>

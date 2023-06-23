@@ -30,11 +30,9 @@ db.prepare(
     id INTEGER PRIMARY KEY,
     sellerId TEXT NOT NULL,
     moudjahid TEXT NOT NULL,
-    wilaya TEXT NOT NULL,
-    serialNumber TEXT NOT NULL UNIQUE,
-    price INTEGER NOT NULL
-      CHECK (price >= 4000) 
-      ${IS_VALID_PRICE("price")},
+    wilaya TEXT,
+    serialNumber TEXT ,
+    price INTEGER DEFAULT 0,
     attachments TEXT,
     carId TEXT,
     validUntil TEXT NOT NULL,

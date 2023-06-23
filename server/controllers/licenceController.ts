@@ -41,7 +41,7 @@ export const uploadAttachments = upload.array("attachments");
 export const createLicence = tryCatch((req, res, next) => {
   const attachments = [];
   const files = req.files as Express.Multer.File[];
-  const {
+  let {
     sellerId,
     moudjahid,
     serialNumber,
@@ -52,10 +52,11 @@ export const createLicence = tryCatch((req, res, next) => {
   } = req.body;
   const [trimmedName, isValid] = validateName(moudjahid);
 
+  if (!price) price = 0;
   if (!isValid) {
     return next(new AppError("Nom moudjahid incorrect", 400));
   }
-  if (!wilaya || !isWilaya(wilaya)) {
+  if (wilaya && !isWilaya(wilaya)) {
     return next(new AppError("Nom de wilaya incorrect", 400));
   }
 

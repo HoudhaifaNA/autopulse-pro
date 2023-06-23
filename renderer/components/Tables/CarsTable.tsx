@@ -22,6 +22,7 @@ interface IProps {
 }
 
 const TB_HEADER_DATA = [
+  { text: "Indice", sortable: false },
   { text: "Date créée", sortable: true },
   { text: "Nom", sortable: true },
   { text: "Matricule", sortable: false },
@@ -96,7 +97,7 @@ const CarsTable = ({ cars }: IProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {cars.map((car) => {
+          {cars.map((car, ind) => {
             const {
               id,
               created_at,
@@ -129,6 +130,9 @@ const CarsTable = ({ cars }: IProps) => {
                     isChecked={!(ids.indexOf(id) === -1)}
                     check={() => checkRow(id)}
                   />
+                </TableCell>
+                <TableCell blurrable={false}>
+                  <Body2>{ind + 1}</Body2>
                 </TableCell>
                 <TableCell blurrable={false}>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
