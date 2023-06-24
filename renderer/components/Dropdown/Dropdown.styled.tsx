@@ -54,6 +54,10 @@ export const MainTextWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 0.8rem;
+
+  & p::first-letter {
+    text-transform: uppercase;
+  }
 `;
 
 export const ButtonItem = styled.div<{ $ghostColor?: string }>`
