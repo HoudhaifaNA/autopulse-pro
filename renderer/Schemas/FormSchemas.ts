@@ -59,7 +59,8 @@ export const clientSchema = object({
   clientType: string()
     .trim()
     .lowercase()
-    .oneOf(["euro", "da"], "Type doit être l'une des options répertoriées"),
+    .oneOf(["euro", "da"], "Type doit être l'une des options répertoriées")
+    .required("Type de client est requis"),
   phoneNumber: string()
     .trim()
     .min(10, "Numéro de téléphone doit comporter au moins 10 chiffres")
@@ -202,7 +203,6 @@ export const transactionSchema = object({
       .min(3, `Client doit comporter au moins 3 caractères`)
       .required("Client est requis"),
   }),
-
   method: string()
     .lowercase()
     .oneOf(
@@ -217,6 +217,12 @@ export const transactionSchema = object({
   direction: string()
     .oneOf(
       ["entrante", "sortante"],
+      "Type doit être l'une des options répertoriées"
+    )
+    .required("Type de transaction est requis"),
+  type: string()
+    .oneOf(
+      ["euroTransfer", "DA"],
       "Type doit être l'une des options répertoriées"
     )
     .required("Type de transaction est requis"),
