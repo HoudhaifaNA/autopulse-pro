@@ -15,7 +15,7 @@ const optionalUpdate = (field) => {
 db.prepare(
   `CREATE TABLE IF NOT EXISTS cars(
     id INTEGER PRIMARY KEY,
-    type TEXT NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('locale', 'importé')),
     name TEXT NOT NULL,
     brand TEXT NOT NULL,
     model TEXT NOT NULL,
