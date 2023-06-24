@@ -79,7 +79,6 @@ const LicenceForm = () => {
           type="text"
           label="Moudjahid :"
           placeholder="Nom du moudjahid"
-          autoFocus
         />
         <SelectInput
           name="seller.name"
