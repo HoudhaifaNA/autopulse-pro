@@ -25,7 +25,7 @@ db.prepare(
     info3 TEXT,
     info4 TEXT,
     total INTEGER NOT NULL,
-    direction TEXT NOT NULL CHECK (direction IN ('sortante', 'entrante')),
+    direction TEXT NOT NULL CHECK (direction IN ('sortante', 'entrante', 'virement en euros')),
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (productId, type, direction),
     FOREIGN KEY (clientId)
@@ -45,7 +45,7 @@ export const getTransactions = db.prepare(`${SELECT_STMT} ORDER BY date DESC`);
 
 export const getMoneyTransactions = db.prepare(`
   ${SELECT_STMT}
-  WHERE  type = 'money'
+  WHERE  type = 'DA' OR type = 'euroTransfer'
   ORDER BY date DESC
 `);
 export const getEUROsTransactions = db.prepare(`
