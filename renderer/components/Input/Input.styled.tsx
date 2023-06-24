@@ -27,6 +27,10 @@ export const ClickInputContainer = styled.div`
   display: flex;
   height: 2rem;
   gap: 1rem;
+
+  & > label {
+    white-space: nowrap;
+  }
 `;
 
 export const ClickInput = styled.input`
