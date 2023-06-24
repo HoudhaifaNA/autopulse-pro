@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 import { FormikHelpers, FormikProps } from "formik";
 
@@ -37,7 +37,8 @@ const onSubmit = async (
   setModal: any,
   setNotification: any
 ) => {
-  let { date, client, type, method, amount, direction } = values;
+  const { date, client, type, method, amount, direction } = values;
+
   const data = {
     date,
     clientId: client.id,
@@ -66,6 +67,12 @@ const TransactionForm = () => {
 
   const CLIENTS_LIST = getClients();
   const { setAddUpModal } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (values.type === "euroTransfer") {
+      formProps?.setFieldValue("direction", "sortante");
+    }
+  }, [values.type, values.direction]);
 
   return (
     <Form
