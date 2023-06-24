@@ -20,7 +20,8 @@ const TransactionRow = ({
 }) => {
   const { toggleModalDelete, setDocument } = useContext(GlobalContext);
 
-  const { id, date, client, clientId, info2, total, direction } = transaction;
+  const { id, date, type, client, clientId, info2, total, direction } =
+    transaction;
   const badgeStatus = direction === "sortante" ? "error" : "success";
   const { ids, addIds } = checkState;
 
@@ -68,7 +69,9 @@ const TransactionRow = ({
         <Badge type={badgeStatus}>{direction}</Badge>
       </TableCell>
       <TableCell>
-        <Body2>{total.toLocaleString()}.00 DA</Body2>
+        <Body2>
+          {total.toLocaleString()}.00 {type === "euroTransfer" ? "€" : "DA"}
+        </Body2>
       </TableCell>
       <TableCell blurrable={false} onClick={onDelete}>
         <Icon icon="delete" size="1.8rem" />

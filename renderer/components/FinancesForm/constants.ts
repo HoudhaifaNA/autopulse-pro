@@ -2,6 +2,7 @@ import * as T from "components/FinancesForm/types";
 
 export const TRANSACTION_VALUES: T.TransactionValues = {
   date: new Date(),
+  type: "DA",
   client: { id: 0, name: "" },
   method: "",
   amount: "",

@@ -1,19 +1,19 @@
+import { useContext, useState } from "react";
 import useSWR from "swr";
-import { FormikHelpers } from "formik";
+import { FormikHelpers, FormikProps } from "formik";
 
 import { FormGroup } from "components/Form/Form.styled";
 
 import Form from "components/Form/Form";
 import DateInput from "components/DateInput/DateInput";
 import TransactionType from "components/FinancesForm/TransactionType";
-import { TypedInput, SelectInput } from "components/Input/Input";
+import { TypedInput, SelectInput, ClickInput } from "components/Input/Input";
 
 import * as C from "components/FinancesForm/constants";
 import { transactionSchema } from "Schemas/FormSchemas";
 
 import { TransactionValues as Values } from "components/FinancesForm/types";
 import API, { fetcher } from "utils/API";
-import { useContext } from "react";
 import { GlobalContext } from "pages/_app";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 import Button from "components/Button/Button";
@@ -37,17 +37,19 @@ const onSubmit = async (
   setModal: any,
   setNotification: any
 ) => {
-  const { date, client, method, amount, direction } = values;
+  let { date, client, type, method, amount, direction } = values;
   const data = {
     date,
     clientId: client.id,
-    type: "money",
+    type,
     info1: "Argent",
     info2: method,
     total: amount,
     direction,
   };
   try {
+    console.log(type);
+
     await API.post("/transactions", data);
 
     setModal("");
@@ -59,6 +61,9 @@ const onSubmit = async (
 };
 
 const TransactionForm = () => {
+  const [formProps, setFormProps] = useState<FormikProps<Values>>();
+  const values = formProps?.values ?? C.TRANSACTION_VALUES;
+
   const CLIENTS_LIST = getClients();
   const { setAddUpModal } = useContext(GlobalContext);
 
@@ -69,6 +74,7 @@ const TransactionForm = () => {
       validation={transactionSchema}
       buttonText="Transfert"
       onSubmit={onSubmit}
+      getFormProps={(formProps) => setFormProps(formProps)}
     >
       <FormGroup>
         <SelectInput
@@ -105,7 +111,7 @@ const TransactionForm = () => {
           type="number"
           label="Montant :"
           placeholder="150000"
-          addOn="DA"
+          addOn={values.type === "euroTransfer" ? "€" : "DA"}
         />
       </FormGroup>
       <FormGroup>
@@ -113,6 +119,15 @@ const TransactionForm = () => {
         <FormGroup />
         <FormGroup>
           <TransactionType options={["entrante", "sortante"]} />
+        </FormGroup>
+        <FormGroup>
+          <ClickInput type="radio" name="type" label="DA" value="DA" />
+          <ClickInput
+            type="radio"
+            name="type"
+            label="Euro"
+            value="euroTransfer"
+          />
         </FormGroup>
       </FormGroup>
     </Form>
