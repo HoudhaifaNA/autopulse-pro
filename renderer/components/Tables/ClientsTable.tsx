@@ -26,6 +26,7 @@ interface IProps {
 const TB_HEADER_DATA = [
   { text: "Indice", sortable: false },
   { text: "Date créée", sortable: true },
+  { text: "Type", sortable: false },
   { text: "Nom", sortable: true },
   { text: "Numéro de téléphone", sortable: false },
   { text: "Solde du compte", sortable: true },
@@ -116,6 +117,7 @@ const ClientsTable = ({ clients }: IProps) => {
             const {
               id,
               created_at,
+              clientType,
               fullName,
               phoneNumber,
               balance,
@@ -142,6 +144,9 @@ const ClientsTable = ({ clients }: IProps) => {
                 <TableCell blurrable={false}>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
+                <TableCell blurrable={false}>
+                  <Body2>{clientType}</Body2>
+                </TableCell>
                 <TableCell
                   blurrable={false}
                   onClick={() => {
@@ -154,7 +159,10 @@ const ClientsTable = ({ clients }: IProps) => {
                   <Body2>{phoneNumber ? phoneNumber : "--"}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{Math.abs(balance).toLocaleString()}.00 DA</Body2>
+                  <Body2>
+                    {Math.abs(balance).toLocaleString()}.00{" "}
+                    {clientType === "euro" ? "€" : "DA"}
+                  </Body2>
                 </TableCell>
                 <TableCell>{clientStatus(balance)}</TableCell>
                 <TableCell blurrable={false}>

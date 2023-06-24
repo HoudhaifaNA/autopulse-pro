@@ -1,26 +1,29 @@
-import { FormikHelpers } from "formik";
+import { useState } from "react";
+import { FormikHelpers, FormikProps } from "formik";
 
 import { FormGroup } from "components/Form/Form.styled";
 
 import Form from "components/Form/Form";
-import { TypedInput } from "components/Input/Input";
+import { SelectInput, TypedInput } from "components/Input/Input";
 
 import { clientSchema } from "Schemas/FormSchemas";
 import API from "utils/API";
 
 interface Values {
-  firstName: string;
-  lastName: string;
+  fullName: string;
+  clientType: string;
   phoneNumber: string;
   balance: number | number;
 }
 
 const INITIAL_VALUES = {
-  firstName: "",
-  lastName: "",
+  fullName: "",
+  clientType: "",
   phoneNumber: "",
   balance: "",
 };
+
+const CLIENT_TYPES = [{ mainText: "euro" }, { mainText: "DA" }];
 
 const onSubmit = async (
   values: Values,
@@ -30,10 +33,8 @@ const onSubmit = async (
   addUpModal: any,
   setAddUpModal: any
 ) => {
-  const { firstName, lastName, phoneNumber, balance } = values;
-  const fullName = `${firstName} ${lastName}`;
   try {
-    await API.post("/clients", { fullName, phoneNumber, balance });
+    await API.post("/clients", values);
 
     if (addUpModal === "clients") {
       setAddUpModal("");
@@ -49,25 +50,30 @@ const onSubmit = async (
 };
 
 const ClientForm = () => {
+  const [formProps, setFormProps] = useState<FormikProps<Values>>();
+  const values = formProps?.values ?? INITIAL_VALUES;
+
   return (
     <Form
       title="Ajouter un client"
       initials={INITIAL_VALUES}
       validation={clientSchema}
       onSubmit={onSubmit}
+      getFormProps={(formProps) => setFormProps(formProps)}
     >
       <FormGroup>
         <TypedInput
-          name="firstName"
+          name="fullName"
           type="text"
-          label="Prénom"
-          placeholder="Prénom du client"
+          label="Nom et prénom"
+          placeholder="Nom et prénom du client"
         />
-        <TypedInput
-          name="lastName"
-          type="text"
-          label="Nom"
-          placeholder="Nom du client"
+        <SelectInput
+          name="clientType"
+          placeholder="Choisissez un type"
+          label="Type de client"
+          items={CLIENT_TYPES}
+          elementAs="div"
         />
       </FormGroup>
       <FormGroup>
@@ -82,7 +88,7 @@ const ClientForm = () => {
           type="number"
           label="Solde"
           placeholder="0"
-          addOn="DA"
+          addOn={values.clientType === "euro" ? "€" : "DA"}
         />
       </FormGroup>
     </Form>

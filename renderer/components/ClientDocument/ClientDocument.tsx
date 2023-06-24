@@ -37,7 +37,7 @@ const clientStatus = (balance: number) => {
 
 const keys = ["date", "info1", "info2", "info3", "info4", "total"];
 
-const renderTransactionsList = (transactions: any[]) => {
+const renderTransactionsList = (transactions: any[], currency: string) => {
   const { setDocument } = useContext(GlobalContext);
 
   return transactions.map((transaction, ind) => {
@@ -46,16 +46,6 @@ const renderTransactionsList = (transactions: any[]) => {
         {Object.entries(transaction).map(([key, value]: any) => {
           if (keys.indexOf(key) !== -1) {
             let newVal = value;
-            if (key === "date") newVal = dayjs(value).format("DD-MM-YYYY");
-            if (key === "info1") newVal = truncateText(value, 25);
-            if (Number(value) && key !== "info4")
-              newVal = `${value.toLocaleString()}.00 DA`;
-            if (transaction["type"] === "euros" && key === "info3") {
-              newVal = `${(value * 1).toLocaleString()}.00 €`;
-            }
-            if (transaction["type"] === "euros" && key === "info4") {
-              newVal = `${(value * 1).toLocaleString()}.00 DA`;
-            }
             const goToProduct = () => {
               if (transaction.type === "car" && key === "info1") {
                 setDocument({ type: "cars", id: transaction.productId });
@@ -63,6 +53,18 @@ const renderTransactionsList = (transactions: any[]) => {
                 setDocument({ type: "licences", id: transaction.productId });
               }
             };
+
+            if (key === "date") newVal = dayjs(value).format("DD-MM-YYYY");
+            if (key === "info1") newVal = truncateText(value, 25);
+            if (Number(value) && key !== "info4")
+              newVal = `${value.toLocaleString()}.00 ${currency}`;
+            if (transaction["type"] === "euros" && key === "info3") {
+              newVal = `${(value * 1).toLocaleString()}.00 €`;
+            }
+            if (transaction["type"] === "euros" && key === "info4") {
+              newVal = `${(value * 1).toLocaleString()}.00 DA`;
+            }
+
             return (
               <S.TransactionCell key={key} title={value} onClick={goToProduct}>
                 <Body2>{newVal}</Body2>
@@ -87,6 +89,9 @@ const ClientDocument = () => {
   const { currDocument } = useContext(GlobalContext);
   const { data: clientData } = useSWR(`/clients/${currDocument.id}`, fetcher);
   const { data } = useSWR(`/transactions/client/${currDocument.id}`, fetcher);
+  let currency = "DA";
+
+  if (clientData && clientData.client.clientType === "euro") currency = "€";
 
   const balanceText = clientData
     ? Math.abs(clientData.client.balance).toLocaleString()
@@ -110,7 +115,9 @@ const ClientDocument = () => {
   const [entranteTotal, sortanteTotal] =
     data && data.transactions ? calculateTotals(data.transactions) : [0, 0];
 
-  let profit = `${(entranteTotal - sortanteTotal).toLocaleString()}.00 DA`;
+  let profit = `${(
+    entranteTotal - sortanteTotal
+  ).toLocaleString()}.00 ${currency}`;
   if (entranteTotal - sortanteTotal < 0) profit += " _RD";
   if (entranteTotal - sortanteTotal > 0) profit += " _GR";
   return (
@@ -129,7 +136,10 @@ const ClientDocument = () => {
                     : "--"
                 }
               />
-              <DetailItem title="solde" value={`${balanceText}.00 DA`} />
+              <DetailItem
+                title="solde"
+                value={`${balanceText}.00 ${currency}`}
+              />
               <DetailItem
                 title="statut"
                 value={clientStatus(clientData.client.balance)}
@@ -142,7 +152,7 @@ const ClientDocument = () => {
                 <DetailHeader title="Transactions" />
                 <DetailContent $columns={1}>
                   <S.TransactionsTable>
-                    {renderTransactionsList(data.transactions)}
+                    {renderTransactionsList(data.transactions, currency)}
                   </S.TransactionsTable>
                 </DetailContent>
               </DetailSection>
@@ -150,21 +160,12 @@ const ClientDocument = () => {
                 <DetailHeader title="Totaux" />
                 <DetailContent $columns={3}>
                   <DetailItem
-                    title="total des euros vendus"
-                    value="Є700000.00"
-                  />
-                  <DetailItem
-                    title="total des euros achetés"
-                    value="Є200000.00"
-                  />
-                  <DetailItem title="somme d'euros" value="Є500000.00 _GR" />
-                  <DetailItem
                     title="total des entrants:"
-                    value={`${entranteTotal.toLocaleString()}.00 DA`}
+                    value={`${entranteTotal.toLocaleString()}.00 ${currency}`}
                   />
                   <DetailItem
                     title="total des sortants"
-                    value={`${sortanteTotal.toLocaleString()}.00 DA`}
+                    value={`${sortanteTotal.toLocaleString()}.00 ${currency}`}
                   />
                   <DetailItem title="Total" value={profit} />
                 </DetailContent>
