@@ -48,11 +48,13 @@ const FinancesTable = ({ currentPage, transactions }: FinanceTBProps) => {
   };
 
   const handleDeleteAll = () => {
-    console.log(ids.join(","));
-    toggleModalDelete({
-      name: `${ids.length} transactions`,
-      url: `/transactions/${ids.join(",")}`,
-    });
+    if (ids.length > 0) {
+      toggleModalDelete({
+        name: `${ids.length} transactions`,
+        url: `/transactions/${ids.join(",")}`,
+      });
+    }
+
     return addIds([]);
   };
 
