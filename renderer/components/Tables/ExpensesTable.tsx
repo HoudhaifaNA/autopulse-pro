@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 
 import { Body2 } from "styles/Typography";
 
-import Badge, { BadgeProps } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import Icon from "components/Icon/Icon";
 import {
@@ -14,8 +13,12 @@ import {
   TableRow,
   TableCell,
 } from "components/Table/Table";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { GlobalContext } from "pages/_app";
+import useClickOutside from "hooks/useClickOutside";
+import Dropdown from "components/Dropdown/Dropdown";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
+import Button from "components/Button/Button";
 
 interface IProps {
   expenses: any[];
@@ -30,6 +33,7 @@ const TB_HEADER_DATA = [
 ];
 
 const ExpensesTable = ({ expenses }: IProps) => {
+  const [isDropdownActive, toggleDropdown] = useState<null | number>(null);
   const { setDocument, toggleModalDelete } = useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
@@ -123,8 +127,32 @@ const ExpensesTable = ({ expenses }: IProps) => {
                 <TableCell blurrable={false}>
                   <Body2>{dayjs(transferred_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
-                <TableCell blurrable={false} onClick={onDelete}>
-                  <Icon icon="delete" size="1.8rem" />
+                <TableCell
+                  blurrable={false}
+                  onClick={() => {
+                    if (isDropdownActive === ind) {
+                      toggleDropdown(null);
+                    } else {
+                      toggleDropdown(ind);
+                    }
+                  }}
+                >
+                  <Icon icon="more_vert" size="1.8rem" />
+
+                  {isDropdownActive === ind && (
+                    <Dropdown $right="0" $top="1rem" $width="20rem">
+                      <ButtonItem $ghostColor="#595959">
+                        <Button variant="ghost" icon="edit">
+                          Modifier
+                        </Button>
+                      </ButtonItem>
+                      <ButtonItem $ghostColor="#FF4040" onClick={onDelete}>
+                        <Button variant="ghost" icon="delete">
+                          Supprimer
+                        </Button>
+                      </ButtonItem>
+                    </Dropdown>
+                  )}
                 </TableCell>
               </TableRow>
             );

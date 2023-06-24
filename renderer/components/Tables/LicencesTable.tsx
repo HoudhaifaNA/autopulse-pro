@@ -1,3 +1,4 @@
+import { useContext, useState } from "react";
 import dayjs from "dayjs";
 
 import { Body2 } from "styles/Typography";
@@ -14,9 +15,10 @@ import {
   TableRow,
   TableCell,
 } from "components/Table/Table";
-import { useContext, useState } from "react";
-import API from "utils/API";
 import { GlobalContext } from "pages/_app";
+import Dropdown from "components/Dropdown/Dropdown";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
+import Button from "components/Button/Button";
 
 interface IProps {
   licences: any[];
@@ -49,6 +51,7 @@ const licenceStatus = (isValid: string) => {
 };
 
 const LicencesTable = ({ licences }: IProps) => {
+  const [isDropdownActive, toggleDropdown] = useState<null | number>(null);
   const { setDocument, toggleModalDelete } = useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
@@ -126,7 +129,7 @@ const LicencesTable = ({ licences }: IProps) => {
             const onDelete = async () => {
               toggleModalDelete({
                 name: `licence de ${moudjahid}`,
-                url: `/licences/${ids}`,
+                url: `/licences/${id}`,
               });
               return addIds([]);
             };
@@ -175,8 +178,32 @@ const LicencesTable = ({ licences }: IProps) => {
                 <TableCell blurrable={false}>
                   <Body2>{dayjs(validUntil).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
-                <TableCell blurrable={false} onClick={onDelete}>
-                  <Icon icon="delete" size="1.8rem" />
+                <TableCell
+                  blurrable={false}
+                  onClick={() => {
+                    if (isDropdownActive === ind) {
+                      toggleDropdown(null);
+                    } else {
+                      toggleDropdown(ind);
+                    }
+                  }}
+                >
+                  <Icon icon="more_vert" size="1.8rem" />
+
+                  {isDropdownActive === ind && (
+                    <Dropdown $right="0" $top="1rem" $width="20rem">
+                      <ButtonItem $ghostColor="#595959">
+                        <Button variant="ghost" icon="edit">
+                          Modifier
+                        </Button>
+                      </ButtonItem>
+                      <ButtonItem $ghostColor="#FF4040" onClick={onDelete}>
+                        <Button variant="ghost" icon="delete">
+                          Supprimer
+                        </Button>
+                      </ButtonItem>
+                    </Dropdown>
+                  )}
                 </TableCell>
               </TableRow>
             );

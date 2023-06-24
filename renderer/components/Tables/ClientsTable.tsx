@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 
 import { Body2 } from "styles/Typography";
@@ -15,9 +15,11 @@ import {
   TableRow,
   TableCell,
 } from "components/Table/Table";
-import { useState } from "react";
-import API from "utils/API";
 import { GlobalContext } from "pages/_app";
+import Dropdown from "components/Dropdown/Dropdown";
+import { ButtonItem } from "components/Dropdown/Dropdown.styled";
+import Button from "components/Button/Button";
+import useClickOutside from "hooks/useClickOutside";
 
 interface IProps {
   clients: any[];
@@ -53,8 +55,8 @@ const clientStatus = (balance: number) => {
 };
 
 const ClientsTable = ({ clients }: IProps) => {
+  const [isDropdownActive, toggleDropdown] = useState<null | number>(null);
   const { setDocument, toggleModalDelete } = useContext(GlobalContext);
-
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
@@ -130,6 +132,7 @@ const ClientsTable = ({ clients }: IProps) => {
               });
               return addIds([]);
             };
+
             return (
               <TableRow key={id}>
                 <TableCell blurrable={false}>
@@ -172,8 +175,32 @@ const ClientsTable = ({ clients }: IProps) => {
                       : "--"}
                   </Body2>
                 </TableCell>
-                <TableCell blurrable={false} onClick={onDelete}>
-                  <Icon icon="delete" size="1.8rem" />
+                <TableCell
+                  blurrable={false}
+                  onClick={() => {
+                    if (isDropdownActive === ind) {
+                      toggleDropdown(null);
+                    } else {
+                      toggleDropdown(ind);
+                    }
+                  }}
+                >
+                  <Icon icon="more_vert" size="1.8rem" />
+
+                  {isDropdownActive === ind && (
+                    <Dropdown $right="0" $top="1rem" $width="20rem">
+                      <ButtonItem $ghostColor="#595959">
+                        <Button variant="ghost" icon="edit">
+                          Modifier
+                        </Button>
+                      </ButtonItem>
+                      <ButtonItem $ghostColor="#FF4040" onClick={onDelete}>
+                        <Button variant="ghost" icon="delete">
+                          Supprimer
+                        </Button>
+                      </ButtonItem>
+                    </Dropdown>
+                  )}
                 </TableCell>
               </TableRow>
             );
