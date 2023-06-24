@@ -10,6 +10,7 @@ import {
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
+import { getClientById } from "../statments/clientStatments";
 
 interface Licence {
   isValid?: string;
@@ -25,9 +26,9 @@ export const getCars = tryCatch((req, res) => {
 });
 
 export const getCarById = tryCatch((req, res, next) => {
-  const { carId } = req.params;
+  const { carIds } = req.params;
 
-  const car = S.getCarById.get(carId);
+  const car = S.getCarById.get(carIds);
 
   if (!car) return next(new AppError("Voiture n'existe pas", 404));
 
@@ -96,6 +97,16 @@ export const createCar = tryCatch((req, res, next) => {
     createdAtDate,
   ];
 
+  const client: any = getClientById.get(sellerId);
+  if (client.clientType === "euro" && type === "locale") {
+    return next(
+      new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
+    );
+  } else if (client.clientType !== "euro" && type !== "locale") {
+    return next(
+      new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
+    );
+  }
   const { lastInsertRowid } = S.creatCar.run(params);
 
   const transactionAmount = type === "locale" ? totalCost : costInEuros;

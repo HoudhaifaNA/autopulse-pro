@@ -16,6 +16,7 @@ import { isWilaya, validateName } from "../utils/validations";
 import uid from "../../renderer/utils/uniqid";
 import AppError from "../utils/AppError";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
+import { getClientById } from "../statments/clientStatments";
 
 const isProd: boolean = process.env.NODE_ENV === "production";
 
@@ -102,6 +103,12 @@ export const createLicence = tryCatch((req, res, next) => {
     createdAtDate,
   ];
 
+  const client: any = getClientById.get(sellerId);
+  if (client.clientType === "euro") {
+    return next(
+      new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
+    );
+  }
   const { lastInsertRowid } = S.createLicence.run(params);
 
   const transacrtionParams = [

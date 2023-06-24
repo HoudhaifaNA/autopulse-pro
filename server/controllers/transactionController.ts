@@ -1,4 +1,5 @@
 import * as S from "../statments/transactionStatments";
+import { getClientById } from "../statments/clientStatments";
 import AppError from "../utils/AppError";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 import tryCatch from "../utils/tryCatch";
@@ -40,7 +41,7 @@ export const getTransactionsByClient = tryCatch((req, res) => {
     .json({ status: "success", results: transactions.length, transactions });
 });
 
-export const createTransaction = tryCatch((req, res) => {
+export const createTransaction = tryCatch((req, res, next) => {
   const {
     productId,
     clientId,
@@ -66,6 +67,18 @@ export const createTransaction = tryCatch((req, res) => {
     total,
     direction,
   ];
+
+  const client: any = getClientById.get(clientId);
+
+  if (client.clientType === "euro" && type !== "euroTransfer") {
+    return next(
+      new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
+    );
+  } else if (client.clientType !== "euro" && type === "euroTransfer") {
+    return next(
+      new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
+    );
+  }
 
   const { lastInsertRowid } = S.createTransaction.run(params);
   const newTransaction = S.getTransactionById.get(lastInsertRowid);
