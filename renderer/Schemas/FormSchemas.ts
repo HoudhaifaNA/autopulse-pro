@@ -51,16 +51,15 @@ export const updateUserPassword = object({
 });
 
 export const clientSchema = object({
-  firstName: string()
+  fullName: string()
     .trim()
     .matches(FULLNAME_RULES, "Indiquez un nom correct")
-    .min(3, `Prénom doit comporter au moins 3 caractères`)
-    .required("Prénom est requis"),
-  lastName: string()
+    .min(3, `Nom et prénom doit comporter au moins 3 caractères`)
+    .required("Nom et prénom est requis"),
+  clientType: string()
     .trim()
-    .matches(FULLNAME_RULES, "Indiquez un nom correct")
-    .min(3, "Nom doit comporter au moins 3 caractères")
-    .required("Nom est requis"),
+    .lowercase()
+    .oneOf(["euro", "da"], "Type doit être l'une des options répertoriées"),
   phoneNumber: string()
     .trim()
     .min(10, "Numéro de téléphone doit comporter au moins 10 chiffres")
