@@ -25,7 +25,13 @@ export const getClientByID = tryCatch((req, res, next) => {
 });
 
 export const createClient = tryCatch((req, res, next) => {
-  const { fullName, phoneNumber, balance = 0, created_at } = req.body;
+  const {
+    clientType,
+    fullName,
+    phoneNumber,
+    balance = 0,
+    created_at,
+  } = req.body;
   const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
   const [trimmedName, isValid] = validateName(fullName);
 
@@ -34,7 +40,7 @@ export const createClient = tryCatch((req, res, next) => {
     return next(new AppError("Numéro de téléphone invalide", 400));
   }
 
-  const params = [trimmedName, phoneNumber, balance, createdAtDate];
+  const params = [clientType, trimmedName, phoneNumber, balance, createdAtDate];
 
   const { lastInsertRowid } = S.createClient.run(params);
   const newClient = S.getClientById.get(lastInsertRowid);

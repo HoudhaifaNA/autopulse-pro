@@ -8,6 +8,7 @@ const IS_NUMBER = (field) =>
 db.prepare(
   `CREATE TABLE IF NOT EXISTS clients(
     id INTEGER NOT NULL PRIMARY KEY,
+    clientType TEXT NOT NULL,
     fullName TEXT NOT NULL UNIQUE COLLATE NOCASE,
     phoneNumber TEXT ,
     balance INTEGER NOT NULL ${IS_NUMBER("balance")},
@@ -16,11 +17,12 @@ db.prepare(
 ).run();
 
 export const createClient = db.prepare(`INSERT INTO clients(
+    clientType,
     fullName,
     phoneNumber,
     balance,
     created_at
-) VALUES (?,?,?,?)`);
+) VALUES (?,?,?,?,?)`);
 
 export const getClients = db.prepare(
   `SELECT c.*, t.lastTransactionDate
