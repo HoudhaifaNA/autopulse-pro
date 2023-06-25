@@ -57,7 +57,7 @@ const renderAttachments = (attachments: Values["attachments"]) => {
   }
 };
 
-const LicenceForm = () => {
+const LicenceForm = ({ edit, data }: { edit?: boolean; data?: any }) => {
   const { setAddUpModal } = useContext(GlobalContext);
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const CLIENTS_LIST = getClients();
@@ -68,10 +68,13 @@ const LicenceForm = () => {
   return (
     <Form
       title="Ajouter une licence"
-      initials={INITIAL_VALUES}
+      initials={
+        data ? { ...INITIAL_VALUES, ...data, edit: true } : INITIAL_VALUES
+      }
       validation={licenceSchema}
       onSubmit={handleSubmit}
       getFormProps={(props) => setFormProps(props)}
+      buttonText={edit ? "Modifier" : "Ajouter"}
     >
       <FormGroup>
         <TypedInput
@@ -127,7 +130,7 @@ const LicenceForm = () => {
         />
       </FormGroup>
       <FormGroup>
-        <Dropzone />
+        <Dropzone disabled={edit} />
       </FormGroup>
       <S.DocumentsList>{renderAttachments(attachments)}</S.DocumentsList>
     </Form>

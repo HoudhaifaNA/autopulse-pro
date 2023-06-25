@@ -30,6 +30,11 @@ const inter = Inter({
 
 export const GlobalContext = createContext<any>("");
 
+interface Modal {
+  name: string;
+  edit?: boolean;
+  data?: any;
+}
 interface Notification {
   status: string;
   message: string;
@@ -45,7 +50,11 @@ interface ModalDelete {
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const [currModal, setModal] = useState("");
+  const [currModal, setModal] = useState<Modal>({
+    name: "",
+    edit: false,
+    data: {},
+  });
   const [addUpModal, setAddUpModal] = useState("");
   const [warningModal, toggleWarningModal] = useState(false);
   const [toLogout, setToLogout] = useState(false);
@@ -69,14 +78,14 @@ function MyApp({ Component, pageProps }: AppProps) {
     const handleShorcuts = (e: KeyboardEvent) => {
       if (FORM_NAMES.includes(currentPath)) {
         if (e.key.toLowerCase() === "n") {
-          setModal(currentPath);
+          setModal({ name: currentPath });
         }
       }
       if (currentPath === "finances") {
         if (e.key.toLowerCase() === "e" && !currModal) {
-          setModal("euros");
-        } else if (e.key.toLowerCase() === "t" && !currModal) {
-          setModal("transactions");
+          setModal({ name: "euros" });
+        } else if (e.key.toLowerCase() === "v" && !currModal) {
+          setModal({ name: "transactions" });
         }
       }
     };
@@ -120,13 +129,17 @@ function MyApp({ Component, pageProps }: AppProps) {
           {modalDelete && (
             <DeleteModal name={modalDelete.name} url={modalDelete.url} />
           )}
-          {currModal === "clients" && <ClientForm />}
-          {currModal === "cars" && <CarForm />}
-          {currModal === "licences" && <LicenceForm />}
-          {currModal === "transactions" && <TransactionForm />}
-          {currModal === "euros" && <EuroTransferForm />}
-          {currModal === "expenses" && <ExpenseForm />}
-          {currModal === "sell" && <SellForm id={currDocument.id} />}
+          {currModal.name === "clients" && (
+            <ClientForm edit={currModal.edit} data={currModal.data} />
+          )}
+          {currModal.name === "cars" && <CarForm />}
+          {currModal.name === "licences" && (
+            <LicenceForm edit={currModal.edit} data={currModal.data} />
+          )}
+          {currModal.name === "transactions" && <TransactionForm />}
+          {currModal.name === "euros" && <EuroTransferForm />}
+          {currModal.name === "expenses" && <ExpenseForm />}
+          {currModal.name === "sell" && <SellForm id={currDocument.id} />}
 
           {addUpModal === "clients" && (
             <>

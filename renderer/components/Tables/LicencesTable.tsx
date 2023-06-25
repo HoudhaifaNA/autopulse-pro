@@ -52,8 +52,10 @@ const licenceStatus = (isValid: string) => {
 
 const LicencesTable = ({ licences }: IProps) => {
   const [isDropdownActive, toggleDropdown] = useState<null | number>(null);
-  const { setDocument, toggleModalDelete } = useContext(GlobalContext);
+  const { setDocument, toggleModalDelete, setModal } =
+    useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
+
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
       addIds((ids) => [...ids, id]);
@@ -126,6 +128,7 @@ const LicencesTable = ({ licences }: IProps) => {
               isValid,
               validUntil,
             } = licence;
+
             const onDelete = async () => {
               toggleModalDelete({
                 name: `licence de ${moudjahid}`,
@@ -189,10 +192,30 @@ const LicencesTable = ({ licences }: IProps) => {
                   }}
                 >
                   <Icon icon="more_vert" size="1.8rem" />
-
                   {isDropdownActive === ind && (
                     <Dropdown $right="0" $top="1rem" $width="20rem">
-                      <ButtonItem $ghostColor="#595959">
+                      <ButtonItem
+                        $ghostColor="#595959"
+                        onClick={() =>
+                          setModal({
+                            name: "licences",
+                            edit: true,
+                            data: {
+                              id,
+                              created_at: dayjs(created_at),
+                              releasedDate: dayjs(validUntil).subtract(
+                                5,
+                                "years"
+                              ),
+                              moudjahid,
+                              seller: { id: sellerId, name: seller },
+                              serialNumber,
+                              wilaya,
+                              price,
+                            },
+                          })
+                        }
+                      >
                         <Button variant="ghost" icon="edit">
                           Modifier
                         </Button>

@@ -45,6 +45,7 @@ const SelectInput = (props: T.SelectInputProps) => {
     buttons,
     elementAs,
     sorted,
+    disabled,
   } = props;
 
   const [inputValue, inputError] = getInputData(values, errors, name);
@@ -84,11 +85,11 @@ const SelectInput = (props: T.SelectInputProps) => {
 
   const Select =
     elementAs === "div" ? (
-      <TypedInput {...inputProps} as="div">
+      <TypedInput {...inputProps} as="div" disabled={disabled}>
         {inputValue || placeholder}
       </TypedInput>
     ) : (
-      <TypedInput {...inputProps} />
+      <TypedInput {...inputProps} disabled={disabled} />
     );
 
   return (

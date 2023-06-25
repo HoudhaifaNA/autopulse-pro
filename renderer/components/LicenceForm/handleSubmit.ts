@@ -29,7 +29,16 @@ const handleSubmit = async (
   });
 
   try {
-    await API.post("/licences", formData);
+    const method = values.edit ? "patch" : "post";
+    const endpoint = values.edit ? `/licences/${values.id}` : "/licences";
+    const data = values.edit
+      ? {
+          ...values,
+          sellerId: values.seller.id,
+          releasedDate: dayjs(values.releasedDate).format("YYYY-MM-DD"),
+        }
+      : formData;
+    await API[method](endpoint, data);
     if (addUpModal === "licences") {
       setAddUpModal("");
     } else {

@@ -187,7 +187,7 @@ export const licenceSchema = object({
     .trim()
     .lowercase()
     .oneOf(WILAYAS_OPTIONS, "Wilaya doit être l'une des options répertoriées."),
-  price: number().min(4000, ({ min }) => `Minimum ${min}DA`),
+  price: number().min(0, ({ min }) => `Minimum ${min}DA`),
 });
 
 export const transactionSchema = object({

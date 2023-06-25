@@ -41,7 +41,7 @@ const ClientsPage = () => {
             title="Clients"
             CTAText="Ajouter un client"
             CTAIcon="add"
-            CTAonClick={() => setModal("clients")}
+            CTAonClick={() => setModal({ name: "clients" })}
           />
           <ClientsTable clients={data.clients} />
         </>

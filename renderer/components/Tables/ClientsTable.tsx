@@ -56,7 +56,8 @@ const clientStatus = (balance: number) => {
 
 const ClientsTable = ({ clients }: IProps) => {
   const [isDropdownActive, toggleDropdown] = useState<null | number>(null);
-  const { setDocument, toggleModalDelete } = useContext(GlobalContext);
+  const { setDocument, toggleModalDelete, setModal } =
+    useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
@@ -189,7 +190,22 @@ const ClientsTable = ({ clients }: IProps) => {
 
                   {isDropdownActive === ind && (
                     <Dropdown $right="0" $top="1rem" $width="20rem">
-                      <ButtonItem $ghostColor="#595959">
+                      <ButtonItem
+                        $ghostColor="#595959"
+                        onClick={() =>
+                          setModal({
+                            name: "clients",
+                            edit: true,
+                            data: {
+                              id,
+                              fullName,
+                              phoneNumber,
+                              clientType,
+                              balance,
+                            },
+                          })
+                        }
+                      >
                         <Button variant="ghost" icon="edit">
                           Modifier
                         </Button>

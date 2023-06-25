@@ -29,7 +29,7 @@ const EmptyState = (props: EmptyStateProps) => {
     handleClick,
     IconP,
   } = props;
-  const { _, setModal } = useContext(GlobalContext);
+  const { setModal } = useContext(GlobalContext);
   return (
     <S.EmptyStateWrapper>
       <S.EmptyStateImage>
@@ -49,7 +49,7 @@ const EmptyState = (props: EmptyStateProps) => {
         icon={CTAIcon}
         iconPostition={IconP}
         onClick={() => {
-          modal && setModal(modal);
+          modal && setModal({ name: modal });
           handleClick && handleClick();
         }}
       >

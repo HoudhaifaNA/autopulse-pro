@@ -13,6 +13,7 @@ interface IDateInput {
   label?: string;
   name: string;
   minDate: string;
+  disabled?: boolean;
 }
 
 // Update the months list because the default has lowcase months
@@ -34,7 +35,7 @@ dayjs.updateLocale("fr", {
   ],
 });
 
-const DateInput = ({ label = "Date", name, minDate }: IDateInput) => {
+const DateInput = ({ label = "Date", name, minDate, disabled }: IDateInput) => {
   const { values, errors, setFieldValue } = useFormikContext<any>();
   const hasError = Boolean(errors[name]);
   const MIN_DATE = new Date(minDate);
@@ -63,6 +64,7 @@ const DateInput = ({ label = "Date", name, minDate }: IDateInput) => {
         locale="fr"
         onChange={(value) => setFieldValue(name, value)}
         autoFocus
+        disabled={disabled}
       />
       {DateError}
     </S.DateInputWrapper>

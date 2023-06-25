@@ -10,10 +10,12 @@ import { clientSchema } from "Schemas/FormSchemas";
 import API from "utils/API";
 
 interface Values {
+  id?: number;
   fullName: string;
   clientType: string;
   phoneNumber: string;
   balance: number | number;
+  edit?: false;
 }
 
 const INITIAL_VALUES = {
@@ -33,8 +35,13 @@ const onSubmit = async (
   addUpModal: any,
   setAddUpModal: any
 ) => {
+  console.log(values.edit);
+
   try {
-    await API.post("/clients", values);
+    const method = values.edit ? "patch" : "post";
+    const endpoint = values.edit ? `/clients/${values.id}` : "/clients";
+
+    await API[method](endpoint, values);
 
     if (addUpModal === "clients") {
       setAddUpModal("");
@@ -49,14 +56,14 @@ const onSubmit = async (
   }
 };
 
-const ClientForm = () => {
+const ClientForm = ({ edit, data }: { edit?: boolean; data?: any }) => {
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const values = formProps?.values ?? INITIAL_VALUES;
 
   return (
     <Form
       title="Ajouter un client"
-      initials={INITIAL_VALUES}
+      initials={data ? { ...data, edit: true } : INITIAL_VALUES}
       validation={clientSchema}
       onSubmit={onSubmit}
       getFormProps={(formProps) => setFormProps(formProps)}
@@ -74,6 +81,7 @@ const ClientForm = () => {
           label="Type de client"
           items={CLIENT_TYPES}
           elementAs="div"
+          disabled={edit}
         />
       </FormGroup>
       <FormGroup>
@@ -89,6 +97,7 @@ const ClientForm = () => {
           label="Solde"
           placeholder="0"
           addOn={values.clientType === "euro" ? "€" : "DA"}
+          disabled={edit}
         />
       </FormGroup>
     </Form>

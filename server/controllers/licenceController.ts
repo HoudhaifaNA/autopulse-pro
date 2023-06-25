@@ -104,7 +104,7 @@ export const createLicence = tryCatch((req, res, next) => {
   ];
 
   const client: any = getClientById.get(sellerId);
-  if (client.clientType === "euro") {
+  if (client && client.clientType === "euro") {
     return next(
       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
     );
@@ -165,8 +165,17 @@ export const getLicenceById = tryCatch((req, res, next) => {
 
 export const updateLicence = tryCatch((req, res, next) => {
   const { ids } = req.params;
-  const { moudjahid, serialNumber, wilaya, price } = req.body;
+  const {
+    sellerId,
+    moudjahid,
+    serialNumber,
+    wilaya,
+    price,
+    releasedDate,
+    created_at,
+  } = req.body;
   const [trimmedName, isValid] = validateName(moudjahid);
+  const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
 
   if (moudjahid && !isValid) {
     return next(new AppError("Nom moudjahid incorrect", 400));
@@ -175,13 +184,66 @@ export const updateLicence = tryCatch((req, res, next) => {
   if (wilaya && !isWilaya(wilaya)) {
     return next(new AppError("Nom de wilaya incorrect", 400));
   }
+  const moudjahidLicences = S.getLicenceByMoudjahid.all(
+    trimmedName.toLowerCase()
+  );
 
-  const params = [trimmedName, serialNumber, wilaya, price, ids];
+  let isThereOneLicenceActive;
+  // Check if there is an active licence with the same moudjahid
+  moudjahidLicences.find((lc: any) => {
+    if (
+      lc.isExpirated === "false" &&
+      lc.serialNumber === serialNumber &&
+      lc.id != ids
+    ) {
+      isThereOneLicenceActive = true;
+    }
+  });
+
+  if (isThereOneLicenceActive) {
+    return next(
+      new AppError("Une licence active avec le même moudjahid existe", 403)
+    );
+  }
+
+  const params = [
+    sellerId,
+    trimmedName,
+    serialNumber,
+    wilaya,
+    price,
+    releasedDate,
+    created_at,
+    ids,
+  ];
+
+  const client: any = getClientById.get(sellerId);
+  if (client && client.clientType === "euro") {
+    return next(
+      new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
+    );
+  }
 
   const { changes } = S.updateLicence.run(params);
   if (changes === 0) return next(new AppError("Licence n'existe pas", 404));
 
-  const updatedLicence = S.getLicenceById.get(ids);
+  const updatedLicence: any = S.getLicenceById.get(ids);
+
+  deleteDocumentsByIds(ids, deleteTransactionByProduct, ["licence"]);
+
+  const transacrtionParams = [
+    ids,
+    updatedLicence.sellerId,
+    createdAtDate,
+    "licence",
+    "licence",
+    trimmedName,
+    wilaya,
+    "--",
+    price,
+    "entrante",
+  ];
+  createTransaction.run(transacrtionParams);
 
   return res.status(200).json({ status: "success", licence: updatedLicence });
 });

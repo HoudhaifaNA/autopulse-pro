@@ -60,7 +60,11 @@ export const getEUROsTransactions = db.prepare(`
     ORDER BY date DESC
 `);
 
-export const getTransactionsByClient = db.prepare(`SELECT * FROM transactions 
+export const getTransactionsByClient = db.prepare(`SELECT transactions.*,
+    licences.wilaya AS info3,
+    licences.price AS total
+    FROM transactions 
+    LEFT JOIN licences ON transactions.type = 'licence' AND transactions.productId = licences.id
     WHERE clientId = ?
     ORDER BY date DESC
 `);

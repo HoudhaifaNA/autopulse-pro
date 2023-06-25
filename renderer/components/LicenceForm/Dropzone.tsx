@@ -8,7 +8,7 @@ import uid from "utils/uniqid";
 
 import { Values } from "components/LicenceForm/types";
 
-const Dropzone = () => {
+const Dropzone = ({ disabled }: { disabled?: boolean }) => {
   const { setFieldValue, values } = useFormikContext<Values>();
   const { getInputProps, getRootProps, acceptedFiles } = useDropzone({
     accept: {
@@ -28,6 +28,7 @@ const Dropzone = () => {
   return (
     <Button
       {...getRootProps({ type: "button", variant: "primary", icon: "upload" })}
+      disabled={disabled}
     >
       <input {...getInputProps()} style={{ display: "none" }} />
       Ajouter des documents

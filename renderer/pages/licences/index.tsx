@@ -42,7 +42,7 @@ const LicencesPage = () => {
             title="Licences"
             CTAText="Ajouter une licence"
             CTAIcon="add"
-            CTAonClick={() => setModal("licences")}
+            CTAonClick={() => setModal({ name: "licences" })}
           />
           <LicencesTable licences={data.licences} />
         </>

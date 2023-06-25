@@ -72,10 +72,13 @@ export const createLicence = db.prepare(`INSERT INTO licences(
 ) VALUES(?,?,?,?,?,?, DATE(?, '+5 years'), ?)`);
 
 export const updateLicence = db.prepare(`UPDATE licences
- SET moudjahid = COALESCE(?, moudjahid),
+ SET sellerId = COALESCE(?, sellerId),
+ moudjahid = COALESCE(?, moudjahid),
  serialNumber = COALESCE(?, serialNumber),
  wilaya = COALESCE(?, wilaya),
- price = COALESCE(?, price)
+ price = COALESCE(?, price),
+ validUntil = COALESCE(DATE(?, '+5 years'), validUntil),
+ created_at = COALESCE(?, created_at)
  WHERE id = ?
 `);
 

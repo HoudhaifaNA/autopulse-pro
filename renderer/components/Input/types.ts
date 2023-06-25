@@ -29,4 +29,5 @@ export interface SelectInputProps extends BaseInputFields {
   buttons?: DropdownProps["children"];
   elementAs?: "input" | "div";
   sorted?: boolean;
+  disabled?: boolean;
 }
