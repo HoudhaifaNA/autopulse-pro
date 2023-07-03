@@ -7,17 +7,17 @@ import DetailsViewer, {
   DetailItem,
   DetailSection,
 } from "components/DetailsViewer/DetailsViewer";
-
-import retreiveCarDetails from "components/CarDocument/constants";
 import Button from "components/Button/Button";
-import { GlobalContext } from "pages/_app";
+
+import retreiveCarDetails from "components/CarDocument/retreiveCarDetails";
 import { fetcher } from "utils/API";
+import { GlobalContext } from "pages/_app";
 
-type TNestedValue = { [key: string]: string };
+type NestedValueType = { [key: string]: string };
 
-const renderNestedValues = (nestedValue: TNestedValue, rowStart: number) => {
-  return Object.entries(nestedValue).map(([key, value], i) => {
-    return <DetailItem key={i} title={key} value={value} $index={rowStart} />;
+const renderNestedValues = (nestedValue: NestedValueType, rowStart: number) => {
+  return Object.entries(nestedValue).map(([key, value], ind) => {
+    return <DetailItem key={ind} title={key} value={value} $index={rowStart} />;
   });
 };
 
@@ -33,7 +33,10 @@ const CarDocument = () => {
       {data && (
         <DetailsViewer title="Document de voiture">
           {!data.car.buyer && (
-            <Button variant="primary" onClick={() => setModal("sell")}>
+            <Button
+              variant="primary"
+              onClick={() => setModal({ name: "sell", data: { id } })}
+            >
               Vendre cette voiture
             </Button>
           )}
@@ -46,11 +49,13 @@ const CarDocument = () => {
                 <DetailSection key={section}>
                   <DetailHeader title={section} />
                   <DetailContent $columns={columns}>
-                    {sectionDetails.map(([key, value], i) => {
+                    {sectionDetails.map(([key, value], ind) => {
                       if (typeof value === "string") {
-                        return <DetailItem key={i} title={key} value={value} />;
+                        return (
+                          <DetailItem key={ind} title={key} value={value} />
+                        );
                       } else if (typeof value === "object") {
-                        return renderNestedValues(value, i);
+                        return renderNestedValues(value, ind);
                       }
                     })}
                   </DetailContent>

@@ -22,8 +22,6 @@ export const ExpensesList = styled.div`
 `;
 
 export const ExpenseAdder = styled.div`
-  width: fit-content;
-
   & > button {
     padding: 0;
   }

@@ -4,14 +4,18 @@ import calcExpensesCost from "utils/calcExpensesCosts";
 
 import { Values } from "components/CarForm/types";
 
-type TcostToText = (
-  type: Values["carType"] | "à l'étranger",
+type CostFormula = (
+  type: Values["type"] | "à l'étranger",
   euroCost: number,
   euroPrice: number,
   totalCost: number
 ) => string;
 
-const costToText: TcostToText = (type, euroCost, euroPrice, totalCost) => {
+interface ExpensesList {
+  [key: string]: string;
+}
+
+const costFormula: CostFormula = (type, euroCost, euroPrice, totalCost) => {
   return type === "importé" || type === "à l'étranger"
     ? `${euroCost}.00 € × ${euroPrice}.00 DA = ${totalCost}.00 DA`
     : `${totalCost}.00 DA`;
@@ -19,8 +23,9 @@ const costToText: TcostToText = (type, euroCost, euroPrice, totalCost) => {
 
 const getCarDetails = () => {
   const { values } = useFormikContext<Values>();
+
   const {
-    carType,
+    type,
     brand,
     model,
     serialNumber,
@@ -32,43 +37,44 @@ const getCarDetails = () => {
     seller,
     owner,
     expenses,
-    euroAmount,
-    euroCost,
+    costInEuros,
     euroPrice,
     purchasingPrice,
-    dzdAmount,
+    totalExpensesCost,
+    totalEurosAmount,
+    totalCost,
   } = values;
 
+  let expensesList: ExpensesList = {};
+
   // PP ==> Purchasing price
-  const PPText = costToText(
-    carType,
-    Number(euroCost),
+  const PPFormula = costFormula(
+    type,
+    Number(costInEuros),
     Number(euroPrice),
     Number(purchasingPrice)
   );
 
-  const [expensesDACost] = calcExpensesCost(expenses);
-
-  let expensesList: { [key: string]: string } = {};
-
   expenses.forEach(({ type, raison, euroPrice, euroCost, totalCost }) => {
-    const totalCostText = costToText(
+    const totalCostFormula = costFormula(
       type,
       Number(euroCost),
       Number(euroPrice),
       Number(totalCost)
     );
-    expensesList[raison] = totalCostText;
+    expensesList[raison] = totalCostFormula;
   });
 
-  const licencePrice = owner.price
+  const carName = `${brand} ${model}`;
+  const hasLicence = owner.price >= 0 && owner.id;
+  const licencePrice = hasLicence
     ? { "Prix ​​de la licence": `${owner.price}.00 DA` }
     : "";
 
   const carDetails = [
     {
       section: "Détails de la voiture",
-      voiture: `${brand} ${model}`,
+      voiture: carName,
       "Numéro de châssis": serialNumber,
       Matricule: registrationNumber,
       Clés: keys,
@@ -79,15 +85,15 @@ const getCarDetails = () => {
     {
       section: "Détails d'achat",
       Vendeur: seller.name,
-      "Prix ​​d'achat": PPText,
+      "Prix ​​d'achat": PPFormula,
       Propriétaire: owner.name,
       ...licencePrice,
     },
-    expensesDACost !== 0 && { section: "Dépenses", ...expensesList },
+    totalExpensesCost !== 0 && { section: "Dépenses", ...expensesList },
     {
       section: "Calculs totaux",
-      "Total en EURO": `${euroAmount}.00 €`,
-      Total: `${dzdAmount}.00 DA`,
+      "Total en EURO": `${totalEurosAmount}.00 €`,
+      Total: `${totalCost}.00 DA`,
     },
   ];
 

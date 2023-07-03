@@ -18,9 +18,11 @@ interface Expenses {
 }
 
 export interface Values {
+  id?: number;
+  edit?: boolean;
   step: number;
   created_at: Date;
-  carType: "locale" | "importé";
+  type: "locale" | "importé";
   brand: string;
   model: string;
   serialNumber: string;
@@ -31,11 +33,12 @@ export interface Values {
   year: string;
   features: string;
   seller: Seller;
-  euroCost: number | string;
+  costInEuros: number | string;
   euroPrice: number | string;
   purchasingPrice: number | string;
   owner: Owner;
   expenses: Expenses[];
-  euroAmount: number;
-  dzdAmount: number;
+  totalExpensesCost: number;
+  totalEurosAmount: number;
+  totalCost: number;
 }

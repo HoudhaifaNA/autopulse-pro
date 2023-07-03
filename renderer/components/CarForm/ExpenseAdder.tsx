@@ -14,14 +14,12 @@ import { Values } from "components/CarForm/types";
 
 const EXPENSES_OPTIONS = ["À l'étranger", "Locale"];
 
-type formikContextT = FormikContextType<Values>;
-
-const renderExpenses = (setFocus: any, formikContext: formikContextT) => {
-  const { setFieldValue, values } = formikContext;
+const renderExpenses = (setFocus: any) => {
+  const { setFieldValue, values } = useFormikContext<Values>();
   const { expenses } = values;
 
   return EXPENSES_OPTIONS.map((option) => {
-    let lowerCaseOption = option.toLocaleLowerCase();
+    let lowerCaseOption = option.toLowerCase();
     const icon = lowerCaseOption === "locale" ? "locale" : "importé";
 
     const newExpense = {
@@ -29,7 +27,7 @@ const renderExpenses = (setFocus: any, formikContext: formikContextT) => {
       type: lowerCaseOption,
       raison: "",
       euroCost: "",
-      euroPrice: "",
+      euroPrice: 100,
       totalCost: "",
     };
 
@@ -50,7 +48,6 @@ const renderExpenses = (setFocus: any, formikContext: formikContextT) => {
 
 const ExpenseAdder = () => {
   const dropdownRef = useRef(null);
-  const formikContext = useFormikContext<Values>();
   const [isFocused, setFocus] = useClickOutside(dropdownRef);
 
   return (
@@ -59,14 +56,12 @@ const ExpenseAdder = () => {
         type="button"
         variant="ghost"
         icon="add"
-        onClick={() => setFocus(true)}
+        onClick={() => setFocus(!isFocused)}
       >
         Ajouter une autre dépense
       </Button>
       {isFocused && (
-        <Dropdown $width="20rem">
-          {renderExpenses(setFocus, formikContext)}
-        </Dropdown>
+        <Dropdown $width="20rem">{renderExpenses(setFocus)}</Dropdown>
       )}
     </S.ExpenseAdder>
   );

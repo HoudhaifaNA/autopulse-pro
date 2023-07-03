@@ -7,13 +7,16 @@ import API from "utils/API";
 const onSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
-  setModal: any,
-  setNotification: any
+  context: any
 ) => {
+  const { setModal, setNotification } = context;
+
   let {
+    id,
+    edit,
     step,
     created_at,
-    carType,
+    type,
     brand,
     model,
     serialNumber,
@@ -25,49 +28,56 @@ const onSubmit = async (
     features,
     owner,
     seller,
-    euroCost,
+    costInEuros,
     euroPrice,
     purchasingPrice,
     expenses,
+    totalExpensesCost,
+    totalEurosAmount,
+    totalCost,
   } = values;
 
   if (step < 6) actions.setFieldValue("step", step + 1);
 
   // Calculate purchasing price if car is imported
-  if (step === 4 && carType === "importé") {
+  if (step === 4 && type === "importé") {
     // PP ==> Purchasing Price
-    const convertedPP = (Number(euroCost) * Number(euroPrice)) / 100;
+    const convertedPP = (Number(costInEuros) * Number(euroPrice)) / 100;
     actions.setFieldValue("purchasingPrice", convertedPP);
   }
 
   if (step === 5) {
-    // Calculate total cost of every expense abroad inDA
+    // Calculate total cost of every expense abroad in DA
     expenses.forEach((expense) => {
       const { type, euroCost, euroPrice } = expense;
       if (type === "à l'étranger")
         expense.totalCost = (Number(euroCost) * Number(euroPrice)) / 100;
     });
 
-    // Calculate expensesDA and EUR amout
+    // Calculate expenses DA cost and EURs amount
     let [expensesDAcost, expensesEURCost] = calcExpensesCosts(expenses);
 
-    // Calculate total spentDA and EUR amout (car + expenses + licence )
-    let euroAmount = Number(euroCost) + expensesEURCost;
-    let dzdAmount = Number(purchasingPrice) + expensesDAcost + owner.price;
+    // Calculate total spent DA and EURs amount (car + expenses + licence )
+    let totalEurosAmount = Number(costInEuros) + expensesEURCost;
+    let totalCost = Number(purchasingPrice) + totalExpensesCost + owner.price;
 
-    actions.setFieldValue("euroAmount", euroAmount);
-    actions.setFieldValue("dzdAmount", dzdAmount);
+    actions.setFieldValue("totalExpensesCost", expensesDAcost);
+    actions.setFieldValue("totalEurosAmount", totalEurosAmount);
+    actions.setFieldValue("totalCost", totalCost);
   }
+
   if (step === 6) {
-    let [expensesDAcost] = calcExpensesCosts(expenses);
-    if (!euroCost) {
-      euroCost = 0;
+    if (!costInEuros) {
+      costInEuros = 0;
       euroPrice = 0;
     }
+    if (!purchasingPrice) {
+      purchasingPrice = 0;
+    }
+
     try {
       const data = {
-        created_at,
-        type: carType,
+        type,
         brand,
         model,
         serialNumber,
@@ -76,20 +86,25 @@ const onSubmit = async (
         mileage,
         color,
         year,
+        created_at,
         features,
         sellerId: seller.id,
         ownerId: owner.id,
         ownerName: owner.name,
-        costInEuros: euroCost,
+        costInEuros,
         euroPrice,
         purchasingPrice,
         expenses,
-        totalExpensesCost: expensesDAcost,
-        totalEurosAmount: values.euroAmount,
-        totalCost: values.dzdAmount,
+        totalExpensesCost,
+        totalEurosAmount,
+        totalCost,
       };
 
-      await API.post("/cars", { ...data });
+      const method = edit ? "patch" : "post";
+      const endpoint = edit ? `/cars/${id}` : "/cars";
+
+      await API[method](endpoint, data);
+
       setModal("");
       setNotification({ status: "success", message: "Voiture a été créée" });
     } catch (err: any) {

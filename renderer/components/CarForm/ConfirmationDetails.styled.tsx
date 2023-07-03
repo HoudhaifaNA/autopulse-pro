@@ -6,6 +6,7 @@ export const ConfirmationWrapper = styled.div`
   gap: 2rem;
   max-height: 50rem;
   overflow-y: scroll;
+
   ::-webkit-scrollbar {
     width: 0;
   }

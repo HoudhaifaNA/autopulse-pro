@@ -22,26 +22,26 @@ const ExpensesDetails = () => {
   return (
     <>
       <S.ExpensesList>
-        {expenses.map(({ id, type }, i) => {
+        {expenses.map(({ id, type }, ind) => {
           return (
             <FormGroup key={id}>
               <TypedInput
                 label="Raison :"
-                name={`expenses.${i}.raison`}
+                name={`expenses.${ind}.raison`}
                 placeholder="Raison"
                 autoFocus
               />
               {type === "à l'étranger" ? (
                 <FormGroup>
                   <TypedInput
-                    name={`expenses.${i}.euroCost`}
+                    name={`expenses.${ind}.euroCost`}
                     type="number"
                     label="Coût :"
                     placeholder="450"
                     addOn="€"
                   />
                   <TypedInput
-                    name={`expenses.${i}.euroPrice`}
+                    name={`expenses.${ind}.euroPrice`}
                     type="number"
                     label="Prix ​​de 100 € :"
                     placeholder="220"
@@ -50,7 +50,7 @@ const ExpensesDetails = () => {
                 </FormGroup>
               ) : (
                 <TypedInput
-                  name={`expenses.${i}.totalCost`}
+                  name={`expenses.${ind}.totalCost`}
                   type="number"
                   label="Coût :"
                   placeholder="10000"

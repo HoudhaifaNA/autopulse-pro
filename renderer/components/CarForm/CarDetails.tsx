@@ -16,9 +16,11 @@ import { Values } from "components/CarForm/types";
 
 const CarDetails = () => {
   const { values, setFieldValue } = useFormikContext<Values>();
+  const brandRef = useRef<string>(values.brand);
+
   const { brand } = values;
-  const brandRef = useRef<string>(brand);
   const modelsList = CAR_MODELS[brand] ?? [];
+  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     if (brand !== brandRef.current) setFieldValue("model", "");
@@ -56,7 +58,7 @@ const CarDetails = () => {
           label="Matricule :"
           name="registrationNumber"
           type="text"
-          placeholder="WG69 NXF"
+          placeholder="WG69-NXF"
         />
       </FormGroup>
       <FormGroup>
@@ -78,7 +80,7 @@ const CarDetails = () => {
             name="year"
             type="text"
             label="Année:"
-            placeholder={`${new Date().getFullYear()}`}
+            placeholder={`${currentYear}`}
           />
         </FormGroup>
       </FormGroup>

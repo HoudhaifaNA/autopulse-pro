@@ -8,42 +8,76 @@ import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 import { TypedInput, SelectInput } from "components/Input/Input";
 import Button from "components/Button/Button";
 
-import { GlobalContext } from "pages/_app";
 import { Values } from "components/CarForm/types";
-import { fetcher } from "utils/API";
 
-const getItems = () => {
-  const licencesRes = useSWR("/licences", fetcher, { refreshInterval: 3 });
-  const clientsRes = useSWR("/clients", fetcher, { refreshInterval: 3 });
-  let licencesItems = [];
+import { fetcher } from "utils/API";
+import { GlobalContext } from "pages/_app";
+
+const getClients = (carType: string) => {
   let clientsItems = [];
+  const type = carType === "locale" ? "DA" : "euro";
+
+  const clientsRes = useSWR("/clients", fetcher, { refreshInterval: 1000 });
 
   if (clientsRes.data) {
-    clientsItems = clientsRes.data.clients.map(({ id, fullName }: any) => {
-      return { mainText: fullName, relatedValues: [id] };
+    clientsItems = clientsRes.data.clients
+      .filter((cl: any) => cl.clientType === type)
+      .map((cl: any) => {
+        return { mainText: cl.fullName, relatedValues: [cl.id] };
+      });
+  }
+  return clientsItems;
+};
+
+const getLicences = (edit?: boolean) => {
+  let licencesItems = [];
+
+  const licencesRes = useSWR("/licences", fetcher, { refreshInterval: 1000 });
+
+  if (licencesRes.data) {
+    licencesItems = licencesRes.data.licences;
+
+    if (!edit) {
+      licencesItems = licencesItems.filter((lc: any) => lc.isValid === "true");
+    }
+
+    licencesItems = licencesItems.map((lic: any) => {
+      const { id, moudjahid, serialNumber, price } = lic;
+
+      return {
+        mainText: moudjahid,
+        secondText: serialNumber,
+        relatedValues: [id, price],
+      };
     });
   }
 
-  if (licencesRes.data) {
-    licencesItems = licencesRes.data.licences
-      .filter(({ isValid }: any) => isValid === "true")
-      .map(({ id, price, moudjahid, serialNumber }: any) => {
-        return {
-          mainText: moudjahid,
-          secondText: serialNumber,
-          relatedValues: [id, price],
-        };
-      });
-  }
+  return licencesItems;
+};
 
-  return [clientsItems, licencesItems] as const;
+const renderAddUpModalBtn = (text: string, modal: string) => {
+  const { setAddUpModal } = useContext(GlobalContext);
+
+  return (
+    <ButtonItem>
+      <Button
+        type="button"
+        variant="ghost"
+        icon="add"
+        onClick={() => setAddUpModal(modal)}
+      >
+        {text}
+      </Button>
+    </ButtonItem>
+  );
 };
 
 const SellingDetails = () => {
   const { values } = useFormikContext<Values>();
-  const { setAddUpModal } = useContext(GlobalContext);
-  const { carType } = values;
-  const [clientsItems, licencesItems] = getItems();
+
+  const { type, edit } = values;
+  const clientsList = getClients(type);
+  const licencesList = getLicences(edit);
 
   return (
     <>
@@ -54,46 +88,25 @@ const SellingDetails = () => {
           relatedFields={["seller.id"]}
           placeholder="Nom du vendeur"
           autoFocus
-          items={clientsItems}
-          buttons={
-            <ButtonItem>
-              <Button
-                type="button"
-                variant="ghost"
-                icon="add"
-                onClick={() => setAddUpModal("clients")}
-              >
-                Ajouter un client
-              </Button>
-            </ButtonItem>
-          }
+          items={clientsList}
+          buttons={renderAddUpModalBtn("Ajouter un client", "clients")}
         />
         <SelectInput
           label="Propriétaire :"
           name="owner.name"
           relatedFields={["owner.id", "owner.price"]}
           placeholder="Nom du propriétaire"
-          items={licencesItems}
-          buttons={
-            <ButtonItem>
-              <Button
-                type="button"
-                variant="ghost"
-                icon="add"
-                onClick={() => setAddUpModal("licences")}
-              >
-                Ajouter une licence
-              </Button>
-            </ButtonItem>
-          }
+          items={licencesList}
+          disabled={edit}
+          buttons={renderAddUpModalBtn("Ajouter une licence", "licences")}
         />
       </FormGroup>
       <FormGroup>
-        {carType === "importé" ? (
+        {type === "importé" ? (
           <>
             <TypedInput
               label="Prix ​​d'achat :"
-              name="euroCost"
+              name="costInEuros"
               type="number"
               addOn="€"
               placeholder="45000"
@@ -104,7 +117,7 @@ const SellingDetails = () => {
               name="euroPrice"
               type="number"
               addOn="DA"
-              placeholder="230"
+              placeholder="23000"
             />
           </>
         ) : (
