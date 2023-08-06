@@ -21,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
 
     }
 
-
+    
     .background-black{
         position: fixed;
         left: 0;

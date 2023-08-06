@@ -5,6 +5,7 @@ export const PaginationWrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
   gap: 4rem;
+  margin: 2rem 0;
 `;
 
 export const PaginationRowsOptions = styled.div`

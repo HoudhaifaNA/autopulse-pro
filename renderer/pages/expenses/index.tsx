@@ -10,12 +10,11 @@ import ErrorMessage from "components/ErrorMessage/ErrorMessage";
 import { fetcher } from "utils/API";
 import { GlobalContext } from "pages/_app";
 import ExpensesTable from "components/Tables/ExpensesTable";
+import { Heading5 } from "styles/Typography";
 
 const LicencesPage = () => {
   const { setModal } = useContext(GlobalContext);
-  const { data, isLoading, error } = useSWR("/expenses", fetcher, {
-    refreshInterval: 5,
-  });
+  const { data, isLoading, error } = useSWR("/expenses", fetcher);
 
   const renderPage = () => {
     if (isLoading) return <Loading />;
@@ -34,16 +33,23 @@ const LicencesPage = () => {
         />
       );
     } else {
-      console.log(data);
-
       return (
         <>
-          <PageHeader
-            title="Dépenses"
-            CTAText="Ajouter une dépense"
-            CTAIcon="add"
-            CTAonClick={() => setModal("expenses")}
-          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "2rem",
+            }}
+          >
+            <Heading5>{data.expenses.length} </Heading5>
+            <PageHeader
+              CTAText="Ajouter"
+              CTAIcon="add"
+              CTAonClick={() => setModal({ name: "expenses" })}
+            />
+          </div>
           <ExpensesTable expenses={data.expenses} />
         </>
       );

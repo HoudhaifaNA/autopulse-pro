@@ -6,7 +6,10 @@ const deleteDocumentsByIds = (
   additonalParams?: any[]
 ) => {
   const idsArr = ids.split(",");
-  const placeHolders = ids.replace(/\d+/g, "?");
+  let placeHolders = [];
+  for (let i = 0; i < idsArr.length; i++) {
+    placeHolders.push("?");
+  }
   const params = additonalParams ? [...additonalParams, ...idsArr] : idsArr;
 
   db.prepare(`${script} (${placeHolders})`).run(params);

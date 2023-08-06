@@ -17,7 +17,6 @@ import Icon from "components/Icon/Icon";
 import { HEADERS } from "components/FinancesTable/constants";
 
 import { Page } from "components/FinancesTable/types";
-import API from "utils/API";
 import { GlobalContext } from "pages/_app";
 
 interface FinanceTBProps {

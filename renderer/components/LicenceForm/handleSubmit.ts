@@ -4,15 +4,14 @@ import dayjs from "dayjs";
 import API from "utils/API";
 
 import { Values } from "./types";
+import { mutate } from "swr";
 
 const handleSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
-  setModal: any,
-  setNotification: any,
-  addUpModal: any,
-  setAddUpModal: any
+  context: any
 ) => {
+  const { setModal, setAddUpModal, addUpModal, setNotification } = context;
   const formData = new FormData();
 
   Object.entries(values).map(([key, value]) => {
@@ -38,7 +37,10 @@ const handleSubmit = async (
           releasedDate: dayjs(values.releasedDate).format("YYYY-MM-DD"),
         }
       : formData;
+
     await API[method](endpoint, data);
+    mutate("/licences");
+    if (values.edit) mutate(`/licences/${values.id}`);
     if (addUpModal === "licences") {
       setAddUpModal("");
     } else {

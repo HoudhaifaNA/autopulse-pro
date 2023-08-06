@@ -9,7 +9,7 @@ import { LabelText } from "styles/Typography";
 import { InputError } from "components/Input/Input.styled";
 import Icon from "components/Icon/Icon";
 
-interface IDateInput {
+interface DateInputProps {
   label?: string;
   name: string;
   minDate: string;
@@ -35,18 +35,18 @@ dayjs.updateLocale("fr", {
   ],
 });
 
-const DateInput = ({ label = "Date", name, minDate, disabled }: IDateInput) => {
+const DateInput = (props: DateInputProps) => {
   const { values, errors, setFieldValue } = useFormikContext<any>();
+  const { label = "Date", name, disabled } = props;
+
+  const minDate = new Date(props.minDate);
+  const maxDate = new Date();
   const hasError = Boolean(errors[name]);
-  const MIN_DATE = new Date(minDate);
-  const MAX_DATE = new Date();
 
   const Label = <LabelText>{label} :</LabelText>;
   const DateIcon = <Icon icon="calendar" size="1.8rem" />;
   const DateError = hasError && (
-    <InputError>
-      <>{errors[name]}</>
-    </InputError>
+    <InputError>{errors[name]?.toString()}</InputError>
   );
 
   return (
@@ -55,15 +55,14 @@ const DateInput = ({ label = "Date", name, minDate, disabled }: IDateInput) => {
         icon={DateIcon}
         label={Label}
         value={values[name]}
-        minDate={MIN_DATE}
-        maxDate={MAX_DATE}
+        minDate={minDate}
+        maxDate={maxDate}
         monthsListFormat="MMMM"
         weekendDays={[5]}
         firstDayOfWeek={6}
         size="xl"
         locale="fr"
         onChange={(value) => setFieldValue(name, value)}
-        autoFocus
         disabled={disabled}
       />
       {DateError}

@@ -1,4 +1,6 @@
 import { useContext, useState } from "react";
+import styled from "styled-components";
+import { mutate } from "swr";
 
 import {
   Input,
@@ -6,20 +8,20 @@ import {
   InputIcon,
   InputWrapper,
 } from "components/Input/InputContainer.styled";
+import { FormGroup } from "components/Input/Input.styled";
 import { Body1, LabelText } from "styles/Typography";
 
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
+import Icon from "components/Icon/Icon";
 import Button from "components/Button/Button";
 
 import API from "utils/API";
-import Icon from "components/Icon/Icon";
-import styled from "styled-components";
-import { FormGroup } from "components/Input/Input.styled";
 import { GlobalContext } from "pages/_app";
 
 interface DeleteModalProps {
   name: string;
   url: string;
+  method?: "patch" | "delete";
 }
 
 const DeleteModalWrapper = styled.div`
@@ -32,22 +34,31 @@ const DeleteModalWrapper = styled.div`
   }
 `;
 
-const DeleteModal = ({ name, url }: DeleteModalProps) => {
-  const { setNotification, toggleModalDelete } = useContext(GlobalContext);
+const DeleteModal = ({ name, url, method }: DeleteModalProps) => {
+  const { setNotification, toggleModalDelete, setDocument } =
+    useContext(GlobalContext);
   const [password, setPassword] = useState("");
   const [visibility, toggleVisibility] = useState(false);
 
   const deleteAction = async () => {
+    let endpoint = `/${url.split("/")[1]}`;
+    if (endpoint === "/transactions") endpoint = "/transactions/money";
     try {
-      await API.delete(url, { data: { password } });
+      let apiMethod = method ?? "delete";
+      const payload = method ? { password } : { data: { password } };
+      //@ts-ignore
+      await API[apiMethod](url, payload);
+      mutate(endpoint);
       toggleModalDelete("");
+      setDocument({ type: "", data: {} });
     } catch (err: any) {
       console.log(err.response.data.message);
       setNotification({ status: "error", message: err.response.data.message });
     }
   };
+
   return (
-    <Modal title="Supprimer la">
+    <Modal title={method ? "Annuler la vente" : "Suprimmer"}>
       <ModalContent>
         <form
           onSubmit={(e) => {
@@ -56,9 +67,15 @@ const DeleteModal = ({ name, url }: DeleteModalProps) => {
           }}
         >
           <DeleteModalWrapper>
-            <Body1>
-              Cela supprimera définitivement <b>{name}</b>
-            </Body1>
+            {method ? (
+              <Body1>
+                Annuler la vente de <b>{name}</b>
+              </Body1>
+            ) : (
+              <Body1>
+                Cela supprimera définitivement <b>{name}</b>
+              </Body1>
+            )}
 
             <FormGroup>
               <LabelText>Votre mot de passe</LabelText>
@@ -83,8 +100,12 @@ const DeleteModal = ({ name, url }: DeleteModalProps) => {
         </form>
       </ModalContent>
       <ModalActions>
-        <Button type="submit" variant="danger" onClick={deleteAction}>
-          Suprimmer
+        <Button
+          type="submit"
+          variant={method ? "primary" : "danger"}
+          onClick={deleteAction}
+        >
+          {method ? "Annuler la vente" : "Suprimmer"}
         </Button>
       </ModalActions>
     </Modal>

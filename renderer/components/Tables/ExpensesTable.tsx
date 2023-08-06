@@ -1,7 +1,6 @@
-import dayjs from "dayjs";
+import { useContext, useState } from "react";
 
 import { Body2 } from "styles/Typography";
-
 import Checkbox from "components/Checkbox/Checkbox";
 import Icon from "components/Icon/Icon";
 import {
@@ -13,63 +12,47 @@ import {
   TableRow,
   TableCell,
 } from "components/Table/Table";
-import { useContext, useRef, useState } from "react";
 import { GlobalContext } from "pages/_app";
-import useClickOutside from "hooks/useClickOutside";
-import Dropdown from "components/Dropdown/Dropdown";
-import { ButtonItem } from "components/Dropdown/Dropdown.styled";
-import Button from "components/Button/Button";
-
+import formatPrice from "utils/formatPrice";
 interface IProps {
   expenses: any[];
 }
-
 const TB_HEADER_DATA = [
   { text: "Indice", sortable: false },
-  { text: "Date créée", sortable: true },
-  { text: "Raison", sortable: false },
-  { text: "Montant", sortable: true },
-  { text: "Date de transfert", sortable: true },
+  { text: "Date", sortable: true },
+  { text: "Nombre de dépenses", sortable: true },
+  { text: "Total", sortable: true },
 ];
-
 const ExpensesTable = ({ expenses }: IProps) => {
-  const [isDropdownActive, toggleDropdown] = useState<null | number>(null);
-  const { setDocument, toggleModalDelete } = useContext(GlobalContext);
-  const [ids, addIds] = useState<number[]>([]);
-  const checkRow = (id: number) => {
-    if (ids.indexOf(id) === -1) {
-      addIds((ids) => [...ids, id]);
+  const { toggleModalDelete, setDocument } = useContext(GlobalContext);
+  const [dates, addDate] = useState<string[]>([]);
+  const checkRow = (date: string) => {
+    if (dates.indexOf(date) === -1) {
+      addDate((prevDates) => [...prevDates, date]);
     } else {
-      addIds((ids) => ids.filter((el) => el !== id));
+      addDate((prevDates) => prevDates.filter((el) => el !== date));
     }
   };
-
   const checkAllRows = () => {
-    if (expenses.length === ids.length) {
-      addIds([]);
+    if (expenses.length === dates.length) {
+      addDate([]);
     } else {
-      expenses.forEach(({ id }) => {
-        if (ids.indexOf(id) === -1) addIds((prevIds) => [...prevIds, id]);
+      expenses.forEach(({ transferred_at }) => {
+        if (dates.indexOf(transferred_at) === -1) {
+          addDate((prevDates) => [...prevDates, transferred_at]);
+        }
       });
     }
   };
-
   const handleDeleteAll = async () => {
-    if (expenses.length === ids.length) {
+    if (dates.length > 0) {
       toggleModalDelete({
-        name: `${ids.length} dépenses`,
-        url: `/expenses/`,
-      });
-    } else if (ids.length > 0) {
-      toggleModalDelete({
-        name: `${ids.length} dépenses`,
-        url: `/expenses/${ids.join(",")}`,
+        name: `les dépenses de ${dates.length} dates`,
+        url: `/expenses/date/${dates.join(",")}`,
       });
     }
-
-    addIds([]);
+    addDate([]);
   };
-
   return (
     <TableWrapper>
       <Table>
@@ -77,7 +60,7 @@ const ExpensesTable = ({ expenses }: IProps) => {
           <TableRow>
             <TableHeaderCell>
               <Checkbox
-                isChecked={expenses.length === ids.length}
+                isChecked={expenses.length === dates.length}
                 check={checkAllRows}
               />
             </TableHeaderCell>
@@ -95,64 +78,44 @@ const ExpensesTable = ({ expenses }: IProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {expenses.map((licence, ind) => {
-            const { id, created_at, raison, amount, transferred_at } = licence;
+          {expenses.map((expense, ind) => {
+            const { dayExpenses, total, transferred_at } = expense;
             const onDelete = async () => {
               toggleModalDelete({
-                name: `${raison} avec ${amount}.00 DA`,
-                url: `/expenses/${id}`,
+                name: `les dépenses du ${transferred_at}`,
+                url: `/expenses/date/${transferred_at}`,
               });
-              return addIds([]);
+              return addDate([]);
             };
             return (
-              <TableRow key={id}>
+              <TableRow key={transferred_at}>
                 <TableCell blurrable={false}>
                   <Checkbox
-                    isChecked={!(ids.indexOf(id) === -1)}
-                    check={() => checkRow(id)}
+                    isChecked={dates.indexOf(transferred_at) !== -1}
+                    check={() => checkRow(transferred_at)}
                   />
                 </TableCell>
                 <TableCell blurrable={false}>
                   <Body2>{ind + 1}</Body2>
                 </TableCell>
-                <TableCell blurrable={false}>
-                  <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
-                </TableCell>
-                <TableCell blurrable={false}>
-                  <Body2>{raison}</Body2>
-                </TableCell>
-                <TableCell>
-                  <Body2>{amount}.00 DA</Body2>
-                </TableCell>
-                <TableCell blurrable={false}>
-                  <Body2>{dayjs(transferred_at).format("DD-MM-YYYY")}</Body2>
-                </TableCell>
                 <TableCell
-                  blurrable={false}
                   onClick={() => {
-                    if (isDropdownActive === ind) {
-                      toggleDropdown(null);
-                    } else {
-                      toggleDropdown(ind);
-                    }
+                    setDocument({
+                      type: "expenses",
+                      id: transferred_at,
+                    });
                   }}
                 >
-                  <Icon icon="more_vert" size="1.8rem" />
-
-                  {isDropdownActive === ind && (
-                    <Dropdown $right="0" $top="1rem" $width="20rem">
-                      <ButtonItem $ghostColor="#595959">
-                        <Button variant="ghost" icon="edit">
-                          Modifier
-                        </Button>
-                      </ButtonItem>
-                      <ButtonItem $ghostColor="#FF4040" onClick={onDelete}>
-                        <Button variant="ghost" icon="delete">
-                          Supprimer
-                        </Button>
-                      </ButtonItem>
-                    </Dropdown>
-                  )}
+                  <Body2>{transferred_at}</Body2>
+                </TableCell>
+                <TableCell>
+                  <Body2>{dayExpenses}</Body2>
+                </TableCell>
+                <TableCell>
+                  <Body2>{formatPrice(total, "DA")}</Body2>
+                </TableCell>
+                <TableCell blurrable={false} onClick={onDelete}>
+                  <Icon icon="delete" size="1.8rem" />
                 </TableCell>
               </TableRow>
             );
@@ -162,5 +125,4 @@ const ExpensesTable = ({ expenses }: IProps) => {
     </TableWrapper>
   );
 };
-
 export default ExpensesTable;

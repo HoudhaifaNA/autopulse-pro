@@ -27,11 +27,26 @@ export const getExpenses = db.prepare(
 
 export const getExpenseById = db.prepare(`SELECT * FROM expenses WHERE id = ?`);
 
+export const getExpensesDays = db.prepare(`SELECT transferred_at,
+COUNT(*) AS dayExpenses,
+SUM(amount) AS total
+FROM expenses
+GROUP BY transferred_at 
+ORDER BY transferred_at DESC
+`);
+
+export const getExpenseByDate = db.prepare(`SELECT * FROM expenses
+WHERE transferred_at = ?
+`);
+
 export const updateExpense = db.prepare(`UPDATE expenses
-    SET raison = COALESCE(?, raison),
+  SET transferred_at = COALESCE(?, transferred_at),
+    raison = COALESCE(?, raison),
     amount = COALESCE(?, amount)
     WHERE id = ? `);
 
 export const deleteExpenseById = `DELETE FROM expenses WHERE id IN `;
+
+export const deleteExpenseByDate = `DELETE FROM expenses WHERE transferred_at IN `;
 
 export const deleteExpenses = db.prepare(`DELETE FROM expenses`);

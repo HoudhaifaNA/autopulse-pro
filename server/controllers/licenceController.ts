@@ -17,6 +17,7 @@ import uid from "../../renderer/utils/uniqid";
 import AppError from "../utils/AppError";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 import { getClientById } from "../statments/clientStatments";
+import db from "../database";
 
 const isProd: boolean = process.env.NODE_ENV === "production";
 
@@ -104,7 +105,7 @@ export const createLicence = tryCatch((req, res, next) => {
   ];
 
   const client: any = getClientById.get(sellerId);
-  if (client && client.clientType === "euro") {
+  if (!client || client.clientType === "euro") {
     return next(
       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
     );
@@ -147,11 +148,23 @@ export const createLicence = tryCatch((req, res, next) => {
 });
 
 export const getAllLicences = tryCatch((req, res, next) => {
-  const licences = S.getLicences.all();
+  const { page, limit = 10 } = req.query;
+  const skip = (Number(page) - 1) * Number(limit);
 
-  return res
-    .status(200)
-    .json({ status: "success", results: licences.length, licences });
+  let STMT = S.getLicences;
+  let params = [];
+  if (page && limit) {
+    STMT += ` LIMIT ? OFFSET ?`;
+    params = [limit, skip];
+  }
+  const licences = db.prepare(STMT).all(params);
+  const licencesCount = S.getLicencesCount.get();
+
+  return res.status(200).json({
+    status: "success",
+    results: licencesCount["total_rows"],
+    licences,
+  });
 });
 
 export const getLicenceById = tryCatch((req, res, next) => {
@@ -174,6 +187,8 @@ export const updateLicence = tryCatch((req, res, next) => {
     releasedDate,
     created_at,
   } = req.body;
+  console.log(sellerId);
+
   const [trimmedName, isValid] = validateName(moudjahid);
   const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
 
@@ -218,7 +233,7 @@ export const updateLicence = tryCatch((req, res, next) => {
   ];
 
   const client: any = getClientById.get(sellerId);
-  if (client && client.clientType === "euro") {
+  if (!client || client.clientType === "euro") {
     return next(
       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
     );

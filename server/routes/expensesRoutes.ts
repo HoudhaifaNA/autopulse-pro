@@ -6,9 +6,14 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(controller.getAllExpenses)
+  .get(controller.getExpensesDays)
   .post(controller.createExpense)
   .delete(controller.deleteExpenses);
+
+router
+  .route("/date/:date")
+  .get(controller.getExpensesByDate)
+  .delete(controller.deleteExpenseByDate);
 
 router
   .route("/:ids")

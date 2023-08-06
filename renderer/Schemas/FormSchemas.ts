@@ -98,28 +98,19 @@ export const carSchemaStepFour = object({
     name: string()
       .trim()
       .matches(FULLNAME_RULES, "Indiquez un nom correct")
-      .required("licence est requise"),
+      .required("Propriétaire est requise"),
   }),
-  euroCost: number().when("carType", {
+  costInEuros: number().when("type", {
     is: "importé",
-    then: () =>
-      number()
-        .min(1000, ({ min }) => `Minimum ${min} euros`)
-        .required("Prix ​​d'achat est requis"),
+    then: () => number().min(1000, ({ min }) => `Minimum ${min} euros`),
   }),
-  euroPrice: number().when("carType", {
+  euroPrice: number().when("type", {
     is: "importé",
-    then: () =>
-      number()
-        .min(50, ({ min }) => `Minimum ${min}DA`)
-        .required("Prix ​​de 100 EUR  est requis"),
+    then: () => number().required("Prix ​​de 100 EUR  est requis"),
   }),
-  purchasingPrice: number().when("carType", {
+  purchasingPrice: number().when("type", {
     is: "locale",
-    then: () =>
-      number()
-        .min(20000, ({ min }) => `Minimum ${min}DA`)
-        .required("Prix ​​d'achat est requis"),
+    then: () => number().min(20000, ({ min }) => `Minimum ${min}DA`),
   }),
 });
 
@@ -132,24 +123,11 @@ export const carSchemaStepFive = object({
         .required("Raison est requise"),
       euroCost: number().when("type", {
         is: "à l'étranger",
-        then: () =>
-          number()
-            .min(5, ({ min }) => `Minimum ${min} euros`)
-            .required("Coût est requis"),
-      }),
-      euroPrice: number().when("type", {
-        is: "à l'étranger",
-        then: () =>
-          number()
-            .min(50, ({ min }) => `Minimum ${min}DA`)
-            .required("Prix ​​de 100 EUR  est requis"),
+        then: () => number().required("Coût est requis"),
       }),
       totalCost: number().when("type", {
         is: "locale",
-        then: () =>
-          number()
-            .min(500, ({ min }) => `Minimum ${min}DA`)
-            .required("Coût est requis"),
+        then: () => number().required("Coût est requis"),
       }),
     })
   ),

@@ -29,6 +29,19 @@ export const SearchList = styled.div`
   border-top: none;
   border-radius: 0 0 0.4rem 0.4rem;
   box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.15);
+  max-height: 40rem;
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #888;
+  }
 `;
 
 export const SearchCategory = styled.div`

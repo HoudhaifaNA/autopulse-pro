@@ -17,17 +17,22 @@ import ErrorMessage from "components/ErrorMessage/ErrorMessage";
 import PageSwitcher from "components/FinancesTable/PageSwitcher";
 import { Page } from "components/FinancesTable/types";
 import { GlobalContext } from "pages/_app";
+import { Heading5 } from "styles/Typography";
 
 const TransferOptions = ({ setModal }: { setModal: any }) => {
   return (
     <Dropdown $right="0" $top="100%" $width="24rem">
-      <ButtonItem onClick={() => setModal("transactions")}>
+      <ButtonItem onClick={() => setModal({ name: "transactions" })}>
         <Button variant="ghost" icon="exchange">
           Effectuer une transaction
         </Button>
       </ButtonItem>
       <ButtonItem>
-        <Button variant="ghost" icon="euro" onClick={() => setModal("euros")}>
+        <Button
+          variant="ghost"
+          icon="euro"
+          onClick={() => setModal({ name: "euros" })}
+        >
           Acheter des euros
         </Button>
       </ButtonItem>
@@ -37,10 +42,8 @@ const TransferOptions = ({ setModal }: { setModal: any }) => {
 
 const FinancePage = () => {
   const [isActive, setActive] = useState(false);
-  const { currModal, setModal } = useContext(GlobalContext);
-  const { data, isLoading, error } = useSWR("/transactions/money", fetcher, {
-    refreshInterval: 5,
-  });
+  const { setModal } = useContext(GlobalContext);
+  const { data, isLoading, error } = useSWR("/transactions/money", fetcher);
   const [currentPage, setCurrentPage] = useState<Page>("transactions");
 
   const renderPage = () => {
@@ -81,19 +84,31 @@ const FinancePage = () => {
         </div>
       );
     } else {
+      const transactionList = {
+        transactions: data.moneyTransactions,
+        "virements des euros": data.eurosTransactions,
+      };
       return (
         <>
-          <PageHeader
-            title="Finances"
-            CTAText="Ajouter"
-            CTAIcon="add"
-            IconP="right"
-            CTAonClick={() =>
-              currentPage === "virements des euros"
-                ? setModal("euros")
-                : setModal("transactions")
-            }
-          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Heading5>{transactionList[currentPage].length}</Heading5>
+            <PageHeader
+              CTAText="Ajouter"
+              CTAIcon="add"
+              IconP="right"
+              CTAonClick={() =>
+                currentPage === "virements des euros"
+                  ? setModal({ name: "euros" })
+                  : setModal({ name: "transactions" })
+              }
+            />
+          </div>
           <>
             <PageSwitcher
               currentPage={currentPage}

@@ -6,174 +6,78 @@ import PageHeader from "components/PageHeader/PageHeader";
 import styled from "styled-components";
 import StatTicket from "components/StatTicket/StatTicket";
 import Loading from "components/Loading/Loading";
+import Link from "next/link";
+import Badge from "components/Badge/Badge";
+import Icon from "components/Icon/Icon";
+import Button from "components/Button/Button";
+import useClickOutside from "hooks/useClickOutside";
+import { useRef, useState } from "react";
+import { Body1 } from "styles/Typography";
+import Dropdown from "components/Dropdown/Dropdown";
+import { FilterField } from "components/CarBrandFilter/CarBrandFilter.styled";
 
 const TicketList = styled.div`
   width: 100%;
   max-width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
   gap: 2rem;
-`;
+  & > a {
+    text-decoration: none;
+    transition: all 0.2s ease;
+    & > div {
+      background-color: ${({ theme }) => theme.colors.white};
+    }
 
-const findCarType = (arr: any, type: string, prop: string = "type") => {
-  return arr.find((car: any) => {
-    return car[prop] === type;
-  });
+    &:hover {
+      box-shadow: 0 1rem 2rem 1rem rgba(0, 0, 0, 0.1);
+    }
+  }
+`;
+const isDropdownActive = (isActive: boolean) => {
+  return isActive ? "dropdown_active" : "";
 };
 
 const Dashboard = () => {
-  const { data, isLoading } = useSWR("/stats/counts", fetcher);
+  const [serie, setSerie] = useState("");
+  const serieRef = useRef(null);
+  const [isSeriesShown, toggleSeries] = useClickOutside(serieRef);
+  const { data, isLoading } = useSWR(`/stats/counts?year=${serie}`, fetcher);
+  const { data: yearsData } = useSWR(`/workingyears`, fetcher);
+  let YEARS_LIST = [];
+  if (yearsData) {
+    YEARS_LIST = yearsData.years.map((yr: string) => {
+      return { mainText: yr };
+    });
+  }
 
   const renderData = () => {
     if (isLoading) {
       return <Loading />;
     } else if (data) {
-      const {
-        clients,
-        cars,
-        licences,
-        transactions,
-        expensesCount,
-        totalExpensesList,
-      } = data;
+      const { clients, cars, licences, transactions, expenses } = data;
 
-      const boughtCarsListImported = findCarType(
-        data.boughtCarsList,
-        "importé"
-      );
-      const boughtCarsListLocale = findCarType(data.boughtCarsList, "locale");
-      const soldCarsListImported = findCarType(data.soldCarsList, "importé");
-      const soldCarsListLocale = findCarType(data.soldCarsList, "locale");
-      const importedCarsProfit = findCarType(data.carsProfitsList, "importé");
-      const localeCarsProfit = findCarType(data.carsProfitsList, "locale");
-      const averageImportedCarCost = findCarType(data.avgCarCost, "importé");
-      const averageLocaleCarCost = findCarType(data.avgCarCost, "locale");
-      const averageImportedSoldPrice = findCarType(data.avgSold, "importé");
-      const averageLocaleSoldPrice = findCarType(data.avgSold, "locale");
-      const peopleInDebt = findCarType(data.debtStatus, "indebt", "status");
-      const lenderPeople = findCarType(data.debtStatus, "lender", "status");
       return (
         <TicketList>
-          <StatTicket title="Clients" icon="clients" value={clients} />
-          <StatTicket title="Voitures" icon="car" value={cars} />
-          <StatTicket title="Licences" icon="document" value={licences} />
-          <StatTicket
-            title="Transactions"
-            icon="exchange"
-            value={transactions}
-          />
-          <StatTicket title="Dépenses" icon="shopping" value={expensesCount} />
-          <StatTicket
-            title={`Personnes à qui je dois (${
-              peopleInDebt?.count ?? 0
-            } persones)`}
-            icon="debt"
-            value={`${Math.abs(peopleInDebt?.amount ?? 0).toLocaleString()}`}
-          />
-          <StatTicket
-            title={`Personnes qui me doivent (${
-              lenderPeople?.count ?? 0
-            } persones)`}
-            icon="lent"
-            value={`${Math.abs(lenderPeople?.amount ?? 0).toLocaleString()}`}
-          />
-          <StatTicket
-            title="Nombre de voitures importées"
-            icon="importé"
-            value={boughtCarsListImported?.count ?? 0}
-          />
-          <StatTicket
-            title="Nombre de voitures importées vendues"
-            icon="importé"
-            value={soldCarsListImported?.count ?? 0}
-          />
-          <StatTicket
-            title="Coût total des voitures importées"
-            icon="importé"
-            value={`${(
-              boughtCarsListImported?.total ?? 0
-            ).toLocaleString()}.00 DA`}
-          />
-          <StatTicket
-            title="Total des dépenses"
-            icon="importé"
-            value={`${totalExpensesList[0].total?.toLocaleString() ?? 0}.00 DA`}
-          />
-          <StatTicket
-            title="Prix de vente des voitures importées"
-            icon="importé"
-            value={`${(
-              soldCarsListImported?.total ?? 0
-            ).toLocaleString()}.00 DA`}
-          />
-
-          <StatTicket
-            title="Intérêt des voitures importées"
-            icon="importé"
-            value={`${(
-              importedCarsProfit?.profit ??
-              0 - totalExpensesList[0].total ??
-              0
-            ).toLocaleString()}.00 DA`}
-          />
-          <StatTicket
-            title="Coût moyen des voitures importées"
-            icon="importé"
-            value={`${(
-              averageImportedCarCost?.avgTotal ?? 0
-            ).toLocaleString()}.00 DA`}
-          />
-          <StatTicket
-            title="Pr. vente moyen des voitures importées"
-            icon="importé"
-            value={`${(
-              averageImportedSoldPrice?.avgSold ?? 0
-            ).toLocaleString()}.00 DA`}
-          />
-          <StatTicket
-            title="Nombre de voitures locale"
-            icon="locale"
-            value={boughtCarsListLocale?.count ?? 0}
-          />
-          <StatTicket
-            title="Nombre de voitures locales vendues"
-            icon="locale"
-            value={soldCarsListLocale?.count ?? 0}
-          />
-          <StatTicket
-            title="Coût total des voitures locales"
-            icon="locale"
-            value={`${
-              (boughtCarsListLocale?.total ?? 0).toLocaleString() ?? 0
-            }.00 DA`}
-          />
-
-          <StatTicket
-            title="Prix de vente des voitures locales"
-            icon="locale"
-            value={`${
-              (soldCarsListLocale?.total ?? 0).toLocaleString() ?? 0
-            }.00 DA`}
-          />
-          <StatTicket
-            title="Intérêt des voitures locales"
-            icon="locale"
-            value={`${(localeCarsProfit?.profit ?? 0).toLocaleString()}.00 DA`}
-          />
-          <StatTicket
-            title="Coût moyen des voitures locales"
-            icon="locale"
-            value={`${(
-              averageLocaleCarCost?.avgTotal ?? 0
-            ).toLocaleString()}.00 DA`}
-          />
-          <StatTicket
-            title="Pr. vente moyen des voitures importées"
-            icon="locale"
-            value={`${(
-              averageLocaleSoldPrice?.avgSold ?? 0
-            ).toLocaleString()}.00 DA`}
-          />
+          <Link href="/dashboard/clients">
+            <StatTicket title="Clients" icon="clients" value={clients} />
+          </Link>
+          <Link href="/dashboard/cars">
+            <StatTicket title="Voitures" icon="car" value={cars} />
+          </Link>
+          <Link href="/dashboard/licences">
+            <StatTicket title="Licences" icon="document" value={licences} />
+          </Link>
+          <Link href="/dashboard/transactions">
+            <StatTicket
+              title="Transactions"
+              icon="exchange"
+              value={transactions}
+            />
+          </Link>
+          <Link href="/dashboard/expenses">
+            <StatTicket title="Dépenses" icon="shopping" value={expenses} />
+          </Link>
         </TicketList>
       );
     }
@@ -182,7 +86,54 @@ const Dashboard = () => {
   return (
     <>
       <Meta title="Tableau de bord" />
-      <PageHeader title="Tableau de bord" />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "2rem",
+          marginBottom: "2rem",
+        }}
+      >
+        {yearsData && (
+          <FilterField
+            ref={serieRef}
+            className={isDropdownActive(isSeriesShown)}
+            style={{
+              backgroundColor: "#0045E5",
+              color: "#fff",
+              border: "none",
+              minWidth: "12rem",
+            }}
+          >
+            <Body1>{serie ? serie : "Serie"}</Body1>
+            {isSeriesShown && (
+              <Dropdown
+                $width="100%"
+                $top="4rem"
+                $left="0"
+                items={YEARS_LIST}
+                onItemClick={(it) => {
+                  toggleSeries(false);
+                  setSerie(it);
+                }}
+              />
+            )}
+
+            <div
+              style={{ marginLeft: "auto", zIndex: 15000 }}
+              onClick={() => {
+                toggleSeries(false);
+                setSerie("");
+              }}
+            >
+              <Icon icon="close" size="1.8rem" />
+            </div>
+            <div onClick={() => toggleSeries(!isSeriesShown)}>
+              <Icon icon="expand" size="1.8rem" />
+            </div>
+          </FilterField>
+        )}
+      </div>
       {renderData()}
     </>
   );

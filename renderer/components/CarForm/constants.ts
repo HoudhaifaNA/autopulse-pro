@@ -21,6 +21,7 @@ export const INITIAL_VALUES: Values = {
   model: "",
   serialNumber: "",
   registrationNumber: "",
+  secondRegistrationNumber: "",
   keys: 1,
   mileage: 0,
   color: "",
@@ -35,10 +36,30 @@ export const INITIAL_VALUES: Values = {
     {
       id: uid(),
       type: "à l'étranger",
-      raison: "",
-      euroCost: "",
-      euroPrice: 100,
-      totalCost: "",
+      raison: "Transitaire EURO",
+      euroCost: 0,
+      totalCost: 0,
+    },
+    {
+      id: uid(),
+      type: "locale",
+      raison: "Transitaire DA",
+      euroCost: 0,
+      totalCost: 0,
+    },
+    {
+      id: uid(),
+      type: "locale",
+      raison: "Dossier",
+      euroCost: 0,
+      totalCost: 0,
+    },
+    {
+      id: uid(),
+      type: "locale",
+      raison: "Procuration",
+      euroCost: 0,
+      totalCost: 0,
     },
   ],
   totalExpensesCost: 0,
@@ -46,18 +67,7 @@ export const INITIAL_VALUES: Values = {
   totalCost: 0,
 };
 
-const CAR_COLORS = [
-  "Noir",
-  "Bleue",
-  "Blanche",
-  "Jaune",
-  "Argent",
-  "Rouge",
-  "Verte",
-  "Grise",
-  "Orange",
-  "Bronze",
-];
+const CAR_COLORS = ["Noir", "Bleue", "Argent", "Blanche", "Grise"];
 
 export const COLORS_LIST = CAR_COLORS.map((color) => {
   return {
@@ -80,6 +90,6 @@ cars.forEach(({ brand, models }) => {
     return { mainText: model };
   });
 
-  CAR_MODELS = { ...CAR_MODELS, [brand]: modelsList };
+  CAR_MODELS = { ...CAR_MODELS, [brand.toLowerCase()]: modelsList };
   return CAR_MODELS;
 });

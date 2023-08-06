@@ -1,120 +1,134 @@
 import db from "../database";
-import { getCars } from "../statments/carStatments";
-import { getClients } from "../statments/clientStatments";
-import { getExpenses } from "../statments/expensesStatments";
-import { getLicences } from "../statments/licenceStatments";
-import { getTransactions } from "../statments/transactionStatments";
+
+import * as S from "../statments/statStatments";
 
 import tryCatch from "../utils/tryCatch";
 
-const getDebtStatus = db.prepare(`
-SELECT
-  CASE
-    WHEN balance > 0 THEN 'lender'
-    WHEN balance < 0 THEN 'indebt'
-    ELSE 'balanced'
-  END AS status,
-  COUNT(*) AS count,
-  SUM(balance) 'amount'
-  FROM clients
-  GROUP BY status `);
-
-const getTransactionsType = db.prepare(
-  `SELECT type,direction, 
-  SUM(total) "amount" 
-  FROM transactions 
-  GROUP BY type, direction`
-);
-const getMoneyAmount = db.prepare(
-  `SELECT direction, 
-  SUM(total) "amount" 
-  FROM transactions 
-  GROUP BY direction`
-);
-
-const getMostOwerPerson = db.prepare(`
-    SELECT fullName,
-    MAX(balance) 'amount'
-    FROM clients
-`);
-const getMostDebtedPerson = db.prepare(`
-    SELECT fullName,
-    MIN(balance) 'amount'
-    FROM clients
-`);
-
-const boughtCars = db.prepare(`SELECT type, 
-  COUNT(*) as count, 
-  SUM(totalCost) 'total'
-  FROM cars
-  GROUP BY type
-`);
-const soldCars = db.prepare(`SELECT type, 
-  COUNT(IIF(soldPrice > 0, 1, NULL)) AS count,
-  SUM(soldPrice) 'total'
-  FROM cars
-  GROUP BY type
-`);
-const carsProfits = db.prepare(`SELECT type, 
-  COUNT(IIF(soldPrice > 0, 1, NULL)) AS count,
-  SUM(profit) 'profit'
-  FROM cars
-  GROUP BY type
-`);
-
-const totalExpenses = db.prepare(`SELECT 
-  COUNT(*) AS count,
-  SUM(amount) 'total'
-  FROM expenses
-`);
-
-const avgPurchasingPrice = db.prepare(`SELECT type,
-  AVG(totalCost) 'avgTotal'
-  FROM cars
-  GROUP BY type
-`);
-const avgSoldPrice = db.prepare(`SELECT type,
-  AVG(soldPrice) 'avgSold'
-  FROM cars
-  WHERE soldPrice > 0
-  GROUP BY type
-`);
-
 export const getCounts = tryCatch((req, res) => {
-  const clientsCount = getClients.all();
-  const carsCount = getCars.all();
-  const licencesCount = getLicences.all();
-  const expensesCount = getExpenses.all();
-  const transactionsCount = getTransactions.all();
-  const financeList = getMoneyAmount.all();
-  const transactionsType = getTransactionsType.all();
-  const debtStatus = getDebtStatus.all();
-  const mostOwerPerson = getMostOwerPerson.get();
-  const mostDebtedPerson = getMostDebtedPerson.get();
-  const boughtCarsList = boughtCars.all();
-  const avgCarCost = avgPurchasingPrice.all();
-  const avgSold = avgSoldPrice.all();
-  const soldCarsList = soldCars.all();
-  const totalExpensesList = totalExpenses.all();
-  const carsProfitsList = carsProfits.all();
+  const { year } = req.query;
+  let STMT = "";
+  if (year) STMT = ` WHERE year_date = '${year}'`;
+
+  const { clients_number }: any = db
+    .prepare(`${S.GET_CLIENTS_COUNTS} ${STMT}`)
+    .get();
+  const { cars_number }: any = db.prepare(`${S.GET_CARS_COUNTS} ${STMT}`).get();
+  const { licences_number }: any = db
+    .prepare(`${S.GET_LICENCES_COUNTS} ${STMT}`)
+    .get();
+  const { expenses_number }: any = db
+    .prepare(`${S.GET_EXPENSES_COUNTS} ${STMT}`)
+    .get();
+  const { procurations_number }: any = db
+    .prepare(`${S.GET_PROCURATIONS_COUNTS} ${STMT}`)
+    .get();
+  const { papers_number }: any = db
+    .prepare(`${S.GET_PAPERS_COUNTS} ${STMT}`)
+    .get();
+  const { transactions_number }: any = db
+    .prepare(`${S.GET_TRANSACTIONS_COUNTS} ${STMT}`)
+    .get();
 
   res.status(200).json({
     status: "success",
-    clients: clientsCount.length,
-    cars: carsCount.length,
-    licences: licencesCount.length,
-    transactions: transactionsCount.length,
-    expensesCount: expensesCount.length,
-    transactionsType,
-    debtStatus,
-    mostDebtedPerson,
-    mostOwerPerson,
-    boughtCarsList,
-    soldCarsList,
-    totalExpensesList,
-    avgCarCost,
-    avgSold,
-    carsProfitsList,
-    finance: financeList,
+    clients: clients_number,
+    cars: cars_number,
+    licences: licences_number,
+    expenses: expenses_number,
+    procurations: procurations_number,
+    papers: papers_number,
+    transactions: transactions_number,
+  });
+});
+
+export const getClientsStats = tryCatch((req, res) => {
+  const clients_types: any = S.GET_CLIENTS_TYPES.all();
+  const clients_balance: any = S.GET_CLIENTS_BALANCE.all();
+
+  res.status(200).json({
+    status: "success",
+    clients_types,
+    clients_balance,
+  });
+});
+export const getCarsStats = tryCatch((req, res) => {
+  const { year } = req.query;
+  let STMT1 = S.GET_CARS_TYPES;
+  let STMT2 = S.GET_CARS_COST;
+  let STMT3 = S.GET_SOLD_CARS_STATS;
+  let queryByYear = ` WHERE year_date = '${year}'`;
+  if (year) {
+    STMT1 = STMT1.replace("-- PLACEHOLDER", queryByYear);
+    STMT2 = STMT2.replace("-- PLACEHOLDER", queryByYear);
+    STMT3 = STMT3.replace("-- PLACEHOLDER", ` AND year_date = '${year}'`);
+  }
+
+  const cars_types = db.prepare(STMT1).all();
+  const cars_cost = db.prepare(STMT2).all();
+  const sold_cars_stats = db.prepare(STMT3).all();
+
+  res.status(200).json({
+    status: "success",
+    cars_types,
+    cars_cost,
+    sold_cars_stats,
+  });
+});
+
+export const getLicencesStats = tryCatch((req, res) => {
+  const { year } = req.query;
+  let STMT1 = S.GET_LICENCES_COST;
+  let STMT2 = S.GET_LICENCES_WILAYAS;
+  let queryByYear = ` WHERE year_date = '${year}'`;
+  if (year) {
+    STMT1 = STMT1.replace("-- PLACEHOLDER", queryByYear);
+    STMT2 = STMT2.replace("-- PLACEHOLDER", ` AND year_date = '${year}'`);
+  }
+  const licences_cost: any = db.prepare(STMT1).all();
+  const licences_wilayas: any = db.prepare(STMT2).all();
+
+  res.status(200).json({
+    status: "success",
+    licences_cost,
+    licences_wilayas,
+  });
+});
+
+export const getTransactionsStats = tryCatch((req, res) => {
+  const { year } = req.query;
+  let TOP_FIVE_EURO_STMT = S.TOP_FIVE_EURO_CLIENTS;
+  let TOP_FIVE_DA_STMT = S.TOP_FIVE_DA_CLIENTS;
+  if (year) {
+    TOP_FIVE_EURO_STMT = TOP_FIVE_EURO_STMT.replace(
+      "-- PLACEHOLDER",
+      ` AND year_date = '${year}'`
+    );
+    TOP_FIVE_DA_STMT = TOP_FIVE_DA_STMT.replace(
+      "-- PLACEHOLDER",
+      ` AND year_date = '${year}'`
+    );
+  }
+
+  const top_five_euro_clients: any = db.prepare(TOP_FIVE_EURO_STMT).all();
+  const top_five_DA_clients: any = db.prepare(TOP_FIVE_DA_STMT).all();
+
+  res.status(200).json({
+    status: "success",
+    top_five_euro_clients,
+    top_five_DA_clients,
+  });
+});
+export const getExpensesStats = tryCatch((req, res) => {
+  const { year } = req.query;
+  let STMT1 = S.TOP_FIVE_MONTHS_EXPENSES;
+  let queryByYear = ` WHERE year_date = '${year}'`;
+  if (year) {
+    STMT1 = STMT1.replace("-- PLACEHOLDER", queryByYear);
+  }
+  const top_five_months_expenses: any = db.prepare(STMT1).all();
+
+  res.status(200).json({
+    status: "success",
+    top_five_months_expenses,
   });
 });

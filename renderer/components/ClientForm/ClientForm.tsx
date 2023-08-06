@@ -1,72 +1,44 @@
 import { useState } from "react";
-import { FormikHelpers, FormikProps } from "formik";
+import { FormikProps } from "formik";
 
 import { FormGroup } from "components/Form/Form.styled";
 
 import Form from "components/Form/Form";
 import { SelectInput, TypedInput } from "components/Input/Input";
 
+import handleSubmit from "components/ClientForm/handleSubmit";
 import { clientSchema } from "Schemas/FormSchemas";
-import API from "utils/API";
 
-interface Values {
-  id?: number;
-  fullName: string;
-  clientType: string;
-  phoneNumber: string;
-  balance: number | number;
-  edit?: false;
+import { Values } from "components/ClientForm/types";
+
+interface ClientFormProps {
+  edit?: boolean;
+  data?: any;
 }
 
-const INITIAL_VALUES = {
+const INITIAL_VALUES: Values = {
   fullName: "",
-  clientType: "",
+  clientType: "DA",
   phoneNumber: "",
-  balance: "",
+  balance: 0,
 };
 
 const CLIENT_TYPES = [{ mainText: "euro" }, { mainText: "DA" }];
 
-const onSubmit = async (
-  values: Values,
-  actions: FormikHelpers<Values>,
-  setModal: any,
-  setNotification: any,
-  addUpModal: any,
-  setAddUpModal: any
-) => {
-  console.log(values.edit);
-
-  try {
-    const method = values.edit ? "patch" : "post";
-    const endpoint = values.edit ? `/clients/${values.id}` : "/clients";
-
-    await API[method](endpoint, values);
-
-    if (addUpModal === "clients") {
-      setAddUpModal("");
-    } else {
-      setModal("");
-    }
-    actions.resetForm();
-    setNotification({ status: "success", message: "Client a été créée" });
-  } catch (err: any) {
-    console.log(err.response.data.message);
-    setNotification({ status: "error", message: err.response.data.message });
-  }
-};
-
-const ClientForm = ({ edit, data }: { edit?: boolean; data?: any }) => {
+const ClientForm = ({ edit, data }: ClientFormProps) => {
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
+
   const values = formProps?.values ?? INITIAL_VALUES;
+  const clientCurrency = values.clientType === "euro" ? "€" : "DA";
 
   return (
     <Form
       title="Ajouter un client"
-      initials={data ? { ...data, edit: true } : INITIAL_VALUES}
+      initials={edit ? { ...data, edit } : INITIAL_VALUES}
       validation={clientSchema}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
       getFormProps={(formProps) => setFormProps(formProps)}
+      buttonText={edit ? "Modifier" : "Ajouter"}
     >
       <FormGroup>
         <TypedInput
@@ -96,7 +68,7 @@ const ClientForm = ({ edit, data }: { edit?: boolean; data?: any }) => {
           type="number"
           label="Solde"
           placeholder="0"
-          addOn={values.clientType === "euro" ? "€" : "DA"}
+          addOn={clientCurrency}
           disabled={edit}
         />
       </FormGroup>

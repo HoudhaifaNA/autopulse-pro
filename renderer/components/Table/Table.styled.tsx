@@ -1,12 +1,21 @@
 import styled from "styled-components";
 
 export const TableWrapper = styled.div`
-  max-height: 60rem;
   min-height: 60rem;
-  overflow: auto;
+  max-height: 75rem;
+
+  overflow-y: scroll;
 
   ::-webkit-scrollbar {
-    width: 0;
+    width: 1rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #888;
   }
 `;
 
@@ -46,6 +55,14 @@ export const TableRow = styled.tr`
       text-transform: capitalize;
     }
   }
+
+  td {
+    p {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #00009b;
+    }
+  }
 `;
 export const TableHeaderCell = styled.th`
   background-color: ${({ theme }) => theme.colors.primary[50]};
@@ -53,6 +70,8 @@ export const TableHeaderCell = styled.th`
   top: 0px;
   z-index: 15;
 `;
-export const TableCell = styled.td<{ $blurred: boolean }>`
-  filter: ${({ $blurred }) => $blurred && "blur(.3rem)"};
+export const TableCell = styled.td<{ $blurred?: boolean }>`
+  &.blurred {
+    filter: blur(0.6rem);
+  }
 `;

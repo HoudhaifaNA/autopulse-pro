@@ -64,7 +64,6 @@ export const PrimaryButton = styled(Button)`
 
 export const SecondaryButton = styled(Button)`
   color: ${({ theme }) => theme.colors.primary["500"]};
-  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 export const GhostButton = styled(Button)`
@@ -76,7 +75,7 @@ export const DangerButton = styled(Button)`
   color: ${({ theme }) => theme.colors.white};
   background-color: ${({ theme }) => theme.colors.error["500"]};
   border-color: ${({ theme }) => theme.colors.error["500"]};
-  // Change background color if not disabled
+
   &:hover,
   &:active {
     &:not([disabled]) {

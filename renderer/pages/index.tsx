@@ -14,8 +14,8 @@ const LoginPage = () => {
           <Image
             src="/images/logo.png"
             alt="zauto logo"
-            width={50}
-            height={50}
+            width={220}
+            height={80}
           />
           <Heading3>Se connecter</Heading3>
         </S.FormHeading>

@@ -1,173 +1,148 @@
-import { ReactNode, useContext } from "react";
-import useSWR from "swr";
+import { useContext } from "react";
 
-import * as S from "components/ClientDocument/ClientDocument.styled";
-import { Body2 } from "styles/Typography";
-
-import Badge, { BadgeProps } from "components/Badge/Badge";
 import DetailsViewer, {
   DetailContent,
   DetailHeader,
   DetailItem,
   DetailSection,
 } from "components/DetailsViewer/DetailsViewer";
+import TransactionsList from "components/TransacionsList/TransacionsList";
 
-import { fetcher } from "utils/API";
-import truncateText from "utils/truncate";
-import dayjs from "dayjs";
+import useClientById from "hooks/useClientById";
+import useClientTransactions from "hooks/useClientTransactions";
+import formatPrice from "utils/formatPrice";
 import { GlobalContext } from "pages/_app";
 
-const clientStatus = (balance: number) => {
-  let status: string = "";
-  let color: BadgeProps["type"] = "success";
-  if (balance < 0) {
-    status = "Débiteur";
-    color = "error";
-  }
-  if (balance === 0) {
-    status = "Équilibré";
-    color = "success";
-  }
-  if (balance > 0) {
-    status = "Créancier";
-    color = "warning";
-  }
-  return <Badge type={color}>{status}</Badge>;
+import { Transaction } from "../../../interfaces";
+import Button from "components/Button/Button";
+
+const currencies = {
+  DA: "DA",
+  euro: "€",
 };
 
-const keys = ["date", "info1", "info2", "info3", "info4", "total"];
+const calculateTotals = (transactions: any[]) => {
+  let entranteBalance = 0;
+  let sortanteBalance = 0;
 
-const renderTransactionsList = (transactions: any[], currency: string) => {
-  const { setDocument } = useContext(GlobalContext);
-
-  return transactions.map((transaction, ind) => {
-    return (
-      <S.TransactionRow key={ind}>
-        {Object.entries(transaction).map(([key, value]: any) => {
-          if (keys.indexOf(key) !== -1) {
-            let newVal = value;
-            const goToProduct = () => {
-              if (transaction.type === "car" && key === "info1") {
-                setDocument({ type: "cars", id: transaction.productId });
-              } else if (transaction.type === "licence" && key === "info2") {
-                setDocument({ type: "licences", id: transaction.productId });
-              }
-            };
-
-            if (key === "date") newVal = dayjs(value).format("DD-MM-YYYY");
-            if (key === "info1") newVal = truncateText(value, 25);
-            if (Number(value) && key !== "info4")
-              newVal = `${value.toLocaleString()}.00 ${currency}`;
-            if (transaction["type"] === "euros" && key === "info3") {
-              newVal = `${(value * 1).toLocaleString()}.00 €`;
-            }
-            if (transaction["type"] === "euros" && key === "info4") {
-              newVal = `${(value * 1).toLocaleString()}.00 DA`;
-            }
-
-            return (
-              <S.TransactionCell key={key} title={value} onClick={goToProduct}>
-                <Body2>{newVal}</Body2>
-              </S.TransactionCell>
-            );
-          } else if (key === "direction") {
-            return (
-              <S.TransactionCell key={key}>
-                <Badge type={value === "sortante" ? "error" : "success"}>
-                  {value}
-                </Badge>
-              </S.TransactionCell>
-            );
-          }
-        })}
-      </S.TransactionRow>
-    );
+  transactions.forEach((transaction: Transaction) => {
+    const { direction, total } = transaction;
+    if (direction === "entrante") entranteBalance += total;
+    if (direction === "sortante") sortanteBalance += total;
   });
+
+  return [entranteBalance, sortanteBalance] as const;
 };
 
 const ClientDocument = () => {
-  const { currDocument } = useContext(GlobalContext);
-  const { data: clientData } = useSWR(`/clients/${currDocument.id}`, fetcher);
-  const { data } = useSWR(`/transactions/client/${currDocument.id}`, fetcher);
-  let currency = "DA";
+  const { currDocument, setModal, toggleModalDelete } =
+    useContext(GlobalContext);
+  const { client } = useClientById(currDocument.id);
+  const transactions = useClientTransactions(currDocument.id);
 
-  if (clientData && clientData.client.clientType === "euro") currency = "€";
+  const clientCurrency = currencies[client?.clientType ?? "DA"];
+  const [entranteTotal, sortanteTotal] = calculateTotals(transactions);
+  const entranteText = formatPrice(entranteTotal, clientCurrency);
+  const sortanteText = formatPrice(sortanteTotal, clientCurrency);
+  let balanceText = formatPrice(client?.balance, clientCurrency);
 
-  const balanceText = clientData
-    ? Math.abs(clientData.client.balance).toLocaleString()
-    : "";
-
-  function calculateTotals(transactions: any[]) {
-    let entranteBalance = 0;
-    let sortanteBalance = 0;
-
-    transactions.forEach((tx) => {
-      if (tx.direction === "entrante") {
-        entranteBalance += tx.total;
-      } else if (tx.direction === "sortante") {
-        sortanteBalance += tx.total;
-      }
-    });
-
-    return [entranteBalance, sortanteBalance] as const;
+  if (client) {
+    if (client.balance < 0) balanceText += " _RD";
+    if (client.balance > 0) balanceText += " _GR";
   }
 
-  const [entranteTotal, sortanteTotal] =
-    data && data.transactions ? calculateTotals(data.transactions) : [0, 0];
-
-  let profit = `${(
-    entranteTotal - sortanteTotal
-  ).toLocaleString()}.00 ${currency}`;
-  if (entranteTotal - sortanteTotal < 0) profit += " _RD";
-  if (entranteTotal - sortanteTotal > 0) profit += " _GR";
   return (
     <>
-      {clientData && (
-        <DetailsViewer title="Document de client" $width="80%">
+      {client && (
+        <DetailsViewer title="Document de client" $width="75%">
+          <div style={{ display: "flex", gap: "2rem" }}>
+            <Button
+              variant="primary"
+              icon="edit"
+              onClick={() => {
+                const { id, fullName, clientType, balance } = client;
+
+                setModal({
+                  name: "clients",
+                  edit: true,
+                  data: {
+                    ...client,
+                    id,
+                    fullName,
+                    clientType,
+                    balance,
+                  },
+                });
+              }}
+            >
+              Modifier
+            </Button>
+            <Button
+              variant="danger"
+              icon="delete"
+              onClick={() => {
+                const { id, fullName, clientType, balance } = client;
+                toggleModalDelete({
+                  name: `${fullName} et sa transactions (voitures, licences, transferts d'argent)`,
+                  url: `/clients/${id}`,
+                });
+              }}
+            >
+              Suprimmer
+            </Button>
+          </div>
           <DetailSection>
             <DetailHeader title="Détails du client" />
-            <DetailContent $columns={4}>
-              <DetailItem title="nom" value={clientData.client.fullName} />
+            <DetailContent $columns={3}>
+              <DetailItem title="nom" value={client.fullName} />
               <DetailItem
                 title="Numéro de téléphone"
-                value={
-                  clientData.client.phoneNumber
-                    ? clientData.client.phoneNumber
-                    : "--"
-                }
-              />
-              <DetailItem
-                title="solde"
-                value={`${balanceText}.00 ${currency}`}
-              />
-              <DetailItem
-                title="statut"
-                value={clientStatus(clientData.client.balance)}
+                value={client.phoneNumber ? client.phoneNumber : "--"}
               />
             </DetailContent>
           </DetailSection>
-          {data && data.transactions.length > 0 && (
+          {transactions.length > 0 && (
             <>
-              <DetailSection>
-                <DetailHeader title="Transactions" />
-                <DetailContent $columns={1}>
-                  <S.TransactionsTable>
-                    {renderTransactionsList(data.transactions, currency)}
-                  </S.TransactionsTable>
-                </DetailContent>
-              </DetailSection>
               <DetailSection>
                 <DetailHeader title="Totaux" />
                 <DetailContent $columns={3}>
                   <DetailItem
-                    title="total des entrants:"
-                    value={`${entranteTotal.toLocaleString()}.00 ${currency}`}
+                    title="total des entrants"
+                    value={entranteText}
+                    blurrable={true}
                   />
                   <DetailItem
                     title="total des sortants"
-                    value={`${sortanteTotal.toLocaleString()}.00 ${currency}`}
+                    value={sortanteText}
+                    blurrable={true}
                   />
-                  <DetailItem title="Total" value={profit} />
+                  <DetailItem
+                    title="Total"
+                    value={balanceText}
+                    blurrable={true}
+                  />
+                </DetailContent>
+              </DetailSection>
+              <DetailSection>
+                <DetailHeader title={`Transactions de ZAUTO (sortante)`} />
+                <DetailContent $columns={1}>
+                  <TransactionsList
+                    transactions={transactions}
+                    currency={clientCurrency}
+                    direction="sortante"
+                  />
+                </DetailContent>
+              </DetailSection>
+              <DetailSection>
+                <DetailHeader
+                  title={`Transactions de ${client.fullName} (entrante)`}
+                />
+                <DetailContent $columns={1}>
+                  <TransactionsList
+                    transactions={transactions}
+                    currency={clientCurrency}
+                    direction="entrante"
+                  />
                 </DetailContent>
               </DetailSection>
             </>

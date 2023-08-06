@@ -8,9 +8,11 @@ const renderCarDetails = () => {
 
   return carDetails.map((details) => {
     if (details) {
+      const { section } = details;
+
       return (
-        <S.Section key={details.section}>
-          <Heading5>{details.section} :</Heading5>
+        <S.Section key={section}>
+          <Heading5>{section} :</Heading5>
           {Object.entries(details).map(([key, value]) => {
             if (key !== "section") {
               return (

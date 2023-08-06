@@ -5,7 +5,7 @@ export const StatTicket = styled.div`
   gap: 1rem;
   height: 9.2rem;
   padding: 2rem;
-  background-color: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme }) => theme.colors.neutral["50"]};
   border-radius: 0.4rem;
 `;
 
@@ -27,4 +27,16 @@ export const TicketContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  color: ${({ theme }) => theme.colors.black};
+
+  & p::first-letter {
+    text-transform: capitalize;
+  }
+
+  &.red h5 {
+    color: ${({ theme }) => theme.colors.error[700]};
+  }
+  &.green h5 {
+    color: ${({ theme }) => theme.colors.success[700]};
+  }
 `;

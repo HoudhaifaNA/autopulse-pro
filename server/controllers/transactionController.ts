@@ -70,11 +70,14 @@ export const createTransaction = tryCatch((req, res, next) => {
 
   const client: any = getClientById.get(clientId);
 
-  if (client.clientType === "euro" && type !== "euroTransfer") {
+  if (!client || (client.clientType === "euro" && type !== "euroTransfer")) {
     return next(
       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
     );
-  } else if (client.clientType !== "euro" && type === "euroTransfer") {
+  } else if (
+    !client ||
+    (client.clientType !== "euro" && type === "euroTransfer")
+  ) {
     return next(
       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
     );

@@ -14,7 +14,7 @@ const SvgWrapper = styled.svg<{ $size: string }>`
 const Icon = ({ icon, size }: IconProps) => {
   return (
     <SvgWrapper $size={size}>
-      <use xlinkHref={`./sprite.svg#${icon}`} />;
+      <use xlinkHref={`/sprite.svg#${icon}`} />;
     </SvgWrapper>
   );
 };

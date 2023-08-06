@@ -19,7 +19,7 @@ type BaseInputFields = Pick<
 >;
 
 export interface SelectOption extends DropdownItem {
-  relatedValues?: string[];
+  relatedValues?: string[] | number[];
 }
 
 export interface SelectInputProps extends BaseInputFields {

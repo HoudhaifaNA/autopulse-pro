@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { useFormikContext, FormikContextType } from "formik";
+import { useFormikContext } from "formik";
 
 import * as S from "components/CarForm/ExpensesDetails.styled";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";

@@ -1,6 +1,5 @@
 import * as S from "components/Checkbox/Checkbox.styled";
 import Icon from "components/Icon/Icon";
-import { useState } from "react";
 
 interface CheckboxProps {
   isChecked: boolean;

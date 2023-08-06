@@ -3,6 +3,7 @@ import { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import Inter from "next/font/local";
 import { ThemeProvider } from "styled-components";
+import NextNProgress from "nextjs-progressbar";
 
 import GlobalStyle from "styles/GlobalStyle";
 import theme from "styles/theme";
@@ -19,6 +20,11 @@ import DeleteModal from "components/DeleteModal/DeleteModal";
 import WarningModal from "components/WarningModal/WarningModal";
 import SellForm from "components/SellForm/SellForm";
 import ExpenseForm from "components/ExpenseForm/ExpenseForm";
+import Toaster from "components/Toaster/Toaster";
+import ProcurationForm from "components/ProcurationForm/ProcurationForm";
+import ExpenseDocument from "components/ExpenseDocument/ExpenseDocument";
+import API from "utils/API";
+import PaperForm from "components/PaperForm/PaperForm";
 
 const inter = Inter({
   src: [
@@ -36,7 +42,7 @@ interface Modal {
   data?: any;
 }
 interface Notification {
-  status: string;
+  status: "success" | "error" | "warning" | "";
   message: string;
 }
 interface Document {
@@ -46,10 +52,16 @@ interface Document {
 interface ModalDelete {
   name: string;
   url: string;
+  method?: "patch" | "delete";
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const [currCarType, setCurrCar] = useState<any>({
+    brand: "",
+    model: "",
+    serie: "",
+  });
   const [currModal, setModal] = useState<Modal>({
     name: "",
     edit: false,
@@ -73,19 +85,60 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [currNotification.status]);
 
   const currentPath = router.asPath.split("/")[1];
-  const FORM_NAMES = ["clients", "cars", "licences", "expenses"];
+  const FORM_NAMES = [
+    "clients",
+    "cars",
+    "licences",
+    "expenses",
+    "procurations",
+    "papers",
+  ];
+
+  let TEN_MINUTES = 1000 * 60 * 10;
+  let inactiveTimeThreshold = TEN_MINUTES;
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    const handleInactivity = async () => {
+      await API.post("/users/logout");
+      location.assign("/");
+    };
+    const resetTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(handleInactivity, inactiveTimeThreshold);
+    };
+
+    document.addEventListener("mousedown", resetTimer);
+    document.addEventListener("mousemove", resetTimer);
+    document.addEventListener("mouseup", resetTimer);
+    document.addEventListener("keydown", resetTimer);
+    document.addEventListener("keypress", resetTimer);
+    document.addEventListener("keyup", resetTimer);
+
+    return () => {
+      document.removeEventListener("mousedown", resetTimer);
+      document.removeEventListener("mousemove", resetTimer);
+      document.removeEventListener("mouseup", resetTimer);
+      document.removeEventListener("keydown", resetTimer);
+      document.removeEventListener("keypress", resetTimer);
+      document.removeEventListener("keyup", resetTimer);
+    };
+  }, []);
   useEffect(() => {
     const handleShorcuts = (e: KeyboardEvent) => {
-      if (FORM_NAMES.includes(currentPath)) {
-        if (e.key.toLowerCase() === "n") {
-          setModal({ name: currentPath });
+      // @ts-ignore
+      if (e.target["tagName"] !== "INPUT") {
+        if (FORM_NAMES.includes(currentPath)) {
+          if (e.key.toLowerCase() === "n") {
+            setModal({ name: currentPath });
+          }
         }
-      }
-      if (currentPath === "finances") {
-        if (e.key.toLowerCase() === "e" && !currModal) {
-          setModal({ name: "euros" });
-        } else if (e.key.toLowerCase() === "v" && !currModal) {
-          setModal({ name: "transactions" });
+        if (currentPath === "finances") {
+          if (e.key.toLowerCase() === "e" && !currModal) {
+            setModal({ name: "euros" });
+          } else if (e.key.toLowerCase() === "v" && !currModal) {
+            setModal({ name: "transactions" });
+          }
         }
       }
     };
@@ -106,6 +159,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <GlobalContext.Provider
       value={{
+        currCarType,
+        setCurrCar,
         currModal,
         setModal,
         addUpModal,
@@ -127,19 +182,39 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ThemeProvider theme={theme}>
           <GlobalStyle />
           {modalDelete && (
-            <DeleteModal name={modalDelete.name} url={modalDelete.url} />
+            <DeleteModal
+              name={modalDelete.name}
+              url={modalDelete.url}
+              method={modalDelete.method}
+            />
           )}
           {currModal.name === "clients" && (
             <ClientForm edit={currModal.edit} data={currModal.data} />
           )}
-          {currModal.name === "cars" && <CarForm />}
+          {currModal.name === "cars" && (
+            <CarForm edit={currModal.edit} data={currModal.data} />
+          )}
           {currModal.name === "licences" && (
             <LicenceForm edit={currModal.edit} data={currModal.data} />
           )}
+          {currModal.name === "procurations" && (
+            <ProcurationForm edit={currModal.edit} data={currModal.data} />
+          )}
+          {currModal.name === "papers" && (
+            <PaperForm edit={currModal.edit} data={currModal.data} />
+          )}
           {currModal.name === "transactions" && <TransactionForm />}
           {currModal.name === "euros" && <EuroTransferForm />}
-          {currModal.name === "expenses" && <ExpenseForm />}
-          {currModal.name === "sell" && <SellForm id={currDocument.id} />}
+          {currModal.name === "expenses" && (
+            <ExpenseForm edit={currModal.edit} data={currModal.data} />
+          )}
+          {currModal.name === "sell" && (
+            <SellForm
+              edit={currModal.edit}
+              data={currModal.data}
+              id={currModal.data.id}
+            />
+          )}
 
           {addUpModal === "clients" && (
             <>
@@ -157,6 +232,22 @@ function MyApp({ Component, pageProps }: AppProps) {
           {currDocument.type === "clients" && <ClientDocument />}
           {currDocument.type === "licences" && <LicenceDocument />}
           {currDocument.type === "cars" && <CarDocument />}
+          {currDocument.type === "expenses" && <ExpenseDocument />}
+          {currNotification.status && (
+            <div
+              style={{
+                position: "fixed",
+                zIndex: "1500000",
+                right: "2rem",
+                top: "2rem",
+              }}
+            >
+              <Toaster type={currNotification.status}>
+                {currNotification.message}
+              </Toaster>
+            </div>
+          )}
+          <NextNProgress color="red" />
           {insertPage()}
         </ThemeProvider>
       </main>

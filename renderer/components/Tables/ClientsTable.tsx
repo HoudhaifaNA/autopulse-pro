@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useCallback, useState, useRef, useEffect } from "react";
 import dayjs from "dayjs";
 
 import { Body2 } from "styles/Typography";
@@ -19,7 +19,9 @@ import { GlobalContext } from "pages/_app";
 import Dropdown from "components/Dropdown/Dropdown";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 import Button from "components/Button/Button";
-import useClickOutside from "hooks/useClickOutside";
+import Invoice from "components/Invoice/Invoice";
+import { useReactToPrint } from "react-to-print";
+import formatPrice from "utils/formatPrice";
 
 interface IProps {
   clients: any[];
@@ -27,10 +29,7 @@ interface IProps {
 
 const TB_HEADER_DATA = [
   { text: "Indice", sortable: false },
-  { text: "Date créée", sortable: true },
-  { text: "Type", sortable: false },
   { text: "Nom", sortable: true },
-  { text: "Numéro de téléphone", sortable: false },
   { text: "Solde du compte", sortable: true },
   { text: "Statue de payment", sortable: false },
   { text: "Dernière transaction", sortable: true },
@@ -59,6 +58,10 @@ const ClientsTable = ({ clients }: IProps) => {
   const { setDocument, toggleModalDelete, setModal } =
     useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
+  const compRef = useRef<any[]>([]);
+  const [printedClientId, setPrintedClient] = useState<number | null>(null);
+  const [printType, setPrintType] = useState<"all" | "last">("all");
+
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
       addIds((ids) => [...ids, id]);
@@ -78,12 +81,7 @@ const ClientsTable = ({ clients }: IProps) => {
   };
 
   const handleDeleteAll = () => {
-    if (clients.length === ids.length) {
-      toggleModalDelete({
-        name: `${ids.length} client`,
-        url: `/clients/`,
-      });
-    } else if (ids.length > 0) {
+    if (ids.length > 0) {
       toggleModalDelete({
         name: `${ids.length} client`,
         url: `/clients/${ids.join(",")}`,
@@ -91,6 +89,22 @@ const ClientsTable = ({ clients }: IProps) => {
     }
     return addIds([]);
   };
+  const reactToPrintContent = useCallback(() => {
+    if (printedClientId) {
+      return compRef.current[printedClientId];
+    }
+  }, [compRef.current, printedClientId, printType]);
+
+  const handlePrint = useReactToPrint({
+    content: reactToPrintContent,
+    documentTitle: "Facture de client",
+    removeAfterPrint: true,
+  });
+  useEffect(() => {
+    if (printedClientId) handlePrint();
+    setPrintedClient(null);
+  }, [printedClientId]);
+
   return (
     <TableWrapper>
       <Table>
@@ -117,15 +131,10 @@ const ClientsTable = ({ clients }: IProps) => {
         </TableHeader>
         <TableBody>
           {clients.map((client, ind) => {
-            const {
-              id,
-              created_at,
-              clientType,
-              fullName,
-              phoneNumber,
-              balance,
-              lastTransactionDate,
-            } = client;
+            const { id, clientType, fullName, balance, lastTransactionDate } =
+              client;
+            const clientCurrency = clientType === "euro" ? "€" : "DA";
+
             const onDelete = () => {
               toggleModalDelete({
                 name: `${fullName} et sa transactions (voitures, licences, transferts d'argent)`,
@@ -134,6 +143,16 @@ const ClientsTable = ({ clients }: IProps) => {
               return addIds([]);
             };
 
+            // <td style={{ display: "none" }}>
+            //   <td
+            //     ref={(el) => {
+            //       compRef.current[ind] = el;
+            //       return el;
+            //     }}
+            //   >
+            //     <Invoice client={client} printType={printType} />
+            //   </td>
+            // </td>;
             return (
               <TableRow key={id}>
                 <TableCell blurrable={false}>
@@ -145,14 +164,8 @@ const ClientsTable = ({ clients }: IProps) => {
                 <TableCell blurrable={false}>
                   <Body2>{ind + 1}</Body2>
                 </TableCell>
-                <TableCell blurrable={false}>
-                  <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
-                </TableCell>
-                <TableCell blurrable={false}>
-                  <Body2>{clientType}</Body2>
-                </TableCell>
+
                 <TableCell
-                  blurrable={false}
                   onClick={() => {
                     setDocument({ type: "clients", id });
                   }}
@@ -160,16 +173,12 @@ const ClientsTable = ({ clients }: IProps) => {
                   <Body2>{fullName}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>{phoneNumber ? phoneNumber : "--"}</Body2>
-                </TableCell>
-                <TableCell>
                   <Body2>
-                    {Math.abs(balance).toLocaleString()}.00{" "}
-                    {clientType === "euro" ? "€" : "DA"}
+                    {formatPrice(Math.abs(balance), clientCurrency)}
                   </Body2>
                 </TableCell>
                 <TableCell>{clientStatus(balance)}</TableCell>
-                <TableCell blurrable={false}>
+                <TableCell>
                   <Body2>
                     {lastTransactionDate
                       ? dayjs(lastTransactionDate).format("DD-MM-YYYY")
@@ -189,7 +198,33 @@ const ClientsTable = ({ clients }: IProps) => {
                   <Icon icon="more_vert" size="1.8rem" />
 
                   {isDropdownActive === ind && (
-                    <Dropdown $right="0" $top="1rem" $width="20rem">
+                    <Dropdown $right="0" $top="1rem" $width="30rem">
+                      {lastTransactionDate && (
+                        <>
+                          <ButtonItem
+                            $ghostColor="#595959"
+                            onClick={() => {
+                              setPrintType("last");
+                              setPrintedClient(ind);
+                            }}
+                          >
+                            <Button variant="ghost" icon="print">
+                              Imprimer dernière transaction
+                            </Button>
+                          </ButtonItem>
+                          <ButtonItem
+                            $ghostColor="#595959"
+                            onClick={() => {
+                              setPrintType("all");
+                              setPrintedClient(ind);
+                            }}
+                          >
+                            <Button variant="ghost" icon="print">
+                              Imprimer toutes les transactions
+                            </Button>
+                          </ButtonItem>
+                        </>
+                      )}
                       <ButtonItem
                         $ghostColor="#595959"
                         onClick={() =>
@@ -197,9 +232,9 @@ const ClientsTable = ({ clients }: IProps) => {
                             name: "clients",
                             edit: true,
                             data: {
+                              ...client,
                               id,
                               fullName,
-                              phoneNumber,
                               clientType,
                               balance,
                             },

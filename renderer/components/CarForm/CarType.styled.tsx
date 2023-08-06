@@ -4,7 +4,7 @@ export const CarTypeWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7rem;
+  gap: 5rem;
   height: 20rem;
 `;
 export const CarType = styled.div<{ $selected: boolean }>`

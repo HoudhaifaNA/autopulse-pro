@@ -42,6 +42,7 @@ export const DropdownItem = styled.li`
   justify-content: space-between;
   padding: 0.8rem 1rem;
   background-color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.black};
   height: 4rem;
   cursor: pointer;
 

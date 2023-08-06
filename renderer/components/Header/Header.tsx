@@ -11,9 +11,8 @@ import Icon from "components/Icon/Icon";
 
 import useClickOutside from "hooks/useClickOutside";
 import { GlobalContext } from "pages/_app";
-import axios from "axios";
 import API, { fetcher } from "utils/API";
-// import { fetcher } from "utils/API";
+import { useRouter } from "next/router";
 
 // !TODO NEED REFACTORE
 
@@ -22,32 +21,6 @@ interface SearchCategory {
   items: any[];
 }
 
-const CATEGORIES_EXAMPLE: SearchCategory[] = [
-  {
-    name: "clients",
-    items: [
-      { name: "Houdhaifa Lebbad", link: "/" },
-      { name: "Ahmed Nadhir", link: "/" },
-      { name: "Aymen Finas", link: "/sd" },
-    ],
-  },
-  {
-    name: "cars",
-    items: [
-      { name: "Mercedes-Benz CLA 45", link: "/" },
-      { name: "Audi A3 ", link: "/" },
-      { name: "BMW X5BMW X5 G05", link: "/" },
-    ],
-  },
-  {
-    name: "licences",
-    items: [
-      { name: "Jaylon Curtis", link: "/" },
-      { name: "Ryan Vetrovs", link: "/" },
-      { name: "Jaylon Curtis", link: "/" },
-    ],
-  },
-];
 const categoryToIcon = (category: SearchCategory["name"]) => {
   if (category === "cars") return "car";
   if (category === "licences") return "document";
@@ -66,10 +39,11 @@ const renderSearchedItems = (
           {category.items.map((item) => {
             let val;
             if (category.name === "clients") val = item.fullName;
-            if (category.name === "cars") val = item.name;
+            if (category.name === "cars")
+              val = `${item.name} (${item.serialNumber}) (${item.registrationNumber})`;
             if (category.name === "licences") val = item.moudjahid;
             return (
-              <S.CategoryItem key={val}>
+              <S.CategoryItem key={item.id}>
                 <div
                   onClick={() =>
                     setDocument({ type: category.name, id: item.id })
@@ -87,6 +61,17 @@ const renderSearchedItems = (
   });
 };
 
+const handleQuerying = async (query: string, table: string) => {
+  let items: any[] = [];
+  if (query.length >= 1) {
+    const { data } = await API.get(`/search?query=${query}&table=${table}`);
+
+    items = [{ name: table, items: data.data }];
+  }
+
+  return items;
+};
+
 const Header = () => {
   const { setDocument } = useContext(GlobalContext);
   const { data, isLoading } = useSWR("/users/getMe", fetcher);
@@ -94,33 +79,18 @@ const Header = () => {
   const [focus, setFocus] = useClickOutside(searchListRef);
   const [query, setQuery] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
+  const router = useRouter();
 
   let username = "";
   if (isLoading) username = "...";
   if (data) username = data.user.username;
-
-  const handleQuerying = async () => {
-    if (query.length >= 2) {
-      const { data } = await API.get(`/search?query=${query}`);
-      const categoriesList = Object.entries(data.data).map(
-        ([key, value]: any) => {
-          let items = value.map((el: any) => {
-            return el;
-          });
-          let categories = {
-            name: key,
-            items,
-          };
-          return categories;
-        }
-      );
-      setCategories(categoriesList);
-    }
-  };
+  const table = router.asPath.split("/")[1];
 
   useEffect(() => {
-    handleQuerying();
-  }, [query]);
+    handleQuerying(query, table).then((categoriesList) => {
+      setCategories(categoriesList);
+    });
+  }, [query, table]);
 
   return (
     <S.Header>
@@ -137,7 +107,10 @@ const Header = () => {
               onChange={(e) => {
                 setQuery(e.target.value);
               }}
-              onFocus={() => setFocus(true)}
+              onFocus={() => {
+                setFocus(true);
+                handleQuerying(query, table);
+              }}
             />
           </InputStyle.InputWrapper>
         </InputStyle.InputContainer>

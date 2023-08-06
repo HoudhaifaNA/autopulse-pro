@@ -14,12 +14,15 @@ interface items {
 }
 
 const NAVBAR_ITEMS: items[] = [
-  { text: "Tableau de bord", icon: "dashboard", link: "/dashboard" },
   { text: "Voitures", icon: "car", link: "/cars" },
   { text: "Clients", icon: "clients", link: "/clients" },
   { text: "Licences", icon: "document", link: "/licences" },
+  { text: "Procurations", icon: "procuration", link: "/procurations" },
+  { text: "Dossiers", icon: "folder", link: "/papers" },
   { text: "Finances", icon: "finance", link: "/finances" },
   { text: "Dépenses", icon: "shopping", link: "/expenses" },
+  { text: "Stock", icon: "stock", link: "/stock" },
+  { text: "Tableau de bord", icon: "dashboard", link: "/dashboard" },
   { text: "Paramètres", icon: "account_settings", link: "/profile" },
 ];
 
@@ -33,7 +36,9 @@ const renderNavItems = (
 
     useEffect(() => {
       // Check if active on normal path or html path when redirecting to a page on production
-      const sameUrl = link === currentPath || `${link}.html` === currentPath;
+      const sameUrl =
+        link.split("/")[1] === currentPath.split("/")[1] ||
+        `${link.split("/")[1]}.html` === currentPath.split("/")[1];
       setActive(sameUrl);
     }, [currentPath]);
 
@@ -56,7 +61,12 @@ const Navbar = () => {
   return (
     <S.NavbarWrapper $short={short}>
       <S.LogoWrapper onClick={() => setShort(!short)}>
-        <Image src="/images/logo.png" alt="zauto logo" width={50} height={50} />
+        <Image
+          src={`${short ? "/images/short-logo.png" : "/images/logo.png"}`}
+          alt="zauto logo"
+          width={short ? 60 : 200}
+          height={short ? 50 : 70}
+        />
       </S.LogoWrapper>
       <S.MainNavbarList>
         {renderNavItems(NAVBAR_ITEMS, short, asPath)}

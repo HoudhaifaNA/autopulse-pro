@@ -32,22 +32,13 @@ const ExpensesDetails = () => {
                 autoFocus
               />
               {type === "à l'étranger" ? (
-                <FormGroup>
-                  <TypedInput
-                    name={`expenses.${ind}.euroCost`}
-                    type="number"
-                    label="Coût :"
-                    placeholder="450"
-                    addOn="€"
-                  />
-                  <TypedInput
-                    name={`expenses.${ind}.euroPrice`}
-                    type="number"
-                    label="Prix ​​de 100 € :"
-                    placeholder="220"
-                    addOn="DA"
-                  />
-                </FormGroup>
+                <TypedInput
+                  name={`expenses.${ind}.euroCost`}
+                  type="number"
+                  label="Coût :"
+                  placeholder="450"
+                  addOn="€"
+                />
               ) : (
                 <TypedInput
                   name={`expenses.${ind}.totalCost`}

@@ -20,6 +20,7 @@ import { Values } from "components/LicenceForm/types";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 import Button from "components/Button/Button";
 import { GlobalContext } from "pages/_app";
+import useClients from "hooks/useClients";
 
 const getClients = () => {
   const clientsRes = useSWR("/clients", fetcher, { refreshInterval: 3 });
@@ -60,7 +61,7 @@ const renderAttachments = (attachments: Values["attachments"]) => {
 const LicenceForm = ({ edit, data }: { edit?: boolean; data?: any }) => {
   const { setAddUpModal } = useContext(GlobalContext);
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
-  const CLIENTS_LIST = getClients();
+  const { clientsItems, isLoading } = useClients("DA");
 
   const values = formProps?.values ?? INITIAL_VALUES;
   const { attachments } = values;
@@ -69,7 +70,7 @@ const LicenceForm = ({ edit, data }: { edit?: boolean; data?: any }) => {
     <Form
       title="Ajouter une licence"
       initials={
-        data ? { ...INITIAL_VALUES, ...data, edit: true } : INITIAL_VALUES
+        edit ? { ...INITIAL_VALUES, ...data, edit: true } : INITIAL_VALUES
       }
       validation={licenceSchema}
       onSubmit={handleSubmit}
@@ -83,25 +84,27 @@ const LicenceForm = ({ edit, data }: { edit?: boolean; data?: any }) => {
           label="Moudjahid :"
           placeholder="Nom du moudjahid"
         />
-        <SelectInput
-          name="seller.name"
-          label="Vendeur :"
-          placeholder="Nom de vendeur"
-          relatedFields={["seller.id"]}
-          items={CLIENTS_LIST}
-          buttons={
-            <ButtonItem>
-              <Button
-                type="button"
-                variant="ghost"
-                icon="add"
-                onClick={() => setAddUpModal("clients")}
-              >
-                Ajouter un client
-              </Button>
-            </ButtonItem>
-          }
-        />
+        {!isLoading && (
+          <SelectInput
+            name="seller.name"
+            label="Vendeur :"
+            placeholder="Nom de vendeur"
+            relatedFields={["seller.id"]}
+            items={clientsItems}
+            buttons={
+              <ButtonItem>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  icon="add"
+                  onClick={() => setAddUpModal("clients")}
+                >
+                  Ajouter un client
+                </Button>
+              </ButtonItem>
+            }
+          />
+        )}
       </FormGroup>
       <FormGroup>
         <DateInput name="created_at" label="Créé à" minDate="2015" />

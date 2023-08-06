@@ -5,6 +5,7 @@ import * as S from "components/Form/Form.styled";
 
 import Modal, { ModalActions, ModalContent } from "components/Modal/Modal";
 import Button from "components/Button/Button";
+
 import { GlobalContext } from "pages/_app";
 
 type ActionsProps = Partial<FormikProps<any>>;
@@ -21,8 +22,7 @@ interface FormProps {
 }
 
 const Form = (props: FormProps) => {
-  const { setModal, setNotification, addUpModal, setAddUpModal, setDocument } =
-    useContext(GlobalContext);
+  const context = useContext(GlobalContext);
 
   const {
     title,
@@ -38,17 +38,8 @@ const Form = (props: FormProps) => {
   const FormikSetup = {
     initialValues: initials,
     validationSchema: validation,
-    //@ts-ignore
-    onSubmit: (actions, values) =>
-      onSubmit(
-        actions,
-        values,
-        setModal,
-        setNotification,
-        addUpModal,
-        setAddUpModal,
-        setDocument
-      ),
+    onSubmit: (actions: FormikProps<any>, values: any) =>
+      onSubmit(actions, values, context),
   };
 
   return (

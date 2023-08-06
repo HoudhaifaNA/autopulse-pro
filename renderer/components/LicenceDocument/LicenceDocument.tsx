@@ -15,9 +15,27 @@ import FileViewer from "components/FileViewer/FileViewer";
 import PDFViewer from "components/PDFViewer/PDFViewer";
 import { GlobalContext } from "pages/_app";
 import { fetcher } from "utils/API";
+import Badge, { BadgeProps } from "components/Badge/Badge";
+import Button from "components/Button/Button";
+import dayjs from "dayjs";
+
+const licenceStatus = (isValid: string) => {
+  let status: string = "";
+  let color: BadgeProps["type"] = "success";
+  if (isValid === "true") {
+    status = "Active";
+    color = "success";
+  }
+  if (isValid === "false") {
+    status = "Invalide";
+    color = "error";
+  }
+  return <Badge type={color}>{status}</Badge>;
+};
 
 const LicenceDocument = () => {
-  const { currDocument } = useContext(GlobalContext);
+  const { currDocument, setDocument, setModal, toggleModalDelete } =
+    useContext(GlobalContext);
   const [currentImage, setCurrentImage] = useState<string>();
   const [currentPDF, setCurrentPDF] = useState<string>();
 
@@ -77,23 +95,94 @@ const LicenceDocument = () => {
         <>
           {renderFileViewer()}
           <DetailsViewer title="Document de licence">
+            <div style={{ display: "flex", gap: "2rem" }}>
+              <Button
+                variant="primary"
+                icon="edit"
+                onClick={() => {
+                  const {
+                    id,
+                    created_at,
+                    validUntil,
+                    moudjahid,
+                    sellerId,
+                    seller,
+                    serialNumber,
+                    wilaya,
+                    price,
+                  } = data.licence;
+
+                  setModal({
+                    name: "licences",
+                    edit: true,
+                    data: {
+                      id,
+                      created_at: dayjs(created_at),
+                      releasedDate: dayjs(validUntil).subtract(5, "years"),
+                      moudjahid,
+                      seller: { id: Number(sellerId), name: seller },
+                      serialNumber,
+                      wilaya,
+                      price,
+                    },
+                  });
+                }}
+              >
+                Modifier
+              </Button>
+              <Button
+                variant="danger"
+                icon="delete"
+                onClick={() => {
+                  toggleModalDelete({
+                    name: `licence de ${data.licence.moudjahid}`,
+                    url: `/licences/${data.licence.id}`,
+                  });
+                }}
+              >
+                Suprimmer
+              </Button>
+            </div>
             <DetailSection>
               <DetailHeader title="Détails de la licence" />
-              <DetailContent $columns={5}>
-                <DetailItem title="vendeur" value={data.licence.seller} />
+              <DetailContent $columns={3}>
+                <DetailItem
+                  title="vendeur"
+                  value={data.licence.seller}
+                  blurrable={true}
+                  onClick={() =>
+                    setDocument({ type: "clients", id: data.licence.sellerId })
+                  }
+                />
                 <DetailItem title="moudjahid" value={data.licence.moudjahid} />
                 <DetailItem
                   title="prix"
                   value={`${data.licence.price.toLocaleString()}.00 DA`}
+                  blurrable={true}
                 />
+              </DetailContent>
+              <DetailContent $columns={3}>
                 <DetailItem
                   title="wilaya"
                   value={data.licence.wilaya ? data.licence.wilaya : "--"}
                 />
                 <DetailItem
+                  title="Status"
+                  value={licenceStatus(data.licence.isValid)}
+                />
+                <DetailItem
                   title="Numéro de série"
                   value={
                     data.licence.serialNumber ? data.licence.serialNumber : "--"
+                  }
+                />
+              </DetailContent>
+              <DetailContent $columns={3}>
+                <DetailItem
+                  title="Voiture"
+                  value={data.licence.carName}
+                  onClick={() =>
+                    setDocument({ type: "cars", id: data.licence.carId })
                   }
                 />
               </DetailContent>

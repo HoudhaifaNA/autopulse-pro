@@ -11,12 +11,10 @@ import ClientsTable from "components/Tables/ClientsTable";
 
 import { fetcher } from "utils/API";
 import { GlobalContext } from "pages/_app";
-import ClientDocument from "components/ClientDocument/ClientDocument";
+import { Heading5 } from "styles/Typography";
 
 const ClientsPage = () => {
-  const { data, isLoading, error } = useSWR("/clients", fetcher, {
-    refreshInterval: 5,
-  });
+  const { data, isLoading, error } = useSWR("/clients", fetcher);
   const { currModal, setModal } = useContext(GlobalContext);
   const renderPage = () => {
     if (isLoading) return <Loading />;
@@ -37,12 +35,21 @@ const ClientsPage = () => {
     } else {
       return (
         <>
-          <PageHeader
-            title="Clients"
-            CTAText="Ajouter un client"
-            CTAIcon="add"
-            CTAonClick={() => setModal({ name: "clients" })}
-          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "2rem",
+            }}
+          >
+            <Heading5>{data.clients.length} </Heading5>
+            <PageHeader
+              CTAText="Ajouter"
+              CTAIcon="add"
+              CTAonClick={() => setModal({ name: "clients" })}
+            />
+          </div>
           <ClientsTable clients={data.clients} />
         </>
       );

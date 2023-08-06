@@ -22,18 +22,18 @@ import Button from "components/Button/Button";
 
 interface IProps {
   licences: any[];
+  rowsNumbers: number[] | null;
 }
 
 const TB_HEADER_DATA = [
   { text: "Indice", sortable: false },
-  { text: "Date créée", sortable: true },
-  { text: "Vendeur", sortable: true },
   { text: "Moudjahid", sortable: true },
   { text: "Numéro de série", sortable: false },
   { text: "Wilaya", sortable: false },
   { text: "Prix", sortable: true },
   { text: "Statut", sortable: false },
   { text: "Date d'expiration", sortable: true },
+  { text: "Vendeur", sortable: true },
 ];
 
 const licenceStatus = (isValid: string) => {
@@ -50,7 +50,7 @@ const licenceStatus = (isValid: string) => {
   return <Badge type={color}>{status}</Badge>;
 };
 
-const LicencesTable = ({ licences }: IProps) => {
+const LicencesTable = ({ licences, rowsNumbers }: IProps) => {
   const [isDropdownActive, toggleDropdown] = useState<null | number>(null);
   const { setDocument, toggleModalDelete, setModal } =
     useContext(GlobalContext);
@@ -75,19 +75,13 @@ const LicencesTable = ({ licences }: IProps) => {
   };
 
   const handleDeleteAll = async () => {
-    if (licences.length === ids.length) {
-      toggleModalDelete({
-        name: `${ids.length} licences`,
-        url: `/licences/`,
-      });
-    } else if (ids.length > 0) {
+    if (ids.length > 0) {
       toggleModalDelete({
         name: `${ids.length} licences`,
         url: `/licences/${ids.join(",")}`,
       });
+      return addIds([]);
     }
-
-    addIds([]);
   };
 
   return (
@@ -145,21 +139,9 @@ const LicencesTable = ({ licences }: IProps) => {
                   />
                 </TableCell>
                 <TableCell blurrable={false}>
-                  <Body2>{ind + 1}</Body2>
-                </TableCell>
-                <TableCell blurrable={false}>
-                  <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
+                  <Body2>{rowsNumbers ? rowsNumbers[ind] : ind + 1}</Body2>
                 </TableCell>
                 <TableCell
-                  blurrable={false}
-                  onClick={() => {
-                    setDocument({ type: "clients", id: sellerId });
-                  }}
-                >
-                  <Body2>{seller}</Body2>
-                </TableCell>
-                <TableCell
-                  blurrable={false}
                   onClick={() => {
                     setDocument({ type: "licences", id });
                   }}
@@ -169,17 +151,22 @@ const LicencesTable = ({ licences }: IProps) => {
                 <TableCell>
                   <Body2>{serialNumber ?? "--"}</Body2>
                 </TableCell>
-                <TableCell blurrable={false}>
+                <TableCell>
                   <Body2>{wilaya ?? "--"}</Body2>
                 </TableCell>
                 <TableCell>
                   <Body2>{price.toLocaleString()}.00 DA</Body2>
                 </TableCell>
-                <TableCell blurrable={false}>
-                  {licenceStatus(isValid)}
-                </TableCell>
-                <TableCell blurrable={false}>
+                <TableCell>{licenceStatus(isValid)}</TableCell>
+                <TableCell>
                   <Body2>{dayjs(validUntil).format("DD-MM-YYYY")}</Body2>
+                </TableCell>
+                <TableCell
+                  onClick={() => {
+                    setDocument({ type: "clients", id: sellerId });
+                  }}
+                >
+                  <Body2>{seller}</Body2>
                 </TableCell>
                 <TableCell
                   blurrable={false}

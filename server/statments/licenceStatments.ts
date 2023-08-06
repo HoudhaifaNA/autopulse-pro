@@ -22,7 +22,7 @@ export const SELECT_BASE_QUERY = `SELECT licences.*,
   ${IS_EXPIRATED},
   clients.fullName AS seller
   FROM licences
-  INNER JOIN clients on clients.id = sellerId
+  INNER JOIN clients ON clients.id = sellerId
   `;
 
 db.prepare(
@@ -48,12 +48,22 @@ db.prepare(
 )`
 ).run();
 
-export const getLicences = db.prepare(
-  `${SELECT_BASE_QUERY} ORDER BY created_at DESC`
+export const getLicencesCount = db.prepare(
+  `SELECT COUNT(*) as total_rows FROM licences`
 );
+export const getLicences = `${SELECT_BASE_QUERY}  ORDER BY seller
+  `;
 
 export const getLicenceById = db.prepare(
-  `${SELECT_BASE_QUERY} WHERE licences.id = ?`
+  `SELECT licences.*, 
+  ${IS_VALID}, 
+  ${IS_EXPIRATED},
+  clients.fullName AS seller,
+  cars.name AS carName
+  FROM licences
+  INNER JOIN clients ON clients.id = licences.sellerId
+  LEFT JOIN cars ON licences.carId IS NOT NULL AND licences.carId = cars.id
+  WHERE licences.id = ?`
 );
 
 export const getLicenceByMoudjahid = db.prepare(
@@ -86,3 +96,14 @@ export const deleteLicenceById = `DELETE FROM licences
     WHERE id IN `;
 
 export const deleteLicences = db.prepare(`DELETE FROM licences`);
+
+db.prepare(
+  `CREATE TRIGGER IF NOT EXISTS updateCarTotalCost
+      AFTER UPDATE ON licences
+      FOR EACH ROW
+        BEGIN
+          UPDATE cars
+          SET totalCost = (cars.totalCost - OLD.price ) + NEW.price
+          WHERE cars.id = NEW.carId ;
+        END;`
+).run();

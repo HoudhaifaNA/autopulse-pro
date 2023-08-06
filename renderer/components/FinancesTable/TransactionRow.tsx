@@ -55,7 +55,6 @@ const TransactionRow = ({
         <Body2>{dayjs(date).format("DD-MM-YYYY")}</Body2>
       </TableCell>
       <TableCell
-        blurrable={false}
         onClick={() => {
           setDocument({ type: "clients", id: clientId });
         }}
@@ -65,7 +64,7 @@ const TransactionRow = ({
       <TableCell>
         <Body2>{info2}</Body2>
       </TableCell>
-      <TableCell blurrable={false}>
+      <TableCell>
         <Badge type={badgeStatus}>{direction}</Badge>
       </TableCell>
       <TableCell>

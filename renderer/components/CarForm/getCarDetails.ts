@@ -1,8 +1,7 @@
 import { useFormikContext } from "formik";
 
-import calcExpensesCost from "utils/calcExpensesCosts";
-
 import { Values } from "components/CarForm/types";
+import formatPrice from "utils/formatPrice";
 
 type CostFormula = (
   type: Values["type"] | "à l'étranger",
@@ -16,9 +15,12 @@ interface ExpensesList {
 }
 
 const costFormula: CostFormula = (type, euroCost, euroPrice, totalCost) => {
-  return type === "importé" || type === "à l'étranger"
-    ? `${euroCost}.00 € × ${euroPrice}.00 DA = ${totalCost}.00 DA`
-    : `${totalCost}.00 DA`;
+  return type !== "locale"
+    ? `${formatPrice(euroCost, "€")} × ${formatPrice(
+        euroPrice,
+        "DA"
+      )} = ${formatPrice(totalCost, "DA")}`
+    : formatPrice(totalCost, "DA");
 };
 
 const getCarDetails = () => {
@@ -55,7 +57,7 @@ const getCarDetails = () => {
     Number(purchasingPrice)
   );
 
-  expenses.forEach(({ type, raison, euroPrice, euroCost, totalCost }) => {
+  expenses.forEach(({ type, raison, euroCost, totalCost }) => {
     const totalCostFormula = costFormula(
       type,
       Number(euroCost),
@@ -68,7 +70,7 @@ const getCarDetails = () => {
   const carName = `${brand} ${model}`;
   const hasLicence = owner.price >= 0 && owner.id;
   const licencePrice = hasLicence
-    ? { "Prix ​​de la licence": `${owner.price}.00 DA` }
+    ? { "Prix ​​de la licence": formatPrice(owner.price, "DA") }
     : "";
 
   const carDetails = [
@@ -92,8 +94,8 @@ const getCarDetails = () => {
     totalExpensesCost !== 0 && { section: "Dépenses", ...expensesList },
     {
       section: "Calculs totaux",
-      "Total en EURO": `${totalEurosAmount}.00 €`,
-      Total: `${totalCost}.00 DA`,
+      "Total en EURO": formatPrice(totalEurosAmount, "€"),
+      Total: formatPrice(totalCost, "DA"),
     },
   ];
 

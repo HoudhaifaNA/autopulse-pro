@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Formik, FormikProps, FormikHelpers } from "formik";
 
 import * as S from "styles/LoginPage.styled";
@@ -9,6 +9,7 @@ import Button from "components/Button/Button";
 import convertPath from "utils/convertPath";
 import { loginSchema } from "Schemas/FormSchemas";
 import API from "utils/API";
+import { GlobalContext } from "pages/_app";
 
 interface Values {
   username: string;
@@ -17,29 +18,36 @@ interface Values {
 
 const INITIAL_VALUES = { username: "", password: "" };
 
-const onSubmit = async (values: Values, actions: FormikHelpers<Values>) => {
+const onSubmit = async (values: Values, ctx: any) => {
+  const { setNotification } = ctx;
   const { username, password } = values;
+  let message;
+
   try {
     await API.post("/users/login", { username, password });
 
-    actions.resetForm();
+    setNotification({ status: "success", message: "Connecté avec succès" });
 
     setTimeout(() => {
-      location.assign(convertPath("dashboard"));
+      location.assign(convertPath("cars"));
     }, 500);
   } catch (err: any) {
-    console.log(err.response.data.message);
+    console.log(err);
+    message = "Error";
+    if (err.response) message = err.response.data.message;
+    setNotification({ status: "error", message });
   }
 };
 
 const LoginForm = () => {
+  const ctx = useContext(GlobalContext);
   const [visiblity, setVisibility] = useState(false);
 
   return (
     <Formik
       initialValues={INITIAL_VALUES}
       validationSchema={loginSchema}
-      onSubmit={onSubmit}
+      onSubmit={(values) => onSubmit(values, ctx)}
     >
       {({ handleSubmit, isSubmitting }: FormikProps<Values>) => {
         return (
@@ -49,6 +57,7 @@ const LoginForm = () => {
               type="text"
               label="Nom"
               placeholder="Entrez votre nom"
+              autoFocus
             />
             <TypedInput
               name="password"

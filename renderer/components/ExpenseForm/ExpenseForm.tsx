@@ -8,11 +8,14 @@ import { TypedInput } from "components/Input/Input";
 import { expenseSchema } from "Schemas/FormSchemas";
 import API from "utils/API";
 import DateInput from "components/DateInput/DateInput";
+import { mutate } from "swr";
 
 interface Values {
+  id?: number;
   raison: string;
   amount: number | string;
   transferred_at: Date;
+  edit?: false;
 }
 
 const INITIAL_VALUES = {
@@ -24,12 +27,15 @@ const INITIAL_VALUES = {
 const onSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
-  setModal: any,
-  setNotification: any
+  context: any
 ) => {
+  const { setModal, setNotification } = context;
   try {
-    await API.post("/expenses", values);
+    const method = values.edit ? "patch" : "post";
+    const endpoint = values.edit ? `/expenses/${values.id}` : "/expenses";
 
+    await API[method](endpoint, values);
+    mutate("/expenses");
     setModal("");
     actions.resetForm();
     setNotification({ status: "success", message: "Dépense a été créée" });
@@ -39,13 +45,14 @@ const onSubmit = async (
   }
 };
 
-const ExpenseForm = () => {
+const ExpenseForm = ({ edit, data }: { edit?: boolean; data: any }) => {
   return (
     <Form
       title="Ajouter une dépense"
-      initials={INITIAL_VALUES}
+      initials={data ? { ...data, edit: true } : INITIAL_VALUES}
       validation={expenseSchema}
       onSubmit={onSubmit}
+      buttonText={edit ? "Modifier" : "Ajouter"}
     >
       <FormGroup>
         <TypedInput
@@ -53,7 +60,6 @@ const ExpenseForm = () => {
           type="text"
           label="Raison"
           placeholder="Acheter une imprimante"
-          autoFocus
         />
         <TypedInput
           name="amount"

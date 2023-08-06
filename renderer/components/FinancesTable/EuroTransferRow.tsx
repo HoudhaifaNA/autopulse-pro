@@ -64,7 +64,6 @@ const EuroTransferRow = ({
         <Body2>{dayjs(date).format("DD-MM-YYYY")}</Body2>
       </TableCell>
       <TableCell
-        blurrable={false}
         onClick={() => {
           setDocument({ type: "clients", id: clientId });
         }}
@@ -74,7 +73,7 @@ const EuroTransferRow = ({
       <TableCell>
         <Body2>{method}</Body2>
       </TableCell>
-      <TableCell blurrable={false}>
+      <TableCell>
         <Badge type={badgeStatus}>{direction}</Badge>
       </TableCell>
       <TableCell>

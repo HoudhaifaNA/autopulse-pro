@@ -1,8 +1,7 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 
 import Meta from "components/Meta/Meta";
-import LicenceForm from "components/LicenceForm/LicenceForm";
 import PageHeader from "components/PageHeader/PageHeader";
 import EmptyState from "components/EmptyState/EmptyState";
 import LicencesTable from "components/Tables/LicencesTable";
@@ -11,13 +10,26 @@ import ErrorMessage from "components/ErrorMessage/ErrorMessage";
 
 import { fetcher } from "utils/API";
 import { GlobalContext } from "pages/_app";
-import LicenceDocument from "components/LicenceDocument/LicenceDocument";
+import { Heading5 } from "styles/Typography";
+import Pagination from "components/Pagination/Pagination";
 
 const LicencesPage = () => {
-  const { setModal } = useContext(GlobalContext);
-  const { data, isLoading, error } = useSWR("/licences", fetcher, {
-    refreshInterval: 5,
-  });
+  const { setModal, modalDelete } = useContext(GlobalContext);
+  const [rows, setRows] = useState(10);
+  const [page, setPage] = useState(1);
+  const [swrOptions, setSWROptions] = useState({});
+  const url = `/licences?limit=${rows}&page=${page}`;
+  const { data, isLoading, error } = useSWR(url, fetcher, swrOptions);
+
+  useEffect(() => {
+    setSWROptions({ refreshInterval: 100 });
+
+    const swrTimeOut = setTimeout(() => {
+      setSWROptions({});
+    }, 1000);
+
+    return () => clearTimeout(swrTimeOut);
+  }, [JSON.stringify(modalDelete)]);
 
   const renderPage = () => {
     if (isLoading) return <Loading />;
@@ -36,15 +48,39 @@ const LicencesPage = () => {
         />
       );
     } else {
+      const lastPage = Math.ceil(data.results / rows);
+      const firstRowNum = (page - 1) * rows + 1;
+      const lastRowNum = page === lastPage ? data.results : page * rows;
+      let rowsNumbers: number[] | null = [];
+
+      for (let i = firstRowNum; i <= lastRowNum; i++) {
+        rowsNumbers.push(i);
+      }
       return (
         <>
-          <PageHeader
-            title="Licences"
-            CTAText="Ajouter une licence"
-            CTAIcon="add"
-            CTAonClick={() => setModal({ name: "licences" })}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "2rem",
+            }}
+          >
+            <Heading5>{data.results} </Heading5>
+            <PageHeader
+              CTAText="Ajouter"
+              CTAIcon="add"
+              CTAonClick={() => setModal({ name: "licences" })}
+            />
+          </div>
+          <LicencesTable licences={data.licences} rowsNumbers={rowsNumbers} />
+          <Pagination
+            rows={rows}
+            page={page}
+            results={data.results}
+            setPage={setPage}
+            setRows={setRows}
           />
-          <LicencesTable licences={data.licences} />
         </>
       );
     }

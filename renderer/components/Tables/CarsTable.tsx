@@ -14,36 +14,39 @@ import {
   TableCell,
 } from "components/Table/Table";
 import API from "utils/API";
-import { useContext, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useRef, useState } from "react";
 import { GlobalContext } from "pages/_app";
 import useClickOutside from "hooks/useClickOutside";
 import Dropdown from "components/Dropdown/Dropdown";
 import { ButtonItem } from "components/Dropdown/Dropdown.styled";
 import Button from "components/Button/Button";
+import { mutate } from "swr";
 
 interface IProps {
   cars: any[];
+  orderBy: string;
+  setOrderBy: Dispatch<SetStateAction<string>>;
+  rowsNumbers: number[] | null;
 }
 
 const TB_HEADER_DATA = [
   { text: "Indice", sortable: false },
-  { text: "Date créée", sortable: true },
-  { text: "Nom", sortable: true },
+  { text: "Date", sortField: "created_at", sortable: true },
+  { text: "Nom", sortField: "name", sortable: true },
+  { text: "Num. châssis", sortable: false },
   { text: "Matricule", sortable: false },
+  { text: "Couleur", sortable: false },
+  { text: "Année", sortable: true },
+  { text: "Propriétaire", sortable: false },
   { text: "Vendeur", sortable: true },
-  { text: "Prix", sortable: true },
-  { text: "Depenses", sortable: true },
-  { text: "Pr. licence", sortable: true },
-  { text: "Total", sortable: true },
-  { text: "Categorie", sortable: false },
   { text: "Achateur", sortable: true },
-  { text: "Pr. vente", sortable: true },
-  { text: "Intérêt", sortable: true },
+  { text: "Categorie", sortable: false },
 ];
 
-const CarsTable = ({ cars }: IProps) => {
+const CarsTable = ({ cars, orderBy, setOrderBy, rowsNumbers }: IProps) => {
   const [isDropdownActive, toggleDropdown] = useState<null | number>(null);
-  const { setDocument, toggleModalDelete } = useContext(GlobalContext);
+  const { setDocument, toggleModalDelete, setModal } =
+    useContext(GlobalContext);
   const [ids, addIds] = useState<number[]>([]);
   const checkRow = (id: number) => {
     if (ids.indexOf(id) === -1) {
@@ -64,16 +67,12 @@ const CarsTable = ({ cars }: IProps) => {
   };
 
   const handleDeleteAll = async () => {
-    if (cars.length === ids.length) {
-      return toggleModalDelete({
-        name: `${ids.length} voitures`,
-        url: `/cars/`,
-      });
-    } else if (ids.length > 0) {
-      return toggleModalDelete({
+    if (ids.length > 0) {
+      toggleModalDelete({
         name: `${ids.length} voitures`,
         url: `/cars/${ids.join(",")}`,
       });
+      return addIds([]);
     }
   };
 
@@ -84,15 +83,44 @@ const CarsTable = ({ cars }: IProps) => {
           <TableRow>
             <TableHeaderCell>
               <Checkbox
-                isChecked={cars.length === ids.length}
+                isChecked={cars.length > 0 && cars.length === ids.length}
                 check={checkAllRows}
               />
             </TableHeaderCell>
             {TB_HEADER_DATA.map((el) => {
+              let turn = 0;
+              if (
+                el.sortField === orderBy.split(" ")[0] &&
+                orderBy.endsWith("DESC")
+              ) {
+                turn = 0.5;
+              }
+
               return (
-                <TableHeaderCell key={el.text}>
+                <TableHeaderCell
+                  key={el.text}
+                  onClick={() => {
+                    if (el.sortable && el.sortField) {
+                      if (orderBy === el.sortField) {
+                        setOrderBy(`${el.sortField} DESC`);
+                      } else {
+                        setOrderBy(el.sortField);
+                      }
+                    }
+                  }}
+                >
                   <Body2>{el.text}</Body2>
-                  {el.sortable && <Icon icon="expand" size="1.8rem" />}
+                  {el.sortable && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        transform: `rotate(${turn}turn)`,
+                      }}
+                    >
+                      <Icon icon="expand" size="1.8rem" />
+                    </div>
+                  )}
                 </TableHeaderCell>
               );
             })}
@@ -107,18 +135,26 @@ const CarsTable = ({ cars }: IProps) => {
               id,
               created_at,
               name,
+              serialNumber,
               registrationNumber,
+              color,
+              year,
               seller,
               sellerId,
-              purchasingPrice,
-              totalExpensesCost,
+              ownerId,
+              ownerName,
+              costInEuros,
               licencePrice,
-              totalCost,
               type,
               buyerId,
               buyer,
               soldPrice,
-              profit,
+              sold_date,
+              given_keys,
+              folder,
+              procuration,
+              gray_card,
+              selling_details,
             } = car;
 
             const onDelete = () => {
@@ -137,62 +173,54 @@ const CarsTable = ({ cars }: IProps) => {
                   />
                 </TableCell>
                 <TableCell blurrable={false}>
-                  <Body2>{ind + 1}</Body2>
+                  <Body2>{rowsNumbers ? rowsNumbers[ind] : ind + 1}</Body2>
                 </TableCell>
-                <TableCell blurrable={false}>
+                <TableCell>
                   <Body2>{dayjs(created_at).format("DD-MM-YYYY")}</Body2>
                 </TableCell>
                 <TableCell
                   onClick={() => {
                     setDocument({ type: "cars", id });
                   }}
-                  blurrable={false}
                 >
                   <Body2>{name}</Body2>
                 </TableCell>
                 <TableCell blurrable={false}>
+                  <Body2>{serialNumber}</Body2>
+                </TableCell>
+                <TableCell blurrable={false}>
                   <Body2>{registrationNumber}</Body2>
                 </TableCell>
+                <TableCell blurrable={false}>
+                  <Body2>{color}</Body2>
+                </TableCell>
+                <TableCell blurrable={false}>
+                  <Body2>{year}</Body2>
+                </TableCell>
                 <TableCell
-                  blurrable={false}
+                  onClick={() => {
+                    if (ownerId > 0) {
+                      setDocument({ type: "licences", id: ownerId });
+                    }
+                  }}
+                >
+                  <Body2 style={{ color: ownerId > 0 ? "#ab0000" : "#000" }}>
+                    {ownerName}
+                  </Body2>
+                </TableCell>
+                <TableCell
                   onClick={() => setDocument({ type: "clients", id: sellerId })}
                 >
                   <Body2>{seller}</Body2>
                 </TableCell>
-                <TableCell>
-                  <Body2>{purchasingPrice.toLocaleString()}.00 DA</Body2>
-                </TableCell>
-                <TableCell>
-                  <Body2>{totalExpensesCost.toLocaleString()}.00 DA</Body2>
-                </TableCell>
-                <TableCell>
-                  <Body2>
-                    {licencePrice
-                      ? `${licencePrice.toLocaleString()}.00 DA`
-                      : "--"}
-                  </Body2>
-                </TableCell>
-                <TableCell>
-                  <Body2>{totalCost.toLocaleString()}.00 DA</Body2>
-                </TableCell>
-                <TableCell blurrable={false}>
-                  <Body2>{type}</Body2>
-                </TableCell>
+
                 <TableCell
-                  blurrable={false}
                   onClick={() => setDocument({ type: "clients", id: buyerId })}
                 >
                   <Body2>{buyer ? buyer : "--"}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>
-                    {soldPrice ? `${soldPrice.toLocaleString()}.00 DA` : "--"}
-                  </Body2>
-                </TableCell>
-                <TableCell>
-                  <Body2>
-                    {buyer ? `${profit.toLocaleString()}.00 DA` : "--"}
-                  </Body2>
+                  <Body2>{type}</Body2>
                 </TableCell>
 
                 <TableCell
@@ -209,7 +237,117 @@ const CarsTable = ({ cars }: IProps) => {
 
                   {isDropdownActive === ind && (
                     <Dropdown $right="0" $top="1rem" $width="20rem">
-                      <ButtonItem $ghostColor="#595959">
+                      <>
+                        {buyer && (
+                          <ButtonItem
+                            $ghostColor="#595959"
+                            onClick={() => {
+                              setModal({
+                                name: "sell",
+                                edit: true,
+                                data: {
+                                  id,
+                                  soldPrice,
+                                  sold_date: sold_date
+                                    ? dayjs(sold_date)
+                                    : new Date(),
+                                  given_keys,
+                                  folder,
+                                  procuration: JSON.parse(procuration),
+                                  gray_card: JSON.parse(gray_card),
+                                  selling_details: selling_details ?? "",
+                                  buyer: { id: buyerId, name: buyer },
+                                },
+                              });
+                            }}
+                          >
+                            <Button variant="ghost" icon="sell">
+                              Modifier la vente
+                            </Button>
+                          </ButtonItem>
+                        )}
+                        {buyer && (
+                          <ButtonItem
+                            $ghostColor="#595959"
+                            onClick={() => {
+                              toggleModalDelete({
+                                name: `${name} (${serialNumber}) avec ${buyer}`,
+                                url: `/cars/unsold/${id}`,
+                                method: "patch",
+                              });
+                            }}
+                          >
+                            <Button variant="ghost" icon="cancel">
+                              Annuler la vente
+                            </Button>
+                          </ButtonItem>
+                        )}
+                      </>
+
+                      <>
+                        {!buyer && (
+                          <ButtonItem
+                            $ghostColor="#595959"
+                            onClick={() => {
+                              setModal({ name: "sell", data: { id } });
+                            }}
+                          >
+                            <Button variant="ghost" icon="sell">
+                              Vendre
+                            </Button>
+                          </ButtonItem>
+                        )}
+                      </>
+                      {buyer && (
+                        <ButtonItem
+                          $ghostColor="#595959"
+                          onClick={() => {
+                            setModal({
+                              name: "cars",
+                              edit: true,
+                              data: {
+                                ...car,
+                                type: "locale",
+                                repurchase: true,
+                                seller: { id: 0, name: "" },
+                                expenses: [],
+                                owner: {
+                                  id: 0,
+                                  name: "",
+                                  price: 0,
+                                },
+                                created_at: new Date(),
+                              },
+                            });
+                          }}
+                        >
+                          <Button variant="ghost" icon="finance">
+                            Rachat
+                          </Button>
+                        </ButtonItem>
+                      )}
+                      <ButtonItem
+                        $ghostColor="#595959"
+                        onClick={() => {
+                          setModal({
+                            name: "cars",
+                            edit: true,
+                            data: {
+                              ...car,
+                              type,
+                              costInEuros,
+                              seller: { id: sellerId, name: seller },
+                              expenses: JSON.parse(car.expenses),
+                              owner: {
+                                id: ownerId,
+                                name: ownerName,
+                                price: licencePrice,
+                              },
+                              created_at: dayjs(created_at),
+                            },
+                          });
+                        }}
+                      >
                         <Button variant="ghost" icon="edit">
                           Modifier
                         </Button>

@@ -9,8 +9,8 @@ import { Values } from "components/CarForm//types";
 
 const KEYS = [1, 2, 3, 4];
 
-const KeysChecker = () => {
-  const { values, setFieldValue } = useFormikContext<Values>();
+const KeysChecker = ({ field }: { field: string }) => {
+  const { values, setFieldValue } = useFormikContext<any>();
 
   return (
     <S.InputWrapper>
@@ -20,8 +20,8 @@ const KeysChecker = () => {
           return (
             <Checkbox
               key={key}
-              check={() => setFieldValue("keys", key)}
-              isChecked={values.keys >= key}
+              check={() => setFieldValue(field, key)}
+              isChecked={values[field] >= key}
             />
           );
         })}

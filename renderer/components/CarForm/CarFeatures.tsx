@@ -11,8 +11,13 @@ const CarFeatures = () => {
 
   return (
     <S.DescriptionWrapper>
+      <input
+        type="submit"
+        autoFocus
+        style={{ height: "0", border: "none", outline: "none" }}
+      />
       <FormGroup>
-        <DateInput label="Créé à" name="created_at" minDate="2015" />
+        <DateInput label="Date d'achat" name="created_at" minDate="2015" />
       </FormGroup>
       <LabelText>Caractéristiques de la voiture : </LabelText>
       <S.DescriptionInput {...props} />

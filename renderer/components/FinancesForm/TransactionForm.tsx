@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { FormikHelpers, FormikProps } from "formik";
 
 import { FormGroup } from "components/Form/Form.styled";
@@ -34,9 +34,9 @@ const getClients = () => {
 const onSubmit = async (
   values: Values,
   actions: FormikHelpers<Values>,
-  setModal: any,
-  setNotification: any
+  context: any
 ) => {
+  const { setModal, setNotification } = context;
   const { date, client, type, method, amount, direction } = values;
 
   const data = {
@@ -49,10 +49,8 @@ const onSubmit = async (
     direction,
   };
   try {
-    console.log(type);
-
     await API.post("/transactions", data);
-
+    mutate("/transactions/money");
     setModal("");
     setNotification({ status: "success", message: "Transaction réussie" });
   } catch (err: any) {

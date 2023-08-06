@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { FormikProps } from "formik";
 
 import Form from "components/Form/Form";
@@ -20,6 +20,7 @@ import {
 } from "Schemas/FormSchemas";
 
 import { Values } from "components/CarForm/types";
+import { GlobalContext } from "pages/_app";
 
 interface ActionsProps {
   step: number;
@@ -50,7 +51,7 @@ const renderForm = (step: number) => {
 
 const Actions = ({ step, buttonProps, edit }: ActionsProps) => {
   const { isSubmitting, setFieldValue, submitForm } = buttonProps;
-  const canGoToPreviousStep = (edit && step > 2) || (!edit && step > 1);
+  const canGoToPreviousStep = step > 1;
 
   return (
     <>
@@ -66,10 +67,25 @@ const Actions = ({ step, buttonProps, edit }: ActionsProps) => {
         </Button>
       )}
 
+      {edit && (
+        <Button
+          type="submit"
+          variant="primary"
+          loading={edit && isSubmitting}
+          disabled={isSubmitting}
+          onClick={() => {
+            setFieldValue && setFieldValue("step", 7);
+            submitForm && submitForm();
+          }}
+        >
+          Modifier
+        </Button>
+      )}
+
       <Button
         type="submit"
         variant="primary"
-        loading={isSubmitting}
+        loading={!edit && isSubmitting}
         disabled={isSubmitting}
         onClick={submitForm}
       >
@@ -82,16 +98,17 @@ const Actions = ({ step, buttonProps, edit }: ActionsProps) => {
 const CarForm = ({ edit, data }: { edit?: boolean; data: any }) => {
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const [title, setTitle] = useState("Ajouter un voiture");
-
+  const { currCarType } = useContext(GlobalContext);
   const values = formProps?.values ?? INITIAL_VALUES;
   const { step, brand, model } = values;
-  let intials = INITIAL_VALUES;
+  let intials = { ...INITIAL_VALUES, ...currCarType, year: currCarType.serie };
+
   let validation = [];
   validation[2] = carSchemaStepTwo;
   validation[4] = carSchemaStepFour;
   validation[5] = carSchemaStepFive;
 
-  if (edit) intials = { step: 2, ...data, edit };
+  if (edit) intials = { step: 1, ...data, edit };
 
   // reset all inputs "touched" to false when step changes
   useEffect(() => {
@@ -108,7 +125,11 @@ const CarForm = ({ edit, data }: { edit?: boolean; data: any }) => {
       onSubmit={onSubmit}
       getFormProps={(formProps) => setFormProps(formProps)}
       Actions={(props) => (
-        <Actions step={step} buttonProps={props} edit={edit} />
+        <Actions
+          step={step}
+          buttonProps={props}
+          edit={edit && !values.repurchase}
+        />
       )}
     >
       {renderForm(step)}
