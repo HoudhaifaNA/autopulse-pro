@@ -95,7 +95,7 @@ const Actions = ({ step, buttonProps, edit }: ActionsProps) => {
   );
 };
 
-const CarForm = ({ edit, data }: { edit?: boolean; data: any }) => {
+const CarForm = ({ edit, data }: { edit?: boolean; data?: any }) => {
   const [formProps, setFormProps] = useState<FormikProps<Values>>();
   const [title, setTitle] = useState("Ajouter un voiture");
   const { currCarType } = useContext(GlobalContext);

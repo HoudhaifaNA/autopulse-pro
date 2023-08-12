@@ -6,6 +6,7 @@ import { Body1 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 
 import { Values } from "components/CarForm/types";
+import uid from "utils/uniqid";
 
 const renderCarTypes = () => {
   const { values, setFieldValue, resetForm } = useFormikContext<Values>();
@@ -28,6 +29,17 @@ const renderCarTypes = () => {
       }
       setFieldValue("type", carType);
       setFieldValue("step", step + 1);
+      if (carType === "locale") {
+        setFieldValue("expenses", [
+          {
+            id: uid(),
+            type: "locale",
+            raison: "Dépense par défaut",
+            euroCost: 0,
+            totalCost: 1,
+          },
+        ]);
+      }
     };
 
     return (

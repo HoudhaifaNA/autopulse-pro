@@ -12,7 +12,7 @@ const filterDropdownItems: TFilterDropdownItems = (items, query, sorted) => {
     : items;
 
   return dropdownList.filter(({ mainText }) => {
-    return mainText.toLowerCase().includes(query.toLowerCase());
+    return mainText.toLowerCase().includes(query?.toLowerCase());
   });
 };
 

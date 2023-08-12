@@ -1,120 +1,57 @@
+import { forwardRef } from "react";
 import Image from "next/image";
-import useSWR from "swr";
 import dayjs from "dayjs";
 
-import {
-  TransactionCell,
-  TransactionRow,
-  TransactionsTable,
-} from "components/TransacionsList/TransactionsList.styled";
 import * as S from "components/Invoice/Invoice.styled";
-import { Body2, Heading4, LabelText } from "styles/Typography";
-import { fetcher } from "utils/API";
+import { Body2, Heading4, Heading5, LabelText } from "styles/Typography";
+import TransactionsList from "components/TransacionsList/TransacionsList";
+import { Transaction } from "types";
+import useClientById from "hooks/useClientById";
+import useClientTransactions from "hooks/useClientTransactions";
+import formatPrice from "utils/formatPrice";
 
-const keys = ["date", "info1", "info2", "info3", "info4", "total"];
+const calculateTotals = (transactions: any[]) => {
+  let entranteBalance = 0;
+  let sortanteBalance = 0;
 
-const renderTransactionsList = (transactions: any[], currency: string) => {
-  return transactions.map((transaction, ind) => {
-    return (
-      <TransactionRow key={ind}>
-        {Object.entries(transaction).map(([key, value]: any) => {
-          if (keys.indexOf(key) !== -1) {
-            let newVal = value;
-            let tsxType = transaction["direction"] === "sortante" ? "-" : "+";
-
-            if (key === "date") newVal = dayjs(value).format("DD-MM-YYYY");
-            if ((Number(value) && key !== "info4") || value === 0) {
-              newVal = `${value.toLocaleString()}.00 ${currency}`;
-            }
-            if (transaction["type"] === "euros" && key === "info3") {
-              newVal = `${(value * 1).toLocaleString()}.00 €`;
-            }
-            if (transaction["type"] === "euros" && key === "info4") {
-              newVal = `${(value * 1).toLocaleString()}.00 DA`;
-            }
-
-            if (key === "total") {
-              return (
-                <TransactionCell key={key} title={value}>
-                  <Body2 style={{ textAlign: "right" }}>
-                    {tsxType} {newVal}
-                  </Body2>
-                </TransactionCell>
-              );
-            } else {
-              return (
-                <TransactionCell key={key} title={value}>
-                  <Body2>{newVal}</Body2>
-                </TransactionCell>
-              );
-            }
-          }
-        })}
-      </TransactionRow>
-    );
+  transactions.forEach((transaction: Transaction) => {
+    const { direction, total } = transaction;
+    if (direction === "entrante") entranteBalance += total;
+    if (direction === "sortante") sortanteBalance += total;
   });
+
+  return [entranteBalance, sortanteBalance] as const;
 };
 
-const Invoice = ({
-  client,
-  printType,
-}: {
-  client: any;
+type InvoiceProps = {
+  clientId: number;
   printType: "last" | "all";
-}) => {
-  const {
-    id,
-    clientType,
-    fullName,
-    balance,
-    type,
-    date,
-    info1,
-    info2,
-    info3,
-    info4,
-    total,
-    direction,
-  } = client;
+};
 
-  const lastTransaction = [
-    { type, date, info1, info2, info3, info4, total, direction },
-  ];
+const Invoice = forwardRef<HTMLDivElement, InvoiceProps>((props, ref) => {
+  const { clientId, printType } = props;
+  const { client } = useClientById(clientId);
+  const transactions = useClientTransactions(clientId);
 
-  const url = printType === "all" ? `/transactions/client/${id}` : null;
-  const { data: transactionsData } = useSWR(url, fetcher);
-
-  let transactionsList = lastTransaction;
-  if (printType === "all" && transactionsData) {
-    transactionsList = transactionsData.transactions;
+  const [entranteTotal, sortanteTotal] = calculateTotals(transactions);
+  let entranteText;
+  let sortanteText;
+  let balanceText;
+  let lastBalance = 0;
+  if (client) {
+    entranteText = formatPrice(entranteTotal, client.clientType);
+    sortanteText = formatPrice(sortanteTotal, client.clientType);
+    balanceText = formatPrice(client.balance, client.clientType);
+    const lastTransactionAmount = client.lastTransaction.total;
+    if (client.lastTransaction.direction === "sortante") {
+      lastBalance = client.balance + lastTransactionAmount;
+    } else {
+      lastBalance = client.balance - lastTransactionAmount;
+    }
   }
-  let lastBalance =
-    direction === "sortante" ? balance + total : balance - total;
-
-  let currency = "DA";
-  if (clientType === "euro") currency = "€";
-  function calculateTotals(transactions: any[]) {
-    let entranteBalance = 0;
-    let sortanteBalance = 0;
-
-    transactions.forEach((tx) => {
-      if (tx.direction === "entrante") {
-        entranteBalance += tx.total;
-      } else if (tx.direction === "sortante") {
-        sortanteBalance += tx.total;
-      }
-    });
-
-    return [entranteBalance, sortanteBalance] as const;
-  }
-
-  const [entranteTotal, sortanteTotal] =
-    transactionsData && transactionsData.transactions
-      ? calculateTotals(transactionsData.transactions)
-      : [0, 0];
 
   return (
-    <S.InvoiceWrapper>
+    <S.InvoiceWrapper ref={ref} className="eye-spy">
       <S.InvoiceHeader>
         <Image width={185} height={80} src="/images/doc-logo.png" alt="Logo" />
         <S.ComapnyDetails>
@@ -128,46 +65,64 @@ const Invoice = ({
         <Heading4>FACTURE</Heading4>
         <div style={{ flex: 1 }} />
       </S.InvoiceTitle>
-      <S.DetailItem>
-        <Body2>Nom de client :</Body2>
-        <Body2>{fullName}</Body2>
-      </S.DetailItem>
-      {printType === "last" && (
-        <S.DetailItem style={{ justifyContent: "space-between" }}>
-          <Body2>Dernier solde :</Body2>
-          <Body2 className={lastBalance < 0 ? "red" : "green"}>
-            {(lastBalance * 1).toLocaleString()}.00 {currency}
-          </Body2>
-        </S.DetailItem>
+      {client && (
+        <>
+          <S.DetailItem>
+            <Body2>Nom de client :</Body2>
+            <Body2>{client.fullName}</Body2>
+          </S.DetailItem>
+          {printType === "last" && (
+            <S.DetailItem style={{ justifyContent: "space-between" }}>
+              <Body2>Dernier solde :</Body2>
+              <Body2 className={lastBalance < 0 ? "red" : "green"}>
+                {formatPrice(lastBalance, client.clientType)}
+              </Body2>
+            </S.DetailItem>
+          )}
+        </>
       )}
-      {transactionsList.length > 0 && (
-        <TransactionsTable>
-          {renderTransactionsList(transactionsList, currency)}
-        </TransactionsTable>
+
+      {client && transactions.length > 0 && (
+        <>
+          <Heading5>Transactions de ZAUTO (sortante)</Heading5>
+          <TransactionsList
+            transactions={
+              printType === "all" ? transactions : [client.lastTransaction]
+            }
+            currency={client.clientType}
+            direction="sortante"
+          />
+          <Heading5>Transactions de {client.fullName} (entrante)</Heading5>
+          <TransactionsList
+            transactions={
+              printType === "all" ? transactions : [client.lastTransaction]
+            }
+            currency={client.clientType}
+            direction="entrante"
+          />
+        </>
       )}
       <div style={{ pageBreakAfter: "always" }}>
         {printType === "all" && (
           <>
             <S.DetailItem style={{ justifyContent: "space-between" }}>
               <Body2>Total des entrants :</Body2>
-              <Body2>
-                {(entranteTotal * 1).toLocaleString()}.00 {currency}
-              </Body2>
+              <Body2>{entranteText}</Body2>
             </S.DetailItem>
             <S.DetailItem style={{ justifyContent: "space-between" }}>
               <Body2>Total des sortants :</Body2>
-              <Body2>
-                {(sortanteTotal * 1).toLocaleString()}.00 {currency}
-              </Body2>
+              <Body2>{sortanteText}</Body2>
             </S.DetailItem>
           </>
         )}
-        <S.DetailItem style={{ justifyContent: "space-between" }}>
-          <Body2>Solde actuel :</Body2>
-          <Body2 className={balance < 0 ? "red" : "green"}>
-            {(balance * 1).toLocaleString()}.00 {currency}
-          </Body2>
-        </S.DetailItem>
+        {client && (
+          <S.DetailItem style={{ justifyContent: "space-between" }}>
+            <Body2>Solde actuel :</Body2>
+            <Body2 className={client.balance < 0 ? "red" : "green"}>
+              {balanceText}
+            </Body2>
+          </S.DetailItem>
+        )}
       </div>
       <S.InvoiceFooter>
         <S.DetailItem style={{ justifyContent: "space-between" }}>
@@ -183,6 +138,6 @@ const Invoice = ({
       </S.InvoiceFooter>
     </S.InvoiceWrapper>
   );
-};
+});
 
 export default Invoice;

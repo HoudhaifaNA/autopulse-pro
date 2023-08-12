@@ -5,13 +5,18 @@ import { LabelText } from "styles/Typography";
 
 import * as T from "components/Input/types";
 
-const ClickInput = ({ label, disabled, ...props }: T.ClickInputProps) => {
+const ClickInput = ({
+  label,
+  disabled,
+  style,
+  ...props
+}: T.ClickInputProps) => {
   const [field] = useField(props);
   const id = props.value || props.name;
   const [normalLabel, boldLabel] = label.split("b/");
 
   return (
-    <S.FormGroup $height="4rem" $disabled={disabled}>
+    <S.FormGroup $height="4rem" $disabled={disabled} style={style}>
       <S.ClickInputContainer>
         <S.ClickInput id={id} {...props} {...field} />
         <LabelText htmlFor={id}>

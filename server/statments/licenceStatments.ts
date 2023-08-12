@@ -1,8 +1,5 @@
 import db from "../database";
 
-const IS_VALID_PRICE = (field) =>
-  `CHECK (typeof(${field}) = 'integer' OR typeof(${field}) = 'real' )`;
-
 // db.prepare("DROP TABLE licences").run();
 
 const IS_VALID = `

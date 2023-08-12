@@ -16,6 +16,8 @@ interface Expenses {
   totalCost: number | string;
 }
 
+export type ExchangeTypes = "locale" | "UAE" | "importé";
+
 export interface Values {
   id?: number;
   edit?: boolean;
@@ -38,6 +40,8 @@ export interface Values {
   euroPrice: number | string;
   purchasingPrice: number | string;
   owner: Owner;
+  isExchange: boolean;
+  exchangeTypes: ExchangeTypes[];
   expenses: Expenses[];
   totalExpensesCost: number;
   totalEurosAmount: number;

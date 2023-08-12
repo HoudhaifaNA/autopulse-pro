@@ -69,8 +69,6 @@ const CarsStats = () => {
     if (isLoading) {
       return <Loading />;
     } else if (data) {
-      console.log(data);
-
       return (
         <>
           <TicketList title="Nombre de voitures par catégorie :">

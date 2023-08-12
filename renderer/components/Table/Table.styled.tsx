@@ -28,13 +28,15 @@ export const TableRow = styled.tr`
   height: 5rem;
   padding: 1.5rem 2rem;
   background-color: ${({ theme }) => theme.colors.white};
-
   :nth-child(even) {
     background-color: ${({ theme }) => theme.colors.neutral[200]};
   }
+  &.red {
+    background-color: ${({ theme }) => theme.colors.error[200]} !important;
+  }
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.success[200]};
+    background-color: ${({ theme }) => theme.colors.success[200]} !important;
   }
 
   th,

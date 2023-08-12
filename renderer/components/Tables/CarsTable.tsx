@@ -155,6 +155,7 @@ const CarsTable = ({ cars, orderBy, setOrderBy, rowsNumbers }: IProps) => {
               procuration,
               gray_card,
               selling_details,
+              fields_status,
             } = car;
 
             const onDelete = () => {
@@ -165,7 +166,10 @@ const CarsTable = ({ cars, orderBy, setOrderBy, rowsNumbers }: IProps) => {
               return addIds([]);
             };
             return (
-              <TableRow key={id}>
+              <TableRow
+                key={id}
+                className={fields_status === "Missing fields" ? "red" : ""}
+              >
                 <TableCell blurrable={false}>
                   <Checkbox
                     isChecked={!(ids.indexOf(id) === -1)}
@@ -337,6 +341,8 @@ const CarsTable = ({ cars, orderBy, setOrderBy, rowsNumbers }: IProps) => {
                               type,
                               costInEuros,
                               seller: { id: sellerId, name: seller },
+                              isExchange: JSON.parse(car.isExchange),
+                              exchangeTypes: JSON.parse(car.exchangeTypes),
                               expenses: JSON.parse(car.expenses),
                               owner: {
                                 id: ownerId,

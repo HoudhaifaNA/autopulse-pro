@@ -1,4 +1,4 @@
-import { object, array, string, number, date } from "yup";
+import { object, array, string, number, date, mixed } from "yup";
 
 import wilayas from "data/wilayas.json";
 
@@ -108,6 +108,16 @@ export const carSchemaStepFour = object({
     is: "importé",
     then: () => number().required("Prix ​​de 100 EUR  est requis"),
   }),
+
+  exchangeTypes: string().when("isExchange", {
+    is: true,
+    then: () =>
+      array()
+        .of(mixed().oneOf(["importé", "UAE", "locale"]))
+        .min(1, `Type d'échange doit être local ou UAE ouimporté`)
+        .required(`Type d'échange doit être local ou UAE ou importé`),
+    otherwise: () => array().default([]),
+  }),
   purchasingPrice: number().when("type", {
     is: "locale",
     then: () => number().min(20000, ({ min }) => `Minimum ${min}DA`),
@@ -117,10 +127,7 @@ export const carSchemaStepFour = object({
 export const carSchemaStepFive = object({
   expenses: array().of(
     object({
-      raison: string()
-        .trim()
-        .matches(FULLNAME_RULES, "Raison ne doit pas avoir de numéro")
-        .required("Raison est requise"),
+      raison: string().trim().required("Raison est requise"),
       euroCost: number().when("type", {
         is: "à l'étranger",
         then: () => number().required("Coût est requis"),

@@ -89,6 +89,7 @@ const ClientsTable = ({ clients }: IProps) => {
     }
     return addIds([]);
   };
+
   const reactToPrintContent = useCallback(() => {
     if (printedClientId) {
       return compRef.current[printedClientId];
@@ -133,7 +134,6 @@ const ClientsTable = ({ clients }: IProps) => {
           {clients.map((client, ind) => {
             const { id, clientType, fullName, balance, lastTransactionDate } =
               client;
-            const clientCurrency = clientType === "euro" ? "€" : "DA";
 
             const onDelete = () => {
               toggleModalDelete({
@@ -143,18 +143,19 @@ const ClientsTable = ({ clients }: IProps) => {
               return addIds([]);
             };
 
-            // <td style={{ display: "none" }}>
-            //   <td
-            //     ref={(el) => {
-            //       compRef.current[ind] = el;
-            //       return el;
-            //     }}
-            //   >
-            //     <Invoice client={client} printType={printType} />
-            //   </td>
-            // </td>;
             return (
               <TableRow key={id}>
+                <td style={{ display: "none" }}>
+                  <Invoice
+                    ref={(el) => {
+                      compRef.current[ind] = el;
+                      return el;
+                    }}
+                    clientId={id}
+                    printType={printType}
+                  />
+                </td>
+
                 <TableCell blurrable={false}>
                   <Checkbox
                     isChecked={!(ids.indexOf(id) === -1)}
@@ -164,7 +165,6 @@ const ClientsTable = ({ clients }: IProps) => {
                 <TableCell blurrable={false}>
                   <Body2>{ind + 1}</Body2>
                 </TableCell>
-
                 <TableCell
                   onClick={() => {
                     setDocument({ type: "clients", id });
@@ -173,9 +173,7 @@ const ClientsTable = ({ clients }: IProps) => {
                   <Body2>{fullName}</Body2>
                 </TableCell>
                 <TableCell>
-                  <Body2>
-                    {formatPrice(Math.abs(balance), clientCurrency)}
-                  </Body2>
+                  <Body2>{formatPrice(Math.abs(balance), clientType)}</Body2>
                 </TableCell>
                 <TableCell>{clientStatus(balance)}</TableCell>
                 <TableCell>

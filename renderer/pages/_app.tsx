@@ -25,6 +25,7 @@ import ProcurationForm from "components/ProcurationForm/ProcurationForm";
 import ExpenseDocument from "components/ExpenseDocument/ExpenseDocument";
 import API from "utils/API";
 import PaperForm from "components/PaperForm/PaperForm";
+import ReduxProvider from "state/ReduxProvider";
 
 const inter = Inter({
   src: [
@@ -94,7 +95,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     "papers",
   ];
 
-  let TEN_MINUTES = 1000 * 60 * 10;
+  let TEN_MINUTES = 1000 * 60 * 100;
   let inactiveTimeThreshold = TEN_MINUTES;
 
   useEffect(() => {
@@ -157,101 +158,119 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <GlobalContext.Provider
-      value={{
-        currCarType,
-        setCurrCar,
-        currModal,
-        setModal,
-        addUpModal,
-        setAddUpModal,
-        currNotification,
-        setNotification,
-        currDocument,
-        setDocument,
-        modalDelete,
-        toggleModalDelete,
-        isFormChanged,
-        setFormChanged,
-        toggleWarningModal,
-        toLogout,
-        setToLogout,
-      }}
-    >
-      <main className={inter.className}>
-        <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          {modalDelete && (
-            <DeleteModal
-              name={modalDelete.name}
-              url={modalDelete.url}
-              method={modalDelete.method}
-            />
-          )}
-          {currModal.name === "clients" && (
-            <ClientForm edit={currModal.edit} data={currModal.data} />
-          )}
-          {currModal.name === "cars" && (
-            <CarForm edit={currModal.edit} data={currModal.data} />
-          )}
-          {currModal.name === "licences" && (
-            <LicenceForm edit={currModal.edit} data={currModal.data} />
-          )}
-          {currModal.name === "procurations" && (
-            <ProcurationForm edit={currModal.edit} data={currModal.data} />
-          )}
-          {currModal.name === "papers" && (
-            <PaperForm edit={currModal.edit} data={currModal.data} />
-          )}
-          {currModal.name === "transactions" && <TransactionForm />}
-          {currModal.name === "euros" && <EuroTransferForm />}
-          {currModal.name === "expenses" && (
-            <ExpenseForm edit={currModal.edit} data={currModal.data} />
-          )}
-          {currModal.name === "sell" && (
-            <SellForm
-              edit={currModal.edit}
-              data={currModal.data}
-              id={currModal.data.id}
-            />
-          )}
+    <ReduxProvider>
+      <GlobalContext.Provider
+        value={{
+          currCarType,
+          setCurrCar,
+          currModal,
+          setModal,
+          addUpModal,
+          setAddUpModal,
+          currNotification,
+          setNotification,
+          currDocument,
+          setDocument,
+          modalDelete,
+          toggleModalDelete,
+          isFormChanged,
+          setFormChanged,
+          toggleWarningModal,
+          toLogout,
+          setToLogout,
+        }}
+      >
+        <main className={inter.className}>
+          <ThemeProvider theme={theme}>
+            <GlobalStyle />
+            {modalDelete && (
+              <DeleteModal
+                name={modalDelete.name}
+                url={modalDelete.url}
+                method={modalDelete.method}
+              />
+            )}
+            {currModal.name === "clients" && (
+              <ClientForm edit={currModal.edit} data={currModal.data} />
+            )}
+            {currModal.name === "cars" && (
+              <CarForm edit={currModal.edit} data={currModal.data} />
+            )}
+            {currModal.name === "licences" && (
+              <LicenceForm edit={currModal.edit} data={currModal.data} />
+            )}
+            {currModal.name === "procurations" && (
+              <ProcurationForm edit={currModal.edit} data={currModal.data} />
+            )}
+            {currModal.name === "papers" && (
+              <PaperForm edit={currModal.edit} data={currModal.data} />
+            )}
+            {currModal.name === "transactions" && <TransactionForm />}
+            {currModal.name === "euros" && <EuroTransferForm />}
+            {currModal.name === "expenses" && (
+              <ExpenseForm edit={currModal.edit} data={currModal.data} />
+            )}
+            {currModal.name === "sell" && (
+              <SellForm
+                edit={currModal.edit}
+                data={currModal.data}
+                id={currModal.data.id}
+              />
+            )}
 
-          {addUpModal === "clients" && (
-            <>
-              <div className="background-black" style={{ zIndex: "1000000" }} />
-              <ClientForm />
-            </>
-          )}
-          {addUpModal === "licences" && (
-            <>
-              <div className="background-black" style={{ zIndex: "1000000" }} />
-              <LicenceForm />
-            </>
-          )}
-          {warningModal && <WarningModal />}
-          {currDocument.type === "clients" && <ClientDocument />}
-          {currDocument.type === "licences" && <LicenceDocument />}
-          {currDocument.type === "cars" && <CarDocument />}
-          {currDocument.type === "expenses" && <ExpenseDocument />}
-          {currNotification.status && (
-            <div
-              style={{
-                position: "fixed",
-                zIndex: "1500000",
-                right: "2rem",
-                top: "2rem",
-              }}
-            >
-              <Toaster type={currNotification.status}>
-                {currNotification.message}
-              </Toaster>
-            </div>
-          )}
-          <NextNProgress color="red" />
-          {insertPage()}
-        </ThemeProvider>
-      </main>
-    </GlobalContext.Provider>
+            {addUpModal === "cars" && (
+              <>
+                <div
+                  className="background-black"
+                  style={{ zIndex: "1000000" }}
+                />
+                <CarForm />
+              </>
+            )}
+
+            {addUpModal === "clients" && (
+              <>
+                <div
+                  className="background-black"
+                  style={{ zIndex: "1000000" }}
+                />
+                <ClientForm />
+              </>
+            )}
+            {addUpModal === "licences" && (
+              <>
+                <div
+                  className="background-black"
+                  style={{ zIndex: "1000000" }}
+                />
+                <LicenceForm />
+              </>
+            )}
+            {warningModal && <WarningModal />}
+            {currDocument.type === "clients" && <ClientDocument />}
+            {currDocument.type === "licences" && <LicenceDocument />}
+            {currDocument.type === "cars" && <CarDocument />}
+            {currDocument.type === "expenses" && <ExpenseDocument />}
+            {currNotification.status && (
+              <div
+                style={{
+                  position: "fixed",
+                  zIndex: "1500000",
+                  right: "2rem",
+                  top: "2rem",
+                }}
+              >
+                <Toaster type={currNotification.status}>
+                  {currNotification.message}
+                </Toaster>
+              </div>
+            )}
+            <NextNProgress color="red" />
+            {insertPage()}
+          </ThemeProvider>
+        </main>
+      </GlobalContext.Provider>
+    </ReduxProvider>
   );
 }
 

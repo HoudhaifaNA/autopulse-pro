@@ -17,11 +17,53 @@ export const getAllClients = tryCatch((req, res) => {
 export const getClientByID = tryCatch((req, res, next) => {
   const { ids } = req.params;
 
-  const client = S.getClientById.get(ids);
+  const client: any = S.getClientById.get(ids);
+  const {
+    id,
+    clientType,
+    fullName,
+    phoneNumber,
+    balance,
+    created_at,
+    lastTransactionDate,
+    productId,
+    clientId,
+    date,
+    type,
+    info1,
+    info2,
+    info3,
+    info4,
+    total,
+    direction,
+    transactionId,
+  } = client;
 
+  const result = {
+    id,
+    clientType,
+    fullName,
+    phoneNumber,
+    balance,
+    created_at,
+    lastTransactionDate,
+    lastTransaction: {
+      productId,
+      clientId,
+      date,
+      type,
+      info1,
+      info2,
+      info3,
+      info4,
+      total,
+      direction,
+      transactionId,
+    },
+  };
   if (!client) return next(new AppError("Client n'existe pas", 404));
 
-  return res.status(200).json({ status: "success", client });
+  return res.status(200).json({ status: "success", client: result });
 });
 
 export const createClient = tryCatch((req, res, next) => {

@@ -36,7 +36,16 @@ export const getClients = db.prepare(
   `
 );
 
-export const getClientById = db.prepare(`SELECT * FROM clients WHERE id = ?`);
+export const getClientById = db.prepare(`
+  SELECT c.*, t.*, c.id AS id
+    FROM clients AS c
+    LEFT JOIN (
+      SELECT transactions.*,id AS transactionId, MAX(date) AS lastTransactionDate
+      FROM transactions
+      GROUP BY transactions.clientId
+  ) AS t ON c.id = t.clientId
+  WHERE c.id = ?
+`);
 
 export const updateClient = db.prepare(`UPDATE clients 
     SET fullName = COALESCE(?, fullName),

@@ -56,22 +56,40 @@ export const getCarsStats = tryCatch((req, res) => {
   let STMT1 = S.GET_CARS_TYPES;
   let STMT2 = S.GET_CARS_COST;
   let STMT3 = S.GET_SOLD_CARS_STATS;
+  let STMT4 = S.GET_CARS_LOST_PROFIT;
   let queryByYear = ` WHERE year_date = '${year}'`;
   if (year) {
     STMT1 = STMT1.replace("-- PLACEHOLDER", queryByYear);
     STMT2 = STMT2.replace("-- PLACEHOLDER", queryByYear);
     STMT3 = STMT3.replace("-- PLACEHOLDER", ` AND year_date = '${year}'`);
+    STMT4 = STMT4.replace("-- PLACEHOLDER", ` AND year_date = '${year}'`);
   }
 
   const cars_types = db.prepare(STMT1).all();
   const cars_cost = db.prepare(STMT2).all();
   const sold_cars_stats = db.prepare(STMT3).all();
+  const lost_profits = db.prepare(STMT4).all();
+  let profitsByType = lost_profits.map((pr: any) => {
+    let types = JSON.parse(pr.exchangeTypes);
+    let amount = pr.lost_profit / types.length;
+
+    return { amount, types };
+  });
+
+  sold_cars_stats.forEach((st: any) => {
+    profitsByType.forEach((pr) => {
+      if (pr.types.includes(st.type)) st.profit = st.profit + pr.amount;
+    });
+  });
+
+  // console.log(profitsByType);
 
   res.status(200).json({
     status: "success",
     cars_types,
     cars_cost,
     sold_cars_stats,
+    lost_profits,
   });
 });
 

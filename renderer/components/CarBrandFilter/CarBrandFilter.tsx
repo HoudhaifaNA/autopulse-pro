@@ -155,6 +155,22 @@ const CarBrandFilter = ({ setCurrCars, carsNum }: CarBrandFilterProps) => {
 
   return (
     <S.FilterWrapper style={{ marginRight: "auto" }}>
+      {/* <S.FilterField
+        onClick={() => {
+          setCurrCars(
+            cars.filter((cr: any) => cr.fields_status === "Missing fields")
+          );
+        }}
+      >
+         <div
+          style={{ marginLeft: "auto", zIndex: 15000 }}
+          onClick={() => {
+          }}
+        >
+          <Icon icon="close" size="1.8rem" />
+        </div>
+        <Body1>Incomplète</Body1>
+      </S.FilterField> */}
       <S.FilterField
         ref={serieRef}
         className={isDropdownActive(isSeriesShown)}
@@ -173,8 +189,6 @@ const CarBrandFilter = ({ setCurrCars, carsNum }: CarBrandFilterProps) => {
             $left="0"
             items={carSeries}
             onItemClick={(it) => {
-              toggleSeries(false);
-
               setCurrCar({ ...currCarType, serie: it });
             }}
           />

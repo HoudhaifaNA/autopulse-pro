@@ -84,6 +84,21 @@ app.get("/api/workingyears", (req, res) => {
     expensesYearsList,
   });
 });
+
+// db.prepare(
+//   `UPDATE licences
+// SET carId = (
+//     SELECT id
+//     FROM cars
+//     WHERE cars.ownerId = licences.id AND cars.ownerId > 0
+// )
+// WHERE EXISTS (
+//     SELECT 1
+//     FROM cars
+//     WHERE cars.ownerId = licences.id AND cars.ownerId > 0
+// );`
+// ).run();
+
 // const stmt = db.prepare(`SELECT cars.*,
 // CASE WHEN moudjahid IS NOT NULL THEN moudjahid ELSE ownerName END AS ownerName,
 // licences.price AS licencePrice,
@@ -108,6 +123,8 @@ app.get("/api/workingyears", (req, res) => {
 //       totalExpensesCost,
 //       totalEurosAmount,
 //       totalCost,
+//       profit,
+//       buyerId,
 //     } = car;
 
 //     let expenses = JSON.parse(car.expenses);
@@ -139,38 +156,37 @@ app.get("/api/workingyears", (req, res) => {
 //     let ttCost = PP + expensesDAcost;
 //     if (licencePrice && licencePrice >= 0) ttCost += licencePrice;
 
-//     db.prepare(
-//       `UPDATE cars
-//      SET totalEurosAmount = ?,
-//      totalExpensesCost = ?,
-//      expenses = ?,
-//      purchasingPrice = ?,
-//      totalCost = ?
-//      WHERE id = ?
-//      `
-//     ).run([
-//       expensesEURCost + costInEuros,
-//       expensesDAcost,
-//       expensesJS,
-//       PP,
-//       ttCost,
-//       car.id,
-//     ]);
-//     console.log("-------------------------");
-//     console.table({
-//       costInEuros,
-//       euroPrice,
-//       purchasingPrice,
-//       licencePrice,
-//       totalExpensesCost,
-//       totalEurosAmount,
-//       totalCost,
-//     });
+//     console.log(ttCost === totalCost);
+//     if (buyerId) {
+//       console.log(profit === car.soldPrice - totalCost);
+//     }
 
-//     console.log("-------------------------");
-//     console.log(expensesJS);
-
-//     console.log("found him!");
+//     // db.prepare(
+//     //   `UPDATE cars
+//     //  SET totalEurosAmount = ?,
+//     //  totalExpensesCost = ?,
+//     //  expenses = ?,
+//     //  purchasingPrice = ?,
+//     //  totalCost = ?
+//     //  WHERE id = ?
+//     //  `
+//     // ).run([
+//     //   expensesEURCost + costInEuros,
+//     //   expensesDAcost,
+//     //   expensesJS,
+//     //   PP,
+//     //   ttCost,
+//     //   car.id,
+//     // ]);
+//     // console.table({
+//     //   costInEuros,
+//     //   euroPrice,
+//     //   purchasingPrice,
+//     //   licencePrice,
+//     //   totalExpensesCost,
+//     //   totalEurosAmount,
+//     //   totalCost,
+//     // });
 //   }
 // }
 // console.log(i);

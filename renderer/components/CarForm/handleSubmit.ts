@@ -7,8 +7,9 @@ import { Values } from "components/CarForm/types";
 import { FormikSubmit } from "types";
 
 const onSubmit: FormikSubmit<Values> = async (values, actions, context) => {
-  const { setModal, setNotification } = context;
+  const { setModal, setNotification, currCarType } = context;
   let message = "";
+  let { serie } = currCarType;
 
   let {
     id,
@@ -28,6 +29,8 @@ const onSubmit: FormikSubmit<Values> = async (values, actions, context) => {
     year,
     features,
     owner,
+    isExchange,
+    exchangeTypes,
     seller,
     costInEuros,
     euroPrice,
@@ -62,6 +65,7 @@ const onSubmit: FormikSubmit<Values> = async (values, actions, context) => {
   actions.setFieldValue("totalExpensesCost", expensesDAcost);
   actions.setFieldValue("totalEurosAmount", eurosSpent);
   actions.setFieldValue("totalCost", calculatedTotal);
+  console.log(exchangeTypes);
 
   if (step === 6 || step === 7) {
     if (!costInEuros) {
@@ -91,6 +95,8 @@ const onSubmit: FormikSubmit<Values> = async (values, actions, context) => {
         costInEuros,
         euroPrice,
         purchasingPrice: convertedPP,
+        isExchange: String(isExchange),
+        exchangeTypes: exchangeTypes.length > 0 ? exchangeTypes : null,
         expenses,
         totalExpensesCost: expensesDAcost,
         totalEurosAmount: eurosSpent,
@@ -105,9 +111,9 @@ const onSubmit: FormikSubmit<Values> = async (values, actions, context) => {
       mutate("/cars");
       mutate("/cars/brands");
       mutate(`/cars/models?brand=${brand}`);
-      mutate(`/cars/carBrand?brand=${brand}&serie=${year}`);
+      mutate(`/cars/carBrand?brand=${brand}&serie=${serie}`);
       mutate(`/cars/carBrand?brand=${brand}&serie=`);
-      mutate(`/cars/carName?name=${brand} ${model}&serie=${year}`);
+      mutate(`/cars/carName?name=${brand} ${model}&serie=${serie}`);
       mutate(`/cars/carName?name=${brand} ${model}&serie=`);
       edit && !repurchase ? mutate(`/cars/${id}`) : "";
       setModal("");

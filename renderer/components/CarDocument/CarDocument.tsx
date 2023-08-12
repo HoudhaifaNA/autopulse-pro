@@ -53,6 +53,8 @@ const CarDocument = () => {
         type,
         costInEuros,
         seller: { id: sellerId, name: seller },
+        isExchange: JSON.parse(car.isExchange),
+        exchangeTypes: JSON.parse(car.exchangeTypes),
         expenses: JSON.parse(car.expenses),
         owner: {
           id: ownerId,

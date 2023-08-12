@@ -8,6 +8,7 @@ export const TransactionRow = styled.tr`
   &:nth-child(even) {
     background-color: ${({ theme }) => theme.colors.neutral[200]};
   }
+  page-break-inside: avoid;
 `;
 export const TransactionCell = styled.td`
   padding: 1rem;

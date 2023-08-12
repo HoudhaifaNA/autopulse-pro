@@ -36,7 +36,9 @@ const CarsPage = () => {
   const renderPage = () => {
     if (isLoading) return <Loading />;
     if (error) {
-      return <ErrorMessage>{error.response.data.message}</ErrorMessage>;
+      let message = "Oh error";
+      if (error.response) message = error.response.data.message;
+      return <ErrorMessage>{message}</ErrorMessage>;
     }
     if (data && data.results === 0) {
       return (

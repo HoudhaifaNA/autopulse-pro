@@ -18,15 +18,19 @@ export const TableHeader = ({ children }: { children: ReactNode }) => {
 export const TableBody = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
+      const tableBody = document.querySelector(".table-body");
+      const detailViewer = document.querySelector(".detail-viewer");
       if (e.key.toLowerCase() === "h") {
-        let isThereBlur = document.querySelectorAll(".blurred").length > 0;
-        document.querySelectorAll(".blurrable-true").forEach((cell) => {
-          if (isThereBlur) {
-            cell.classList.remove("blurred");
-          } else {
-            cell.classList.add("blurred");
-          }
-        });
+        if (tableBody && !detailViewer) {
+          let isThereBlur = tableBody.querySelectorAll(".blurred").length > 0;
+          tableBody.querySelectorAll(".blurrable-true").forEach((cell) => {
+            if (isThereBlur) {
+              cell.classList.remove("blurred");
+            } else {
+              cell.classList.add("blurred");
+            }
+          });
+        }
       }
     };
 
@@ -37,7 +41,7 @@ export const TableBody = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  return <tbody>{children}</tbody>;
+  return <tbody className="table-body">{children}</tbody>;
 };
 
 export const TableHeaderCell = ({ children, onClick }: TabelCellProps) => {

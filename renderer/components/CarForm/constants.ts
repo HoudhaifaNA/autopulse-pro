@@ -32,6 +32,8 @@ export const INITIAL_VALUES: Values = {
   euroPrice: 100,
   purchasingPrice: "",
   owner: { id: 0, name: "", price: 0 },
+  isExchange: false,
+  exchangeTypes: [],
   expenses: [
     {
       id: uid(),

@@ -97,11 +97,30 @@ export const GET_SOLD_CARS_STATS = `
        WHEN type != 'locale' THEN SUM(totalEurosAmount)
     END AS euro_cost,
     SUM(soldPrice) AS sold_price,
-    SUM(profit) AS profit,
+    SUM(CASE WHEN exchangeTypes LIKE '%importé%' AND profit < 0 OR exchangeTypes LIKE '%UAE%' AND profit < 0 THEN 0 ELSE profit END) AS profit,
     ${getDateColumn("created_at", "long")}
     FROM cars
     WHERE buyerId IS NOT NULL -- PLACEHOLDER
     GROUP BY type
+`;
+
+/**
+ * importe
+ *
+ */
+export const GET_CARS_LOST_PROFIT = `
+    SELECT 
+    COUNT (*) AS count,
+    SUM(profit) AS lost_profit,
+    exchangeTypes,
+    ${getDateColumn("created_at", "long")}
+    FROM cars
+    WHERE buyerId IS NOT NULL
+          AND type = 'locale'
+          AND isExchange = 'true'
+          AND exchangeTypes LIKE '%importé%' AND profit < 0 OR exchangeTypes LIKE '%UAE%' AND profit < 0
+          -- PLACEHOLDER
+    GROUP BY exchangeTypes
 `;
 
 export const GET_LICENCES_COST = `

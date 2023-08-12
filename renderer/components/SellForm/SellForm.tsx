@@ -1,5 +1,5 @@
 import useSWR, { mutate } from "swr";
-import { FormikHelpers, FormikProps, useField } from "formik";
+import { FormikHelpers, FormikProps } from "formik";
 
 import { FormGroup } from "components/Form/Form.styled";
 
@@ -35,7 +35,7 @@ interface Values {
   carId: number;
 }
 
-const INITIAL_VALUES = {
+const INITIAL_VALUES: Values = {
   buyer: {
     id: 0,
     name: "",
@@ -46,6 +46,7 @@ const INITIAL_VALUES = {
   folder: "Dossier",
   procuration: true,
   selling_details: "",
+  gray_card: false,
   carId: 0,
 };
 
@@ -54,7 +55,8 @@ const onSubmit = async (
   actions: FormikHelpers<Values>,
   context: any
 ) => {
-  const { setModal, setNotification, setDocument } = context;
+  const { setModal, setNotification, setDocument, currCarType } = context;
+  let { brand, serie, model } = currCarType;
   let message;
 
   try {
@@ -73,8 +75,6 @@ const onSubmit = async (
     const endpoint = edit ? `/cars/soldPrice/${carId}` : `/cars/sell/${carId}`;
     message = edit ? "Vendre a modifié" : "Voiture a été vendue";
 
-    console.log(gray_card);
-
     await API.patch(endpoint, {
       buyerId: buyer.id,
       soldPrice,
@@ -86,6 +86,11 @@ const onSubmit = async (
       selling_details,
     });
     mutate("/cars");
+    mutate(`/cars/models?brand=${brand}`);
+    mutate(`/cars/carBrand?brand=${brand}&serie=${serie}`);
+    mutate(`/cars/carBrand?brand=${brand}&serie=`);
+    mutate(`/cars/carName?name=${brand} ${model}&serie=${serie}`);
+    mutate(`/cars/carName?name=${brand} ${model}&serie=`);
     setModal("");
     setNotification({ status: "success", message });
     setDocument({});

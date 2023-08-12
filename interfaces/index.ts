@@ -5,6 +5,8 @@ export interface Client {
   phoneNumber: string;
   balance: number;
   created_at: string;
+  lastTransactionDate: string;
+  lastTransaction: Transaction;
 }
 
 export interface Licence {
