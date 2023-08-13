@@ -31,8 +31,8 @@ export const DetailHeader = ({ title }: { title: string }) => {
 };
 
 export const DetailItem = (props: DetailItemProps) => {
-  const { title, value, $index, blurrable = false, onClick } = props;
-  const [blurred, setBlur] = useState(blurrable);
+  const { title, value, $index, onClick, blurrable = false } = props;
+  const [blurred, setBlur] = useState<boolean>(blurrable);
 
   let className = "";
   const isString = typeof value === "string";

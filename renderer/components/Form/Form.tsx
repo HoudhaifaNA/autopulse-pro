@@ -57,7 +57,6 @@ const Form = (props: FormProps) => {
               <ModalContent>
                 <S.Form onSubmit={handleSubmit}>
                   <S.FormContent>{children}</S.FormContent>
-                  {/*Add hidden input to submit button with hitting enter */}
                   <input type="submit" style={{ display: "none" }} />
                 </S.Form>
               </ModalContent>

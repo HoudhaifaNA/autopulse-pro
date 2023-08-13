@@ -203,7 +203,7 @@ export const createCar = tryCatch((req, res, next) => {
     "car",
     carName,
     color,
-    registrationNumber,
+    `${registrationNumber} (${serialNumber})`,
     year,
     transactionAmount,
     "entrante",
@@ -301,7 +301,7 @@ export const updateCar = tryCatch((req, res, next) => {
     "car",
     carName,
     color,
-    registrationNumber,
+    `${registrationNumber} (${serialNumber})`,
     year,
     transactionAmount,
     "entrante",
@@ -401,7 +401,7 @@ export const sellCar = tryCatch((req, res, next) => {
 
   if (!car) return next(new AppError("Voiture n'existe pas", 404));
 
-  const { brand, model, color, registrationNumber, year } = car;
+  const { brand, model, color, registrationNumber, serialNumber, year } = car;
 
   if (car.soldPrice > 0) return next(new AppError("Voiture a été vendue", 403));
 
@@ -442,7 +442,7 @@ export const sellCar = tryCatch((req, res, next) => {
     "car",
     `${brand} ${model}`,
     color,
-    registrationNumber,
+    `${registrationNumber} (${serialNumber})`,
     year,
     soldPrice,
     "sortante",
@@ -472,7 +472,7 @@ export const updateSoldPrice = tryCatch((req, res, next) => {
 
   if (!car) return next(new AppError("Voiture n'existe pas", 404));
 
-  const { brand, model, color, registrationNumber, year } = car;
+  const { brand, model, color, registrationNumber, serialNumber, year } = car;
   const params = [
     soldPrice,
     sold_date,
@@ -496,7 +496,7 @@ export const updateSoldPrice = tryCatch((req, res, next) => {
     "car",
     `${brand} ${model}`,
     color,
-    registrationNumber,
+    `${registrationNumber} (${serialNumber})`,
     year,
     soldPrice,
     "sortante",

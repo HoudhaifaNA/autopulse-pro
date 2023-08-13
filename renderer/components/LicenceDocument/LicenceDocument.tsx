@@ -185,6 +185,10 @@ const LicenceDocument = () => {
                     setDocument({ type: "cars", id: data.licence.carId })
                   }
                 />
+                <DetailItem
+                  title="Date d'expriation"
+                  value={data.licence.validUntil}
+                />
               </DetailContent>
             </DetailSection>
             <DetailSection>
@@ -201,16 +205,5 @@ const LicenceDocument = () => {
     </>
   );
 };
-
-{
-  /* <S.AttachmentController>
-<div>
-  <Icon icon="download" size="2.4rem" />
-</div>
-<div>
-  <Icon icon="delete" size="2.4rem" />
-</div>
-</S.AttachmentController> */
-}
 
 export default LicenceDocument;
