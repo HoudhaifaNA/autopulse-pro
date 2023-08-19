@@ -8,7 +8,7 @@ db
 dist
 renderer/build
 uploads/*
-server/package*
+backend/package*
 
 .vscode
 

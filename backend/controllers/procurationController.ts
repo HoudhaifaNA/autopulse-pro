@@ -2,7 +2,7 @@ import tryCatch from "../utils/tryCatch";
 import * as S from "../statments/procurationStatments";
 import AppError from "../utils/AppError";
 import { getLicenceById } from "../statments/licenceStatments";
-import { getCarById } from "../statments/carStatments";
+import { getCarById } from "../statments/carsStatments";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 import { createExpense } from "../statments/expensesStatments";
 import {
@@ -15,9 +15,7 @@ import dayjs from "dayjs";
 export const getProcurations = tryCatch((req, res) => {
   const procurations = S.getProcurations.all();
 
-  return res
-    .status(200)
-    .json({ status: "success", results: procurations.length, procurations });
+  return res.status(200).json({ status: "success", results: procurations.length, procurations });
 });
 export const getProcurationById = tryCatch((req, res, next) => {
   const { ids } = req.params;

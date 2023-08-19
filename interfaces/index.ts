@@ -1,12 +1,16 @@
 export interface Client {
-  id: number;
-  clientType: "DA" | "euro";
-  fullName: string;
-  phoneNumber: string;
-  balance: number;
+  id: string;
+  full_name: string;
+  phone: string;
+  email: string;
+  address: string;
+  eur_balance: number;
+  dzd_balance: number;
   created_at: string;
-  lastTransactionDate: string;
-  lastTransaction: Transaction;
+  updated_at: string;
+  last_transaction_date?: string;
+  last_transaction?: Transaction;
+  transactions?: Transaction[];
 }
 
 export interface Licence {
@@ -28,15 +32,17 @@ export interface Licence {
 
 export interface Transaction {
   id: number;
-  productId: number;
-  clientId: number;
-  date: string;
-  type: "licence" | "car" | "argent" | "euros";
+  client_id: number;
+  transaction_date: string;
+  type: "car" | "licence" | "procuration" | "paper" | "Fiat";
+  product_id: number;
   info1: string;
   info2: string;
   info3: string;
   info4: string;
-  total: number;
-  direction: "sortante" | "entrante";
+  direction: "entrante" | "sortante";
+  currency: "EUR" | "DZD";
+  amount: number;
   created_at: string;
+  updated_at: string;
 }

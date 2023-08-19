@@ -29,12 +29,15 @@
     "react-redux": "^8.1.2",
     "react-to-print": "^2.14.12",
     "recharts": "^2.7.2",
-    "swr": "^2.1.5"
+    "swr": "^2.1.5",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "@mantine/dates": "^6.0.7",
     "@types/bcrypt": "^5.0.0",
     "@types/better-sqlite3": "^7.6.4",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/multer": "^1.4.7",
@@ -43,6 +46,7 @@
     "@types/react-dom": "^18.2.6",
     "@types/react-pdf": "^6.2.0",
     "@types/styled-components": "^5.1.26",
+    "@types/validator": "^13.11.1",
     "babel-plugin-styled-components": "^2.1.1",
     "dayjs": "^1.11.7",
     "electron": "^21.3.4",

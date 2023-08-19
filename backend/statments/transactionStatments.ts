@@ -95,9 +95,6 @@ export const deleteTransactionById = `DELETE FROM transactions WHERE id IN `;
 
 export const deleteTransactions = db.prepare(`DELETE FROM transactions`);
 
-// db.prepare("DROP TRIGGER updateBalanceOnInsert").run();
-// db.prepare("DROP TRIGGER updateBalanceOnDelete").run();
-
 db.prepare(
   `CREATE TRIGGER IF NOT EXISTS updateBalanceOnInsert
       AFTER INSERT ON transactions

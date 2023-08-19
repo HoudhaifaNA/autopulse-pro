@@ -8,7 +8,7 @@ type TErrorController = (
   next?: NextFunction
 ) => void;
 
-const handleUniqueError = (err) => {
+const handleUniqueError = (err: AppError) => {
   const fieldsNames = err.message
     .split(":")[1]
     .split(" ")
@@ -28,7 +28,7 @@ const handleForeignKeyError = () => {
   return new AppError(message, 403);
 };
 
-const handleCheckError = (err) => {
+const handleCheckError = (err: AppError) => {
   const condition = err.message.split(":")[1];
   const field = condition.split(" ")[1];
   let message = `'${field}' check a échoué`;
@@ -36,7 +36,7 @@ const handleCheckError = (err) => {
   return new AppError(message, 400);
 };
 
-const handleNullError = (err) => {
+const handleNullError = (err: AppError) => {
   const fieldPath = err.message.split(":")[1];
   const fieldName = fieldPath.split(".")[1];
   let message = `Veuillez indiquer ${fieldName}`;

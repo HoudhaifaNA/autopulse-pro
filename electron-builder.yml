@@ -5,8 +5,6 @@ directories:
   output: dist
   buildResources: resources
 extraResources:
-  - from: "db"
-    to: db
   - from: "uploads"
     to: uploads
     filter:

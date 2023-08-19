@@ -1,5 +1,5 @@
 import db from "../database";
-import { CAR_SELECT_STMT } from "../statments/carStatments";
+import { CAR_SELECT_STMT } from "../statments/carsStatments";
 import { SELECT_BASE_QUERY } from "../statments/licenceStatments";
 import { PROCURATION_SELECT_STMT } from "../statments/procurationStatments";
 import tryCatch from "../utils/tryCatch";
@@ -27,12 +27,9 @@ const searchController = tryCatch((req, res) => {
 
   let data = [];
 
-  if (table === "clients")
-    data = serachClients.all([`${query}%`, `% ${query}%`]);
-  if (table === "cars")
-    data = serachCars.all([`${query}%`, `${query}%`, `${query}%`]);
-  if (table === "licences")
-    data = serachLicences.all([`${query}%`, `% ${query}%`]);
+  if (table === "clients") data = serachClients.all([`${query}%`, `% ${query}%`]);
+  if (table === "cars") data = serachCars.all([`${query}%`, `${query}%`, `${query}%`]);
+  if (table === "licences") data = serachLicences.all([`${query}%`, `% ${query}%`]);
 
   res.status(200).json({
     status: "success",

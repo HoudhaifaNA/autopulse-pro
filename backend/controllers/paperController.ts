@@ -2,7 +2,7 @@ import tryCatch from "../utils/tryCatch";
 import * as S from "../statments/papersStatments";
 import AppError from "../utils/AppError";
 import { getLicenceById } from "../statments/licenceStatments";
-import { getCarById } from "../statments/carStatments";
+import { getCarById } from "../statments/carsStatments";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 import { createExpense } from "../statments/expensesStatments";
 import {
@@ -16,9 +16,7 @@ import dayjs from "dayjs";
 export const getPapers = tryCatch((req, res) => {
   const papers = S.getPapers.all();
 
-  return res
-    .status(200)
-    .json({ status: "success", results: papers.length, papers });
+  return res.status(200).json({ status: "success", results: papers.length, papers });
 });
 export const getPaperById = tryCatch((req, res, next) => {
   const { ids } = req.params;
@@ -44,15 +42,7 @@ export const createPaper = tryCatch((req, res, next) => {
   let currentTime = dayjs(new Date()).format("YYYY-MM-DD");
   if (created_at) currentTime = dayjs(created_at).format("YYYY-MM-DD");
 
-  const params = [
-    sellerId,
-    car.ownerName,
-    carId,
-    price,
-    type,
-    issued_date || currentTime,
-    created_at || currentTime,
-  ];
+  const params = [sellerId, car.ownerName, carId, price, type, issued_date || currentTime, created_at || currentTime];
   const { lastInsertRowid } = S.createPaper.run(params);
 
   if (type === "transaction") {
@@ -70,11 +60,7 @@ export const createPaper = tryCatch((req, res, next) => {
     ];
     createTransaction.run(transacrtionParams);
   } else if (type === "expense") {
-    createExpense.run([
-      currentTime,
-      `Dossier ${car.name} (${car.registrationNumber})`,
-      price,
-    ]);
+    createExpense.run([currentTime, `Dossier ${car.name} (${car.registrationNumber})`, price]);
   }
 
   const newPaper = S.getPaperById.get(lastInsertRowid);
