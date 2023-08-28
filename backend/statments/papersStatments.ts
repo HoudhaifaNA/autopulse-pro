@@ -56,9 +56,14 @@ export const selectPapersQuery = `
 
   `;
 
-export const selectPaperByIdQuery = db.prepare(`
+export const selectPaperByIdStatment = db.prepare(`
   ${selectPapersQuery}
   WHERE papers.id = ?
+  `);
+
+export const selectPaperByCarIdStatment = db.prepare(`
+  ${selectPapersQuery}
+  WHERE papers.car_id = ?
   `);
 
 const INSERTED_FIELDS = generateInsertedFields([

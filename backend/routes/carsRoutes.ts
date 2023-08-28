@@ -7,6 +7,7 @@ const router = express.Router();
 router.route("/").get(controller.getAllCars).post(controller.createCar).delete(controller.deleteAllCars);
 
 router.get("/brandsAndSeries", controller.getCarsBrandsAndSeries);
+router.get("/list", controller.getCarsWithPapersList);
 
 router.route("/:id").get(controller.getCarById).patch(controller.updateCar);
 router.delete("/:ids", controller.deleteCarsById);

@@ -74,6 +74,18 @@ const IS_INCOMPLETE = `
   END AS is_incomplete
   `;
 
+export const selectCarsWithPapersListStatment = db.prepare(`
+  SELECT 
+  cars.id,
+  cars.name,
+  cars.has_gray_card,
+  cars.buyer_id,
+  papers.id AS paper_exist
+  FROM cars
+  LEFT JOIN papers ON cars.id = papers.car_id
+  WHERE has_gray_card = 1 AND buyer_id IS NOT NULL AND paper_exist IS NULL
+  `);
+
 export const selectCarsQuery = `
   SELECT cars.*,
   CASE

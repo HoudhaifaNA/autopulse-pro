@@ -25,6 +25,12 @@ export const verifyClientInfo = tryCatch((req, _res, next) => {
   next();
 });
 
+export const getClientsList = tryCatch((_req, res) => {
+  const clients = S.selectClientsListStatment.all();
+
+  return res.status(200).json({ status: "success", results: clients.length, clients });
+});
+
 export const getAllClients = tryCatch((req, res) => {
   const { orderBy = "-created_at", page = 1, limit = 10 } = req.query;
 

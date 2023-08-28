@@ -34,17 +34,32 @@ createLicencesTableStatment.run();
 
 export const IS_LICENCE_VALID = `
 	CASE
-		WHEN datetime('now') < expiration_date AND car_id IS NULL THEN 1
+		WHEN datetime('now') < licences.expiration_date AND licences.car_id IS NULL THEN 1
 		ELSE 0
 	END AS is_valid
 	`;
 
 export const IS_LICENCE_EXPIRATED = `
 	CASE
-		WHEN datetime('now') > expiration_date THEN 1
+		WHEN datetime('now') > licences.expiration_date THEN 1
 		ELSE 0
 	END AS is_expirated
 	`;
+
+export const selectLicencesListQuery = `
+  SELECT 
+    licences.id,
+    licences.moudjahid,
+    licences.serial_number,
+    licences.car_id,
+    ${IS_LICENCE_VALID},
+    cars.has_procuration,
+    cars.buyer_id,
+    procurations.car_id AS procuration_exist
+  FROM licences
+  LEFT JOIN cars ON licences.car_id = cars.id
+  LEFT JOIN procurations ON licences.id = procurations.licence_id
+  `;
 
 export const selectLicencesQuery = `
   SELECT licences.*,

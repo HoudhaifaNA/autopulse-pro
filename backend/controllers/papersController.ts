@@ -75,7 +75,7 @@ export const getAllPapers = tryCatch((req, res) => {
 export const getPaperById = tryCatch((req, res, next) => {
   const { id } = req.params;
 
-  const paper = S.selectPaperByIdQuery.get(id);
+  const paper = S.selectPaperByIdStatment.get(id);
   if (!paper) {
     return next(new AppError("Dossier non trouvé. Veuillez vérifier les informations.", 404));
   }
@@ -146,7 +146,7 @@ export const createPaper = tryCatch((req, res, next) => {
       insertTransactionStatment.run(transactionParams);
     }
 
-    const newPaper = S.selectPaperByIdQuery.get(lastInsertRowid);
+    const newPaper = S.selectPaperByIdStatment.get(lastInsertRowid);
     db.exec("COMMIT;");
 
     return res.status(201).json({ status: "success", paper: newPaper });
@@ -161,7 +161,7 @@ export const updatePaper = tryCatch((req, res, next) => {
   const { id } = req.params;
   let deal_id = null;
 
-  const paper = S.selectPaperByIdQuery.get(id) as Paper | undefined;
+  const paper = S.selectPaperByIdStatment.get(id) as Paper | undefined;
 
   if (!paper) {
     return next(new AppError("Dossier non trouvé. Veuillez vérifier les informations.", 404));
@@ -232,7 +232,7 @@ export const updatePaper = tryCatch((req, res, next) => {
     const params = [type, purchased_at, seller_id, price, deal_id, issue_date, received_at, id];
 
     S.updatePaperStatment.run(params);
-    const updatedPaper = S.selectPaperByIdQuery.get(id);
+    const updatedPaper = S.selectPaperByIdStatment.get(id);
     db.exec("COMMIT;");
 
     res.status(200).json({ status: "success", paper: updatedPaper });

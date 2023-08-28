@@ -2,15 +2,23 @@ import db from "../database";
 import * as S from "../statments/carsStatments";
 import { selectLicenceByIdStatment } from "../statments/licencesStatments";
 import { insertTransactionStatment, updateTransactionByProductIdStatment } from "../statments/transactionsStatments";
+import { selectProcurationByCarIdStatment, deleteProcurationsByIdQuery } from "../statments/procurationsStatments";
+import { selectPaperByCarIdStatment, deletePapersByIdQuery } from "../statments/papersStatments";
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
 import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
-import { Car, Licence } from "../../interfaces";
+import { Car, Licence, Paper, Procuration } from "../../interfaces";
 
 interface ITotalCount {
   total_count: number;
 }
+
+export const getCarsWithPapersList = tryCatch((_req, res) => {
+  const cars = S.selectCarsWithPapersListStatment.all();
+
+  return res.status(200).json({ status: "success", results: cars.length, cars });
+});
 
 export const getAllCars = tryCatch((req, res) => {
   const { name, type, isSold, orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
@@ -501,6 +509,15 @@ export const cancelCarSale = tryCatch((req, res, next) => {
 
   if (!car.buyer_id) {
     return next(new AppError("Annulation de la vente impossible. Cette voiture n'a pas encore été vendue.", 403));
+  }
+
+  const carProcuration = selectProcurationByCarIdStatment.get(id) as Procuration | undefined;
+  const carPaper = selectPaperByCarIdStatment.get(id) as Paper | undefined;
+
+  if (carProcuration) {
+    deleteDocumentsByIds(`${carProcuration.id}`, deleteProcurationsByIdQuery);
+  } else if (carPaper) {
+    deleteDocumentsByIds(`${carPaper.id}`, deletePapersByIdQuery);
   }
 
   db.exec("BEGIN TRANSACTION");

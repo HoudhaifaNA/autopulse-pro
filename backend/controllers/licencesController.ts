@@ -22,6 +22,26 @@ const uid = () => {
   return `${Math.random().toString(36).slice(2)}`;
 };
 
+export const getLicencesList = tryCatch((req, res) => {
+  const { filter } = req.params;
+
+  let filterClause = "";
+  if (filter === "valid") {
+    filterClause = `WHERE is_valid = 1`;
+  } else if (filter === "procuration") {
+    filterClause = `WHERE has_procuration = 1 AND cars.buyer_id IS NOT NULL AND procuration_exist IS NULL`;
+  }
+
+  const selectLicencesListQuery = `
+  ${S.selectLicencesListQuery}
+  ${filterClause}
+  `;
+
+  const licences = db.prepare(selectLicencesListQuery).all();
+
+  return res.status(200).json({ status: "success", results: licences.length, licences });
+});
+
 export const getAllLicences = tryCatch((req, res) => {
   const { is_valid, is_expirated, orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
 

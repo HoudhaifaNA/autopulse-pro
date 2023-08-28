@@ -20,6 +20,13 @@ const createClientsTableStatment = db.prepare(`
 
 createClientsTableStatment.run();
 
+export const selectClientsListStatment = db.prepare(`
+  SELECT 
+  id,
+  full_name
+  FROM clients
+  `);
+
 export const selectClientsQuery = `
   SELECT clients.*,
   t.last_transaction_date
