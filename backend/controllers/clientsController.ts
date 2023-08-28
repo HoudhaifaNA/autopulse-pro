@@ -3,7 +3,7 @@ import isEmail from "validator/lib/isEmail";
 
 import db from "../database";
 import * as S from "../statments/clientsStatments";
-import { formatSortingQuery, setRangeFilter } from "../utils/APIFeatures";
+import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
 import AppError from "../utils/AppError";
 import tryCatch from "../utils/tryCatch";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
@@ -26,25 +26,12 @@ export const verifyClientInfo = tryCatch((req, _res, next) => {
 });
 
 export const getAllClients = tryCatch((req, res) => {
-  const { orderBy, dzd_balance, eur_balance, created_at, page = 1, limit = 10 } = req.query;
+  const { orderBy = "-created_at", page = 1, limit = 10 } = req.query;
 
-  let filterQueries: string[] = [];
+  const ranges = ["created_at", "dzd_balance", "eur_balance"];
   const skip = (Number(page) - 1) * Number(limit);
 
-  if (dzd_balance) {
-    const dzdFilterQuery = setRangeFilter(dzd_balance, "dzd_balance");
-    filterQueries.push(dzdFilterQuery);
-  }
-
-  if (eur_balance) {
-    const eurFilterQuery = setRangeFilter(eur_balance, "eur_balance");
-    filterQueries.push(eurFilterQuery);
-  }
-
-  if (created_at) {
-    const createdAtQuery = setRangeFilter(created_at, "created_at");
-    filterQueries.push(createdAtQuery);
-  }
+  const filterQueries = generateRangeFilters(ranges, req.query);
 
   const filters = filterQueries.join(" AND ");
   const filterClause = filters ? `WHERE ${filters}` : "";
@@ -57,24 +44,19 @@ export const getAllClients = tryCatch((req, res) => {
     LIMIT ? OFFSET ?
   `;
 
-  const countClientQuery = `
+  const selectClientsCountQuery = `
     SELECT COUNT(*) AS total_clients
     FROM clients
     ${filterClause}
    `;
 
   const selectClientsStatment = db.prepare(selectClientsQuery);
-  const selectClientsCount = db.prepare(countClientQuery);
+  const selectClientsCountStatment = db.prepare(selectClientsCountQuery);
 
   const clients = selectClientsStatment.all([limit, skip]);
-  const { total_clients } = selectClientsCount.get() as CountResult;
+  const { total_clients } = selectClientsCountStatment.get() as CountResult;
 
-  return res.status(200).json({
-    status: "success",
-    total_clients,
-    results: clients.length,
-    clients,
-  });
+  return res.status(200).json({ status: "success", total_clients, results: clients.length, clients });
 });
 
 export const getClientById = tryCatch((req, res, next) => {
@@ -142,7 +124,7 @@ export const updateClient = tryCatch((req, res, next) => {
 
   const { changes } = S.updateClientStatment.run(params);
 
-  if (changes === 0) {
+  if (!changes) {
     return next(new AppError("Client non trouvé. Veuillez vérifier les informations.", 404));
   }
 

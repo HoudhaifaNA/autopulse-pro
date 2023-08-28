@@ -4,11 +4,14 @@ import * as controller from "../controllers/statsController";
 
 const router = express.Router();
 
-router.route("/counts").get(controller.getCounts);
-router.route("/clients").get(controller.getClientsStats);
-router.route("/cars").get(controller.getCarsStats);
-router.route("/licences").get(controller.getLicencesStats);
-router.route("/transactions").get(controller.getTransactionsStats);
-router.route("/expenses").get(controller.getExpensesStats);
+router.get("/stock", controller.getCarsStock);
+router.get("/count", controller.getDocumentsCount);
+router.get("/clients", controller.getClientsBalanaceStats);
+router.get("/cars", controller.getCarsStats);
+router.get("/licences", controller.getLicencesStats);
+router.get("/transactions", controller.getTransactionsStats);
+router.get("/expenses", controller.getExpensesStats);
+router.get("/procurations", controller.getProcurationsStats);
+router.get("/papers", controller.getPapersStats);
 
 export default router;

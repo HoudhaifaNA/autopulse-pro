@@ -1,39 +1,40 @@
-import db from "../database";
-import { CAR_SELECT_STMT } from "../statments/carsStatments";
-import { SELECT_BASE_QUERY } from "../statments/licenceStatments";
-import { PROCURATION_SELECT_STMT } from "../statments/procurationStatments";
+import * as S from "../statments/searchStatments";
 import tryCatch from "../utils/tryCatch";
+import { Car, Client, Licence, Paper, Procuration } from "../../interfaces";
 
-const serachClients = db.prepare(`SELECT * FROM clients 
- WHERE fullName LIKE ? OR fullName LIKE ? 
-`);
-
-const serachCars = db.prepare(`
-  ${CAR_SELECT_STMT}
- WHERE cars.name LIKE ? OR cars.serialNumber LIKE ? OR cars.registrationNumber LIKE ? 
-`);
-
-const serachLicences = db.prepare(`
-${SELECT_BASE_QUERY}
- WHERE licences.moudjahid LIKE ? OR licences.moudjahid LIKE ?
-`);
-const serachProcurations = db.prepare(`
-${PROCURATION_SELECT_STMT}
- WHERE moudjahid LIKE ? OR moudjahid LIKE ?
-`);
+type SearchResults = Client[] | Licence[] | Car[] | Procuration[] | Paper[];
 
 const searchController = tryCatch((req, res) => {
-  const { query, table } = req.query;
+  const { category } = req.params;
+  const { query } = req.query;
 
-  let data = [];
+  let searchResults: SearchResults = [];
+  const params = { query: `%${query}%` };
 
-  if (table === "clients") data = serachClients.all([`${query}%`, `% ${query}%`]);
-  if (table === "cars") data = serachCars.all([`${query}%`, `${query}%`, `${query}%`]);
-  if (table === "licences") data = serachLicences.all([`${query}%`, `% ${query}%`]);
+  if (category === "clients") {
+    searchResults = S.searchClientsQuery.all(params) as Client[];
+  }
+
+  if (category === "cars") {
+    searchResults = S.searchCarsQuery.all(params) as Car[];
+  }
+
+  if (category === "licences") {
+    searchResults = S.searchLicencesQuery.all(params) as Licence[];
+  }
+
+  if (category === "procurations") {
+    searchResults = S.searchProcurationsQuery.all(params) as Procuration[];
+  }
+
+  if (category === "papers") {
+    searchResults = S.searchPapersQuery.all(params) as Paper[];
+  }
 
   res.status(200).json({
     status: "success",
-    data,
+    results: searchResults.length,
+    [category]: searchResults,
   });
 });
 

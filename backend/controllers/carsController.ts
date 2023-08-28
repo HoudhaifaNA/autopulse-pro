@@ -1,456 +1,531 @@
 import db from "../database";
+import * as S from "../statments/carsStatments";
+import { selectLicenceByIdStatment } from "../statments/licencesStatments";
+import { insertTransactionStatment, updateTransactionByProductIdStatment } from "../statments/transactionsStatments";
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
-import * as S from "../statments/carsStatments";
+import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
+import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
+import { Car, Licence } from "../../interfaces";
+
+interface ITotalCount {
+  total_count: number;
+}
 
 export const getAllCars = tryCatch((req, res) => {
-  const cars = db.prepare(S.selectCarsQuery).all();
-  return res.status(200).json({ status: "success", results: cars.length, cars });
+  const { name, type, isSold, orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
+
+  const rangeFilters = [
+    "purchased_at",
+    "purchase_price_eur",
+    "purchase_price_dzd",
+    "total_cost",
+    "sold_at",
+    "profit",
+    "sold_price",
+  ];
+
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const filterQueries = generateRangeFilters(rangeFilters, req.query, "cars");
+
+  if (type) {
+    const typeFilter = `cars.type = '${type}'`;
+    filterQueries.push(typeFilter);
+  }
+
+  if (name && typeof name === "string") {
+    const nameFilter = `cars.name LIKE '${name.trim()}%'`;
+    filterQueries.push(nameFilter);
+  }
+
+  if (isSold && (isSold === "true" || isSold === "false")) {
+    const isSoldCondition = isSold === "true" ? "IS NOT NULL" : "IS NULL";
+    const soldFilter = `cars.buyer_id  ${isSoldCondition}`;
+    filterQueries.push(soldFilter);
+  }
+
+  const filters = filterQueries.join(" AND ");
+  const filterClause = filters ? `WHERE ${filters}` : "";
+  const orderByQuery = formatSortingQuery(orderBy);
+
+  const selectCarsQuery = `
+    ${S.selectCarsQuery}
+    ${filterClause}
+    ${orderByQuery}
+    LIMIT ? OFFSET ?
+  `;
+
+  const selectCarsCountQuery = `
+    SELECT COUNT(*) AS total_count
+    FROM cars
+    ${filterClause}
+  `;
+
+  const cars = db.prepare(selectCarsQuery).all([limit, skip]);
+  const { total_count } = db.prepare(selectCarsCountQuery).get() as ITotalCount;
+
+  return res.status(200).json({ status: "success", results: total_count, records_in_page: cars.length, cars });
 });
 
-// export const getCarSeries = tryCatch((req, res) => {
-//   const series = S.getCarsSeries.all();
-
-//   return res.status(200).json({ status: "success", series });
-// });
-// export const getCarsBySerie = tryCatch((req, res) => {
-//   const { serie } = req.params;
-
-//   const cars = S.getCarsBySerie.all(serie);
-
-//   return res
-//     .status(200)
-//     .json({ status: "success", results: cars.length, cars });
-// });
-
-// export const getCarById = tryCatch((req, res, next) => {
-//   const { carIds } = req.params;
-
-//   const car = S.getCarById.get(carIds);
-
-//   if (!car) return next(new AppError("Voiture n'existe pas", 404));
-
-//   return res.status(200).json({ status: "success", car });
-// });
-
-// export const createCar = tryCatch((req, res, next) => {
-//   const {
-//     type,
-//     brand,
-//     model,
-//     serialNumber,
-//     registrationNumber,
-//     secondRegistrationNumber,
-//     keys,
-//     mileage,
-//     color,
-//     year,
-//     features,
-//     sellerId,
-//     ownerId,
-//     ownerName,
-//     costInEuros,
-//     euroPrice,
-//     purchasingPrice,
-//     isExchange,
-//     exchangeTypes,
-//     expenses,
-//     totalExpensesCost,
-//     totalEurosAmount,
-//     totalCost,
-//     created_at,
-//   } = req.body;
-
-//   const carName = `${brand} ${model}`;
-//   const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
-
-//   // Check if the owner is a moudjahid with licence
-//   if (ownerId !== 0) {
-//     const licence: Licence = getLicenceById.get(ownerId);
-
-//     if (!licence || licence.isValid === "false") {
-//       return next(new AppError("Licence invalide", 400));
-//     }
-//   }
-
-//   const params = [
-//     type,
-//     carName,
-//     brand,
-//     model,
-//     serialNumber,
-//     registrationNumber,
-//     secondRegistrationNumber,
-//     keys,
-//     mileage,
-//     color,
-//     year,
-//     features,
-//     sellerId,
-//     ownerId,
-//     ownerName,
-//     costInEuros,
-//     euroPrice,
-//     purchasingPrice,
-//     isExchange,
-//     JSON.stringify(exchangeTypes),
-//     JSON.stringify(expenses),
-//     totalExpensesCost,
-//     totalEurosAmount,
-//     totalCost,
-//     createdAtDate,
-//   ];
-
-//   const client: any = getClientById.get(sellerId);
-//   if (!client || (client.clientType === "euro" && type === "locale")) {
-//     return next(
-//       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
-//     );
-//   } else if (!client || (client.clientType !== "euro" && type !== "locale")) {
-//     return next(
-//       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
-//     );
-//   }
-//   const { lastInsertRowid } = S.creatCar.run(params);
-
-//   const transactionAmount = type === "locale" ? purchasingPrice : costInEuros;
-
-//   const transacrtionParams = [
-//     lastInsertRowid,
-//     sellerId,
-//     createdAtDate,
-//     "car",
-//     carName,
-//     color,
-//     `${registrationNumber} (${serialNumber})`,
-//     year,
-//     transactionAmount,
-//     "entrante",
-//   ];
-
-//   createTransaction.run(transacrtionParams);
-
-//   const newCar = S.getCarById.get(lastInsertRowid);
-
-//   return res.status(201).json({ status: "success", car: newCar });
-// });
-
-// export const updateCar = tryCatch((req, res, next) => {
-//   const { carIds } = req.params;
-//   let carName;
-
-//   let {
-//     type,
-//     brand,
-//     model,
-//     serialNumber,
-//     registrationNumber,
-//     secondRegistrationNumber,
-//     keys,
-//     mileage,
-//     color,
-//     year,
-//     created_at,
-//     features,
-//     sellerId,
-//     costInEuros,
-//     euroPrice,
-//     purchasingPrice,
-//     isExchange,
-//     exchangeTypes,
-//     expenses,
-//     totalExpensesCost,
-//     totalEurosAmount,
-//     totalCost,
-//   } = req.body;
-//   const createdAtDate = dayjs(created_at).format("YYYY-MM-DD");
-
-//   if (brand && model) carName = `${brand} ${model}`;
-
-//   // TODO SERIALIZE STATMENTS
-//   const client: any = getClientById.get(sellerId);
-//   if (!client || (client.clientType === "euro" && type === "locale")) {
-//     return next(
-//       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
-//     );
-//   } else if (!client || (client.clientType !== "euro" && type !== "locale")) {
-//     return next(
-//       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
-//     );
-//   }
-
-//   const { changes } = S.updateCar.run([
-//     type,
-//     carName,
-//     brand,
-//     model,
-//     serialNumber,
-//     registrationNumber,
-//     secondRegistrationNumber,
-//     keys,
-//     mileage,
-//     color,
-//     year,
-//     createdAtDate,
-//     features,
-//     sellerId,
-//     costInEuros,
-//     euroPrice,
-//     purchasingPrice,
-//     isExchange,
-//     JSON.stringify(exchangeTypes),
-//     JSON.stringify(expenses),
-//     totalExpensesCost,
-//     totalEurosAmount,
-//     totalCost,
-//     carIds,
-//   ]);
-
-//   if (changes === 0) return next(new AppError("Voiture n'existe pas", 404));
-
-//   deleteDocumentsByIds(carIds, deleteCarTransaction, ["entrante"]);
-
-//   const updatedCar: any = S.getCarById.get(carIds);
-//   const transactionAmount = type === "locale" ? purchasingPrice : costInEuros;
-
-//   const sellerTransacrtionParams = [
-//     carIds,
-//     sellerId,
-//     createdAtDate,
-//     "car",
-//     carName,
-//     color,
-//     `${registrationNumber} (${serialNumber})`,
-//     year,
-//     transactionAmount,
-//     "entrante",
-//   ];
-
-//   createTransaction.run(sellerTransacrtionParams);
-
-//   if (updatedCar.buyerId) {
-//     const soldDate =
-//       updatedCar.sold_date ?? dayjs(new Date()).format("YYYY-MM-DD");
-//     const buyerTransacrtionParams = [
-//       carIds,
-//       updatedCar.buyerId,
-//       soldDate,
-//       "car",
-//       carName,
-//       color,
-//       registrationNumber,
-//       year,
-//       updatedCar.soldPrice,
-//       "sortante",
-//     ];
-//     deleteDocumentsByIds(carIds, deleteCarTransaction, ["sortante"]);
-
-//     createTransaction.run(buyerTransacrtionParams);
-//   }
-//   return res.status(200).json({ status: "success", car: updatedCar });
-// });
-
-// export const getCarsByBrand = tryCatch((req, res) => {
-//   let { brand, serie, type } = req.query;
-
-//   brand = typeof brand === "string" ? brand.toLowerCase() : brand;
-
-//   let STMT = S.getCarsByBrand;
-
-//   if (serie) {
-//     STMT += ` AND serie = '${serie}'`;
-//   }
-//   if (type) {
-//     STMT += ` AND type = '${type}'`;
-//   }
-
-//   STMT += ` ORDER BY cars.name`;
-
-//   const cars = db.prepare(STMT).all([brand]);
-
-//   res.json({ status: "success", results: cars.length, cars });
-// });
-// export const getCarsByName = tryCatch((req, res) => {
-//   let { name, serie, type } = req.query;
-
-//   name = typeof name === "string" ? name.toLowerCase() : name;
-//   let STMT = S.getCarsByName;
-//   if (serie) {
-//     STMT += ` AND serie = '${serie}'`;
-//   }
-//   if (type) {
-//     STMT += ` AND type = '${type}'`;
-//   }
-
-//   STMT += ` ORDER BY cars.name`;
-//   const cars = db.prepare(STMT).all([name]);
-
-//   res.json({ status: "success", results: cars.length, cars });
-// });
-// export const getCarBrands = tryCatch((req, res) => {
-//   const brands = S.getCarsBrands.all();
-
-//   res.json({ status: "success", results: brands.length, brands });
-// });
-
-// export const getBrandModels = tryCatch((req, res) => {
-//   let { brand } = req.query;
-
-//   brand = typeof brand === "string" ? brand.toLowerCase() : brand;
-
-//   const models = S.getBrandModels.all(brand);
-
-//   res.json({ status: "success", results: models.length, models });
-// });
-
-// export const sellCar = tryCatch((req, res, next) => {
-//   const { carId } = req.params;
-//   const {
-//     buyerId,
-//     soldPrice,
-//     sold_date,
-//     given_keys,
-//     folder,
-//     procuration,
-//     gray_card,
-//     selling_details,
-//   } = req.body;
-
-//   const car: any = S.getCarById.get(carId);
-
-//   if (!car) return next(new AppError("Voiture n'existe pas", 404));
-
-//   const { brand, model, color, registrationNumber, serialNumber, year } = car;
-
-//   if (car.soldPrice > 0) return next(new AppError("Voiture a été vendue", 403));
-
-//   if (!buyerId || !soldPrice || !sold_date) {
-//     return next(
-//       new AppError(
-//         "Fournir un acheteur, prix de vente, date de vente valide",
-//         400
-//       )
-//     );
-//   }
-//   const client: any = getClientById.get(buyerId);
-//   if (!client || client.clientType === "euro") {
-//     return next(
-//       new AppError(`Client n'est pas autorisé à effectuer le transfert`, 401)
-//     );
-//   }
-//   const params = [
-//     buyerId,
-//     soldPrice,
-//     sold_date,
-//     given_keys,
-//     folder,
-//     procuration,
-//     gray_card,
-//     selling_details,
-//     carId,
-//   ];
-
-//   S.sellCar.run(params);
-
-//   // TODO CHANGE DATE NAME
-//   const soldDate = dayjs(sold_date).format("YYYY-MM-DD");
-//   const transacrtionParams = [
-//     carId,
-//     buyerId,
-//     `${soldDate}`,
-//     "car",
-//     `${brand} ${model}`,
-//     color,
-//     `${registrationNumber} (${serialNumber})`,
-//     year,
-//     soldPrice,
-//     "sortante",
-//   ];
-
-//   createTransaction.run(transacrtionParams);
-
-//   const soldCar = S.getCarById.get(carId);
-
-//   return res.status(200).json({ status: "success", car: soldCar });
-// });
-
-// export const updateSoldPrice = tryCatch((req, res, next) => {
-//   const { carId } = req.params;
-//   const {
-//     buyerId,
-//     soldPrice,
-//     sold_date,
-//     given_keys,
-//     folder,
-//     procuration,
-//     gray_card,
-//     selling_details,
-//   } = req.body;
-
-//   const car: any = S.getCarById.get(carId);
-
-//   if (!car) return next(new AppError("Voiture n'existe pas", 404));
-
-//   const { brand, model, color, registrationNumber, serialNumber, year } = car;
-//   const params = [
-//     soldPrice,
-//     sold_date,
-//     given_keys,
-//     folder,
-//     procuration,
-//     gray_card,
-//     selling_details,
-//     carId,
-//   ];
-
-//   S.updateSoldPrice.run(params);
-//   deleteDocumentsByIds(carId, deleteCarTransaction, ["sortante"]);
-
-//   // TODO CHANGE DATE NAME
-//   const soldDate = dayjs(sold_date).format("YYYY-MM-DD");
-//   const transacrtionParams = [
-//     carId,
-//     buyerId,
-//     `${soldDate}`,
-//     "car",
-//     `${brand} ${model}`,
-//     color,
-//     `${registrationNumber} (${serialNumber})`,
-//     year,
-//     soldPrice,
-//     "sortante",
-//   ];
-
-//   createTransaction.run(transacrtionParams);
-
-//   const soldCar = S.getCarById.get(carId);
-
-//   return res.status(200).json({ status: "success", car: soldCar });
-// });
-// export const unsoldCar = tryCatch((req, res, next) => {
-//   const { carId } = req.params;
-
-//   const car: any = S.getCarById.get(carId);
-
-//   if (!car) return next(new AppError("Voiture n'existe pas", 404));
-
-//   S.unsoldCar.run(carId);
-//   deleteDocumentsByIds(carId, deleteCarTransaction, ["sortante"]);
-
-//   return res.status(200).json({ status: "success" });
-// });
-
-// export const deleteCarById = tryCatch((req, res) => {
-//   const { carIds } = req.params;
-
-//   deleteDocumentsByIds(carIds, S.deleteCarById);
-//   deleteDocumentsByIds(carIds, deleteTransactionByProduct, ["car"]);
-//   return res.status(204).json({ status: "success" });
-// });
-
-// export const deleteCars = tryCatch((req, res) => {
-//   S.deleteAllCars.run();
-//   deleteTransactionByType.run("car");
-
-//   return res.status(204).json({ status: "success" });
-// });
+export const getCarsBrandsAndSeries = tryCatch((req, res) => {
+  const { name, type, isSold } = req.query;
+
+  const rangeFilters = [
+    "purchased_at",
+    "purchase_price_eur",
+    "purchase_price_dzd",
+    "total_cost",
+    "sold_at",
+    "profit",
+    "sold_price",
+  ];
+
+  const filterQueries = generateRangeFilters(rangeFilters, req.query, "cars");
+
+  if (type) {
+    const typeFilter = `cars.type = '${type}'`;
+    filterQueries.push(typeFilter);
+  }
+
+  if (name && typeof name === "string") {
+    const nameFilter = `cars.name LIKE '${name.trim()}%'`;
+    filterQueries.push(nameFilter);
+  }
+
+  if (isSold && (isSold === "true" || isSold === "false")) {
+    const isSoldCondition = isSold === "true" ? "IS NOT NULL" : "IS NULL";
+    const soldFilter = `cars.buyer_id  ${isSoldCondition}`;
+    filterQueries.push(soldFilter);
+  }
+
+  const filters = filterQueries.join(" AND ");
+  const brandFilters = filterQueries.filter((query) => !query.startsWith("cars.name")).join(" AND ");
+
+  const brandFilterClause = brandFilters ? `WHERE ${brandFilters}` : "";
+  const filterClause = filters ? `WHERE ${filters}` : "";
+
+  const carsBrandQuery = S.selectCarsBrandsQuery.replace("--FILTER", brandFilterClause);
+  const carsNameQuery = S.selectCarsNamesQuery.replace("--FILTER", filterClause);
+
+  const cars_brand = db.prepare(carsBrandQuery).all();
+  const cars_name = db.prepare(carsNameQuery).all(name);
+
+  const purchased_years = S.selectPurchasedYearsStatment.all().map((year_obj: any) => {
+    return year_obj.purchased_year;
+  });
+
+  const sold_years = S.selectSoldYearsStatment.all().map((year_obj: any) => {
+    return year_obj.sold_year;
+  });
+
+  return res.status(200).json({ status: "success", cars_brand, cars_name, purchased_years, sold_years });
+});
+
+export const getCarById = tryCatch((req, res, next) => {
+  const { id } = req.params;
+
+  const car = S.selectCarByIdStatment.get(id);
+
+  if (!car) {
+    return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+  }
+
+  return res.status(200).json({ status: "success", car });
+});
+
+export const createCar = tryCatch((req, res, next) => {
+  const {
+    purchased_at,
+    type,
+    brand,
+    model,
+    serial_number,
+    registration_number,
+    second_registration_number,
+    color,
+    production_year,
+    keys,
+    mileage,
+    papers_type,
+    has_procuration,
+    has_gray_card,
+    features,
+    seller_id,
+    owner_id,
+    owner_name,
+    purchase_price_eur,
+    eur_exchange_rate,
+    purchase_price_dzd,
+    is_exchange,
+    exchange_types,
+    expenses,
+    expense_cost,
+    euro_cost,
+  } = req.body;
+
+  let ownerName = owner_name;
+  let licence_price = 0;
+
+  if (owner_id) {
+    const licence = selectLicenceByIdStatment.get(owner_id) as Licence | undefined;
+
+    if (!licence || !licence.is_valid) {
+      return next(new AppError("La licence est invalide. Veuillez vérifier les informations fournies.", 400));
+    }
+
+    ownerName = licence.moudjahid;
+    licence_price = licence.price;
+  }
+
+  db.exec("BEGIN TRANSACTION");
+  try {
+    const params = {
+      purchased_at,
+      type,
+      brand,
+      model,
+      serial_number,
+      registration_number,
+      second_registration_number,
+      color,
+      production_year,
+      keys,
+      mileage,
+      papers_type,
+      has_procuration,
+      has_gray_card,
+      features,
+      seller_id,
+      owner_id,
+      owner_name: ownerName,
+      licence_price,
+      purchase_price_eur,
+      eur_exchange_rate,
+      purchase_price_dzd,
+      is_exchange,
+      exchange_types: JSON.stringify(exchange_types),
+      expenses: JSON.stringify(expenses),
+      expense_cost,
+      euro_cost,
+    };
+
+    const { lastInsertRowid } = S.insertCarStatment.run(params);
+
+    const carName = `${brand} ${model}`;
+    const currency = type === "locale" ? "DZD" : "EUR";
+    const transactionAmount = type === "locale" ? purchase_price_dzd : purchase_price_eur;
+
+    const transacrtionParams = {
+      client_id: seller_id,
+      transaction_date: purchased_at,
+      type: "car",
+      product_id: lastInsertRowid,
+      info1: carName,
+      info2: color,
+      info3: `${registration_number} (${serial_number})`,
+      info4: production_year,
+      direction: "entrante",
+      currency: currency,
+      amount: transactionAmount,
+    };
+
+    insertTransactionStatment.run(transacrtionParams);
+
+    const newCar = S.selectCarByIdStatment.get(lastInsertRowid) as Car;
+    db.exec("COMMIT;");
+
+    return res.status(201).json({ status: "success", car: newCar });
+  } catch (error: any) {
+    db.exec("ROLLBACK;");
+    return next(new AppError(error, 403));
+  }
+});
+
+export const updateCar = tryCatch((req, res, next) => {
+  const { id } = req.params;
+  const {
+    purchased_at,
+    type,
+    brand,
+    model,
+    serial_number,
+    registration_number,
+    second_registration_number,
+    color,
+    production_year,
+    keys,
+    mileage,
+    papers_type,
+    has_procuration,
+    has_gray_card,
+    features,
+    seller_id,
+    owner_id,
+    owner_name,
+    purchase_price_eur,
+    eur_exchange_rate,
+    purchase_price_dzd,
+    is_exchange,
+    exchange_types,
+    expenses,
+    expense_cost,
+    euro_cost,
+  } = req.body;
+
+  let ownerName = owner_name;
+  let licence_price = 0;
+
+  if (owner_id) {
+    const licence = selectLicenceByIdStatment.get(owner_id) as Licence | undefined;
+
+    if (!licence || (!licence.is_valid && String(licence.car_id) !== id)) {
+      return next(new AppError("La licence est invalide. Veuillez vérifier les informations fournies.", 400));
+    }
+
+    ownerName = licence.moudjahid;
+    licence_price = licence.price;
+  }
+
+  db.exec("BEGIN TRANSACTION");
+  try {
+    const params = [
+      purchased_at,
+      type,
+      brand,
+      model,
+      serial_number,
+      registration_number,
+      second_registration_number,
+      color,
+      production_year,
+      keys,
+      mileage,
+      papers_type,
+      has_procuration,
+      has_gray_card,
+      features,
+      seller_id,
+      owner_id,
+      ownerName,
+      licence_price,
+      purchase_price_eur,
+      eur_exchange_rate,
+      purchase_price_dzd,
+      is_exchange,
+      JSON.stringify(exchange_types),
+      JSON.stringify(expenses),
+      expense_cost,
+      euro_cost,
+      id,
+    ];
+
+    const { changes } = S.updateCarStatment.run(params);
+
+    if (!changes) {
+      db.exec("ROLLBACK;");
+      return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+    }
+
+    const updatedCar = S.selectCarByIdStatment.get(id) as Car;
+
+    const currency = updatedCar.type === "locale" ? "DZD" : "EUR";
+    const transactionAmount =
+      updatedCar.type === "locale" ? updatedCar.purchase_price_dzd : updatedCar.purchase_price_eur;
+
+    const productParams = ["car", id, "entrante"];
+
+    const transacrtionParams = [
+      updatedCar.seller_id,
+      updatedCar.purchased_at,
+      updatedCar.name,
+      updatedCar.color,
+      `${updatedCar.registration_number} (${updatedCar.serial_number})`,
+      updatedCar.production_year,
+      "entrante",
+      currency,
+      transactionAmount,
+    ];
+
+    updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);
+
+    db.exec("COMMIT;");
+
+    return res.status(200).json({ status: "success", car: updatedCar });
+  } catch (error: any) {
+    db.exec("ROLLBACK;");
+    return next(new AppError(error, 403));
+  }
+});
+
+export const sellCar = tryCatch((req, res, next) => {
+  const { id } = req.params;
+  const defautSoldDate = new Date().toISOString().slice(0, 19).replace("T", " ");
+  const {
+    buyer_id,
+    sold_at = defautSoldDate,
+    given_keys = 0,
+    papers_type,
+    has_procuration,
+    has_gray_card,
+    selling_details,
+    sold_price = 0,
+  } = req.body;
+
+  if (!buyer_id) {
+    return next(
+      new AppError("Veuillez fournir les informations de l'acheteur, elles sont nécessaires pour continuer.", 403)
+    );
+  }
+
+  const car = S.selectCarByIdStatment.get(id) as Car | undefined;
+
+  if (!car) {
+    return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+  }
+
+  if (car.buyer_id) {
+    return next(new AppError("Voiture déjà vendue. Impossible de procéder à la vente.", 403));
+  }
+
+  db.exec("BEGIN TRANSACTION");
+  try {
+    const saleParams = [
+      buyer_id,
+      sold_at,
+      given_keys,
+      papers_type,
+      has_procuration,
+      has_gray_card,
+      selling_details,
+      sold_price,
+      id,
+    ];
+
+    S.sellCarStatment.run(saleParams);
+
+    const transacrtionParams = {
+      client_id: buyer_id,
+      transaction_date: sold_at,
+      type: "car",
+      product_id: id,
+      info1: car.name,
+      info2: car.color,
+      info3: `${car.registration_number} (${car.serial_number})`,
+      info4: car.production_year,
+      direction: "sortante",
+      currency: "DZD",
+      amount: -sold_price,
+    };
+
+    insertTransactionStatment.run(transacrtionParams);
+
+    const soldCar = S.selectCarByIdStatment.get(id) as Car;
+    db.exec("COMMIT;");
+
+    return res.status(200).json({ status: "success", car: soldCar });
+  } catch (error: any) {
+    db.exec("ROLLBACK;");
+    return next(new AppError(error, 403));
+  }
+});
+
+export const updateCarSale = tryCatch((req, res, next) => {
+  const { id } = req.params;
+  const { buyer_id, sold_at, given_keys, papers_type, has_procuration, has_gray_card, selling_details, sold_price } =
+    req.body;
+
+  const car = S.selectCarByIdStatment.get(id) as Car | undefined;
+
+  if (!car) {
+    return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+  }
+
+  if (!car.buyer_id) {
+    return next(
+      new AppError("Impossible de mettre à jour la vente de la voiture. Cette voiture n'a pas encore été vendue.", 403)
+    );
+  }
+
+  db.exec("BEGIN TRANSACTION");
+  try {
+    const saleParams = [
+      buyer_id,
+      sold_at,
+      given_keys,
+      papers_type,
+      has_procuration,
+      has_gray_card,
+      selling_details,
+      sold_price,
+      id,
+    ];
+
+    S.updateCarSaleStatment.run(saleParams);
+
+    const soldCar = S.selectCarByIdStatment.get(id) as Car;
+
+    const productParams = ["car", id, "sortante"];
+
+    const transacrtionParams = [
+      buyer_id,
+      sold_at,
+      soldCar.name,
+      soldCar.color,
+      `${soldCar.registration_number} (${soldCar.serial_number})`,
+      soldCar.production_year,
+      "sortante",
+      "DZD",
+      -sold_price,
+    ];
+
+    updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);
+
+    db.exec("COMMIT;");
+
+    return res.status(200).json({ status: "success", car: soldCar });
+  } catch (error: any) {
+    db.exec("ROLLBACK;");
+    return next(new AppError(error, 403));
+  }
+});
+
+export const cancelCarSale = tryCatch((req, res, next) => {
+  const { id } = req.params;
+
+  const car = S.selectCarByIdStatment.get(id) as Car | undefined;
+
+  if (!car) {
+    return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+  }
+
+  if (!car.buyer_id) {
+    return next(new AppError("Annulation de la vente impossible. Cette voiture n'a pas encore été vendue.", 403));
+  }
+
+  db.exec("BEGIN TRANSACTION");
+  try {
+    S.cancelCarSaleStatment.run(id);
+    db.exec("COMMIT;");
+    const car = S.selectCarByIdStatment.get(id);
+
+    return res.status(200).json({ status: "success", car });
+  } catch (error: any) {
+    db.exec("ROLLBACK;");
+    return next(new AppError(error, 403));
+  }
+});
+
+export const deleteCarsById = tryCatch((req, res) => {
+  const { ids } = req.params;
+
+  deleteDocumentsByIds(ids, S.deleteCarsByIdQuery);
+
+  return res.status(204).json({ status: "success" });
+});
+
+export const deleteAllCars = tryCatch((_req, res) => {
+  S.deleteAllCarsStatment.run();
+
+  return res.status(204).json({ status: "success" });
+});

@@ -1,19 +1,13 @@
 import express from "express";
 
-import * as controller from "../controllers/paperController";
+import * as controller from "../controllers/papersController";
 
 const router = express.Router();
 
-router
-  .route("/")
-  .get(controller.getPapers)
-  .post(controller.createPaper)
-  .delete(controller.deletePapers);
+router.route("/").get(controller.getAllPapers).post(controller.createPaper).delete(controller.deleteAllPapers);
 
-router
-  .route("/:ids")
-  .get(controller.getPaperById)
-  .patch(controller.updatePaper)
-  .delete(controller.deletePaperById);
+router.route("/:id").get(controller.getPaperById).patch(controller.updatePaper);
+
+router.delete("/:ids", controller.deletePapersById);
 
 export default router;

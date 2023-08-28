@@ -13,6 +13,6 @@ router
 router.get("/:id/transactions", controller.getClientTransactions);
 router.get("/:id/lastTransaction", controller.getClientLastTransaction);
 router.route("/:id").get(controller.getClientById).patch(controller.verifyClientInfo, controller.updateClient);
-router.route("/:ids").delete(controller.deleteClientsByIds);
+router.delete("/:ids", controller.deleteClientsByIds);
 
 export default router;

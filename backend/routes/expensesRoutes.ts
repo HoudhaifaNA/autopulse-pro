@@ -1,24 +1,17 @@
 import express from "express";
 
-import * as controller from "../controllers/expenseController";
+import * as controller from "../controllers/expensesController";
 
 const router = express.Router();
 
-router
-  .route("/")
-  .get(controller.getExpensesDays)
-  .post(controller.createExpense)
-  .delete(controller.deleteExpenses);
+router.route("/").get(controller.getAllExpenses).post(controller.createExpense).delete(controller.deleteAllExpenses);
 
-router
-  .route("/date/:date")
-  .get(controller.getExpensesByDate)
-  .delete(controller.deleteExpenseByDate);
+router.route("/group").get(controller.getExpensesByGroup);
 
-router
-  .route("/:ids")
-  .get(controller.getExpenseById)
-  .patch(controller.updateExpense)
-  .delete(controller.deleteExpenseById);
+router.route("/:id").get(controller.getExpenseById).patch(controller.updateExpense);
+
+router.delete("/:ids", controller.deleteExpensesById);
+
+router.delete("/dates/:dates", controller.deleteExpensesByDate);
 
 export default router;

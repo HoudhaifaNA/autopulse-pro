@@ -1,4 +1,5 @@
 import db from "../database";
+import generateInsertedFields from "../utils/generateInsertedFields";
 import { checkNumber, setOptionalUpdate } from "../utils/sqlValidations";
 
 // db.prepare("DROP TABLE IF EXISTS clients").run();
@@ -48,10 +49,11 @@ export const selectClientLastTransactionStatment = db.prepare(`
   LIMIT 1
   `);
 
+const insertFields = generateInsertedFields(["full_name", "phone", "email", "address", "eur_balance", "dzd_balance"]);
+
 export const insertClientStatment = db.prepare(`
   INSERT INTO clients
-  (full_name, phone, email, address, eur_balance, dzd_balance)
-  VALUES (@full_name, @phone, @email, @address, @eur_balance, @dzd_balance)
+  ${insertFields}
   `);
 
 export const updateClientStatment = db.prepare(`

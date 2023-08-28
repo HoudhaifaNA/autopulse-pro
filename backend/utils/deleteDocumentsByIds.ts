@@ -1,6 +1,6 @@
 import db from "../database";
 
-const deleteDocumentsByIds = (ids: string, script: string, additonalParams?: any[]) => {
+const deleteDocumentsByIds = (ids: string, query: string, additonalParams?: any[]) => {
   const placeHolders: string[] = [];
   const idsList = ids.split(",");
   const params = idsList;
@@ -11,7 +11,7 @@ const deleteDocumentsByIds = (ids: string, script: string, additonalParams?: any
     params.unshift(...additonalParams);
   }
 
-  const deleteDocumentQuery = `${script} (${placeHolders})`;
+  const deleteDocumentQuery = `${query} (${placeHolders})`;
 
   db.prepare(deleteDocumentQuery).run(params);
 };

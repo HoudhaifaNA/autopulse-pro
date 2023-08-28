@@ -1,52 +1,92 @@
 import db from "../database";
+import generateInsertedFields from "../utils/generateInsertedFields";
+import { checkNumber, setOptionalUpdate } from "../utils/sqlValidations";
 
-const IS_NUMBER = (field) =>
-  `CHECK (typeof(${field}) = 'integer' OR typeof(${field}) = 'real')`;
+// db.prepare("DROP TABLE IF EXISTS expenses").run();
 
-// db.prepare("DROP TABLE expenses").run();
-
-db.prepare(
-  `CREATE TABLE IF NOT EXISTS expenses(
+const createExpensesTableStatment = db.prepare(`
+  CREATE TABLE IF NOT EXISTS expenses(
     id INTEGER NOT NULL PRIMARY KEY,
-    transferred_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expense_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     raison TEXT NOT NULL,
-    amount INTEGER NOT NULL ${IS_NUMBER("amount")},
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-)`
-).run();
+    cost INTEGER NOT NULL ${checkNumber("cost")},
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+  )`);
 
-export const createExpense = db.prepare(`INSERT INTO expenses(
-    transferred_at,
-    raison,
-    amount
-) VALUES (?,?,?)`);
+createExpensesTableStatment.run();
 
-export const getExpenses = db.prepare(
-  `SELECT * FROM expenses ORDER BY transferred_at DESC`
-);
+function getRandomDate(start: Date, end: Date) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+function generateRandomExpenses(count: number) {
+  const stmt = db.prepare(`
+    INSERT INTO expenses (expense_date, raison, cost)
+    VALUES (?, ?, ?)
+  `);
 
-export const getExpenseById = db.prepare(`SELECT * FROM expenses WHERE id = ?`);
+  const now = new Date();
 
-export const getExpensesDays = db.prepare(`SELECT transferred_at,
-COUNT(*) AS dayExpenses,
-SUM(amount) AS total
-FROM expenses
-GROUP BY transferred_at 
-ORDER BY transferred_at DESC
-`);
+  for (let i = 0; i < count; i++) {
+    let expenseDate;
 
-export const getExpenseByDate = db.prepare(`SELECT * FROM expenses
-WHERE transferred_at = ?
-`);
+    if (i < 5) {
+      expenseDate = new Date(2023, 0, 15).toISOString().replace("T", " ").slice(0, 19);
+    } else {
+      expenseDate = getRandomDate(new Date(2000, 0, 1), now).toISOString().replace("T", " ").slice(0, 19);
+    }
 
-export const updateExpense = db.prepare(`UPDATE expenses
-  SET transferred_at = COALESCE(?, transferred_at),
-    raison = COALESCE(?, raison),
-    amount = COALESCE(?, amount)
-    WHERE id = ? `);
+    const raison = `Expense ${i + 1}`;
+    const cost = Math.floor(Math.random() * 100000) + 1;
 
-export const deleteExpenseById = `DELETE FROM expenses WHERE id IN `;
+    stmt.run(expenseDate, raison, cost);
+  }
+}
 
-export const deleteExpenseByDate = `DELETE FROM expenses WHERE transferred_at IN `;
+// generateRandomExpenses(20);
 
-export const deleteExpenses = db.prepare(`DELETE FROM expenses`);
+export const selectAllExpensesQuery = `
+  SELECT * FROM expenses
+  `;
+
+export const selectExpensesByGroupQuery = `
+  SELECT
+  raison,
+  strftime('%Y-%m-%d', expense_date) AS date_group,
+  COUNT(*) AS count,
+  SUM(cost) AS total_cost
+  FROM expenses
+  `;
+
+export const selectExpenseByIdStatment = db.prepare(`
+  SELECT * FROM expenses
+  WHERE id = ?
+  `);
+
+const INSERTED_FIELDS = generateInsertedFields(["expense_date", "raison", "cost"]);
+
+export const insertExpenseStatment = db.prepare(`
+  INSERT INTO expenses
+  ${INSERTED_FIELDS}
+  `);
+
+export const updateExpenseStatment = db.prepare(`
+  UPDATE expenses
+  SET ${setOptionalUpdate("expense_date")},
+    ${setOptionalUpdate("raison")},
+    ${setOptionalUpdate("cost")},
+    updated_at = CURRENT_TIMESTAMP
+  WHERE id = ? 
+  `);
+
+export const deleteExpensesByIdQuery = `
+  DELETE FROM expenses
+  WHERE id IN
+  `;
+
+export const deleteExpensesByDateQuery = `
+  DELETE FROM expenses
+  WHERE strftime('%Y-%m-%d', expense_date) IN
+  `;
+
+export const deleteAllExpensesQuery = db.prepare(`DELETE FROM expenses`);
