@@ -15,19 +15,22 @@ export interface Client {
 
 export interface Licence {
   id: number;
-  sellerId: string;
+  purchased_at: string;
+  seller_id: number;
   moudjahid: string;
   wilaya: string;
-  serialNumber: string;
+  serial_number: string;
   price: number;
   attachments: string;
-  carId: string | null;
-  validUntil: string;
+  car_id: number | null;
+  issue_date: string;
+  expiration_date: string;
   created_at: string;
-  isValid: "false" | "true";
-  isExpirated: "false" | "true";
+  updated_at: string;
+  is_valid: 0 | 1;
+  is_expirated: 0 | 1;
   seller: string;
-  carName: string | null;
+  car: string | null;
 }
 
 export interface Transaction {
@@ -43,6 +46,104 @@ export interface Transaction {
   direction: "entrante" | "sortante";
   currency: "EUR" | "DZD";
   amount: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export type TExchangeTypes = "locale" | "europe" | "dubai";
+
+export interface Car {
+  id: number;
+  purchased_at: string;
+  type: "locale" | "europe" | "dubai";
+  brand: string;
+  model: string;
+  name: string;
+  serial_number: string;
+  registration_number: string;
+  second_registration_number: string;
+  keys: number;
+  mileage: number;
+  color: string;
+  production_year: string;
+  features: string;
+  seller_id: number;
+  owner_id: number | null;
+  owner_name: string;
+  licence_price: number;
+  purchase_price_eur: number;
+  eur_exchange_rate: number;
+  purchase_price_dzd: number;
+  is_exchange: 0 | 1;
+  exchange_types: TExchangeTypes[] | null;
+  expenses: string;
+  expense_cost: number;
+  euro_cost: number;
+  total_cost: number;
+  buyer_id: number | null;
+  sold_at: string | null;
+  given_keys: number | null;
+  papers_type: "Dossier" | "Copier de dossier" | null;
+  has_procuration: 0 | 1 | null;
+  procuration_received: 0 | 1 | null;
+  has_gray_card: 0 | 1 | null;
+  selling_details: string;
+  sold_price: number | null;
+  profit: number | null;
+  created_at: string;
+  updated_at: string;
+  seller: string;
+  buyer: string | null;
+  is_incomplete: 0 | 1;
+}
+
+export interface Procuration {
+  id: number;
+  type: "expense" | "transaction";
+  purchased_at: string;
+  seller_id: number;
+  licence_id: number;
+  car_id: number;
+  owner_id: number;
+  price: number;
+  deal_id: number | null;
+  issue_date: string;
+  received_at: string | null;
+  expiration_date: string;
+  has_received: 0 | 1;
+  created_at: string;
+  updated_at: string;
+  is_expirated: 0 | 1;
+  moudjahid: string;
+  seller: string;
+  owner: string;
+  car: string;
+}
+
+export interface Paper {
+  id: number;
+  type: "expense" | "transaction";
+  purchased_at: string;
+  seller_id: number;
+  car_id: number;
+  price: number;
+  deal_id: number | null;
+  issue_date: string;
+  received_at: string | null;
+  expiration_date: string;
+  has_received: 0 | 1;
+  created_at: string;
+  updated_at: string;
+  is_expirated: 0 | 1;
+  seller: string;
+  car: string;
+  owner_id: number;
+  owner: string;
+}
+
+export interface User {
+  username: string;
+  password: string;
   created_at: string;
   updated_at: string;
 }
