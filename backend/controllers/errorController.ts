@@ -1,8 +1,7 @@
-import { Request, Response } from "express";
-
+import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/AppError";
 
-type TErrorController = (err: AppError, req: Request, res: Response) => void;
+type TErrorController = (err: AppError, req: Request, res: Response, next?: NextFunction) => void;
 
 const handleUniqueError = (err: AppError) => {
   const fieldsNames = err.message
@@ -68,7 +67,7 @@ const sendErrorProd: TErrorController = (err, _req, res) => {
   });
 };
 
-const errorController: TErrorController = (err, req, res) => {
+const errorController: TErrorController = (err, req, res, _next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
