@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode } from "react";
+import { MouseEventHandler, ReactNode, Ref } from "react";
 
 import * as S from "components/Button/Button.styled";
 import { ButtonText } from "styles/Typography";
@@ -15,6 +15,7 @@ interface ButtonProps {
   disabled?: boolean;
   children?: ReactNode;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  ref?: Ref<HTMLButtonElement>;
 }
 
 const buttonVariants = {
@@ -25,26 +26,12 @@ const buttonVariants = {
 };
 
 const Button = (props: ButtonProps) => {
-  const {
-    variant,
-    width,
-    icon,
-    iconPostition,
-    loading,
-    floating,
-    children,
-    ...allProps
-  } = props;
+  const { variant, width, icon, iconPostition, loading, floating, children, ...allProps } = props;
 
   const SelectedButton = buttonVariants[variant];
 
   return (
-    <SelectedButton
-      $iconPosition={iconPostition}
-      $floating={floating}
-      $width={width}
-      {...allProps}
-    >
+    <SelectedButton $iconPosition={iconPostition} $floating={floating} $width={width} {...allProps}>
       {icon && <Icon icon={icon} size="2rem" />}
       {children && <ButtonText>{children}</ButtonText>}
       {loading && <S.Loader />}

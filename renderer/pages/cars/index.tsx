@@ -1,116 +1,84 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import useSWR from "swr";
 
+import CarsTable from "./components/CarsTable";
+import Pagination from "components/Pagination/Pagination";
 import PageHeader from "components/PageHeader/PageHeader";
 import EmptyState from "components/EmptyState/EmptyState";
-import CarBrandFilter from "components/CarBrandFilter/CarBrandFilter";
-import CarsTable from "components/Tables/CarsTable";
+import Meta from "components/Meta/Meta";
 import Loading from "components/Loading/Loading";
 import ErrorMessage from "components/ErrorMessage/ErrorMessage";
-import Meta from "components/Meta/Meta";
+import { Body1 } from "styles/Typography";
 
+import { useAppSelector } from "store";
 import { fetcher } from "utils/API";
-import { GlobalContext } from "pages/_app";
-import Pagination from "components/Pagination/Pagination";
+import { GetAllCarsResponse } from "types";
+import CarsFilter from "./components/CarsFilter";
+import { addModal } from "store/reducers/modals";
 
 const CarsPage = () => {
-  const { setModal, currModal, modalDelete } = useContext(GlobalContext);
-  const [currCars, setCars] = useState<any>([]);
-  const [rows, setRows] = useState(10);
-  const [page, setPage] = useState(1);
-  const [orderBy, setOrderBy] = useState("created_at");
-  const [swrOptions, setSWROptions] = useState({});
+  const url = useAppSelector((state) => state.resourceUrls.cars.fetchedUrl);
+  const selectedIds = useAppSelector((state) => state.selectedItems.selectedIds);
+  const { data, isLoading, error } = useSWR<GetAllCarsResponse>(url, fetcher);
+  const [hasData, setHasData] = useState(false);
+  const dispatch = useDispatch();
 
-  const url = `/cars?orderBy=${orderBy}&limit=${rows}&page=${page}`;
-  const { data, isLoading, error } = useSWR(url, fetcher, swrOptions);
   useEffect(() => {
-    setSWROptions({ refreshInterval: 100 });
-
-    const swrTimeOut = setTimeout(() => {
-      setSWROptions({});
-    }, 1000);
-
-    return () => clearTimeout(swrTimeOut);
-  }, [JSON.stringify(modalDelete), JSON.stringify(currModal)]);
+    if (data) setHasData(true);
+  }, [url.split("?")[0]]);
 
   const renderPage = () => {
     if (isLoading) return <Loading />;
-    if (error) {
-      let message = "Oh error";
-      if (error.response) message = error.response.data.message;
-      return <ErrorMessage>{message}</ErrorMessage>;
-    }
-    if (data && data.results === 0) {
-      return (
-        <EmptyState
-          title="Vous n'avez pas de voitures"
-          description="Ajoutez des voitures pour les voir ici"
-          image="cars"
-          CTAText="Ajouter un voiture"
-          CTAIcon="add"
-          modal="cars"
-        />
-      );
-    } else {
-      const lastPage = Math.ceil(data.results / rows);
-      const firstRowNum = (page - 1) * rows + 1;
-      const lastRowNum = page === lastPage ? data.results : page * rows;
-      let rowsNumbers: number[] | null = [];
-      if (currCars && currCars.length > 0) {
-        rowsNumbers = null;
-      } else {
-        for (let i = firstRowNum; i <= lastRowNum; i++) {
-          rowsNumbers.push(i);
-        }
-      }
-      let carsList = data.cars;
-      if (currCars && currCars.length > 0) carsList = currCars;
-      if (!currCars) carsList = [];
 
+    if (error) return <ErrorMessage>{error.response.data.message}</ErrorMessage>;
+
+    if (data) {
+      // if (data.clients.length === 0) {
+      //   return (
+      //     <EmptyState
+      //       title="Vous n'avez pas de clients"
+      //       description="Ajoutez des clients pour les voir ici"
+      //       image="clients"
+      //       CTAText="Ajouter un client"
+      //       CTAIcon="add"
+      //       modal="clients"
+      //     />
+      //   );
+      // }
       return (
         <>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "2rem",
-              marginBottom: "2rem",
-            }}
-          >
-            <CarBrandFilter
-              setCurrCars={(cars) => {
-                setCars(cars);
-              }}
-              carsNum={carsList.length}
-            />
-
-            <PageHeader
-              CTAText="Ajouter"
-              CTAIcon="add"
-              CTAonClick={() => setModal({ name: "cars" })}
-            />
-          </div>
-
-          <CarsTable
-            cars={carsList}
-            orderBy={orderBy}
-            setOrderBy={setOrderBy}
-            rowsNumbers={rowsNumbers}
-          />
-          <Pagination
-            rows={rows}
-            page={page}
-            results={data.results}
-            setPage={setPage}
-            setRows={setRows}
-          />
+          <CarsTable cars={data.cars} />
+          <Pagination resource="cars" results={data.results} />
         </>
       );
     }
   };
+
   return (
     <>
       <Meta title="Voitures" />
+      <>
+        <PageHeader
+          CTAIcon="add"
+          CTAText="Ajouter"
+          onCTAClick={() => {
+            dispatch(addModal({ name: "cars", title: "Ajouter une voiture" }));
+          }}
+        >
+          <div style={{ display: "flex", gap: "2rem" }}>
+            <CarsFilter />
+            <Body1>We found {data?.results} voitures</Body1>
+          </div>
+        </PageHeader>
+        <div style={{ margin: "2rem 0" }}>
+          {selectedIds.length > 0 && (
+            <Body1>
+              <b>{selectedIds.length} </b> selected
+            </Body1>
+          )}
+        </div>
+      </>
       {renderPage()}
     </>
   );

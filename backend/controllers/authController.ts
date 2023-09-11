@@ -40,16 +40,12 @@ export const login = tryCatch((req, res, next) => {
   const user = S.selectUserByUsernameStatment.get(username) as User | undefined;
 
   if (!user) {
-    return next(
-      new AppError("Désolé, cet utilisateur n'existe pas. Veuillez vérifier vos informations et réessayer.", 401)
-    );
+    return next(new AppError("Désolé, cet utilisateur n'existe pas.", 401));
   }
 
   const isPasswordCorrect = bcrypt.compareSync(password, user.password);
   if (!isPasswordCorrect) {
-    return next(
-      new AppError(`Mot de passe incorrect. Veuillez vérifier le mot de passe que vous avez saisi et réessayer.`, 401)
-    );
+    return next(new AppError(`Mot de passe incorrect.`, 401));
   }
 
   createAndSendToken(user, res);
@@ -87,10 +83,7 @@ export const protect = tryCatch((req, _res, next) => {
   const user = S.selectUsernameStatment.get(decodedToken.username) as User | undefined;
 
   if (!user) {
-    return new AppError(
-      "Désolé, cet utilisateur ou ce jeton est introuvable. Veuillez vérifier vos informations et réessayer.",
-      401
-    );
+    return new AppError("Désolé, cet utilisateur ou ce jeton est introuvable.", 401);
   }
 
   req.body.user = user;
@@ -110,9 +103,7 @@ export const updateMe = tryCatch((req, res, next) => {
   const user = S.selectUserByUsernameStatment.get(req.body.user) as User | undefined;
 
   if (!user) {
-    return next(
-      new AppError("Désolé, cet utilisateur n'existe pas. Veuillez vérifier vos informations et réessayer.", 401)
-    );
+    return next(new AppError("Désolé, cet utilisateur n'existe pas.", 401));
   }
 
   const isPasswordCorrect = bcrypt.compareSync(currPassword, user.password);

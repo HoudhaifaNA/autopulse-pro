@@ -49,7 +49,7 @@ app.get("/api/attachments/:filename", attachmentsController);
 app.get("/api/search/:category", searchController);
 
 app.all("*", (_req, res) => {
-  res.status(404).json({ status: "error", message: "Error 404: The requested API route was not found on the server." });
+  res.status(404).json({ status: "error", message: "Le serveur n'a pas pu trouver la route API demandée." });
 });
 
 app.use(errorController);

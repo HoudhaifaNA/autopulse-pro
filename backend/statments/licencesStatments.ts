@@ -53,6 +53,7 @@ export const selectLicencesListQuery = `
     licences.serial_number,
     licences.car_id,
     ${IS_LICENCE_VALID},
+    licences.price,
     cars.has_procuration,
     cars.buyer_id,
     procurations.car_id AS procuration_exist

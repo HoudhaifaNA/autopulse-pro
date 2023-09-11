@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactNode } from "react";
 
 export interface SDropdownProps {
   $width?: string;
@@ -9,7 +9,7 @@ export interface SDropdownProps {
 }
 
 export interface DropdownItem {
-  mainText: string;
+  mainText: string | number;
   icon?: string;
   secondText?: string;
 }
@@ -18,10 +18,7 @@ export interface DropdownProps extends SDropdownProps {
   items?: DropdownItem[];
   onItemClick?: (values: any) => void;
   iconSize?: "s" | "l";
-  children?: ReactElement | ReactElement[];
+  children?: ReactNode;
 }
 
-export type DropdownItemArgs = Pick<
-  DropdownProps,
-  "items" | "onItemClick" | "iconSize"
->;
+export type DropdownItemArgs = Pick<DropdownProps, "items" | "onItemClick" | "iconSize">;

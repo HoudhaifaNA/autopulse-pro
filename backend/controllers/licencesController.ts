@@ -24,6 +24,7 @@ const uid = () => {
 
 export const getLicencesList = tryCatch((req, res) => {
   const { filter } = req.params;
+  const { id } = req.query;
 
   let filterClause = "";
   if (filter === "valid") {
@@ -31,13 +32,18 @@ export const getLicencesList = tryCatch((req, res) => {
   } else if (filter === "procuration") {
     filterClause = `WHERE has_procuration = 1 AND cars.buyer_id IS NOT NULL AND procuration_exist IS NULL`;
   }
+  let currentLicence;
+  if (id) {
+    currentLicence = S.selectLicenceByIdStatment.get(id) as Licence;
+  }
 
   const selectLicencesListQuery = `
   ${S.selectLicencesListQuery}
   ${filterClause}
   `;
 
-  const licences = db.prepare(selectLicencesListQuery).all();
+  const licences = db.prepare(selectLicencesListQuery).all() as Licence[];
+  if (currentLicence) licences.push(currentLicence);
 
   return res.status(200).json({ status: "success", results: licences.length, licences });
 });
@@ -99,7 +105,7 @@ export const getLicenceById = tryCatch((req, res, next) => {
   const licence = S.selectLicenceByIdStatment.get(id);
 
   if (!licence) {
-    return next(new AppError("Licence non trouvée. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Licence non trouvée.", 404));
   }
 
   return res.status(200).json({ status: "success", licence });
@@ -127,9 +133,10 @@ export const createLicence = tryCatch((req, res, next) => {
         attachments.push(`${fieldname}-${uid()}-${Date.now()}.${fileExtension}`);
       });
     }
+
     const params = {
       purchased_at,
-      moudjahid: moudjahid?.toLowerCase(),
+      moudjahid: moudjahid.toLowerCase(),
       seller_id,
       wilaya,
       serial_number,
@@ -205,7 +212,7 @@ export const updateLicence = tryCatch((req, res, next) => {
 
     if (!changes) {
       db.exec("ROLLBACK;");
-      return next(new AppError("Licence non trouvée. Veuillez vérifier les informations.", 404));
+      return next(new AppError("Licence non trouvée.", 404));
     }
 
     const productParams = ["licence", id, "entrante"];

@@ -78,14 +78,14 @@ export const getProcurationById = tryCatch((req, res, next) => {
 
   const procuration = S.selectProcurationByIdStatment.get(id);
   if (!procuration) {
-    return next(new AppError("Procuration non trouvée. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Procuration non trouvée.", 404));
   }
 
   return res.status(200).json({ status: "success", procuration });
 });
 
 export const createProcuration = tryCatch((req, res, next) => {
-  const { type, purchased_at, licence_id, price, issue_date, received_at } = req.body;
+  const { type, purchased_at, notary, licence_id, price, issue_date, received_at } = req.body;
   const licence = selectLicenceByIdStatment.get(licence_id) as Licence | undefined;
   let deal_id = null;
 
@@ -126,6 +126,7 @@ export const createProcuration = tryCatch((req, res, next) => {
       purchased_at,
       licence_id,
       car_id,
+      notary,
       price,
       deal_id,
       issue_date,
@@ -163,14 +164,14 @@ export const createProcuration = tryCatch((req, res, next) => {
 });
 
 export const updateProcuration = tryCatch((req, res, next) => {
-  const { type, purchased_at, price, issue_date, received_at } = req.body;
+  const { type, purchased_at, price, notary, issue_date, received_at } = req.body;
   const { id } = req.params;
   let deal_id = null;
 
   const procuration = S.selectProcurationByIdStatment.get(id) as Procuration | undefined;
 
   if (!procuration) {
-    return next(new AppError("Procuration non trouvée. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Procuration non trouvée.", 404));
   }
 
   deal_id = procuration.deal_id;
@@ -194,6 +195,7 @@ export const updateProcuration = tryCatch((req, res, next) => {
       } else if (type === "transaction") {
         S.resetProcurationDealIdStatment.run(id);
         deleteDocumentsByIds(`${procuration.deal_id}`, deleteExpensesByIdQuery);
+        deal_id = null;
 
         const transactionParams = {
           client_id: procuration.seller_id,
@@ -235,7 +237,7 @@ export const updateProcuration = tryCatch((req, res, next) => {
       }
     }
 
-    const params = [type, purchased_at, price, deal_id, issue_date, received_at, id];
+    const params = [type, purchased_at, price, notary, deal_id, issue_date, received_at, id];
 
     S.updateProcurationStatment.run(params);
     const updatedProcuration = S.selectProcurationByIdStatment.get(id);

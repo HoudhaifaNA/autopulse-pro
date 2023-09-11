@@ -1,5 +1,5 @@
 export interface Client {
-  id: string;
+  id: number;
   full_name: string;
   phone: string;
   email: string;
@@ -45,6 +45,7 @@ export interface Transaction {
   info4: string;
   direction: "entrante" | "sortante";
   currency: "EUR" | "DZD";
+  client: string;
   amount: number;
   created_at: string;
   updated_at: string;
@@ -75,7 +76,7 @@ export interface Car {
   eur_exchange_rate: number;
   purchase_price_dzd: number;
   is_exchange: 0 | 1;
-  exchange_types: TExchangeTypes[] | null;
+  exchange_types: TExchangeTypes[] | string | null;
   expenses: string;
   expense_cost: number;
   euro_cost: number;
@@ -87,6 +88,7 @@ export interface Car {
   has_procuration: 0 | 1 | null;
   procuration_received: 0 | 1 | null;
   has_gray_card: 0 | 1 | null;
+  gray_card_received: 0 | 1 | null;
   selling_details: string;
   sold_price: number | null;
   profit: number | null;
@@ -94,7 +96,10 @@ export interface Car {
   updated_at: string;
   seller: string;
   buyer: string | null;
-  is_incomplete: 0 | 1;
+  is_licence_incomplete: 0 | 1;
+  is_purchase_price_incomplete: 0 | 1;
+  is_expense_cost_incomplete: 0 | 1;
+  is_sold_price_incomplete: 0 | 1;
 }
 
 export interface Procuration {
@@ -105,6 +110,7 @@ export interface Procuration {
   licence_id: number;
   car_id: number;
   owner_id: number;
+  notary: string | null;
   price: number;
   deal_id: number | null;
   issue_date: string;
@@ -139,6 +145,15 @@ export interface Paper {
   car: string;
   owner_id: number;
   owner: string;
+}
+
+export interface Expense {
+  id: number;
+  expense_date: string;
+  raison: string;
+  cost: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface User {

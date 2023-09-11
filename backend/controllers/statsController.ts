@@ -66,6 +66,7 @@ export const getCarsStock = tryCatch((req, res) => {
 
   const selectCarsStockTotalQuery = `
     SELECT
+    'total' as name,
     ${S.calculateCarsStockQuery}
     ${filterClause}
     ${orderByQuery}
@@ -167,6 +168,7 @@ export const getCarsStats = tryCatch((req, res) => {
   const totalPurchasePriceEUR = selectCarsPrices("purchase_price_eur", filterQueries);
   const totalPurchasePriceDZD = selectCarsPrices("purchase_price_dzd", filterQueries);
   const totalExpenseCost = selectCarsPrices("expense_cost", filterQueries);
+  const totalCost = selectCarsPrices("total_cost", filterQueries);
   const totalSoldPrice = selectCarsPrices("sold_price", filterQueries);
   const totalProfit = selectCarsPrices("profit", filterQueries);
 
@@ -175,6 +177,7 @@ export const getCarsStats = tryCatch((req, res) => {
     total_purchase_price_eur: totalPurchasePriceEUR,
     total_purchase_price_dzd: totalPurchasePriceDZD,
     total_expense_cost: totalExpenseCost,
+    total_cost: totalCost,
     total_sold_price: totalSoldPrice,
     total_profit: totalProfit,
     total_lost_profit: totalLostProfit,

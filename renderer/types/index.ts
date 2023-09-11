@@ -1,50 +1,65 @@
-import { FormikHelpers } from "formik";
+import { GetAllClientsResponse, GetClientTransactionResponse } from "types/api/clients";
+import { GetAllLicencesResponse, GetLicencesListResponse } from "types/api/licences";
+import { GetPapersResoponse } from "types/api/papers";
+import { GetProcurationsResoponse } from "types/api/procurations";
+import { GetAllCarsResponse, GetCarsWithPapersResponse, GetCarsBrandsResponse } from "types/api/cars";
+import { GetFiatTransactionsResponse } from "types/api/transactions";
+import { GetExpensesResponse, ExpenseGrouped } from "types/api/expenses";
+import {
+  GetStockResponse,
+  GetCountsResponse,
+  GetCarsStatsResponse,
+  GetExpensesStatsResponse,
+  GetLicencesStatsResponse,
+  GetPapersStatsResponse,
+  GetProcurationsStatsResponse,
+  GetClientsStatsResponse,
+} from "types/api/stats";
 
-export type FormikSubmit<T> = (
-  values: T,
-  actions: FormikHelpers<T>,
-  context: any
-) => Promise<void>;
+import { Resources, DefaultParms, Param, AddSecondaryUrl, ParamValue, ResourcesState } from "types/resources";
+import {
+  ModalFormConfig,
+  WarningModalConfig,
+  DeleteModalConfig,
+  ModalTypes,
+  AddModalPayload,
+  ModalsState,
+} from "types/modals";
+import { SubmitStatus, SubmitFunction } from "./forms";
 
-export interface Client {
-  id: number;
-  clientType: "DA" | "euro";
-  fullName: string;
-  phoneNumber: string;
-  balance: number;
-  created_at: string;
-  lastTransactionDate: string;
-  lastTransaction: Transaction;
-}
-
-export interface Licence {
-  id: number;
-  sellerId: string;
-  moudjahid: string;
-  wilaya: string;
-  serialNumber: string;
-  price: number;
-  attachments: string;
-  carId: string | null;
-  validUntil: string;
-  created_at: string;
-  isValid: "false" | "true";
-  isExpirated: "false" | "true";
-  seller: string;
-  carName: string | null;
-}
-
-export interface Transaction {
-  id: number;
-  productId: number;
-  clientId: number;
-  date: string;
-  type: "licence" | "car" | "argent" | "euros";
-  info1: string;
-  info2: string;
-  info3: string;
-  info4: string;
-  total: number;
-  direction: "sortante" | "entrante";
-  created_at: string;
-}
+export type {
+  GetAllClientsResponse,
+  GetClientTransactionResponse,
+  GetAllLicencesResponse,
+  GetLicencesListResponse,
+  GetAllCarsResponse,
+  GetCarsWithPapersResponse,
+  GetPapersResoponse,
+  GetCarsBrandsResponse,
+  GetExpensesResponse,
+  GetProcurationsResoponse,
+  ExpenseGrouped,
+  GetFiatTransactionsResponse,
+  GetStockResponse,
+  GetCountsResponse,
+  GetCarsStatsResponse,
+  GetExpensesStatsResponse,
+  GetLicencesStatsResponse,
+  GetPapersStatsResponse,
+  GetProcurationsStatsResponse,
+  GetClientsStatsResponse,
+  Resources,
+  DefaultParms,
+  Param,
+  ParamValue,
+  AddSecondaryUrl,
+  ResourcesState,
+  ModalFormConfig,
+  WarningModalConfig,
+  DeleteModalConfig,
+  ModalTypes,
+  AddModalPayload,
+  ModalsState,
+  SubmitStatus,
+  SubmitFunction,
+};

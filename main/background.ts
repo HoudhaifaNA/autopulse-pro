@@ -1,11 +1,20 @@
+import path from "path";
 import os from "os";
+
 import { Menu, app, dialog, globalShortcut, session } from "electron";
 import serve from "electron-serve";
 import contextMenu from "electron-context-menu";
+import dotenv from "dotenv";
 
 import { createWindow } from "./helpers";
-import "../server/server";
-import path from "path";
+import "../backend/server";
+
+const envFilePath = path.join(app.getAppPath(), ".env");
+const envResult = dotenv.config({ path: envFilePath });
+
+// if (envResult.error) {
+//   console.error("Error loading .env file:", envResult.error);
+// }
 
 const isProd: boolean = process.env.NODE_ENV === "production";
 
@@ -16,9 +25,9 @@ if (isProd) {
 }
 
 contextMenu({
-  showInspectElement: false,
-  shouldShowMenu: (event, params) => {
-    return params.inputFieldType !== "none";
+  showInspectElement: true,
+  shouldShowMenu: (_event) => {
+    return true;
   },
 });
 
@@ -36,7 +45,7 @@ contextMenu({
   mainWindow.maximize();
   mainWindow.show();
   mainWindow.on("close", function (e) {
-    let response = dialog.showMessageBoxSync(this, {
+    let response = dialog.showMessageBoxSync(mainWindow, {
       type: "question",
       buttons: ["Yes", "No"],
       title: "Confirmer",
@@ -46,14 +55,14 @@ contextMenu({
     if (response == 1) e.preventDefault();
   });
   if (isProd) {
-    const menuTemplate = [];
-    const menu = Menu.buildFromTemplate(menuTemplate);
+    // const menuTemplate = [];
+    // const menu = Menu.buildFromTemplate(menuTemplate);
     // Menu.setApplicationMenu(menu);
 
-    await mainWindow.loadURL("app://./");
+    await mainWindow.loadURL("app://./login");
   } else {
     const port = process.argv[2];
-    await mainWindow.loadURL(`http://localhost:${port}/`);
+    await mainWindow.loadURL(`http://localhost:${port}/login`);
     const reduxDevToolsPath = path.join(
       os.homedir(),
       `/AppData/Local/Google/Chrome/User Data/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/3.0.19_0`

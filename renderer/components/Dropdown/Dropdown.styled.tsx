@@ -10,7 +10,7 @@ export const DropdownWrapper = styled.div<SDropdownProps>`
   left: ${({ $left }) => ($left ? $left : "")};
   right: ${({ $right }) => ($right ? $right : "")};
   width: ${({ $width }) => ($width ? $width : "")};
-  z-index: 10000;
+  z-index: 3000;
 `;
 
 export const Dropdown = styled.div<SDropdownProps>`
@@ -22,6 +22,20 @@ export const Dropdown = styled.div<SDropdownProps>`
   overflow: hidden;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
   border-radius: 0.4rem;
+
+  ${GhostButton} {
+    justify-content: flex-start;
+    padding: 0.8rem 1rem;
+    width: 100%;
+    color: ${({ theme }) => theme.colors.neutral["700"]};
+    border-radius: 0;
+
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.neutral["50"]};
+      color: ${({ theme }) => theme.colors.black};
+      transform: none;
+    }
+  }
 `;
 
 export const DropdownList = styled.ul`
@@ -45,6 +59,7 @@ export const DropdownItem = styled.li`
   color: ${({ theme }) => theme.colors.black};
   height: 4rem;
   cursor: pointer;
+  font-variant-numeric: tabular-nums;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.neutral["50"]};
@@ -58,20 +73,5 @@ export const MainTextWrapper = styled.div`
 
   & p::first-letter {
     text-transform: uppercase;
-  }
-`;
-
-export const ButtonItem = styled.div<{ $ghostColor?: string }>`
-  ${GhostButton} {
-    justify-content: flex-start;
-    padding: 0.8rem 1rem;
-    width: 100%;
-    color: ${({ $ghostColor }) => $ghostColor};
-    border-radius: 0;
-
-    &:hover {
-      background-color: ${({ theme }) => theme.colors.neutral["50"]};
-      transform: none;
-    }
   }
 `;

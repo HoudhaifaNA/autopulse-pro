@@ -1,31 +1,32 @@
-import { Wrapper } from "components/PageHeader/PageHeader.styled";
-import { Heading3 } from "styles/Typography";
+import { ReactNode } from "react";
 
+import { Wrapper } from "./styles";
 import Button from "components/Button/Button";
 
 interface PageHeaderProps {
   CTAText?: string;
   CTAIcon?: string;
-  IconP?: "right" | "left";
-  CTAonClick?: () => void;
+  onCTAClick?: () => void;
+  children?: ReactNode;
 }
 
 const PageHeader = (props: PageHeaderProps) => {
-  const { CTAText, CTAIcon, IconP, CTAonClick } = props;
-  return (
-    <Wrapper>
-      {CTAText ? (
-        <Button
-          variant="primary"
-          icon={CTAIcon}
-          iconPostition={IconP}
-          onClick={CTAonClick}
-        >
+  const { CTAText, CTAIcon, onCTAClick, children } = props;
+
+  const renderCTABtn = () => {
+    if (CTAText && onCTAClick) {
+      return (
+        <Button variant="primary" icon={CTAIcon} onClick={onCTAClick}>
           {CTAText}
         </Button>
-      ) : (
-        ""
-      )}
+      );
+    }
+  };
+
+  return (
+    <Wrapper>
+      {children}
+      {renderCTABtn()}
     </Wrapper>
   );
 };

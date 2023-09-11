@@ -77,7 +77,7 @@ export const getPaperById = tryCatch((req, res, next) => {
 
   const paper = S.selectPaperByIdStatment.get(id);
   if (!paper) {
-    return next(new AppError("Dossier non trouvé. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Dossier non trouvé.", 404));
   }
 
   return res.status(200).json({ status: "success", paper });
@@ -90,7 +90,7 @@ export const createPaper = tryCatch((req, res, next) => {
   const car = selectCarByIdStatment.get(car_id) as Car | undefined;
 
   if (!car) {
-    return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+    return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
   if (!car.buyer_id || !car.has_gray_card) {
@@ -164,7 +164,7 @@ export const updatePaper = tryCatch((req, res, next) => {
   const paper = S.selectPaperByIdStatment.get(id) as Paper | undefined;
 
   if (!paper) {
-    return next(new AppError("Dossier non trouvé. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Dossier non trouvé.", 404));
   }
 
   deal_id = paper.deal_id;
@@ -188,6 +188,7 @@ export const updatePaper = tryCatch((req, res, next) => {
       } else if (type === "transaction") {
         S.resetPaperDealIdStatment.run(id);
         deleteDocumentsByIds(`${paper.deal_id}`, deleteExpensesByIdQuery);
+        deal_id = null;
 
         const transactionParams = {
           client_id: seller_id ?? paper.seller_id,

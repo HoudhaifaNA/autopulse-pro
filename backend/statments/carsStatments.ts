@@ -64,20 +64,72 @@ const createCarsTableStatment = db.prepare(`
 
 createCarsTableStatment.run();
 
-const IS_INCOMPLETE = `
+const IS_LICENCE_INCOMPLETE = `
   CASE
-    WHEN purchase_price_dzd = 0
-      OR sold_price  = 0
-      OR owner_id IS NOT NULL AND licence_price = 0
-      THEN 1
+    WHEN owner_id IS NOT NULL AND licence_price = 0 THEN 1
     ELSE 0
-  END AS is_incomplete
+  END AS is_licence_incomplete
   `;
+
+const IS_PURCHASE_PRICE_INCOMPLETE = `
+  CASE
+    WHEN purchase_price_dzd = 0 THEN 1
+    ELSE 0
+  END AS is_purchase_price_incomplete
+  `;
+
+const IS_SOLD_PRICE_INCOMPLETE = `
+  CASE
+    WHEN sold_price  = 0 THEN 1
+    ELSE 0
+  END AS is_sold_price_incomplete
+  `;
+
+const IS_EXPENSE_COST_INCOMPLETE = `
+  CASE
+    WHEN expense_cost = 0 THEN 1
+    ELSE 0
+  END AS is_expense_cost_incomplete
+  `;
+
+// const rows = db.prepare("SELECT id, expenses FROM cars").all();
+
+// // Process each row
+// rows.forEach((row: any) => {
+//   // Parse the JSON string into a JavaScript object
+//   const expenseObject = JSON.parse(row.expenses);
+
+//   // Remove the "eurPrice" property
+//   expenseObject.forEach((e: any) => {
+//     delete expenseObject.euroPrice;
+//   });
+
+//   // Serialize the updated object back into a JSON string
+//   const updatedJsonString = JSON.stringify(expenseObject);
+
+//   // Update the database with the modified JSON string
+//   db.prepare("UPDATE cars SET expenses = ? WHERE id = ?").run(updatedJsonString, row.id);
+//   console.log(`Updated row with id ${row.id}`);
+// });
+
+// db.prepare(
+//   `UPDATE cars
+// SET expenses = REPLACE(
+//     REPLACE(
+//         expenses,
+//         '"euroCost":', '"cost_in_eur":'
+//     ),
+//     '"totalCost":', '"cost_in_dzd":'
+// )
+// WHERE expenses LIKE '%"euroCost":%' OR expenses LIKE '%"totalCost":%';`
+// ).run();
 
 export const selectCarsWithPapersListStatment = db.prepare(`
   SELECT 
   cars.id,
   cars.name,
+  cars.serial_number,
+  cars.color,
   cars.has_gray_card,
   cars.buyer_id,
   papers.id AS paper_exist
@@ -97,7 +149,10 @@ export const selectCarsQuery = `
    WHEN cars.buyer_id IS NOT NULL THEN buyers.full_name
    ELSE NULL
   END AS buyer,
-  ${IS_INCOMPLETE}
+  ${IS_LICENCE_INCOMPLETE},
+  ${IS_PURCHASE_PRICE_INCOMPLETE},
+  ${IS_EXPENSE_COST_INCOMPLETE},
+  ${IS_SOLD_PRICE_INCOMPLETE}
   FROM cars
   LEFT JOIN clients AS sellers ON sellers.id = cars.seller_id
   LEFT JOIN clients AS buyers ON buyers.id = cars.buyer_id
@@ -122,14 +177,20 @@ export const selectCarsBrandsQuery = `
 
 export const selectCarsNamesQuery = `
   SELECT IFNULL(B.name, A.name) AS name,
-  IFNULL(B.total_cars, 0) AS total_cars
-  FROM (SELECT DISTINCT name FROM cars WHERE brand = ?) A
+        IFNULL(B.total_cars, 0) AS total_cars,
+        IFNULL(B.model, A.model) AS model,
+        IFNULL(B.brand, A.brand) AS brand
+  FROM (
+      SELECT DISTINCT name, model, brand
+      FROM cars
+      WHERE brand = ?
+  ) A
   LEFT JOIN (
-    SELECT name, COUNT(*) AS total_cars
-    FROM cars
-    --FILTER
-    GROUP BY name
-  ) B ON A.name = B.name
+      SELECT name, brand, model, COUNT(*) AS total_cars
+      FROM cars
+      --FILTER
+      GROUP BY name, brand, model
+  ) B ON A.name = B.name;
 `;
 
 export const selectPurchasedYearsStatment = db.prepare(`

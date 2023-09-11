@@ -16,35 +16,6 @@ const createExpensesTableStatment = db.prepare(`
 
 createExpensesTableStatment.run();
 
-function getRandomDate(start: Date, end: Date) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-}
-function generateRandomExpenses(count: number) {
-  const stmt = db.prepare(`
-    INSERT INTO expenses (expense_date, raison, cost)
-    VALUES (?, ?, ?)
-  `);
-
-  const now = new Date();
-
-  for (let i = 0; i < count; i++) {
-    let expenseDate;
-
-    if (i < 5) {
-      expenseDate = new Date(2023, 0, 15).toISOString().replace("T", " ").slice(0, 19);
-    } else {
-      expenseDate = getRandomDate(new Date(2000, 0, 1), now).toISOString().replace("T", " ").slice(0, 19);
-    }
-
-    const raison = `Expense ${i + 1}`;
-    const cost = Math.floor(Math.random() * 100000) + 1;
-
-    stmt.run(expenseDate, raison, cost);
-  }
-}
-
-// generateRandomExpenses(20);
-
 export const selectAllExpensesQuery = `
   SELECT * FROM expenses
   `;

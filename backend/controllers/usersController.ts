@@ -41,9 +41,7 @@ export const deleteUserById = tryCatch((req, res, next) => {
   const { changes } = S.deleteUserByIdStatment.run(id);
 
   if (!changes) {
-    return next(
-      new AppError("Désolé, cet utilisateur n'existe pas. Veuillez vérifier vos informations et réessayer.", 401)
-    );
+    return next(new AppError("Désolé, cet utilisateur n'existe pas.", 401));
   }
 
   res.status(204).json({ status: "success" });

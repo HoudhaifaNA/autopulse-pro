@@ -1,11 +1,9 @@
-import { useContext } from "react";
 import Image from "next/image";
 
 import * as S from "components/EmptyState/EmptyState.styled";
 import { Body1, Heading3 } from "styles/Typography";
 
 import Button from "components/Button/Button";
-import { GlobalContext } from "pages/_app";
 
 interface EmptyStateProps {
   title: string;
@@ -19,26 +17,12 @@ interface EmptyStateProps {
 }
 
 const EmptyState = (props: EmptyStateProps) => {
-  const {
-    image,
-    title,
-    description,
-    CTAText,
-    CTAIcon,
-    modal,
-    handleClick,
-    IconP,
-  } = props;
-  const { setModal } = useContext(GlobalContext);
+  const { image, title, description, CTAText, CTAIcon, modal, handleClick, IconP } = props;
+  // const { setModal } = useContext(GlobalContext);
   return (
     <S.EmptyStateWrapper>
       <S.EmptyStateImage>
-        <Image
-          src={`/images/${image}.png`}
-          alt="clients"
-          width={320}
-          height={320}
-        />
+        <Image src={`/images/${image}.png`} alt="clients" width={320} height={320} />
       </S.EmptyStateImage>
       <S.EmptyStateText>
         <Heading3>{title}</Heading3>
@@ -49,8 +33,8 @@ const EmptyState = (props: EmptyStateProps) => {
         icon={CTAIcon}
         iconPostition={IconP}
         onClick={() => {
-          modal && setModal({ name: modal });
-          handleClick && handleClick();
+          // modal && setModal({ name: modal });
+          // handleClick && handleClick();
         }}
       >
         {CTAText}

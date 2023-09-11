@@ -67,7 +67,7 @@ export const getTransactionById = tryCatch((req, res, next) => {
   const transaction = S.selectTransactionById.get(id);
 
   if (!transaction) {
-    return next(new AppError("Transaction non trouvée. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Transaction non trouvée.", 404));
   }
 
   return res.status(200).json({ status: "success", transaction });
@@ -106,7 +106,7 @@ export const updateTransaction = tryCatch((req, res, next) => {
   const { changes } = S.updateTransactionByIdStatment.run(params);
 
   if (!changes) {
-    return next(new AppError("Transaction non trouvée. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Transaction non trouvée.", 404));
   }
 
   const transaction = S.selectTransactionById.get(id);

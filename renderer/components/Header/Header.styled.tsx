@@ -11,14 +11,14 @@ export const Header = styled.header`
 
 export const SearchBarContainer = styled.div`
   position: relative;
-  flex-basis: 52.5rem;
+  flex-basis: 65rem;
 `;
 
 export const SearchList = styled.div`
   position: absolute;
   top: 4rem;
   left: 0;
-  z-index: 8000;
+  z-index: 2500;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
@@ -56,7 +56,7 @@ export const SearchCategory = styled.div`
 `;
 
 export const CategoryItem = styled.div`
-  div {
+  a {
     display: flex;
     align-items: center;
     gap: 0.8rem;

@@ -91,7 +91,7 @@ export const getExpenseById = tryCatch((req, res, next) => {
   const expense = S.selectExpenseByIdStatment.get(id);
 
   if (!expense) {
-    return next(new AppError("Dépense non trouvée. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Dépense non trouvée.", 404));
   }
 
   return res.status(200).json({ status: "success", expense });
@@ -118,7 +118,7 @@ export const updateExpense = tryCatch((req, res, next) => {
   const { changes } = S.updateExpenseStatment.run(params);
 
   if (!changes) {
-    return next(new AppError("Dépense non trouvée. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Dépense non trouvée.", 404));
   }
 
   const updatedExpense = S.selectExpenseByIdStatment.get(id);

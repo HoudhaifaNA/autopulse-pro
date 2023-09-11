@@ -8,15 +8,15 @@ import AppError from "../utils/AppError";
 import tryCatch from "../utils/tryCatch";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 
-interface CountResult {
-  total_clients: number;
-}
-
 export const verifyClientInfo = tryCatch((req, _res, next) => {
   const { phone, email } = req.body;
 
-  if (phone && !isMobilePhone(phone)) {
-    return next(new AppError("Numéro de téléphone invalide. Veuillez entrer un numéro de téléphone valide.", 400));
+  const phoneNumbersArray = (phone || "").split(",");
+
+  for (const phoneNumber of phoneNumbersArray) {
+    if (phoneNumber && !isMobilePhone(phoneNumber.trim(), "any", { strictMode: false })) {
+      return next(new AppError("Numéro de téléphone invalide. Veuillez entrer un numéro de téléphone valide.", 400));
+    }
   }
   if (email && !isEmail(email)) {
     return next(new AppError("Adresse e-mail invalide. Veuillez entrer une adresse e-mail valide.", 400));
@@ -32,9 +32,9 @@ export const getClientsList = tryCatch((_req, res) => {
 });
 
 export const getAllClients = tryCatch((req, res) => {
-  const { orderBy = "-created_at", page = 1, limit = 10 } = req.query;
+  const { orderBy = "-last_transaction_date", page = 1, limit = 10 } = req.query;
 
-  const ranges = ["created_at", "dzd_balance", "eur_balance"];
+  const ranges = ["created_at", "last_transaction_date", "dzd_balance", "eur_balance"];
   const skip = (Number(page) - 1) * Number(limit);
 
   const filterQueries = generateRangeFilters(ranges, req.query);
@@ -51,8 +51,7 @@ export const getAllClients = tryCatch((req, res) => {
   `;
 
   const selectClientsCountQuery = `
-    SELECT COUNT(*) AS total_clients
-    FROM clients
+    ${S.selectClientsQuery}
     ${filterClause}
    `;
 
@@ -60,9 +59,11 @@ export const getAllClients = tryCatch((req, res) => {
   const selectClientsCountStatment = db.prepare(selectClientsCountQuery);
 
   const clients = selectClientsStatment.all([limit, skip]);
-  const { total_clients } = selectClientsCountStatment.get() as CountResult;
+  const allClients = selectClientsCountStatment.all();
 
-  return res.status(200).json({ status: "success", total_clients, results: clients.length, clients });
+  return res
+    .status(200)
+    .json({ status: "success", results: allClients.length, records_in_page: clients.length, clients });
 });
 
 export const getClientById = tryCatch((req, res, next) => {
@@ -70,7 +71,7 @@ export const getClientById = tryCatch((req, res, next) => {
 
   const client = S.selectClientByIdStatment.get(id);
   if (!client) {
-    return next(new AppError("Client non trouvé. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Client non trouvé.", 404));
   }
 
   return res.status(200).json({ status: "success", client });
@@ -82,7 +83,7 @@ export const getClientTransactions = tryCatch((req, res, next) => {
 
   const client = S.selectClientByIdStatment.get(id);
   if (!client) {
-    return next(new AppError("Client non trouvé. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Client non trouvé.", 404));
   }
 
   let currencyFilter = ``;
@@ -103,7 +104,7 @@ export const getClientLastTransaction = tryCatch((req, res, next) => {
 
   const client = S.selectClientByIdStatment.get(id);
   if (!client) {
-    return next(new AppError("Client non trouvé. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Client non trouvé.", 404));
   }
 
   const lastTransaction = S.selectClientLastTransactionStatment.get(id);
@@ -131,7 +132,7 @@ export const updateClient = tryCatch((req, res, next) => {
   const { changes } = S.updateClientStatment.run(params);
 
   if (!changes) {
-    return next(new AppError("Client non trouvé. Veuillez vérifier les informations.", 404));
+    return next(new AppError("Client non trouvé.", 404));
   }
 
   const updatedClient = S.selectClientByIdStatment.get(id);

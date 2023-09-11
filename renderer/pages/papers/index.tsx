@@ -1,75 +1,84 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import useSWR from "swr";
 
-import Meta from "components/Meta/Meta";
+import PapersTable from "./components/PapersTable";
+import Pagination from "components/Pagination/Pagination";
 import PageHeader from "components/PageHeader/PageHeader";
 import EmptyState from "components/EmptyState/EmptyState";
+import Meta from "components/Meta/Meta";
 import Loading from "components/Loading/Loading";
 import ErrorMessage from "components/ErrorMessage/ErrorMessage";
+import { Body1 } from "styles/Typography";
 
+import { useAppSelector } from "store";
 import { fetcher } from "utils/API";
-import { GlobalContext } from "pages/_app";
-import { Heading5 } from "styles/Typography";
-import PapersTable from "components/Tables/PapersTable";
+import { GetPapersResoponse } from "types";
+import { addModal } from "store/reducers/modals";
+import PapersFilter from "./components/PapersFilter";
 
 const PapersPage = () => {
-  const { setModal, modalDelete } = useContext(GlobalContext);
-  const [swrOptions, setSWROptions] = useState({});
-  const url = `/papers`;
-  const { data, isLoading, error } = useSWR(url, fetcher, swrOptions);
+  const url = useAppSelector((state) => state.resourceUrls.papers.fetchedUrl);
+  const selectedIds = useAppSelector((state) => state.selectedItems.selectedIds);
+  const { data, isLoading, error } = useSWR<GetPapersResoponse>(url, fetcher);
+  const [hasData, setHasData] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setSWROptions({ refreshInterval: 100 });
-
-    const swrTimeOut = setTimeout(() => {
-      setSWROptions({});
-    }, 1000);
-
-    return () => clearTimeout(swrTimeOut);
-  }, [JSON.stringify(modalDelete)]);
+    if (data) setHasData(true);
+  }, [url.split("?")[0]]);
 
   const renderPage = () => {
     if (isLoading) return <Loading />;
-    if (error) {
-      return <ErrorMessage>{error.response.data.message}</ErrorMessage>;
-    }
-    if (data && data.results === 0) {
-      return (
-        <EmptyState
-          title="Vous n'avez pas de dossier"
-          description="Ajoutez des dossiers pour les voir ici"
-          image="papers"
-          CTAText="Ajouter un dossier"
-          CTAIcon="add"
-          modal="papers"
-        />
-      );
-    } else {
+
+    if (error) return <ErrorMessage>{error.response.data.message}</ErrorMessage>;
+
+    if (data) {
+      // if (data.clients.length === 0) {
+      //   return (
+      //     <EmptyState
+      //       title="Vous n'avez pas de clients"
+      //       description="Ajoutez des clients pour les voir ici"
+      //       image="clients"
+      //       CTAText="Ajouter un client"
+      //       CTAIcon="add"
+      //       modal="clients"
+      //     />
+      //   );
+      // }
       return (
         <>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "2rem",
-            }}
-          >
-            <Heading5>{data.results} </Heading5>
-            <PageHeader
-              CTAText="Ajouter"
-              CTAIcon="add"
-              CTAonClick={() => setModal({ name: "papers" })}
-            />
-          </div>
           <PapersTable papers={data.papers} />
+          <Pagination resource="papers" results={data.results} />
         </>
       );
     }
   };
+
   return (
     <>
       <Meta title="Dossiers" />
+      <>
+        <PageHeader
+          CTAIcon="add"
+          CTAText="Ajouter"
+          onCTAClick={() => {
+            dispatch(addModal({ name: "papers", title: "Ajouter un dossier" }));
+          }}
+        >
+          <div style={{ display: "flex", gap: "2rem" }}>
+            <PapersFilter />
+            <Body1>We found {data?.results} papers</Body1>
+          </div>
+        </PageHeader>
+        <div style={{ margin: "2rem 0" }}>
+          {selectedIds.length > 0 && (
+            <Body1>
+              <b>{selectedIds.length} </b> selected
+            </Body1>
+          )}
+        </div>
+      </>
       {renderPage()}
     </>
   );

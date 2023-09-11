@@ -40,7 +40,7 @@ export const selectBalanceStats = `
 export const selectCarsPricesQuery = `
   SELECT
   types.type,
-  IFNULL(SUM(cars.--PRICE), 0) AS total_--PRICE,
+  IFNULL(SUM(cars.--PRICE), 0) AS total,
   IFNULL(cars_count, 0) AS cars_count
   FROM (
   SELECT 'dubai' AS type
@@ -72,7 +72,7 @@ export const selectCarsProfitQuery = `
       THEN 0
       ELSE profit
     END
-  ), 0) AS total_profit,
+  ), 0) AS total,
   IFNULL(cars_count, 0) AS cars_count
   FROM (
     SELECT 'dubai' AS type

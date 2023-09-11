@@ -21,10 +21,11 @@ export const LoadingWrapper = styled.div`
 `;
 
 export const LoadingSpinner = styled.div`
-  width: 5rem;
-  height: 5rem;
-  border: 0.4rem solid ${({ theme }) => theme.colors.primary["500"]};
-  border-right-color: ${({ theme }) => theme.colors.primary["50"]};
+  padding: 2rem;
+  border: 0.8rem solid ${({ theme }) => theme.colors.primary["50"]};
+  border-right-color: ${({ theme }) => theme.colors.primary["300"]};
+  border-bottom-color: ${({ theme }) => theme.colors.primary["500"]};
+  border-left-color: ${({ theme }) => theme.colors.primary["700"]};
   border-radius: 50%;
   animation: ${spinning} 1s linear infinite;
 `;

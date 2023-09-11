@@ -1,63 +1,47 @@
-import { useContext } from "react";
+import { useDispatch } from "react-redux";
 
 import { Body1 } from "styles/Typography";
-
-import Modal, { ModalContent, ModalActions } from "components/Modal/Modal";
+import { ModalActions } from "components/Modal/Modal";
 import Button from "components/Button/Button";
-import { GlobalContext } from "pages/_app";
-import API from "utils/API";
 
-const WarningModal = () => {
-  const {
-    currModal,
-    setModal,
-    setAddUpModal,
-    addUpModal,
-    toggleModalDelete,
-    toggleWarningModal,
-    toLogout,
-    setToLogout,
-  } = useContext(GlobalContext);
+import { removeModal } from "store/reducers/modals";
+import { useAppSelector } from "store";
+import { WarningModalConfig } from "types";
 
-  const closeWarning = async () => {
-    if (toLogout) {
-      try {
-        await API.post("/users/logout");
-        location.assign("/");
-      } catch (err: any) {
-        console.log(err);
-      }
-      return 1;
+interface WarningModalProps {
+  modalId: string;
+}
+
+const WarningModal = ({ modalId }: WarningModalProps) => {
+  const modalsList = useAppSelector((state) => state.modals.modalsList);
+  const dispatch = useDispatch();
+  const modalIdsToRemove: string[] = [];
+  const currentModal = modalsList.find(({ id }) => id === modalId) as WarningModalConfig;
+  const warningMessage =
+    currentModal.type === "closer"
+      ? "Êtes-vous sûr de vouloir fermer la fenêtre modale ?"
+      : "Êtes-vous sûr de vouloir vous déconnecter ?";
+  const buttonText = currentModal.type === "closer" ? "Fermer" : "Déconnexion";
+
+  modalsList.forEach((modal, index) => {
+    if (modal.id === modalId) {
+      const previousModalId = modalsList[index - 1]?.id;
+      modalIdsToRemove.push(...[modalId, previousModalId].filter(Boolean));
     }
-    setToLogout(false);
-    if (addUpModal) {
-      setAddUpModal("");
-    } else if (currModal) {
-      setModal("");
-    }
-    toggleModalDelete(false);
-    toggleWarningModal(false);
+  });
+
+  const onCloseClick = () => {
+    modalIdsToRemove.forEach((id) => dispatch(removeModal(id)));
   };
+
   return (
     <>
-      <div className="background-black" style={{ zIndex: "1000000" }} />
-      <Modal
-        title={toLogout ? "Se déconnecter" : "Fermeture du formulaire ouvert"}
-      >
-        <ModalContent>
-          <Body1>
-            {toLogout
-              ? "Êtes-vous sûr de vouloir vous déconnecter "
-              : "Êtes-vous sûr de fermer le formulaire"}
-            ?
-          </Body1>
-        </ModalContent>
-        <ModalActions>
-          <Button variant="danger" onClick={closeWarning}>
-            {toLogout ? "Se déconnecter" : "Fermer"}
-          </Button>
-        </ModalActions>
-      </Modal>
+      <Body1>{warningMessage}</Body1>
+      <ModalActions>
+        <Button variant="danger" onClick={onCloseClick}>
+          {buttonText}
+        </Button>
+      </ModalActions>
     </>
   );
 };

@@ -1,10 +1,6 @@
 import styled, { css } from "styled-components";
 
-const setElementDeclerartions = (
-  fontSize: number,
-  weight: number,
-  lineHeight: number
-) => {
+const setElementDeclerartions = (fontSize: number, weight: number, lineHeight: number) => {
   return css`
     font-size: ${fontSize}rem;
     font-weight: ${weight};

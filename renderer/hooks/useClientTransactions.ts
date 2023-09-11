@@ -1,17 +1,14 @@
 import useSWR from "swr";
-import { Transaction } from "../../interfaces";
+
 import { fetcher } from "utils/API";
+import { GetClientTransactionResponse } from "types";
 
-interface Data {
-  transactions: Transaction[];
-}
+const useClientTransactions = (id: string | string[] | undefined, currency: string = "") => {
+  const url = `/clients/${id}/transactions?currency=${currency}`;
 
-const useClientTransactions = (id: number) => {
-  const url = `/transactions/client/${id}`;
+  const { data, isLoading, error } = useSWR<GetClientTransactionResponse>(url, fetcher);
 
-  const { data } = useSWR<Data>(url, fetcher);
-
-  return data?.transactions ?? [];
+  return { data, isLoading, error };
 };
 
 export default useClientTransactions;

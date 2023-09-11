@@ -15,9 +15,7 @@ const renderItems = ({ items, onItemClick, iconSize }: DropdownItemArgs) => {
     return (
       <S.DropdownItem key={i} onClick={onOptionClick}>
         <S.MainTextWrapper>
-          {icon && (
-            <Icon icon={icon} size={iconSize === "s" ? "1.8rem" : "2.4rem"} />
-          )}
+          {icon && <Icon icon={icon} size={iconSize === "s" ? "1.8rem" : "2.4rem"} />}
           <Body2>{mainText}</Body2>
         </S.MainTextWrapper>
         <Body2>{secondText}</Body2>
@@ -27,21 +25,13 @@ const renderItems = ({ items, onItemClick, iconSize }: DropdownItemArgs) => {
 };
 
 const Dropdown = (props: DropdownProps) => {
-  const {
-    items,
-    iconSize = "s",
-    onItemClick,
-    children,
-    ...stylingProps
-  } = props;
+  const { items, iconSize = "s", onItemClick, children, ...stylingProps } = props;
 
   return (
     <S.DropdownWrapper {...stylingProps}>
       <S.Dropdown>
         {children}
-        <S.DropdownList>
-          {items && renderItems({ items, onItemClick, iconSize })}
-        </S.DropdownList>
+        <S.DropdownList>{items && renderItems({ items, onItemClick, iconSize })}</S.DropdownList>
       </S.Dropdown>
     </S.DropdownWrapper>
   );

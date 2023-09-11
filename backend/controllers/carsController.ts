@@ -27,6 +27,7 @@ export const getAllCars = tryCatch((req, res) => {
     "purchased_at",
     "purchase_price_eur",
     "purchase_price_dzd",
+    "expense_cost",
     "total_cost",
     "sold_at",
     "profit",
@@ -83,6 +84,7 @@ export const getCarsBrandsAndSeries = tryCatch((req, res) => {
     "purchased_at",
     "purchase_price_eur",
     "purchase_price_dzd",
+    "expense_cost",
     "total_cost",
     "sold_at",
     "profit",
@@ -119,15 +121,21 @@ export const getCarsBrandsAndSeries = tryCatch((req, res) => {
   const cars_brand = db.prepare(carsBrandQuery).all();
   const cars_name = db.prepare(carsNameQuery).all(name);
 
-  const purchased_years = S.selectPurchasedYearsStatment.all().map((year_obj: any) => {
-    return year_obj.purchased_year;
-  });
+  // const purchased_years = S.selectPurchasedYearsStatment.all().map((year_obj: any) => {
+  //   return year_obj.purchased_year;
+  // });
 
-  const sold_years = S.selectSoldYearsStatment.all().map((year_obj: any) => {
-    return year_obj.sold_year;
-  });
+  // const sold_years = S.selectSoldYearsStatment.all().map((year_obj: any) => {
+  //   return year_obj.sold_year;
+  // });
 
-  return res.status(200).json({ status: "success", cars_brand, cars_name, purchased_years, sold_years });
+  return res.status(200).json({
+    status: "success",
+    cars_brand,
+    cars_name,
+    // purchased_years,
+    //  sold_years
+  });
 });
 
 export const getCarById = tryCatch((req, res, next) => {
@@ -136,7 +144,7 @@ export const getCarById = tryCatch((req, res, next) => {
   const car = S.selectCarByIdStatment.get(id);
 
   if (!car) {
-    return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+    return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
   return res.status(200).json({ status: "success", car });
@@ -332,7 +340,7 @@ export const updateCar = tryCatch((req, res, next) => {
 
     if (!changes) {
       db.exec("ROLLBACK;");
-      return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+      return next(new AppError(`Voiture non trouvée.`, 404));
     }
 
     const updatedCar = S.selectCarByIdStatment.get(id) as Car;
@@ -389,7 +397,7 @@ export const sellCar = tryCatch((req, res, next) => {
   const car = S.selectCarByIdStatment.get(id) as Car | undefined;
 
   if (!car) {
-    return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+    return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
   if (car.buyer_id) {
@@ -446,7 +454,7 @@ export const updateCarSale = tryCatch((req, res, next) => {
   const car = S.selectCarByIdStatment.get(id) as Car | undefined;
 
   if (!car) {
-    return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+    return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
   if (!car.buyer_id) {
@@ -504,7 +512,7 @@ export const cancelCarSale = tryCatch((req, res, next) => {
   const car = S.selectCarByIdStatment.get(id) as Car | undefined;
 
   if (!car) {
-    return next(new AppError(`Voiture non trouvée. Veuillez vérifier les informations.`, 404));
+    return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
   if (!car.buyer_id) {

@@ -9,10 +9,13 @@ import { LabelText } from "styles/Typography";
 import { InputError } from "components/Input/Input.styled";
 import Icon from "components/Icon/Icon";
 
+import dateToString from "utils/dateToString";
+
 interface DateInputProps {
   label?: string;
   name: string;
-  minDate: string;
+  clearable?: boolean;
+  minDate?: string;
   disabled?: boolean;
 }
 
@@ -37,32 +40,33 @@ dayjs.updateLocale("fr", {
 
 const DateInput = (props: DateInputProps) => {
   const { values, errors, setFieldValue } = useFormikContext<any>();
-  const { label = "Date", name, disabled } = props;
+  const { label = "Date", name, minDate = "2015", disabled, clearable } = props;
 
-  const minDate = new Date(props.minDate);
-  const maxDate = new Date();
+  const minimumDate = new Date(minDate);
+  const ONE_DAY_IN_MILLISECONDS = 86400000;
+  const maxDate = new Date(Date.now() + ONE_DAY_IN_MILLISECONDS);
   const hasError = Boolean(errors[name]);
 
   const Label = <LabelText>{label} :</LabelText>;
   const DateIcon = <Icon icon="calendar" size="1.8rem" />;
-  const DateError = hasError && (
-    <InputError>{errors[name]?.toString()}</InputError>
-  );
+  const DateError = hasError && <InputError>{errors[name]?.toString()}</InputError>;
+  const currentValue = values[name] ? dayjs(values[name]).toDate() : values[name];
 
   return (
     <S.DateInputWrapper $hasError={hasError}>
       <DatePickerInput
         icon={DateIcon}
         label={Label}
-        value={values[name]}
-        minDate={minDate}
+        value={currentValue}
+        minDate={minimumDate}
         maxDate={maxDate}
         monthsListFormat="MMMM"
         weekendDays={[5]}
         firstDayOfWeek={6}
         size="xl"
         locale="fr"
-        onChange={(value) => setFieldValue(name, value)}
+        onChange={(value) => setFieldValue(name, value ? dateToString(value) : value)}
+        clearable={clearable}
         disabled={disabled}
       />
       {DateError}

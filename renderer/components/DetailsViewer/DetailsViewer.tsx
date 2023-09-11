@@ -1,9 +1,11 @@
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { ReactNode } from "react";
 
 import * as S from "components/DetailsViewer/DetailsViewer.styled";
-import { Heading3, Body1, Body2, Heading5 } from "styles/Typography";
-
-import { GlobalContext } from "pages/_app";
+import { Heading3, Body2, Heading5, LabelText } from "styles/Typography";
+import BlackOverlay from "styles/BlackOverlay";
+import Icon from "components/Icon/Icon";
+import Button from "components/Button/Button";
 
 interface DetailViewerProps {
   title?: string;
@@ -13,10 +15,8 @@ interface DetailViewerProps {
 
 interface DetailItemProps {
   title: string;
-  value: ReactNode;
   $index?: number;
-  blurrable?: boolean;
-  onClick?: () => void;
+  children: ReactNode;
 }
 
 export const DetailSection = S.DetailSection;
@@ -30,71 +30,42 @@ export const DetailHeader = ({ title }: { title: string }) => {
   );
 };
 
-export const DetailItem = (props: DetailItemProps) => {
-  const { title, value, $index, onClick, blurrable = false } = props;
-  const [blurred, setBlur] = useState<boolean>(blurrable);
-
-  let className = "";
-  const isString = typeof value === "string";
+export const DetailItem = ({ title, $index, children }: DetailItemProps) => {
   const PATTERN = /_(RD|GR)/g;
-  let mainText = isString && value.split(PATTERN)[0];
+  const [content, colorClass] = typeof children === "string" ? children.split(PATTERN) : [children, ""];
 
-  if (isString) {
-    if (value.endsWith("_GR")) className += " green";
-    if (value.endsWith("_RD")) className += " red";
-  }
+  const renderChildren = () => {
+    if (typeof children === "string" || typeof children === "number") {
+      return (
+        <LabelText className={colorClass} as="p">
+          {content}
+        </LabelText>
+      );
+    }
+    return children;
+  };
 
   return (
-    <S.DetailItem
-      $index={$index}
-      $width={title === "caractéristiques" ? "80rem" : ""}
-      className={`item-${blurrable} ${blurred ? "it-blurred" : ""}`}
-      onClick={onClick}
-      onContextMenu={() => blurrable && setBlur((prev) => !prev)}
-      style={{
-        color: onClick ? "#00009b" : "#000",
-        cursor: onClick ? "pointer" : "auto",
-      }}
-    >
+    <S.DetailItem $index={$index} $width={title === "caractéristiques" ? "80rem" : ""}>
       <Body2>{title} :</Body2>
-      {isString ? <Body1 className={className}>{mainText}</Body1> : value}
+      {renderChildren()}
     </S.DetailItem>
   );
 };
 
 const DetailsViewer = (props: DetailViewerProps) => {
-  const { setDocument } = useContext(GlobalContext);
-  const { title, $width = "60%", children } = props;
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === "h") {
-        let isThereBlur = document.querySelectorAll(".it-blurred").length > 0;
+  const { $width = "60%", children } = props;
+  const router = useRouter();
 
-        document.querySelectorAll(".item-true").forEach((cell) => {
-          if (isThereBlur) {
-            cell.classList.remove("it-blurred");
-          } else {
-            cell.classList.add("it-blurred");
-          }
-        });
-      }
-    };
-
-    window.addEventListener("keypress", handleKeyPress);
-
-    return () => {
-      window.removeEventListener("keypress", handleKeyPress);
-    };
-  }, []);
+  const pathWithoutDynamicParam = router.pathname.replace(/\[.*?\]/g, "");
 
   return (
-    <S.DetailsViewer className="detail-viewer">
-      <div
-        className="background-black"
-        onClick={() => setDocument({ type: "" })}
-      />
+    <S.DetailsViewer>
+      <BlackOverlay $zIndexMultiplier={10} onClick={() => router.back()} />
       <S.DetailsContainer $width={$width}>
-        <Heading3>{title}</Heading3>
+        <Button variant="ghost" onClick={() => router.push(pathWithoutDynamicParam)}>
+          Fermer
+        </Button>
         {children}
       </S.DetailsContainer>
     </S.DetailsViewer>

@@ -1,3 +1,4 @@
+import { GhostButton } from "components/Button/Button.styled";
 import styled, { keyframes } from "styled-components";
 
 const slidIn = keyframes`
@@ -16,7 +17,7 @@ export const DetailsViewer = styled.div`
   left: 0;
   height: 100vh;
   width: 100%;
-  z-index: 80000;
+  z-index: 3500;
 `;
 
 export const DetailsContainer = styled.div<{ $width: string }>`
@@ -35,6 +36,10 @@ export const DetailsContainer = styled.div<{ $width: string }>`
   overflow-x: hidden;
   overflow-y: scroll;
   animation: ${slidIn} ease-in-out 1.4s forwards;
+
+  ${GhostButton} {
+    padding: 0;
+  }
 
   ::-webkit-scrollbar {
     width: 0.7rem;
@@ -64,8 +69,7 @@ export const DetailSectionHeader = styled.div`
 
 export const DetailContent = styled.div<{ $columns: number }>`
   display: grid;
-  grid-template-columns: ${({ $columns }) =>
-    `repeat(${$columns}, minmax(max-content, 1fr))`};
+  grid-template-columns: ${({ $columns }) => `repeat(${$columns}, minmax(max-content, 1fr))`};
   column-gap: 2rem;
   row-gap: 2.5rem;
   padding: 1.5rem;
@@ -81,21 +85,38 @@ export const DetailItem = styled.div<{
   gap: 1rem;
   width: ${({ $width }) => ($width ? $width : "auto")};
 
-  &.it-blurred {
-    filter: blur(0.6rem);
+  a {
+    color: ${({ theme }) => theme.colors.primary[900]};
+    text-decoration: none;
+    padding-bottom: 0.2rem;
+    width: max-content;
+    border-bottom: 0.1rem dashed ${({ theme }) => theme.colors.primary[900]};
+  }
+  a > * {
+    cursor: pointer;
   }
 
-  & p::first-letter {
+  & p::first-letter,
+  & label::first-letter {
     text-transform: capitalize;
   }
 
   & p:first-child {
     color: ${({ theme }) => theme.colors.neutral[700]};
   }
+
   & p.red {
     color: ${({ theme }) => theme.colors.error[700]};
   }
+
   & p.green {
     color: ${({ theme }) => theme.colors.success[700]};
+  }
+  a {
+    color: ${({ theme }) => theme.colors.primary[900]};
+    text-decoration: none;
+    padding-bottom: 0.2rem;
+    width: max-content;
+    border-bottom: 0.1rem dashed ${({ theme }) => theme.colors.primary[900]};
   }
 `;
