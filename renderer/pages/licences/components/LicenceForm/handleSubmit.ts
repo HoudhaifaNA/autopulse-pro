@@ -63,4 +63,4 @@ const handleSubmit: SubmitFunction<LicenceInitalValues, Params> = async (values,
   return status;
 };
 
-export default handleSubmit;
+export { handleSubmit };

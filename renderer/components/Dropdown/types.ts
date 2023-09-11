@@ -9,7 +9,7 @@ export interface SDropdownProps {
 }
 
 export interface DropdownItem {
-  mainText: string | number;
+  mainText: string;
   icon?: string;
   secondText?: string;
 }

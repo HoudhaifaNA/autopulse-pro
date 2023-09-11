@@ -98,4 +98,4 @@ const generateCarConfirmation = () => {
 
   return carDetails;
 };
-export default generateCarConfirmation;
+export { generateCarConfirmation };

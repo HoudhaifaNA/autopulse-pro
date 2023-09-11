@@ -41,4 +41,4 @@ const handleSubmit: SubmitFunction<ClientInitialValues, Params> = async (values,
   return status;
 };
 
-export default handleSubmit;
+export { handleSubmit };

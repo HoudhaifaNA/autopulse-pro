@@ -24,4 +24,4 @@ const handleSubmit = async (values: UserCredentials) => {
   }
 };
 
-export default handleSubmit;
+export { handleSubmit };

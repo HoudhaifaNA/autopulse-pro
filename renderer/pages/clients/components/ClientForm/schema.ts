@@ -17,4 +17,4 @@ const clientSchema = object({
   eur_balance: number().required("Le solde EUR est requis"),
 });
 
-export default clientSchema;
+export { clientSchema };

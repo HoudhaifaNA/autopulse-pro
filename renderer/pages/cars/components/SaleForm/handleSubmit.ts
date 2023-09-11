@@ -34,4 +34,4 @@ const handleSubmit: SubmitFunction<SaleInitialValues, Params> = async (values, a
   return status;
 };
 
-export default handleSubmit;
+export { handleSubmit };

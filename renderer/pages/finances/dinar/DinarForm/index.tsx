@@ -16,7 +16,7 @@ import Form from "components/Form/Form";
 import { DIRECTION_ITEMS, METHOD_ITEMS } from "pages/finances/constants";
 import { FiatFormInitialValues } from "pages/finances/types";
 import { mutate } from "swr";
-import handleSubmit from "pages/finances/handleSubmit";
+import { handleSubmit } from "pages/finances/handleSubmit";
 import { transactionSchema } from "pages/finances/schema";
 
 const DinarForm = ({ modalId }: { modalId: string }) => {

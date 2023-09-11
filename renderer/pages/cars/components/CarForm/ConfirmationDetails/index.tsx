@@ -1,7 +1,7 @@
 import * as S from "./styles";
 import { Body1, Body2, Heading5 } from "styles/Typography";
 
-import generateCarConfirmation from "./generateCarConfirmation";
+import { generateCarConfirmation } from "./generateCarConfirmation";
 
 const renderCarDetails = () => {
   const carDetails = generateCarConfirmation();

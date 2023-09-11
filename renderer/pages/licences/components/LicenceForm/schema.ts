@@ -19,4 +19,4 @@ const schemaLicence = object({
     .required("Prix est requis"),
 });
 
-export default schemaLicence;
+export { schemaLicence };

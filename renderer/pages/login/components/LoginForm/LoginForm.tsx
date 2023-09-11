@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Formik, FormikProps } from "formik";
 
-import * as S from "./style";
+import * as S from "./styles";
 
 import { TypedInput } from "components/Input/Input";
 import Button from "components/Button/Button";
 
-import handleSubmit from "./handleSubmit";
-import { loginSchema } from "Schemas/FormSchemas";
+import { handleSubmit } from "./handleSubmit";
+import { loginSchema } from "./schema";
 import { UserCredentials } from "./types";
 
 const INITIAL_VALUES: UserCredentials = { username: "", password: "" };

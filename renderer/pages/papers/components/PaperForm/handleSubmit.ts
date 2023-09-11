@@ -35,4 +35,4 @@ const handleSubmit: SubmitFunction<PaperInitalValues, Params> = async (values, a
   return status;
 };
 
-export default handleSubmit;
+export { handleSubmit };

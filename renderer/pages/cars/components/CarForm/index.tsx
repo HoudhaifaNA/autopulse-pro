@@ -16,7 +16,7 @@ import ConfirmationDetails from "./ConfirmationDetails";
 import { useAppSelector } from "store";
 import { ModalFormConfig } from "types";
 import { removeModal } from "store/reducers/modals";
-import handleSubmit from "./handleSubmit";
+import { handleSubmit } from "./handleSubmit";
 import { INITIAL_VALUES, SCHEMAS } from "./constants";
 import { CarInitialValues } from "./types";
 

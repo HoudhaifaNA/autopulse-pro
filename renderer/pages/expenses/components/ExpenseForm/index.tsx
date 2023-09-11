@@ -14,7 +14,7 @@ import { ModalFormConfig } from "types";
 import { ExpenseIntitalValues } from "./types";
 import dateToString from "utils/dateToString";
 import { removeModal } from "store/reducers/modals";
-import handleSubmit from "./handleSubmit";
+import { handleSubmit } from "./handleSubmit";
 import { expenseSchema } from "./schema";
 
 const INITIAL_VALUES: ExpenseIntitalValues = {

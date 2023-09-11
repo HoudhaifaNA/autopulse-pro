@@ -11,8 +11,8 @@ import TypedInput from "components/Input/TypedInput";
 import { ModalActions } from "components/Modal/Modal";
 
 import { INITIAL_VALUES, TYPE_ITEMS } from "./constants";
-import handleSubmit from "./handleSubmit";
-import procurationSchema from "./schema";
+import { handleSubmit } from "./handleSubmit";
+import { procurationSchema } from "./schema";
 import { addModal, removeModal } from "store/reducers/modals";
 import { useAppSelector } from "store";
 import { ProcurationInitalValues } from "./types";

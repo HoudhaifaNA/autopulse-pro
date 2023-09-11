@@ -35,4 +35,4 @@ const handleSubmit: SubmitFunction<FiatFormInitialValues, Params> = async (value
   return status;
 };
 
-export default handleSubmit;
+export { handleSubmit };

@@ -35,4 +35,4 @@ const handleSubmit: SubmitFunction<ProcurationInitalValues, Params> = async (val
   return status;
 };
 
-export default handleSubmit;
+export { handleSubmit };

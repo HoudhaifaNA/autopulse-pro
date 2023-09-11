@@ -92,4 +92,4 @@ const handleSubmit: SubmitFunction<CarInitialValues, Params> = async (values, ac
   return status;
 };
 
-export default handleSubmit;
+export { handleSubmit };

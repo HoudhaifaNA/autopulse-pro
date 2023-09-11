@@ -18,8 +18,8 @@ import dateToString from "utils/dateToString";
 import { addModal, removeModal } from "store/reducers/modals";
 import { SaleModalConfig } from "types/modals";
 import { SaleInitialValues } from "./types";
-import handleSubmit from "./handleSubmit";
-import schema from "./schema";
+import { handleSubmit } from "./handleSubmit";
+import { schema } from "./schema";
 
 interface SaleFormProps {
   modalId: string;

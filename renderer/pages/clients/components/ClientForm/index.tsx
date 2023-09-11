@@ -10,8 +10,8 @@ import { ModalActions } from "components/Modal/Modal";
 
 import { useAppSelector } from "store";
 import { removeModal } from "store/reducers/modals";
-import handleSubmit from "./handleSubmit";
-import clientSchema from "./schema";
+import { handleSubmit } from "./handleSubmit";
+import { clientSchema } from "./schema";
 import { ClientInitialValues } from "./types";
 import { ModalFormConfig } from "types";
 

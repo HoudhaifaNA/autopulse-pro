@@ -13,10 +13,7 @@ interface TextInputProps {
 export type TypedInputProps = TextInputProps & FieldHookConfig<any>;
 export type ClickInputProps = { label: string } & FieldHookConfig<any>;
 
-type BaseInputFields = Pick<
-  TypedInputProps,
-  "label" | "name" | "placeholder" | "autoFocus"
->;
+type BaseInputFields = Pick<TypedInputProps, "label" | "name" | "placeholder" | "autoFocus">;
 
 export interface SelectOption extends DropdownItem {
   relatedValues?: string[] | number[];

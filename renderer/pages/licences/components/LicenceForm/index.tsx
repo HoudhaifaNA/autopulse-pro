@@ -14,8 +14,8 @@ import AttachmentViewer from "../AttachmentViewer";
 import { ModalActions } from "components/Modal/Modal";
 
 import { INITIAL_VALUES, WILAYAS_ITEMS } from "./constants";
-import licenceSchema from "./schema";
-import handleSubmit from "./handleSubmit";
+import { schemaLicence } from "./schema";
+import { handleSubmit } from "./handleSubmit";
 import { LicenceInitalValues } from "./types";
 import useClientsList from "hooks/useClientsList";
 import { addModal, removeModal } from "store/reducers/modals";
@@ -55,7 +55,7 @@ const LicenceForm = ({ modalId }: LicenceFormProps) => {
 
   const formProps: FormikConfig<LicenceInitalValues> = {
     initialValues: formInitialValues,
-    validationSchema: licenceSchema,
+    validationSchema: schemaLicence,
     onSubmit: async (values, actions) => {
       const status = await handleSubmit(values, actions, currentModal.params);
       if (status === "success") {

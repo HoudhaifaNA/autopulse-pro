@@ -10,4 +10,4 @@ const procurationSchema = object({
     .required("Prix est requis"),
 });
 
-export default procurationSchema;
+export { procurationSchema };

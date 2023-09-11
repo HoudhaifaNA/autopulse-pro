@@ -10,4 +10,4 @@ const paperSchema = object({
     .required("Prix est requis"),
 });
 
-export default paperSchema;
+export { paperSchema };

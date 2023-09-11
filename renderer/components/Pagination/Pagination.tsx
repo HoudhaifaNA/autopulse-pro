@@ -18,7 +18,7 @@ interface PaginationProps {
 
 const ROWS_OPTIONS = [10, 25, 50, 75, 100];
 const ROWS_LIST = ROWS_OPTIONS.map((option) => {
-  return { mainText: option };
+  return { mainText: `${option}` };
 });
 
 const Pagination = ({ results, resource }: PaginationProps) => {

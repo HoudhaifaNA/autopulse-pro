@@ -6,4 +6,4 @@ const schema = object({
   sold_price: number().required("Prix est requis"),
 });
 
-export default schema;
+export { schema };
