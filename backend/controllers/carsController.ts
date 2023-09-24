@@ -21,7 +21,19 @@ export const getCarsWithPapersList = tryCatch((_req, res) => {
 });
 
 export const getAllCars = tryCatch((req, res) => {
-  const { name, type, isSold, orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
+  const {
+    name,
+    type,
+    isSold,
+    productionYears,
+    isLicenceInComplete,
+    isPPInComplete,
+    isSoldPriceInComplete,
+    isExpenseCostInComplete,
+    orderBy = "-purchased_at",
+    page = 1,
+    limit = 10,
+  } = req.query;
 
   const rangeFilters = [
     "purchased_at",
@@ -52,6 +64,35 @@ export const getAllCars = tryCatch((req, res) => {
     const isSoldCondition = isSold === "true" ? "IS NOT NULL" : "IS NULL";
     const soldFilter = `cars.buyer_id  ${isSoldCondition}`;
     filterQueries.push(soldFilter);
+  }
+
+  if (productionYears && typeof productionYears === "string") {
+    const productionYearsFilter = `cars.production_year IN (${productionYears})`;
+    filterQueries.push(productionYearsFilter);
+  }
+
+  if (isLicenceInComplete && (isLicenceInComplete === "true" || isLicenceInComplete === "false")) {
+    const isLicenceInCompleteCondition = isLicenceInComplete === "true" ? "= 0" : "> 0";
+    const isLicenceInCompleteFilter = `cars.owner_id IS NOT NULL AND cars.licence_price  ${isLicenceInCompleteCondition}`;
+    filterQueries.push(isLicenceInCompleteFilter);
+  }
+
+  if (isPPInComplete && (isPPInComplete === "true" || isPPInComplete === "false")) {
+    const isPPInCompleteCondition = isPPInComplete === "true" ? "= 0" : "> 0";
+    const isPPInCompleteFilter = `cars.purchase_price_dzd ${isPPInCompleteCondition}`;
+    filterQueries.push(isPPInCompleteFilter);
+  }
+
+  if (isExpenseCostInComplete && (isExpenseCostInComplete === "true" || isExpenseCostInComplete === "false")) {
+    const isExpenseCostInCompleteCondition = isExpenseCostInComplete === "true" ? "= 0" : "> 0";
+    const isExpenseCostInCompleteFilter = `cars.expense_cost ${isExpenseCostInCompleteCondition}`;
+    filterQueries.push(isExpenseCostInCompleteFilter);
+  }
+
+  if (isSoldPriceInComplete && (isSoldPriceInComplete === "true" || isSoldPriceInComplete === "false")) {
+    const isSoldPriceInCompleteCondition = isSoldPriceInComplete === "true" ? "= 0" : "> 0";
+    const isSoldPriceInCompleteFilter = `cars.buyer_id IS NOT NULL AND cars.sold_price ${isSoldPriceInCompleteCondition}`;
+    filterQueries.push(isSoldPriceInCompleteFilter);
   }
 
   const filters = filterQueries.join(" AND ");

@@ -13,6 +13,7 @@ export const FilterCard = styled.div`
   top: 4rem;
   z-index: 2500;
   width: 44rem;
+  min-height: 35rem;
   max-height: 50rem;
   padding: 2rem;
   display: flex;

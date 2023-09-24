@@ -83,3 +83,12 @@ export interface GetPapersStatsResponse {
     total_cost: number;
   };
 }
+export interface TransactionSummary {
+  currency: "EUR" | "DZD";
+  transactions_count: number;
+  total_amount: number;
+}
+
+export interface GetTransactionsStatsResponse {
+  transactions_total_amount: TransactionSummary[];
+}

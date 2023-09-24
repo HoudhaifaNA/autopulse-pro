@@ -12,3 +12,8 @@ export interface GetExpensesResponse {
   records_in_page: number;
   expenses: Expense[];
 }
+export interface GetExpensesDateGroupResponse {
+  results: number;
+  records_in_page: number;
+  expenses: ExpenseGrouped[];
+}

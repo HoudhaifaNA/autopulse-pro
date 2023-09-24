@@ -17,14 +17,8 @@ const getInputData = (values: any, errors: any, name: string) => {
 
   // We get neseted values
   // ex: expenses.i.raison ---> values[expenses] ---> values[expenses][i] ---> values[expenses][i][raison]
-  const value = namePath.reduce(
-    (path: any, key: string) => (path ? path[key] : ""),
-    values
-  );
-  const error = namePath.reduce(
-    (path: any, key: string) => (path ? path[key] : undefined),
-    errors
-  );
+  const value = namePath.reduce((path: any, key: string) => (path ? path[key] : ""), values);
+  const error = namePath.reduce((path: any, key: string) => (path ? path[key] : undefined), errors);
 
   return [value, error];
 };
@@ -34,28 +28,15 @@ const SelectInput = (props: T.SelectInputProps) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isFocused, setFocus] = useClickOutside(dropdownRef);
 
-  const {
-    label,
-    placeholder,
-    name,
-    relatedFields,
-    autoFocus,
-    items,
-    iconSize,
-    buttons,
-    elementAs,
-    sorted,
-    disabled,
-  } = props;
+  const { label, placeholder, name, relatedFields, autoFocus, items, iconSize, buttons, elementAs, sorted, disabled } =
+    props;
 
   const [inputValue, inputError] = getInputData(values, errors, name);
   const filtredItems = filterDropdownItems(items!, inputValue, sorted);
   const dropdownItems = elementAs === "div" ? items : filtredItems;
 
   useEffect(() => {
-    const currentInput = dropdownItems?.find(
-      ({ mainText }) => mainText === inputValue
-    );
+    const currentInput = dropdownItems?.find(({ mainText }) => mainText === inputValue);
 
     if (relatedFields) {
       relatedFields.forEach((field, i) => {
@@ -96,13 +77,7 @@ const SelectInput = (props: T.SelectInputProps) => {
     <S.SelectInput ref={dropdownRef}>
       {Select}
       {isFocused && (
-        <Dropdown
-          $top="6.3rem"
-          $width="100%"
-          items={dropdownItems}
-          iconSize={iconSize}
-          onItemClick={onClickOption}
-        >
+        <Dropdown $top="6.3rem" $width="100%" items={dropdownItems} iconSize={iconSize} onItemClick={onClickOption}>
           {buttons}
         </Dropdown>
       )}

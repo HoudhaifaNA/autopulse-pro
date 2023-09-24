@@ -22,7 +22,9 @@ const ROWS_LIST = ROWS_OPTIONS.map((option) => {
 });
 
 const Pagination = ({ results, resource }: PaginationProps) => {
-  const { page, limit } = useAppSelector((state) => state.resourceUrls[resource].params);
+  const params = useAppSelector((state) => state.resourceUrls[resource].params);
+  const page = typeof params.page === "number" ? params.page : 0;
+  const limit = typeof params.limit === "number" ? params.limit : 0;
   const dispatch = useDispatch();
   const pagesRef = useRef(null);
   const [isFocused, setFocus] = useClickOutside(pagesRef);

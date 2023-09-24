@@ -1,32 +1,16 @@
+import Link from "next/link";
 import useSWR from "swr";
 
 import Meta from "components/Meta/Meta";
-import styled from "styled-components";
-import StatTicket from "components/StatTicket/StatTicket";
+import StatTicket from "components/StatTicket";
 import Loading from "components/Loading/Loading";
-import Link from "next/link";
-import { GetCountsResponse } from "types";
-import { fetcher } from "utils/API";
 import ErrorMessage from "components/ErrorMessage/ErrorMessage";
+import CountStatsFilter from "page-components/CountStatsFilter";
+import TicketList from "components/TicketList";
 
-const TicketList = styled.div`
-  width: 100%;
-  max-width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
-  gap: 2rem;
-  & > a {
-    text-decoration: none;
-    transition: all 0.2s ease;
-    & > div {
-      background-color: ${({ theme }) => theme.colors.white};
-    }
-
-    &:hover {
-      box-shadow: 0 1rem 2rem 1rem rgba(0, 0, 0, 0.1);
-    }
-  }
-`;
+import { fetcher } from "utils/API";
+import { GetCountsResponse } from "types";
+import { useAppSelector } from "store";
 
 const STATS_NAMES = {
   clients: {
@@ -60,7 +44,8 @@ const STATS_NAMES = {
 };
 
 const Dashboard = () => {
-  const { data, isLoading, error } = useSWR<GetCountsResponse>("/stats/count", fetcher);
+  const { fetchedUrl } = useAppSelector((state) => state.resourceUrls.countStats);
+  const { data, isLoading, error } = useSWR<GetCountsResponse>(fetchedUrl, fetcher);
 
   const renderPage = () => {
     if (isLoading) return <Loading />;
@@ -73,6 +58,7 @@ const Dashboard = () => {
       return (Object.entries(data) as [CountKeys, number][]).map(([key, value]) => {
         if (key !== "status") {
           const { icon, translate } = STATS_NAMES[key];
+
           return (
             <Link href={`/dashboard/${key}`} key={key}>
               <StatTicket title={translate} icon={icon} value={value.toString()} />
@@ -85,7 +71,8 @@ const Dashboard = () => {
   return (
     <>
       <Meta title="Tableau de bord" />
-      <TicketList>{renderPage()}</TicketList>
+      <CountStatsFilter />
+      <TicketList title="Tableau de bord">{renderPage()}</TicketList>
     </>
   );
 };

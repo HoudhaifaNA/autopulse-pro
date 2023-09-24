@@ -43,8 +43,7 @@ const DateInput = (props: DateInputProps) => {
   const { label = "Date", name, minDate = "2015", disabled, clearable } = props;
 
   const minimumDate = new Date(minDate);
-  const ONE_DAY_IN_MILLISECONDS = 86400000;
-  const maxDate = new Date(Date.now() + ONE_DAY_IN_MILLISECONDS);
+  const maxDate = new Date(Date.now());
   const hasError = Boolean(errors[name]);
 
   const Label = <LabelText>{label} :</LabelText>;

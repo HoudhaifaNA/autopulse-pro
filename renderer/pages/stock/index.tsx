@@ -1,15 +1,15 @@
 import useSWR from "swr";
 
-import EmptyState from "components/EmptyState/EmptyState";
+import EmptyState from "components/EmptyState";
 import Loading from "components/Loading/Loading";
-import StockTable from "./components/StockTable";
+import StockTable from "page-components/stock/StockTable";
 import ErrorMessage from "components/ErrorMessage/ErrorMessage";
 import Meta from "components/Meta/Meta";
 
 import { fetcher } from "utils/API";
 import { GetStockResponse } from "types";
 import { useAppSelector } from "store";
-import StockFilter from "./components/StockFilter";
+import StockFilter from "page-components/stock/StockFilter";
 
 const StockPage = () => {
   const url = useAppSelector((state) => state.resourceUrls.stock.fetchedUrl);

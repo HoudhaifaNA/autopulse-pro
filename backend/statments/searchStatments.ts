@@ -30,18 +30,19 @@ export const searchLicencesQuery = db.prepare(`
 export const searchProcurationsQuery = db.prepare(`
 	SELECT
 	procurations.id,
+	procurations.notary,
 	licences.moudjahid AS moudjahid,
-	cars.name AS car
+	( cars.name || ' (' || cars.serial_number || ')' ) AS car
 	FROM procurations
 	INNER JOIN licences ON licences.id = procurations.licence_id
 	INNER JOIN cars ON cars.id = licences.car_id
-	WHERE moudjahid LIKE @query OR car LIKE @query
+	WHERE moudjahid LIKE @query OR car LIKE @query OR notary LIKE @query
 	`);
 
 export const searchPapersQuery = db.prepare(`
 	SELECT
 	papers.id,
-	cars.name AS car
+ 	( cars.name || ' (' || cars.serial_number || ')' ) AS car
 	FROM papers
 	INNER JOIN cars ON cars.id = papers.car_id
 	WHERE car LIKE @query

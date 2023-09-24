@@ -46,7 +46,7 @@ export const selectPapersQuery = `
   SELECT papers.*,
   ${IS_PAPER_EXPIRATED},
   clients.full_name AS seller,
-  cars.name AS car,
+  ( cars.name || ' (' || cars.serial_number || ')' ) AS car,
   owners.id AS owner_id,
   owners.full_name AS owner
   FROM papers

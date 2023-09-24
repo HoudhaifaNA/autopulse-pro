@@ -67,7 +67,7 @@ export const selectLicencesQuery = `
   ${IS_LICENCE_VALID},
   ${IS_LICENCE_EXPIRATED},
   clients.full_name AS seller,
-	cars.name AS car
+  ( cars.name || ' (' || cars.serial_number || ')' ) AS car
   FROM licences
   INNER JOIN clients ON clients.id = licences.seller_id
   LEFT JOIN cars ON licences.car_id IS NOT NULL AND licences.car_id = cars.id

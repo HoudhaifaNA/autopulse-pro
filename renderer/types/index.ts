@@ -4,7 +4,7 @@ import { GetPapersResoponse } from "types/api/papers";
 import { GetProcurationsResoponse } from "types/api/procurations";
 import { GetAllCarsResponse, GetCarsWithPapersResponse, GetCarsBrandsResponse } from "types/api/cars";
 import { GetFiatTransactionsResponse } from "types/api/transactions";
-import { GetExpensesResponse, ExpenseGrouped } from "types/api/expenses";
+import { GetExpensesResponse, GetExpensesDateGroupResponse, ExpenseGrouped } from "types/api/expenses";
 import {
   GetStockResponse,
   GetCountsResponse,
@@ -13,10 +13,30 @@ import {
   GetLicencesStatsResponse,
   GetPapersStatsResponse,
   GetProcurationsStatsResponse,
+  GetTransactionsStatsResponse,
   GetClientsStatsResponse,
 } from "types/api/stats";
+import {
+  SearchResources,
+  ClientsSearchResult,
+  CarsSearchResult,
+  LicencesSearchResult,
+  ProcurationsSearchResult,
+  PapersSearchResult,
+  SearchItem,
+  SearchResults,
+} from "types/api/search";
 
-import { Resources, DefaultParms, Param, AddSecondaryUrl, ParamValue, ResourcesState } from "types/resources";
+import {
+  Resources,
+  DefaultParams,
+  ResourceConfig,
+  Param,
+  AddSecondaryUrl,
+  DeleteSecondaryUrl,
+  ParamValue,
+  ResourcesState,
+} from "types/resources";
 import {
   ModalFormConfig,
   WarningModalConfig,
@@ -37,6 +57,7 @@ export type {
   GetPapersResoponse,
   GetCarsBrandsResponse,
   GetExpensesResponse,
+  GetExpensesDateGroupResponse,
   GetProcurationsResoponse,
   ExpenseGrouped,
   GetFiatTransactionsResponse,
@@ -47,12 +68,23 @@ export type {
   GetLicencesStatsResponse,
   GetPapersStatsResponse,
   GetProcurationsStatsResponse,
+  GetTransactionsStatsResponse,
   GetClientsStatsResponse,
+  SearchResources,
+  ClientsSearchResult,
+  CarsSearchResult,
+  LicencesSearchResult,
+  ProcurationsSearchResult,
+  PapersSearchResult,
+  SearchItem,
+  SearchResults,
   Resources,
-  DefaultParms,
+  DefaultParams,
+  ResourceConfig,
   Param,
   ParamValue,
   AddSecondaryUrl,
+  DeleteSecondaryUrl,
   ResourcesState,
   ModalFormConfig,
   WarningModalConfig,

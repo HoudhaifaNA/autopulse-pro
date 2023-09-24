@@ -34,7 +34,7 @@ const searchController = tryCatch((req, res) => {
   res.status(200).json({
     status: "success",
     results: searchResults.length,
-    [category]: searchResults,
+    items: searchResults,
   });
 });
 

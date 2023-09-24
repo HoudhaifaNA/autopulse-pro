@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.route("/").get(controller.getAllExpenses).post(controller.createExpense).delete(controller.deleteAllExpenses);
 
-router.route("/group").get(controller.getExpensesByGroup);
+router.route("/group/:date").get(controller.getExpensesByGroup);
 
 router.route("/:id").get(controller.getExpenseById).patch(controller.updateExpense);
 

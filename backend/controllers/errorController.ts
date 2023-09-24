@@ -59,7 +59,7 @@ const sendErrorProd: TErrorController = (err, _req, res) => {
     return res.status(err.statusCode).json({ status: "error", message: err.message });
   }
 
-  console.log(`ERROR 🔥🔥 :  ${err}`);
+  console.log(`ERROR 🔥🔥 :  ${err.message}`);
 
   return res.status(err.statusCode).json({
     status: "Quelque chose a mal tourné",

@@ -27,13 +27,16 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
   const router = useRouter();
   const modalsList = useAppSelector((state) => state.modals.modalsList);
   const currentModal = modalsList.find(({ id }) => id === modalId) as DeleteModalConfig;
-  const { baseUrl, fetchedUrl } = useAppSelector((state) => state.resourceUrls[currentModal.resource]);
-  const { secondaryUrl: carSecondaryUrl } = useAppSelector((state) => state.resourceUrls.cars);
+  const { baseUrl, fetchedUrl, secondaryUrl } = useAppSelector((state) => state.resourceUrls[currentModal.resource]);
   const dispatch = useDispatch();
   const [visibility, toggleVisibility] = useState(false);
   let url = `${baseUrl}/${currentModal.idsToDelete.join(",")}`;
   if (currentModal.name === "cancel_sale") url = `${baseUrl}/sale/${currentModal.idsToDelete.join(",")}`;
   if (currentModal.resource.startsWith("transactions")) url = `/transactions/${currentModal.idsToDelete.join(",")}`;
+  if (currentModal.resource === "expenses" && !secondaryUrl) {
+    url = `/expenses/dates/${currentModal.idsToDelete.join(",")}`;
+  }
+
   const pathWithoutDynamicParam = router.pathname.replace(/\[.*?\]/g, "");
 
   const formProps: FormikConfig<InititalValues> = {
@@ -44,7 +47,7 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
         mutate(fetchedUrl);
         dispatch(removeModal(modalId));
         dispatch(clearSelectedItems());
-        if (currentModal.name === "cancel_sale") return mutate(carSecondaryUrl);
+        if (currentModal.name === "cancel_sale") return mutate(secondaryUrl);
         router.push(pathWithoutDynamicParam);
       }
     },

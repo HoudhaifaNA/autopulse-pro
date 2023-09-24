@@ -105,6 +105,8 @@ export const getDocumentsCount = tryCatch((req, res) => {
 
     const filterQueries = generateRangeFilters(rangeFilters, tableRangeQuery);
 
+    if (table === "transactions") filterQueries.push("type = 'Fiat' ");
+
     const filters = filterQueries.join(" AND ");
     const filterClause = filters ? `WHERE ${filters}` : "";
 
@@ -210,13 +212,15 @@ export const getTransactionsStats = tryCatch((req, res) => {
 
   const filterQueries = generateRangeFilters(rangeFilters, req.query);
 
+  // filterQueries.push(`type = 'Fiat'`);
+
   const filters = filterQueries.join(" AND ");
   const filterClause = filters ? `WHERE ${filters}` : "";
 
   const selectTransctionsAmountByType = `
   ${S.selectTransactionsAmount}
   ${filterClause}
-  GROUP BY type
+  GROUP BY currencies.currency
   `;
 
   const transactionsAmount = db.prepare(selectTransctionsAmountByType).all();

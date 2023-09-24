@@ -23,7 +23,7 @@ export const selectAllExpensesQuery = `
 export const selectExpensesByGroupQuery = `
   SELECT
   raison,
-  strftime('%Y-%m-%d', expense_date) AS date_group,
+  DATE(expense_date) AS date_group,
   COUNT(*) AS count,
   SUM(cost) AS total_cost
   FROM expenses
@@ -57,7 +57,7 @@ export const deleteExpensesByIdQuery = `
 
 export const deleteExpensesByDateQuery = `
   DELETE FROM expenses
-  WHERE strftime('%Y-%m-%d', expense_date) IN
+  WHERE DATE(expense_date) IN
   `;
 
 export const deleteAllExpensesQuery = db.prepare(`DELETE FROM expenses`);

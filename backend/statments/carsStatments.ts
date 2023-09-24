@@ -78,18 +78,18 @@ const IS_PURCHASE_PRICE_INCOMPLETE = `
   END AS is_purchase_price_incomplete
   `;
 
-const IS_SOLD_PRICE_INCOMPLETE = `
-  CASE
-    WHEN sold_price  = 0 THEN 1
-    ELSE 0
-  END AS is_sold_price_incomplete
-  `;
-
 const IS_EXPENSE_COST_INCOMPLETE = `
   CASE
     WHEN expense_cost = 0 THEN 1
     ELSE 0
   END AS is_expense_cost_incomplete
+  `;
+
+const IS_SOLD_PRICE_INCOMPLETE = `
+  CASE
+    WHEN buyer_id IS NOT NULL AND sold_price = 0 THEN 1
+    ELSE 0
+  END AS is_sold_price_incomplete
   `;
 
 // const rows = db.prepare("SELECT id, expenses FROM cars").all();

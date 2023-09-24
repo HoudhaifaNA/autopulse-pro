@@ -7,19 +7,27 @@ export type Resources =
   | "procurations"
   | "transactionsDZD"
   | "transactionsEUR"
-  | "stock";
+  | "stock"
+  | "countStats"
+  | "carsStats"
+  | "licencesStats"
+  | "expensesStats"
+  | "transactionsStats"
+  | "procurationsStats"
+  | "papersStats";
 
-export interface DefaultParms extends Record<string, string | number | boolean> {
+export interface DefaultParams extends Record<string, string | number | boolean> {
   orderBy: string;
   page: number;
   limit: number;
 }
 
-interface ResourceConfig {
+export interface ResourceConfig {
   baseUrl: string;
+  startUrl?: string;
   fetchedUrl: string;
   secondaryUrl?: string;
-  params: DefaultParms;
+  params: DefaultParams;
 }
 
 export type ParamValue = string | number | boolean;
@@ -33,6 +41,9 @@ export interface Param {
 export interface AddSecondaryUrl {
   resource: Resources;
   url: string;
+}
+export interface DeleteSecondaryUrl {
+  resource: Resources;
 }
 
 export type ResourcesState = {

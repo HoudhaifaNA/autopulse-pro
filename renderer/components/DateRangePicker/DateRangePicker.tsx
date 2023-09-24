@@ -31,13 +31,13 @@ dayjs.updateLocale("fr", {
   ],
 });
 
+type DateRangeValue = [DateValue | null, DateValue | null];
+
 interface DateRangePickerProps {
   resource: Resources;
   rangeParam: string;
   label: string;
 }
-
-type DateRangeValue = [DateValue | null, DateValue | null];
 
 const getInitialDateRange = (dateRangeParamValue: ParamValue): DateRangeValue => {
   let startDate = null;
@@ -54,6 +54,8 @@ const getInitialDateRange = (dateRangeParamValue: ParamValue): DateRangeValue =>
   return [startDate, endDate];
 };
 
+const ONE_DAY_IN_MILLISECONDS = 86400000;
+
 const DateRangePicker = ({ resource, rangeParam, label }: DateRangePickerProps) => {
   const dateRangeParamValue = useAppSelector((state) => state.resourceUrls[resource].params[rangeParam]);
   const dispatch = useDispatch();
@@ -65,6 +67,7 @@ const DateRangePicker = ({ resource, rangeParam, label }: DateRangePickerProps) 
 
   useEffect(() => {
     const formattedDates: string[] = [];
+
     if (selectedRange[0] && selectedRange[1]) {
       selectedRange.forEach((range) => {
         if (range) {
@@ -73,21 +76,33 @@ const DateRangePicker = ({ resource, rangeParam, label }: DateRangePickerProps) 
         }
       });
     }
+
     const rangeText = formattedDates.join("_");
 
-    updateDateRange(rangeText);
+    if (rangeText) updateDateRange(rangeText);
   }, [dispatch, selectedRange]);
 
   const handleDateChange = (value: DateRangeValue) => {
+    const [firstDate, secondDate] = value;
+
+    if (firstDate && secondDate) {
+      const diffInMilliseconds = dayjs(secondDate).diff(dayjs(firstDate));
+
+      if (diffInMilliseconds === ONE_DAY_IN_MILLISECONDS) {
+        value[1] = new Date(firstDate);
+        value[1].setFullYear(value[1].getFullYear() + 1);
+      }
+    }
+
     setSelectedRange(value);
   };
+
   const clearDateRange = () => {
     setSelectedRange([null, null]);
     dispatch(deleteParam({ resource, paramKey: rangeParam }));
   };
 
-  const ONE_DAY_IN_MILLISECONDS = 86400000;
-  const maxDate = new Date(Date.now() + ONE_DAY_IN_MILLISECONDS);
+  const maxDate = new Date(Date.now());
 
   return (
     <S.Wrapper>

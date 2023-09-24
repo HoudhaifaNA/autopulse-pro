@@ -1,36 +1,33 @@
-// import useSWR from "swr";
+import { useState } from "react";
 
-// import * as S from "styles/ProfilePage.styled";
-// import { Heading4 } from "styles/Typography";
+import * as S from "styles/profile/styles";
+import { Heading3 } from "styles/Typography";
+import Meta from "components/Meta/Meta";
+import SideBar from "page-components/profile/SideBar";
+import UpdatePasswordForm from "page-components/profile/UpdatePasswordForm";
+import UserSettings from "page-components/profile/UserSettings";
 
-// import UpdateUserForm from "components/UpdateUserForm/UpdateUserForm";
+import { useAppSelector } from "store";
 
-// import Meta from "components/Meta/Meta";
-// import { fetcher } from "utils/API";
+const ProfilePage = () => {
+  const { name } = useAppSelector((state) => state.user.user);
+  const [currentPage, setCurrentPage] = useState<"settings" | "security">("settings");
 
-// const ProfilePage = () => {
-//   const { data, isLoading } = useSWR("/users/getMe", fetcher);
-//   let username = "";
-//   if (isLoading) username = "...";
-//   if (data) username = data.user.username;
-
-//   return (
-//     <S.ProfileWrapper>
-//       <Meta title="Paramètres de profil" />
-//       <S.ProfilePicture>
-//         <Heading4>{username} </Heading4>
-//       </S.ProfilePicture>
-//       <UpdateUserForm username={username} />
-//     </S.ProfileWrapper>
-//   );
-// };
-
-// export default ProfilePage;
-
-import React from "react";
-
-const index = () => {
-  return <div>index</div>;
+  return (
+    <S.ProfileWrapper>
+      <Meta title="Paramètres de profil" />
+      <S.ProfilePicture>
+        <Heading3>{name || "--"} </Heading3>
+      </S.ProfilePicture>
+      <S.MainWrapper>
+        <SideBar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+        <S.CurrentPage>
+          {currentPage === "security" && <UpdatePasswordForm />}
+          {currentPage === "settings" && <UserSettings />}
+        </S.CurrentPage>
+      </S.MainWrapper>
+    </S.ProfileWrapper>
+  );
 };
 
-export default index;
+export default ProfilePage;

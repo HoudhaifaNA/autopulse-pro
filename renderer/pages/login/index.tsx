@@ -1,9 +1,9 @@
 import Image from "next/image";
 
-import * as S from "pages/login/style";
+import * as S from "styles/login/styles";
 import { Heading3 } from "styles/Typography";
 
-import LoginForm from "pages/login/components/LoginForm/LoginForm";
+import LoginForm from "page-components/login/LoginForm";
 import Meta from "components/Meta/Meta";
 
 const LoginPage = () => {

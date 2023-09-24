@@ -123,11 +123,17 @@ export const selectLicencesTotalCost = `
   `;
 
 export const selectTransactionsAmount = `
-  SELECT 
-  type,
-  COUNT(*) AS transactions_count,
-  SUM(amount) AS total_amount
-  FROM transactions
+  SELECT
+    currencies.currency AS currency,
+    IFNULL(COUNT(transactions.type), 0) AS transactions_count,
+    IFNULL(SUM(transactions.amount), 0) AS total_amount
+  FROM
+    (SELECT 'EUR' AS currency
+    UNION SELECT 'DZD'
+  ) AS currencies
+  LEFT JOIN
+    transactions ON currencies.currency = transactions.currency
+            AND transactions.type = 'Fiat'
   `;
 
 export const selectExpensesTotalCost = `

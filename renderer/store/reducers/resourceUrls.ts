@@ -1,98 +1,50 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import buildFormattedUrl from "utils/buildFormattedUrl";
-import { Param, DefaultParms, ResourcesState, AddSecondaryUrl } from "types";
+import { Param, DefaultParams, ResourceConfig, ResourcesState, AddSecondaryUrl, DeleteSecondaryUrl } from "types";
 
-const clientsDefaultParams: DefaultParms = {
-  orderBy: "-last_transaction_date",
-  page: 1,
-  limit: 10,
-};
+interface RestParams extends Record<string, string | number | boolean> {
+  orderBy: string;
+}
 
-const licencesDefaultParams: DefaultParms = {
-  orderBy: "-is_valid",
-  page: 1,
-  limit: 10,
-};
-const carsDefaultParams: DefaultParms = {
-  orderBy: "-purchased_at",
-  page: 1,
-  limit: 10,
+const generateResource = (url: string, params: RestParams): ResourceConfig => {
+  const defaultParams = { ...params, page: 1, limit: 10 };
+
+  return {
+    baseUrl: url,
+    startUrl: buildFormattedUrl(url, defaultParams),
+    fetchedUrl: buildFormattedUrl(url, defaultParams),
+    params: defaultParams,
+  };
 };
 
-const expensesDefaultParams: DefaultParms = {
-  orderBy: "-expense_date",
-  page: 1,
-  limit: 10,
-};
-const papersDefaultParams: DefaultParms = {
-  orderBy: "-purchased_at",
-  page: 1,
-  limit: 10,
-};
-const procurationsDefaultParams: DefaultParms = {
-  orderBy: "-purchased_at",
-  page: 1,
-  limit: 10,
-};
-
-const transctionsDefaultParams: DefaultParms = {
-  orderBy: "-transaction_date",
-  page: 1,
-  limit: 10,
-};
-const stockDefaultParams = {
-  orderBy: "name",
-  page: 1,
-  limit: Number.MAX_VALUE,
-};
+const clientsParams = { orderBy: "-last_transaction_date" };
+const licencesParams = { orderBy: "-is_valid" };
+const carsParams = { orderBy: "-purchased_at" };
+const expensesParams = { orderBy: "-date_group", groupBy: "date_group" };
+const papersParams = { orderBy: "-purchased_at" };
+const procurationsParams = { orderBy: "-purchased_at" };
+const transctionsParams = { orderBy: "-transaction_date" };
+const stockParams = { orderBy: "name" };
+const statsParams = { orderBy: "" };
 
 const initialState: ResourcesState = {
-  clients: {
-    baseUrl: "/clients",
-    fetchedUrl: buildFormattedUrl("/clients", clientsDefaultParams),
-    params: clientsDefaultParams,
-  },
-  licences: {
-    baseUrl: "/licences",
-    fetchedUrl: buildFormattedUrl("/licences", licencesDefaultParams),
-    params: licencesDefaultParams,
-  },
-  cars: {
-    baseUrl: "/cars",
-    fetchedUrl: buildFormattedUrl("/cars", carsDefaultParams),
-    params: carsDefaultParams,
-  },
-  expenses: {
-    baseUrl: "/expenses",
-    fetchedUrl: buildFormattedUrl("/expenses", expensesDefaultParams),
-    params: expensesDefaultParams,
-  },
-  papers: {
-    baseUrl: "/papers",
-    fetchedUrl: buildFormattedUrl("/papers", papersDefaultParams),
-    params: papersDefaultParams,
-  },
-  procurations: {
-    baseUrl: "/procurations",
-    fetchedUrl: buildFormattedUrl("/procurations", procurationsDefaultParams),
-    params: procurationsDefaultParams,
-  },
-  transactionsDZD: {
-    baseUrl: "/transactions/fiat/DZD",
-    fetchedUrl: buildFormattedUrl("/transactions/fiat/DZD", transctionsDefaultParams),
-    params: transctionsDefaultParams,
-  },
-  transactionsEUR: {
-    baseUrl: "/transactions/fiat/EUR",
-    fetchedUrl: buildFormattedUrl("/transactions/fiat/EUR", transctionsDefaultParams),
-    params: transctionsDefaultParams,
-  },
-  stock: {
-    baseUrl: "/stats/stock",
-    fetchedUrl: buildFormattedUrl("/stats/stock", stockDefaultParams),
-    params: stockDefaultParams,
-  },
+  clients: generateResource("/clients", clientsParams),
+  licences: generateResource("/licences", licencesParams),
+  cars: generateResource("/cars", carsParams),
+  expenses: generateResource("/expenses", expensesParams),
+  papers: generateResource("/papers", papersParams),
+  procurations: generateResource("/procurations", procurationsParams),
+  transactionsDZD: generateResource("/transactions/fiat/DZD", transctionsParams),
+  transactionsEUR: generateResource("/transactions/fiat/EUR", transctionsParams),
+  stock: generateResource("/stats/stock", stockParams),
+  countStats: generateResource("/stats/count", statsParams),
+  carsStats: generateResource("/stats/cars", statsParams),
+  licencesStats: generateResource("/stats/licences", statsParams),
+  transactionsStats: generateResource("/stats/transactions", statsParams),
+  expensesStats: generateResource("/stats/expenses", statsParams),
+  procurationsStats: generateResource("/stats/procurations", statsParams),
+  papersStats: generateResource("/stats/papers", statsParams),
 };
 
 const resourceUrlsSlice = createSlice({
@@ -101,7 +53,7 @@ const resourceUrlsSlice = createSlice({
   reducers: {
     setParam: (state, action: PayloadAction<Param>) => {
       const { resource, paramKey, paramValue } = action.payload;
-      const { baseUrl, params } = state[resource];
+      const { baseUrl, params, secondaryUrl } = state[resource];
 
       if (paramKey === "orderBy" && typeof paramValue === "string") {
         params[paramKey] = params[paramKey] === paramValue ? `-${paramValue}` : paramValue;
@@ -109,22 +61,37 @@ const resourceUrlsSlice = createSlice({
         params[paramKey] = paramValue;
       }
 
-      state[resource].fetchedUrl = buildFormattedUrl(baseUrl, params);
+      if (resource === "expenses" && secondaryUrl) {
+        const urlPart = secondaryUrl.split("?")[0];
+        state[resource].secondaryUrl = buildFormattedUrl(urlPart, params);
+      } else {
+        state[resource].fetchedUrl = buildFormattedUrl(baseUrl, params);
+      }
     },
     addSecondaryUrl: (state, action: PayloadAction<AddSecondaryUrl>) => {
       const { resource, url } = action.payload;
-      state[resource].secondaryUrl = url;
+      const { params } = state[resource];
+
+      if (resource === "expenses") {
+        state[resource].secondaryUrl = buildFormattedUrl(url, params);
+      } else {
+        state[resource].secondaryUrl = url;
+      }
+    },
+    deleteSecondaryUrl: (state, action: PayloadAction<DeleteSecondaryUrl>) => {
+      const { resource } = action.payload;
+      delete state[resource].secondaryUrl;
     },
     deleteParam: (state, action: PayloadAction<Omit<Param, "paramValue">>) => {
       const { resource, paramKey } = action.payload;
-      const { baseUrl, params } = state[resource];
+      const { baseUrl } = state[resource];
 
       delete state[resource].params[paramKey];
 
-      state[resource].fetchedUrl = buildFormattedUrl(baseUrl, params);
+      state[resource].fetchedUrl = buildFormattedUrl(baseUrl, state[resource].params);
     },
   },
 });
 
-export const { setParam, addSecondaryUrl, deleteParam } = resourceUrlsSlice.actions;
+export const { setParam, addSecondaryUrl, deleteSecondaryUrl, deleteParam } = resourceUrlsSlice.actions;
 export default resourceUrlsSlice.reducer;

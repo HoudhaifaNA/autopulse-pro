@@ -11,7 +11,7 @@ import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 export const verifyClientInfo = tryCatch((req, _res, next) => {
   const { phone, email } = req.body;
 
-  const phoneNumbersArray = (phone || "").split(",");
+  const phoneNumbersArray = (phone || "").split("   ");
 
   for (const phoneNumber of phoneNumbersArray) {
     if (phoneNumber && !isMobilePhone(phoneNumber.trim(), "any", { strictMode: false })) {

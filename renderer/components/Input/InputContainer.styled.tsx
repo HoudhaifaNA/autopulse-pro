@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { SearchBarContainer } from "components/Header/Header.styled";
+import { SearchBarContainer } from "layout/Header/styles";
 
 export const InputContainer = styled.div`
   display: flex;

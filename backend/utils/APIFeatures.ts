@@ -14,14 +14,18 @@ export const formatSortingQuery = (query: any) => {
   return "";
 };
 
-export const setRangeFilter = (query: string, column: string) => {
+export const setRangeFilter = (query: string, column: string, isHaving?: boolean) => {
   const [minNum, maxNum] = query.split("_");
-  let min = `${-Number.MAX_VALUE}`;
-  let max = `${Number.MAX_VALUE * 2} `;
+  let min = isHaving ? -Number.MAX_VALUE : `${-Number.MAX_VALUE}`;
+  let max = isHaving ? Number.MAX_VALUE : `${Number.MAX_VALUE * 2} `;
   if (minNum) min = minNum;
   if (maxNum) max = maxNum;
 
-  return `${column} BETWEEN '${min}' AND '${max}' `;
+  let statment = `${column} BETWEEN '${min}' AND '${max}' `;
+
+  if (isHaving) statment = `${column} BETWEEN ${min} AND ${max} `;
+
+  return statment;
 };
 
 export const generateRangeFilters = (ranges: string[], query: any, table?: string) => {

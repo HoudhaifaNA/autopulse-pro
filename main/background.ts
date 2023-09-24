@@ -59,7 +59,7 @@ contextMenu({
     // const menu = Menu.buildFromTemplate(menuTemplate);
     // Menu.setApplicationMenu(menu);
 
-    await mainWindow.loadURL("app://./login");
+    await mainWindow.loadURL("app://./login.html");
   } else {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/login`);

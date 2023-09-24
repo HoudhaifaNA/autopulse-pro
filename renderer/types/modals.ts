@@ -1,13 +1,13 @@
 import { Resources } from ".";
-import { LicenceInitalValues } from "pages/licences/components/LicenceForm/types";
-import { ClientInitialValues } from "pages/clients/components/ClientForm/types";
-import { CarInitialValues } from "pages/cars/components/CarForm/types";
-import { SaleInitialValues } from "pages/cars/components/SaleForm/types";
-import { FiatFormInitialValues } from "pages/finances/types";
-import { ExpenseIntitalValues } from "pages/expenses/components/ExpenseForm/types";
-import { PaperInitalValues } from "pages/papers/components/PaperForm/types";
-import { ProcurationInitalValues } from "pages/procurations/components/ProcurationForm/types";
 
+import { CarInitialValues } from "page-components/cars/CarForm/types";
+import { SaleInitialValues } from "page-components/cars/SaleForm/types";
+import { ClientInitialValues } from "page-components/clients/ClientForm/types";
+import { ExpenseIntitalValues } from "page-components/expenses/ExpenseForm/types";
+import { FiatFormInitialValues } from "page-components/finances/types";
+import { LicenceInitalValues } from "page-components/licences/LicenceForm/types";
+import { PaperInitalValues } from "page-components/papers/PaperForm/types";
+import { ProcurationInitalValues } from "page-components/procurations/ProcurationForm/types";
 export interface ModalFormConfig {
   id: string;
   name: Resources;
@@ -50,7 +50,7 @@ export interface DeleteModalConfig {
   title: string;
   message: string;
   resource: Resources;
-  idsToDelete: number[];
+  idsToDelete: (number | string)[];
 }
 
 export type ModalTypes = ModalFormConfig | SaleModalConfig | WarningModalConfig | DeleteModalConfig;

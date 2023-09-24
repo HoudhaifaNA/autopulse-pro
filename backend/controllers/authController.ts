@@ -92,21 +92,21 @@ export const protect = tryCatch((req, _res, next) => {
 });
 
 export const updateMe = tryCatch((req, res, next) => {
-  const { currPassword, newPassword } = req.body;
+  const { current_password, new_password } = req.body;
 
-  if (!currPassword || !newPassword) {
+  if (!current_password || !new_password) {
     return next(
       new AppError("Veuillez fournir votre mot de passe actuel valide ainsi que votre nouveau mot de passe", 403)
     );
   }
 
-  const user = S.selectUserByUsernameStatment.get(req.body.user) as User | undefined;
+  const user = S.selectUserByUsernameStatment.get(req.body.user.username) as User | undefined;
 
   if (!user) {
     return next(new AppError("Désolé, cet utilisateur n'existe pas.", 401));
   }
 
-  const isPasswordCorrect = bcrypt.compareSync(currPassword, user.password);
+  const isPasswordCorrect = bcrypt.compareSync(current_password, user.password);
 
   if (!isPasswordCorrect) {
     return next(
@@ -117,7 +117,7 @@ export const updateMe = tryCatch((req, res, next) => {
     );
   }
 
-  const hashedPassword = bcrypt.hashSync(newPassword, 12);
+  const hashedPassword = bcrypt.hashSync(new_password, 12);
 
   S.updatePasswordStatment.run([hashedPassword, req.body.user.username]);
 
