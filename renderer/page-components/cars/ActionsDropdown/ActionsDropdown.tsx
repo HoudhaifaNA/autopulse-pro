@@ -8,10 +8,11 @@ import { Car } from "interfaces";
 import retreiveCarActions from "store/actions/cars";
 
 interface ActionsDropdownProps {
+  id: string;
   car: Car;
 }
 
-const ActionsDropdown = ({ car }: ActionsDropdownProps) => {
+const ActionsDropdown = ({ car, id }: ActionsDropdownProps) => {
   const dispatch = useDispatch();
   const { buyer_id } = car;
   const { UPDATE, REPURCHASE, SALE, UPDATE_SALE, CANCEL_SALE, DELETE } = retreiveCarActions(car);
@@ -53,7 +54,7 @@ const ActionsDropdown = ({ car }: ActionsDropdownProps) => {
   };
 
   return (
-    <Dropdown $right="1.5rem" $top="4rem" $width="30rem">
+    <Dropdown $right="1.5rem" $top="4rem" $width="30rem" id={id}>
       {!buyer_id && (
         <Button
           variant="ghost"

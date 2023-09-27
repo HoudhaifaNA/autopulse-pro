@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { FormikContextType, useFormikContext } from "formik";
 
 import * as S from "./styles";
@@ -17,7 +17,7 @@ type RenderExpenseOption = (
   formikContext: FormikContextType<CarInitialValues>
 ) => JSX.Element[];
 
-const renderExpenseOptions: RenderExpenseOption = (setFocus, formikContext) => {
+const renderExpenseOptions: RenderExpenseOption = (setOutside, formikContext) => {
   const { values, setFieldValue } = formikContext;
   const { expenses } = values;
 
@@ -32,7 +32,7 @@ const renderExpenseOptions: RenderExpenseOption = (setFocus, formikContext) => {
 
     const addExpense = () => {
       setFieldValue("expenses", [...expenses, newExpense]);
-      setFocus(false);
+      setOutside(true);
     };
 
     return (
@@ -45,15 +45,18 @@ const renderExpenseOptions: RenderExpenseOption = (setFocus, formikContext) => {
 
 const ExpenseAdder = () => {
   const formikContext = useFormikContext<CarInitialValues>();
-  const dropdownRef = useRef(null);
-  const [isFocused, setFocus] = useClickOutside(dropdownRef);
+  const [isOutside, setOutside] = useClickOutside("expensesTypesDropdown", "expenseAdderToggler");
 
   return (
-    <S.ExpenseAdder ref={dropdownRef}>
-      <Button type="button" variant="ghost" icon="add" onClick={() => setFocus(!isFocused)}>
+    <S.ExpenseAdder>
+      <Button type="button" variant="ghost" icon="add" id="expenseAdderToggler" onClick={() => setOutside(!isOutside)}>
         Ajouter une autre dépense
       </Button>
-      {isFocused && <Dropdown $width="20rem">{renderExpenseOptions(setFocus, formikContext)}</Dropdown>}
+      {!isOutside && (
+        <Dropdown $width="20rem" id="expensesTypesDropdown">
+          {renderExpenseOptions(setOutside, formikContext)}
+        </Dropdown>
+      )}
     </S.ExpenseAdder>
   );
 };

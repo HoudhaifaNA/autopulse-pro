@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useFormikContext } from "formik";
 
 import * as S from "components/Input/Input.styled";
@@ -11,6 +11,7 @@ import filterDropdownItems from "utils/filterDropdownItems";
 import useClickOutside from "hooks/useClickOutside";
 
 import * as T from "components/Input/types";
+import uid from "utils/uniqid";
 
 const getInputData = (values: any, errors: any, name: string) => {
   const namePath = name.split(".");
@@ -25,8 +26,10 @@ const getInputData = (values: any, errors: any, name: string) => {
 
 const SelectInput = (props: T.SelectInputProps) => {
   const { setFieldValue, values, errors } = useFormikContext();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [isFocused, setFocus] = useClickOutside(dropdownRef);
+  const uniqueId = uid();
+  const dropdownId = `selectDropdown-${uniqueId}`;
+  const togglerId = `selectDropdownToggler-${uniqueId}`;
+  const [isOutside, setIsOutside] = useClickOutside(dropdownId, togglerId);
 
   const { label, placeholder, name, relatedFields, autoFocus, items, iconSize, buttons, elementAs, sorted, disabled } =
     props;
@@ -53,15 +56,16 @@ const SelectInput = (props: T.SelectInputProps) => {
     label,
     placeholder,
     name,
+    id: togglerId,
     autoFocus,
     rightIcon: "expand",
-    className: isFocused && !hasError ? "dropdown-active" : "",
-    onClick: () => setFocus(!isFocused),
+    className: !isOutside && !hasError ? "dropdown-active" : "",
+    onClick: () => setIsOutside(!isOutside),
   };
 
   const onClickOption = (item: any) => {
     setFieldValue(name, item);
-    setFocus(false);
+    setIsOutside(true);
   };
 
   const Select =
@@ -74,10 +78,17 @@ const SelectInput = (props: T.SelectInputProps) => {
     );
 
   return (
-    <S.SelectInput ref={dropdownRef}>
+    <S.SelectInput>
       {Select}
-      {isFocused && (
-        <Dropdown $top="6.3rem" $width="100%" items={dropdownItems} iconSize={iconSize} onItemClick={onClickOption}>
+      {!isOutside && (
+        <Dropdown
+          id={dropdownId}
+          $top="6.3rem"
+          $width="100%"
+          items={dropdownItems}
+          iconSize={iconSize}
+          onItemClick={onClickOption}
+        >
           {buttons}
         </Dropdown>
       )}

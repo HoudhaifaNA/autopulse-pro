@@ -8,16 +8,17 @@ import { retreiveExpensesActions } from "store/actions/expenses";
 import { Expense } from "interfaces";
 
 interface ActionsDropdownProps {
+  id: string;
   expense: Expense;
 }
 
-const ActionsDropdown = ({ expense }: ActionsDropdownProps) => {
+const ActionsDropdown = ({ expense, id }: ActionsDropdownProps) => {
   const dispatch = useDispatch();
 
   const { UPDATE, DELETE } = retreiveExpensesActions(expense);
 
   return (
-    <Dropdown $right="1.5rem" $top="4rem" $width="30rem">
+    <Dropdown $right="1.5rem" $top="4rem" $width="30rem" id={id}>
       <Button variant="ghost" icon="edit" onClick={() => dispatch(addModal(UPDATE))}>
         Modifier
       </Button>

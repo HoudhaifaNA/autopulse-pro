@@ -18,6 +18,7 @@ import { TB_HEADER_DATA } from "./constants";
 import { Paper } from "interfaces";
 import { AddModalPayload, GetPapersResoponse } from "types";
 import Badge, { BadgeProps } from "components/Badge/Badge";
+import useClickOutside from "hooks/useClickOutside";
 
 interface PaperTableProps {
   data: GetPapersResoponse;
@@ -46,7 +47,8 @@ const PapersTable = ({ data }: PaperTableProps) => {
   const { page, limit } = useAppSelector((state) => state.resourceUrls.papers.params);
   const { selectedIds } = useAppSelector((state) => state.selectedItems);
   const dispatch = useDispatch();
-  const [isDropdownActive, toggleDropdown] = useState<number | null>(null);
+  const [dropdownIndex, setDropdownIndex] = useState<number>();
+  const [isOutside, setIsOutside] = useClickOutside(`dropdown-${dropdownIndex}`, `toggler-${dropdownIndex}`);
 
   const pagePapersIds = papers.map((paper) => paper.id);
   const isAllPapersOnPageSelected = pagePapersIds.every((id) => selectedIds.includes(id));
@@ -63,8 +65,13 @@ const PapersTable = ({ data }: PaperTableProps) => {
   };
 
   const onClickToggleDropdown = (index: number) => {
-    if (isDropdownActive === index) return toggleDropdown(null);
-    return toggleDropdown(index);
+    if (dropdownIndex === index) {
+      setDropdownIndex(undefined);
+      setIsOutside(!isOutside);
+    } else {
+      setDropdownIndex(index);
+      setIsOutside(false);
+    }
   };
 
   const toggleDeleteAll = () => {
@@ -92,7 +99,7 @@ const PapersTable = ({ data }: PaperTableProps) => {
       const type = paper.type === "expense" ? "Dépense" : "Transaction";
 
       const isSelected = selectedIds.includes(id);
-      const isDropdownToggled = isDropdownActive === ind;
+      const isDropdownToggled = dropdownIndex === ind;
       const rowNumber = ind + startinRowIndex + 1;
 
       return (
@@ -117,9 +124,9 @@ const PapersTable = ({ data }: PaperTableProps) => {
           <T.TableCell>{formattedPurchaseDate}</T.TableCell>
           <T.TableCell>{formattedReceivedDate}</T.TableCell>
           <T.TableCell>{formattedExpirationDate}</T.TableCell>
-          <T.TableCell onClick={() => onClickToggleDropdown(ind)}>
+          <T.TableCell onClick={() => onClickToggleDropdown(ind)} id={`toggler-${ind}`}>
             <Icon icon="more_vert" size={ICON_SIZE} />
-            {isDropdownToggled && <ActionsDropdown paper={paper} />}
+            {isDropdownToggled && !isOutside && <ActionsDropdown paper={paper} id={`dropdown-${ind}`} />}
           </T.TableCell>
         </T.TableRow>
       );

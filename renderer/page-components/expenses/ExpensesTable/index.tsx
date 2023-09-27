@@ -15,6 +15,7 @@ import formatDate from "utils/formatDate";
 import { TB_HEADER_DATA } from "./constants";
 import { AddModalPayload, GetExpensesResponse } from "types";
 import { useRouter } from "next/router";
+import useClickOutside from "hooks/useClickOutside";
 
 interface ExpensesTableProps {
   data: GetExpensesResponse;
@@ -29,7 +30,8 @@ const ExpensesTable = ({ data }: ExpensesTableProps) => {
   const { selectedIds } = useAppSelector((state) => state.selectedItems);
   const dispatch = useDispatch();
   const router = useRouter();
-  const [isDropdownActive, toggleDropdown] = useState<number | null>(null);
+  const [dropdownIndex, setDropdownIndex] = useState<number>();
+  const [isOutside, setIsOutside] = useClickOutside(`dropdown-${dropdownIndex}`, `toggler-${dropdownIndex}`);
 
   const pageExepnsesIds = expenses.map((expense) => expense.id);
   const isAllExpensesOnPageSelected = pageExepnsesIds.every((id) => selectedIds.includes(id));
@@ -46,8 +48,13 @@ const ExpensesTable = ({ data }: ExpensesTableProps) => {
   };
 
   const onClickToggleDropdown = (index: number) => {
-    if (isDropdownActive === index) return toggleDropdown(null);
-    return toggleDropdown(index);
+    if (dropdownIndex === index) {
+      setDropdownIndex(undefined);
+      setIsOutside(!isOutside);
+    } else {
+      setDropdownIndex(index);
+      setIsOutside(false);
+    }
   };
 
   const toggleDeleteAll = () => {
@@ -71,7 +78,7 @@ const ExpensesTable = ({ data }: ExpensesTableProps) => {
       const formattedExpenseDate = formatDate(expense_date);
 
       const isSelected = selectedIds.includes(id);
-      const isDropdownToggled = isDropdownActive === ind;
+      const isDropdownToggled = dropdownIndex === ind;
       const rowNumber = ind + startinRowIndex + 1;
 
       return (
@@ -84,9 +91,9 @@ const ExpensesTable = ({ data }: ExpensesTableProps) => {
           <T.TableCell>{formattedExpenseDate}</T.TableCell>
           <T.TableCell blurrable>{raison}</T.TableCell>
           <T.TableCell blurrable>{formattedExpenseCost}</T.TableCell>
-          <T.TableCell onClick={() => onClickToggleDropdown(ind)}>
+          <T.TableCell onClick={() => onClickToggleDropdown(ind)} id={`toggler-${ind}`}>
             <Icon icon="more_vert" size={ICON_SIZE} />
-            {isDropdownToggled && <ActionsDropdown expense={expense} />}
+            {isDropdownToggled && !isOutside && <ActionsDropdown expense={expense} id={`dropdown-${ind}`} />}
           </T.TableCell>
         </T.TableRow>
       );

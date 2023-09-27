@@ -8,16 +8,17 @@ import { Paper } from "interfaces";
 import retreivePaperActions from "store/actions/papers";
 
 interface ActionsDropdownProps {
+  id: string;
   paper: Paper;
 }
 
-const ActionsDropdown = ({ paper }: ActionsDropdownProps) => {
+const ActionsDropdown = ({ paper, id }: ActionsDropdownProps) => {
   const dispatch = useDispatch();
 
   const { UPDATE, DELETE } = retreivePaperActions(paper);
 
   return (
-    <Dropdown $right="1.5rem" $top="4rem" $width="30rem">
+    <Dropdown $right="1.5rem" $top="4rem" $width="30rem" id={id}>
       <Button
         variant="ghost"
         icon="edit"

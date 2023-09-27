@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 import * as S from "./styles";
@@ -26,8 +26,7 @@ const Pagination = ({ results, resource }: PaginationProps) => {
   const page = typeof params.page === "number" ? params.page : 0;
   const limit = typeof params.limit === "number" ? params.limit : 0;
   const dispatch = useDispatch();
-  const pagesRef = useRef(null);
-  const [isFocused, setFocus] = useClickOutside(pagesRef);
+  const [isOutside, setIsOutside] = useClickOutside("paginationDropdown", "paginationToggler");
 
   const lastPage = Math.ceil(results / limit);
   const firstRowNum = (page - 1) * limit + 1;
@@ -45,7 +44,7 @@ const Pagination = ({ results, resource }: PaginationProps) => {
 
   const onOptionClick = (option: number) => {
     setRows(option);
-    setFocus(false);
+    setIsOutside(false);
   };
 
   useEffect(() => {
@@ -62,11 +61,13 @@ const Pagination = ({ results, resource }: PaginationProps) => {
       <S.PaginationRowsOptions>
         <Body2>Lignes par page</Body2>
         <S.RowsNumberController>
-          <S.CurrentRowsNumber ref={pagesRef} onClick={() => setFocus(!isFocused)}>
+          <S.CurrentRowsNumber id="paginationToggler" onClick={() => setIsOutside(!isOutside)}>
             <Body2>{limit}</Body2>
             <Icon icon="expand" size="1.8rem" />
           </S.CurrentRowsNumber>
-          <div>{isFocused && <Dropdown $width="100%" items={ROWS_LIST} onItemClick={onOptionClick} />}</div>
+          {!isOutside && (
+            <Dropdown id="paginationDropdown" $width="100%" items={ROWS_LIST} onItemClick={onOptionClick} />
+          )}
         </S.RowsNumberController>
       </S.PaginationRowsOptions>
       <Body2>

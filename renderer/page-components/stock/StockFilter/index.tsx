@@ -1,4 +1,4 @@
-import Filter from "components/Filter/Filter";
+import Filter from "components/Filter";
 import DateRangePicker from "components/DateRangePicker/DateRangePicker";
 import CategoryFilter from "components/CategoryFilter";
 import styled from "styled-components";

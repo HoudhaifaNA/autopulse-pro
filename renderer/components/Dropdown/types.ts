@@ -16,6 +16,7 @@ export interface DropdownItem {
 
 export interface DropdownProps extends SDropdownProps {
   items?: DropdownItem[];
+  id?: string;
   onItemClick?: (values: any) => void;
   iconSize?: "s" | "l";
   children?: ReactNode;

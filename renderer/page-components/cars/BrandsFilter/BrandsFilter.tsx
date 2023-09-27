@@ -34,27 +34,32 @@ const BrandsFilter = () => {
     if (modelsDropdown) toggleBrandsDropdown(false);
   }, [brandsDropdown, modelsDropdown]);
 
-  useEffect(() => {
-    const carNameQuery = `${selectedBrand} ${selectedModel}`;
-    dispatch(setParam({ resource: "cars", paramKey: "name", paramValue: carNameQuery }));
-  }, [selectedBrand, selectModel]);
-
   const selectCarName = (name: string, type: "brand" | "model") => {
+    let carNameQuery = ``;
+
     if (type === "brand") {
       selectBrand(name);
       selectModel("");
       toggleBrandsDropdown(false);
+      carNameQuery = name;
     }
     if (type === "model") {
       selectModel(name);
       toggleModelsDropdown(false);
+      carNameQuery = `${selectedBrand} ${name}`;
     }
+
+    dispatch(setParam({ resource: "cars", paramKey: "name", paramValue: carNameQuery }));
   };
 
   const clearFilter = (type: "brand" | "model") => {
-    dispatch(deleteParam({ resource: "cars", paramKey: type }));
     if (type === "brand") {
+      dispatch(deleteParam({ resource: "cars", paramKey: "brand" }));
       dispatch(deleteParam({ resource: "cars", paramKey: "model" }));
+      dispatch(deleteParam({ resource: "cars", paramKey: "name" }));
+    } else if (type === "model") {
+      dispatch(deleteParam({ resource: "cars", paramKey: "model" }));
+      dispatch(setParam({ resource: "cars", paramKey: "name", paramValue: selectedBrand }));
     }
   };
 

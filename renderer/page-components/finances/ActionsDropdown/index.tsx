@@ -10,17 +10,18 @@ import { Transaction } from "interfaces";
 interface ActionsDropdownProps {
   transaction: Transaction;
   resource: Resources;
+  id: string;
 }
 
-const ActionsDropdown = ({ transaction, resource }: ActionsDropdownProps) => {
+const ActionsDropdown = ({ transaction, resource, id }: ActionsDropdownProps) => {
   const dispatch = useDispatch();
-  const { id, transaction_date, client, client_id, info2, direction, currency, amount } = transaction;
+  const { transaction_date, client, client_id, info2, direction, currency, amount } = transaction;
   const ADD_EDIT_MODAL_PAYLOAD: AddModalPayload = {
     name: resource,
     title: `Modifier les informations de transaction`,
     params: {
       isEdit: true,
-      resourceId: id,
+      resourceId: transaction.id,
       document: {
         transaction_date,
         client,
@@ -40,11 +41,11 @@ const ActionsDropdown = ({ transaction, resource }: ActionsDropdownProps) => {
     title: "Confirmer la suppression",
     message: `cette transaction et toutes ses données`,
     resource,
-    idsToDelete: [id],
+    idsToDelete: [transaction.id],
   };
 
   return (
-    <Dropdown $right="1.5rem" $top="4rem" $width="30rem">
+    <Dropdown $right="1.5rem" $top="4rem" $width="30rem" id={id}>
       <Button
         variant="ghost"
         icon="edit"

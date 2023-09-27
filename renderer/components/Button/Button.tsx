@@ -7,6 +7,7 @@ import Icon from "components/Icon/Icon";
 interface ButtonProps {
   variant: "primary" | "secondary" | "ghost" | "danger";
   type?: "submit" | "button" | "reset";
+  id?: string;
   width?: string;
   icon?: string;
   iconPostition?: "right" | "left";

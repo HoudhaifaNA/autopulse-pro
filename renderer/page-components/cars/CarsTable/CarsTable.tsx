@@ -17,6 +17,7 @@ import formatDate from "utils/formatDate";
 import { TB_HEADER_DATA } from "./constants";
 import { AddModalPayload, GetAllCarsResponse } from "types";
 import IncompleteFieldsMarks from "../IncompleteFieldsMarks/IncompleteFieldsMarks";
+import useClickOutside from "hooks/useClickOutside";
 
 interface CarsTableProps {
   data: GetAllCarsResponse;
@@ -30,7 +31,8 @@ const CarsTable = ({ data }: CarsTableProps) => {
   const { page, limit } = useAppSelector((state) => state.resourceUrls.cars.params);
   const { selectedIds } = useAppSelector((state) => state.selectedItems);
   const dispatch = useDispatch();
-  const [isDropdownActive, toggleDropdown] = useState<number | null>(null);
+  const [dropdownIndex, setDropdownIndex] = useState<number>();
+  const [isOutside, setIsOutside] = useClickOutside(`dropdown-${dropdownIndex}`, `toggler-${dropdownIndex}`);
 
   const pageCarsIds = cars.map((car) => car.id);
   const isAllCarsOnPageSelected = pageCarsIds.every((id) => selectedIds.includes(id));
@@ -47,8 +49,13 @@ const CarsTable = ({ data }: CarsTableProps) => {
   };
 
   const onClickToggleDropdown = (index: number) => {
-    if (isDropdownActive === index) return toggleDropdown(null);
-    return toggleDropdown(index);
+    if (dropdownIndex === index) {
+      setDropdownIndex(undefined);
+      setIsOutside(!isOutside);
+    } else {
+      setDropdownIndex(index);
+      setIsOutside(false);
+    }
   };
 
   const toggleDeleteAll = () => {
@@ -96,7 +103,7 @@ const CarsTable = ({ data }: CarsTableProps) => {
       const formattedSoldDate = sold_at ? formatDate(sold_at) : "--";
 
       const isSelected = selectedIds.includes(id);
-      const isDropdownToggled = isDropdownActive === ind;
+      const isDropdownToggled = dropdownIndex === ind;
       const rowNumber = ind + startinRowIndex + 1;
       const isCompelete =
         !is_licence_incomplete &&
@@ -156,9 +163,9 @@ const CarsTable = ({ data }: CarsTableProps) => {
           <T.TableCell blurrable>{formattedSoldPrice}</T.TableCell>
           <T.TableCell>{type}</T.TableCell>
 
-          <T.TableCell onClick={() => onClickToggleDropdown(ind)}>
+          <T.TableCell onClick={() => onClickToggleDropdown(ind)} id={`toggler-${ind}`}>
             <Icon icon="more_vert" size={ICON_SIZE} />
-            {isDropdownToggled && <ActionsDropdown car={car} />}
+            {isDropdownToggled && !isOutside && <ActionsDropdown car={car} id={`dropdown-${ind}`} />}
           </T.TableCell>
         </T.TableRow>
       );

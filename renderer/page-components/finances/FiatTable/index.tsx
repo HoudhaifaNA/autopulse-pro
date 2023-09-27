@@ -16,6 +16,7 @@ import { addModal } from "store/reducers/modals";
 import formatDate from "utils/formatDate";
 import { TB_HEADER_DATA } from "./constants";
 import { AddModalPayload, GetFiatTransactionsResponse, Resources } from "types";
+import useClickOutside from "hooks/useClickOutside";
 
 interface TransactionsTableProps {
   data: GetFiatTransactionsResponse;
@@ -29,7 +30,8 @@ const FiatTable = ({ data, resource }: TransactionsTableProps) => {
   const { page, limit } = useAppSelector((state) => state.resourceUrls[resource].params);
   const { selectedIds } = useAppSelector((state) => state.selectedItems);
   const dispatch = useDispatch();
-  const [isDropdownActive, toggleDropdown] = useState<number | null>(null);
+  const [dropdownIndex, setDropdownIndex] = useState<number>();
+  const [isOutside, setIsOutside] = useClickOutside(`dropdown-${dropdownIndex}`, `toggler-${dropdownIndex}`);
 
   const pageTransctionsIds = fiat_transactions.map((transaction) => transaction.id);
   const isAllTransactionsOnPageSelected = pageTransctionsIds.every((id) => selectedIds.includes(id));
@@ -46,10 +48,14 @@ const FiatTable = ({ data, resource }: TransactionsTableProps) => {
   };
 
   const onClickToggleDropdown = (index: number) => {
-    if (isDropdownActive === index) return toggleDropdown(null);
-    return toggleDropdown(index);
+    if (dropdownIndex === index) {
+      setDropdownIndex(undefined);
+      setIsOutside(!isOutside);
+    } else {
+      setDropdownIndex(index);
+      setIsOutside(false);
+    }
   };
-
   const toggleDeleteAll = () => {
     if (selectedIds.length > 0) {
       const ADD_DELETE_MODAL_PAYLOAD: AddModalPayload = {
@@ -71,7 +77,7 @@ const FiatTable = ({ data, resource }: TransactionsTableProps) => {
       const formattedTransctionAmount = formatFiatValue(amount, currency, true);
 
       const isSelected = selectedIds.includes(id);
-      const isDropdownToggled = isDropdownActive === ind;
+      const isDropdownToggled = dropdownIndex === ind;
       const rowNumber = ind + startinRowIndex + 1;
 
       return (
@@ -89,9 +95,11 @@ const FiatTable = ({ data, resource }: TransactionsTableProps) => {
           <T.TableCell>{info2}</T.TableCell>
           <T.TableCell>{direction}</T.TableCell>
           <T.TableCell blurrable>{formattedTransctionAmount}</T.TableCell>
-          <T.TableCell onClick={() => onClickToggleDropdown(ind)}>
+          <T.TableCell onClick={() => onClickToggleDropdown(ind)} id={`toggler-${ind}`}>
             <Icon icon="more_vert" size={ICON_SIZE} />
-            {isDropdownToggled && <ActionsDropdown transaction={transaction} resource={resource} />}
+            {isDropdownToggled && !isOutside && (
+              <ActionsDropdown transaction={transaction} resource={resource} id={`dropdown-${ind}`} />
+            )}
           </T.TableCell>
         </T.TableRow>
       );

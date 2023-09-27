@@ -18,6 +18,7 @@ import { TB_HEADER_DATA } from "./constants";
 import { Licence } from "interfaces";
 import { AddModalPayload, GetAllLicencesResponse } from "types";
 import Badge, { BadgeProps } from "components/Badge/Badge";
+import useClickOutside from "hooks/useClickOutside";
 
 interface LicenceTableProps {
   data: GetAllLicencesResponse;
@@ -46,7 +47,8 @@ const LicencesTable = ({ data }: LicenceTableProps) => {
   const { page, limit } = useAppSelector((state) => state.resourceUrls.licences.params);
   const { selectedIds } = useAppSelector((state) => state.selectedItems);
   const dispatch = useDispatch();
-  const [isDropdownActive, toggleDropdown] = useState<number | null>(null);
+  const [dropdownIndex, setDropdownIndex] = useState<number>();
+  const [isOutside, setIsOutside] = useClickOutside(`dropdown-${dropdownIndex}`, `toggler-${dropdownIndex}`);
 
   const pageLicencesIds = licences.map((licence) => licence.id);
   const isAllLicencesOnPageSelected = pageLicencesIds.every((id) => selectedIds.includes(id));
@@ -63,8 +65,13 @@ const LicencesTable = ({ data }: LicenceTableProps) => {
   };
 
   const onClickToggleDropdown = (index: number) => {
-    if (isDropdownActive === index) return toggleDropdown(null);
-    return toggleDropdown(index);
+    if (dropdownIndex === index) {
+      setDropdownIndex(undefined);
+      setIsOutside(!isOutside);
+    } else {
+      setDropdownIndex(index);
+      setIsOutside(false);
+    }
   };
 
   const toggleDeleteAll = () => {
@@ -90,7 +97,7 @@ const LicencesTable = ({ data }: LicenceTableProps) => {
       const formattedExpirationDate = formatDate(expiration_date);
 
       const isSelected = selectedIds.includes(id);
-      const isDropdownToggled = isDropdownActive === ind;
+      const isDropdownToggled = dropdownIndex === ind;
       const rowNumber = ind + startinRowIndex + 1;
 
       return (
@@ -114,9 +121,9 @@ const LicencesTable = ({ data }: LicenceTableProps) => {
           </T.TableCell>
           <T.TableCell blurrable>{formattedLicencePrice}</T.TableCell>
           <T.TableCell>{formattedExpirationDate}</T.TableCell>
-          <T.TableCell onClick={() => onClickToggleDropdown(ind)}>
+          <T.TableCell onClick={() => onClickToggleDropdown(ind)} id={`toggler-${ind}`}>
             <Icon icon="more_vert" size={ICON_SIZE} />
-            {isDropdownToggled && <ActionsDropdown licence={licence} />}
+            {isDropdownToggled && !isOutside && <ActionsDropdown licence={licence} id={`dropdown-${ind}`} />}
           </T.TableCell>
         </T.TableRow>
       );

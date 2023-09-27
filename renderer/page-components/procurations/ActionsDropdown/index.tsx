@@ -8,16 +8,17 @@ import { Procuration } from "interfaces";
 import retreiveProcurationActions from "store/actions/procuration";
 
 interface ActionsDropdownProps {
+  id: string;
   procuration: Procuration;
 }
 
-const ActionsDropdown = ({ procuration }: ActionsDropdownProps) => {
+const ActionsDropdown = ({ procuration, id }: ActionsDropdownProps) => {
   const dispatch = useDispatch();
 
   const { UPDATE, DELETE } = retreiveProcurationActions(procuration);
 
   return (
-    <Dropdown $right="1.5rem" $top="4rem" $width="30rem">
+    <Dropdown $right="1.5rem" $top="4rem" $width="30rem" id={id}>
       <Button
         variant="ghost"
         icon="edit"

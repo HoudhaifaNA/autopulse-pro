@@ -8,16 +8,17 @@ import { Licence } from "interfaces";
 import retreiveLicenceActions from "store/actions/licences";
 
 interface ActionsDropdownProps {
+  id: string;
   licence: Licence;
 }
 
-const ActionsDropdown = ({ licence }: ActionsDropdownProps) => {
+const ActionsDropdown = ({ licence, id }: ActionsDropdownProps) => {
   const dispatch = useDispatch();
 
   const { UPDATE, DELETE } = retreiveLicenceActions(licence);
 
   return (
-    <Dropdown $right="1.5rem" $top="4rem" $width="30rem">
+    <Dropdown $right="1.5rem" $top="4rem" $width="30rem" id={id}>
       <Button
         variant="ghost"
         icon="edit"

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import useSWR from "swr";
@@ -8,10 +8,10 @@ import * as S from "./styles";
 import { Body2 } from "styles/Typography";
 import Icon from "components/Icon/Icon";
 
-import useClickOutside from "hooks/useClickOutside";
 import { fetcher } from "utils/API";
 import { categoryToIcon, formatSearchItemContent } from "./utils";
 import { SearchResources, SearchResults } from "types";
+import useClickOutside from "hooks/useClickOutside";
 
 interface SearchCategory extends SearchResults {
   name: SearchResources;
@@ -52,8 +52,7 @@ const renderSearchedItems = (category: SearchCategory, query: string) => {
 const SearchBar = () => {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const searchListRef = useRef<HTMLDivElement>(null);
-  const [focus, setFocus] = useClickOutside(searchListRef);
+  const [isOutside, setIsOutside] = useClickOutside("searchList", "searchListToggler");
 
   const path = router.asPath.split("/")[1];
   let resource: SearchResources | null = null;
@@ -67,25 +66,17 @@ const SearchBar = () => {
   const { data } = useSWR<SearchResults>(url, fetcher);
 
   return (
-    <S.SearchBarContainer ref={searchListRef}>
-      <InputStyle.InputContainer>
+    <S.SearchBarContainer>
+      <InputStyle.InputContainer id="searchListToggler" onClick={() => setIsOutside(!isOutside)}>
         <InputStyle.InputWrapper>
           <InputStyle.InputIcon>
             <Icon icon="search" size="1.8rem" />
           </InputStyle.InputIcon>
-          <InputStyle.Input
-            type="text"
-            placeholder="Search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => {
-              setFocus(true);
-            }}
-          />
+          <InputStyle.Input type="text" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} />
         </InputStyle.InputWrapper>
       </InputStyle.InputContainer>
-      {focus && resource && data && data.items.length > 0 && (
-        <S.SearchList>
+      {!isOutside && resource && data && data.items.length > 0 && (
+        <S.SearchList id="searchList">
           <S.SearchCategory key={resource}>
             <span>{resource}</span>
             {renderSearchedItems({ name: resource, items: data.items }, query)}

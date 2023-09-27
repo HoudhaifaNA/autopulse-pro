@@ -16,6 +16,7 @@ import { addModal } from "store/reducers/modals";
 import formatDate from "utils/formatDate";
 import { TB_HEADER_DATA } from "./constants";
 import { AddModalPayload, GetAllClientsResponse } from "types";
+import useClickOutside from "hooks/useClickOutside";
 
 interface ClientTableProps {
   data: GetAllClientsResponse;
@@ -28,7 +29,8 @@ const ClientsTable = ({ data }: ClientTableProps) => {
   const { page, limit } = useAppSelector((state) => state.resourceUrls.clients.params);
   const { selectedIds } = useAppSelector((state) => state.selectedItems);
   const dispatch = useDispatch();
-  const [isDropdownActive, toggleDropdown] = useState<number | null>(null);
+  const [dropdownIndex, setDropdownIndex] = useState<number>();
+  const [isOutside, setIsOutside] = useClickOutside(`dropdown-${dropdownIndex}`, `toggler-${dropdownIndex}`);
 
   const pageClientIds = clients.map((client) => client.id);
   const isAllClientsOnPageSelected = pageClientIds.every((id) => selectedIds.includes(id));
@@ -45,8 +47,13 @@ const ClientsTable = ({ data }: ClientTableProps) => {
   };
 
   const onClickToggleDropdown = (index: number) => {
-    if (isDropdownActive === index) return toggleDropdown(null);
-    return toggleDropdown(index);
+    if (dropdownIndex === index) {
+      setDropdownIndex(undefined);
+      setIsOutside(!isOutside);
+    } else {
+      setDropdownIndex(index);
+      setIsOutside(false);
+    }
   };
 
   const toggleDeleteAll = () => {
@@ -71,7 +78,7 @@ const ClientsTable = ({ data }: ClientTableProps) => {
       const formattedTransactionDate = last_transaction_date ? formatDate(last_transaction_date) : "--";
 
       const isSelected = selectedIds.includes(id);
-      const isDropdownToggled = isDropdownActive === ind;
+      const isDropdownToggled = dropdownIndex === ind;
       const rowNumber = ind + startinRowIndex + 1;
 
       return (
@@ -89,9 +96,9 @@ const ClientsTable = ({ data }: ClientTableProps) => {
           <T.TableCell blurrable>{address || "--"}</T.TableCell>
           <T.TableCell blurrable>{formattedDZDBalance}</T.TableCell>
           <T.TableCell blurrable>{formattedEURBalance}</T.TableCell>
-          <T.TableCell onClick={() => onClickToggleDropdown(ind)}>
+          <T.TableCell onClick={() => onClickToggleDropdown(ind)} id={`toggler-${ind}`}>
             <Icon icon="more_vert" size={ICON_SIZE} />
-            {isDropdownToggled && <ActionsDropdown client={client} />}
+            {isDropdownToggled && !isOutside && <ActionsDropdown client={client} id={`dropdown-${ind}`} />}
           </T.TableCell>
         </T.TableRow>
       );
