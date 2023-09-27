@@ -1,9 +1,14 @@
+import { Request } from "express";
+import { ParamsDictionary } from "express-serve-static-core";
+import QueryString from "qs";
+
 import db from "../database";
 import * as S from "../statments/carsStatments";
 import { selectLicenceByIdStatment } from "../statments/licencesStatments";
 import { insertTransactionStatment, updateTransactionByProductIdStatment } from "../statments/transactionsStatments";
 import { selectProcurationByCarIdStatment, deleteProcurationsByIdQuery } from "../statments/procurationsStatments";
 import { selectPaperByCarIdStatment, deletePapersByIdQuery } from "../statments/papersStatments";
+
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
 import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
@@ -20,7 +25,7 @@ export const getCarsWithPapersList = tryCatch((_req, res) => {
   return res.status(200).json({ status: "success", results: cars.length, cars });
 });
 
-export const getAllCars = tryCatch((req, res) => {
+const filterCars = (req: Request) => {
   const {
     name,
     type,
@@ -30,9 +35,6 @@ export const getAllCars = tryCatch((req, res) => {
     isPPInComplete,
     isSoldPriceInComplete,
     isExpenseCostInComplete,
-    orderBy = "-purchased_at",
-    page = 1,
-    limit = 10,
   } = req.query;
 
   const rangeFilters = [
@@ -45,8 +47,6 @@ export const getAllCars = tryCatch((req, res) => {
     "profit",
     "sold_price",
   ];
-
-  const skip = (Number(page) - 1) * Number(limit);
 
   const filterQueries = generateRangeFilters(rangeFilters, req.query, "cars");
 
@@ -94,8 +94,16 @@ export const getAllCars = tryCatch((req, res) => {
     const isSoldPriceInCompleteFilter = `cars.buyer_id IS NOT NULL AND cars.sold_price ${isSoldPriceInCompleteCondition}`;
     filterQueries.push(isSoldPriceInCompleteFilter);
   }
-
   const filters = filterQueries.join(" AND ");
+  return { filters, filterQueries };
+};
+
+export const getAllCars = tryCatch((req, res) => {
+  const { orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
+
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const { filters } = filterCars(req);
   const filterClause = filters ? `WHERE ${filters}` : "";
   const orderByQuery = formatSortingQuery(orderBy);
 
@@ -119,38 +127,9 @@ export const getAllCars = tryCatch((req, res) => {
 });
 
 export const getCarsBrandsAndSeries = tryCatch((req, res) => {
-  const { name, type, isSold } = req.query;
+  const { name } = req.query;
 
-  const rangeFilters = [
-    "purchased_at",
-    "purchase_price_eur",
-    "purchase_price_dzd",
-    "expense_cost",
-    "total_cost",
-    "sold_at",
-    "profit",
-    "sold_price",
-  ];
-
-  const filterQueries = generateRangeFilters(rangeFilters, req.query, "cars");
-
-  if (type) {
-    const typeFilter = `cars.type = '${type}'`;
-    filterQueries.push(typeFilter);
-  }
-
-  if (name && typeof name === "string") {
-    const nameFilter = `cars.name LIKE '${name.trim()}%'`;
-    filterQueries.push(nameFilter);
-  }
-
-  if (isSold && (isSold === "true" || isSold === "false")) {
-    const isSoldCondition = isSold === "true" ? "IS NOT NULL" : "IS NULL";
-    const soldFilter = `cars.buyer_id  ${isSoldCondition}`;
-    filterQueries.push(soldFilter);
-  }
-
-  const filters = filterQueries.join(" AND ");
+  const { filters, filterQueries } = filterCars(req);
   const brandFilters = filterQueries.filter((query) => !query.startsWith("cars.name")).join(" AND ");
 
   const brandFilterClause = brandFilters ? `WHERE ${brandFilters}` : "";
