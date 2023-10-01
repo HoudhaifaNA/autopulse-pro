@@ -1,17 +1,20 @@
+import Link from "next/link";
+
 import * as T from "components/Table";
+import { Body2 } from "styles/Typography";
+
 import { TB_HEADER_DATA } from "./constants";
-import { Transaction } from "interfaces";
 import formatFiatValue from "utils/formatFiatValue";
 import formatDate from "utils/formatDate";
-import { Body2 } from "styles/Typography";
-import Link from "next/link";
+import { Transaction } from "interfaces";
 
 interface TransactionsTableProps {
   direction?: Transaction["direction"];
+  showSymbol?: boolean;
   transactions: Transaction[];
 }
 
-const TransactionsTable = ({ direction, transactions }: TransactionsTableProps) => {
+const TransactionsTable = ({ direction, showSymbol, transactions }: TransactionsTableProps) => {
   const renderTableHeaderCells = () => {
     return TB_HEADER_DATA.map(({ title }) => {
       return <T.TableHeaderCell key={title}>{title}</T.TableHeaderCell>;
@@ -25,6 +28,7 @@ const TransactionsTable = ({ direction, transactions }: TransactionsTableProps) 
 
       const formattedTransactionDate = formatDate(transaction_date);
       const formattedTransactionAmount = formatFiatValue(amount, currency, true);
+      const symbol = transaction.amount < 0 ? "-" : "";
 
       return (
         <T.TableRow key={id}>
@@ -49,7 +53,7 @@ const TransactionsTable = ({ direction, transactions }: TransactionsTableProps) 
           </T.TableCell>
           <T.TableCell>{info3 || "--"}</T.TableCell>
           <T.TableCell>{info4 || "--"}</T.TableCell>
-          <T.TableCell blurrable>{formattedTransactionAmount}</T.TableCell>
+          <T.TableCell blurrable>{`${showSymbol ? symbol : ""} ${formattedTransactionAmount}`}</T.TableCell>
         </T.TableRow>
       );
     });
