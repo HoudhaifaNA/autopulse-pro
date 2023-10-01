@@ -4,17 +4,9 @@ import os from "os";
 import { Menu, app, dialog, globalShortcut, session } from "electron";
 import serve from "electron-serve";
 import contextMenu from "electron-context-menu";
-import dotenv from "dotenv";
 
 import { createWindow } from "./helpers";
 import "../backend/server";
-
-const envFilePath = path.join(app.getAppPath(), ".env");
-const envResult = dotenv.config({ path: envFilePath });
-
-// if (envResult.error) {
-//   console.error("Error loading .env file:", envResult.error);
-// }
 
 const isProd: boolean = process.env.NODE_ENV === "production";
 
