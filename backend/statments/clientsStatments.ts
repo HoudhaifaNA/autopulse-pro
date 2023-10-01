@@ -45,6 +45,18 @@ export const selectClientByIdStatment = db.prepare(`
   WHERE id = ?
   `);
 
+export const selectClientTransactionsTotalsStatment = db.prepare(`
+  SELECT 
+    clients.*, 
+    COALESCE(SUM(CASE WHEN transactions.direction = 'entrante' AND transactions.currency = 'EUR' THEN transactions.amount ELSE 0 END), 0) AS total_entrante_eur,
+    COALESCE(SUM(CASE WHEN transactions.direction = 'sortante' AND transactions.currency = 'EUR' THEN transactions.amount ELSE 0 END), 0) AS total_sortante_eur,
+    COALESCE(SUM(CASE WHEN transactions.direction = 'entrante' AND transactions.currency = 'DZD' THEN transactions.amount ELSE 0 END), 0) AS total_entrante_dzd,
+    COALESCE(SUM(CASE WHEN transactions.direction = 'sortante' AND transactions.currency = 'DZD' THEN transactions.amount ELSE 0 END), 0) AS total_sortante_dzd
+  FROM clients
+  LEFT JOIN transactions ON clients.id = transactions.client_id
+  WHERE clients.id = ?
+  `);
+
 export const selectClientTransactionsQuery = `
   SELECT * FROM transactions 
   WHERE client_id = ? --CURRENCY

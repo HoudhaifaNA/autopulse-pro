@@ -81,7 +81,7 @@ export const getClientTransactions = tryCatch((req, res, next) => {
   const { id } = req.params;
   const { currency } = req.query;
 
-  const client = S.selectClientByIdStatment.get(id);
+  const client = S.selectClientTransactionsTotalsStatment.get(id);
   if (!client) {
     return next(new AppError("Client non trouvé.", 404));
   }
