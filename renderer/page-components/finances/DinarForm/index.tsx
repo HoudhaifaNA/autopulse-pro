@@ -1,23 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { mutate } from "swr";
 import { useDispatch } from "react-redux";
 import { Formik, FormikConfig, FormikProps } from "formik";
+
 import { ModalActions } from "components/Modal/Modal";
 import Button from "components/Button/Button";
 import { FormGroup } from "components/Form/Form.styled";
 import SelectInput from "components/Input/SelectInput";
 import DateInput from "components/DateInput/DateInput";
 import TypedInput from "components/Input/TypedInput";
+import Form from "components/Form/Form";
+
 import useClientsList from "hooks/useClientsList";
 import { useAppSelector } from "store";
-import { ModalFormConfig } from "types";
+import dateToString from "utils/dateToString";
 import { INITIAL_VALUES } from "./constants";
 import { addModal, removeModal } from "store/reducers/modals";
-import Form from "components/Form/Form";
 import { DIRECTION_ITEMS, METHOD_ITEMS } from "../constants";
 import { FiatFormInitialValues } from "../types";
-import { mutate } from "swr";
 import { handleSubmit } from "../handleSubmit";
 import { transactionSchema } from "../schema";
+import { ModalFormConfig } from "types";
 
 const DinarForm = ({ modalId }: { modalId: string }) => {
   const { fetchedUrl } = useAppSelector((state) => state.resourceUrls.transactionsDZD);
@@ -31,12 +34,18 @@ const DinarForm = ({ modalId }: { modalId: string }) => {
   let submitButtonText = "Ajouter";
 
   if (currentModal.params?.document) {
-    formInitialValues = currentModal.params?.document as FiatFormInitialValues;
+    formInitialValues = currentModal.params.document as FiatFormInitialValues;
   }
 
   if (currentModal.params?.isEdit) {
     submitButtonText = "Modifier";
   }
+
+  useEffect(() => {
+    if (!currentModal.params?.document && !currentModal.params?.isEdit) {
+      formInitialValues.transaction_date = dateToString(new Date());
+    }
+  }, []);
 
   const toggleClientForm = () => dispatch(addModal({ name: "clients", title: "Ajouter un client" }));
 

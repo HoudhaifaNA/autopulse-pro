@@ -1,23 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { mutate } from "swr";
 import { Formik, FormikConfig, FormikProps } from "formik";
+
 import { ModalActions } from "components/Modal/Modal";
 import Button from "components/Button/Button";
 import { FormGroup } from "components/Form/Form.styled";
 import SelectInput from "components/Input/SelectInput";
 import DateInput from "components/DateInput/DateInput";
 import TypedInput from "components/Input/TypedInput";
-import useClientsList from "hooks/useClientsList";
-import { useAppSelector } from "store";
-import { ModalFormConfig } from "types";
-import { INITIAL_VALUES } from "./constants";
-import { addModal, removeModal } from "store/reducers/modals";
 import Form from "components/Form/Form";
+
+import useClientsList from "hooks/useClientsList";
+import dateToString from "utils/dateToString";
+import { useAppSelector } from "store";
+import { addModal, removeModal } from "store/reducers/modals";
+import { INITIAL_VALUES } from "./constants";
 import { DIRECTION_ITEMS, METHOD_ITEMS } from "../constants";
 import { FiatFormInitialValues } from "../types";
-import { mutate } from "swr";
 import { handleSubmit } from "../handleSubmit";
 import { transactionSchema } from "../schema";
+import { ModalFormConfig } from "types";
 
 const EuroForm = ({ modalId }: { modalId: string }) => {
   const { fetchedUrl } = useAppSelector((state) => state.resourceUrls.transactionsEUR);
@@ -30,11 +33,18 @@ const EuroForm = ({ modalId }: { modalId: string }) => {
   let formInitialValues = INITIAL_VALUES;
   let submitButtonText = "Ajouter";
   if (currentModal.params?.document) {
-    formInitialValues = currentModal.params?.document as FiatFormInitialValues;
+    formInitialValues = currentModal.params.document as FiatFormInitialValues;
   }
+
   if (currentModal.params?.isEdit) {
     submitButtonText = "Modifier";
   }
+
+  useEffect(() => {
+    if (!currentModal.params?.document && !currentModal.params?.isEdit) {
+      formInitialValues.transaction_date = dateToString(new Date());
+    }
+  }, []);
 
   const toggleClientForm = () => dispatch(addModal({ name: "clients", title: "Ajouter un client" }));
 
