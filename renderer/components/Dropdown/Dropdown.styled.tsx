@@ -25,7 +25,7 @@ export const Dropdown = styled.div<SDropdownProps>`
 
   ${GhostButton} {
     justify-content: flex-start;
-    padding: 0.8rem 1rem;
+    padding: 0.8rem 1rem !important;
     width: 100%;
     color: ${({ theme }) => theme.colors.neutral["700"]};
     border-radius: 0;
