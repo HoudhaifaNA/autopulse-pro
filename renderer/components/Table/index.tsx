@@ -3,6 +3,7 @@ import { ReactNode, ComponentPropsWithoutRef } from "react";
 import * as S from "components/Table/styles";
 import { Body2 } from "styles/Typography";
 import { useAppSelector } from "store";
+import useColoredText from "hooks/useColoredText";
 
 interface TableHeaderCellProps extends ComponentPropsWithoutRef<"th"> {
   children: ReactNode;
@@ -31,11 +32,9 @@ export const TableCell = ({ children, blurrable, ...props }: TableCellProps) => 
   let className = blurrable ? "blurrable" : "";
   if (blurrable && defaultBlur) className += " blurred";
 
-  const PATTERN = /_(RD|GR)/g;
-  const [content, colorClass] = typeof children === "string" ? children.split(PATTERN) : [children, ""];
-
   const renderChildren = () => {
     if (typeof children === "string" || typeof children === "number") {
+      const [content, colorClass] = useColoredText(children.toString());
       return <Body2 className={colorClass}>{content}</Body2>;
     }
     return children;

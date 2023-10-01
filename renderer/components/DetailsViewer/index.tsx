@@ -9,6 +9,7 @@ import Button from "components/Button/Button";
 import PDFPreview from "page-components/licences/PDFPreview";
 import { SelectedAttachement } from "components/FileViewer";
 import { useAppSelector } from "store";
+import useColoredText from "hooks/useColoredText";
 
 interface DetailViewerProps {
   title?: string;
@@ -43,11 +44,10 @@ export const DetailItem = ({ title, $index, blurrable, children }: DetailItemPro
   let className = blurrable ? "blurrable" : "";
   if (blurrable && defaultBlur) className += " blurred";
 
-  const PATTERN = /_(RD|GR)/g;
-  const [content, colorClass] = typeof children === "string" ? children.split(PATTERN) : [children, ""];
-
   const renderChildren = () => {
     if (typeof children === "string" || typeof children === "number") {
+      const [content, colorClass] = useColoredText(children.toString());
+
       return (
         <LabelText className={colorClass} as="p">
           {content}

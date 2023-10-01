@@ -32,11 +32,4 @@ export const TicketContent = styled.div`
   & p::first-letter {
     text-transform: capitalize;
   }
-
-  &.red h5 {
-    color: ${({ theme }) => theme.colors.error[700]};
-  }
-  &.green h5 {
-    color: ${({ theme }) => theme.colors.success[700]};
-  }
 `;

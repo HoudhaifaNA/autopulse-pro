@@ -144,13 +144,6 @@ export const DetailItem = styled.div<DetailItemStyleProps>`
     color: ${({ theme }) => theme.colors.neutral[700]};
   }
 
-  & p.red {
-    color: ${({ theme }) => theme.colors.error[700]};
-  }
-
-  & p.green {
-    color: ${({ theme }) => theme.colors.success[700]};
-  }
   a {
     color: ${({ theme }) => theme.colors.primary[900]};
     text-decoration: none;
