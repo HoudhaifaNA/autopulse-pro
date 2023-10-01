@@ -88,7 +88,7 @@ const FiatTable = ({ data, resource }: TransactionsTableProps) => {
           <T.TableCell>{rowNumber}</T.TableCell>
           <T.TableCell>{formattedTransactionDate}</T.TableCell>
           <T.TableCell blurrable>
-            <Link href="/clients">
+            <Link href={`/clients/${client_id}`}>
               <Body2>{client}</Body2>
             </Link>
           </T.TableCell>
