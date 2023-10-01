@@ -9,8 +9,6 @@ export interface Client {
   created_at: string;
   updated_at: string;
   last_transaction_date?: string;
-  last_transaction?: Transaction;
-  transactions?: Transaction[];
 }
 
 export interface Licence {
