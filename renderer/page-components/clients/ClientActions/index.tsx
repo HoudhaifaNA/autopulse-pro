@@ -1,30 +1,60 @@
+import { useRef } from "react";
+import ReactToPrint from "react-to-print";
 import { useDispatch } from "react-redux";
 
 import Button from "components/Button/Button";
 import ActionsList from "components/ActionsList";
+import ClientPrinted from "../ClientPrinted";
+import Dropdown from "components/Dropdown/Dropdown";
 
-import { Client } from "interfaces";
 import { addModal } from "store/reducers/modals";
 import retreiveClientActions from "store/actions/clients";
-import ReactToPrint from "react-to-print";
-import { useRef } from "react";
-import ClientPrinted from "../ClientPrinted";
+import useClickOutside from "hooks/useClickOutside";
+import { Client } from "interfaces";
 
 interface ActionsProps {
   client: Client;
 }
 const ClientActions = ({ client }: ActionsProps) => {
   const dispatch = useDispatch();
-  const ref = useRef<HTMLDivElement>(null);
+  const [isOutside, setIsOutside] = useClickOutside("printDropdown", "printDropdownToggler");
+  const lastRef = useRef<HTMLDivElement>(null);
+  const allRef = useRef<HTMLDivElement>(null);
 
   const { UPDATE, TRANSFER_EUR, TRANSFER_DZD, DELETE } = retreiveClientActions(client);
 
   return (
     <ActionsList>
-      {/* <div style={{ display: "none" }}>
-        <ClientPrinted ref={ref} id={client.id} />
+      <div style={{ display: "none" }}>
+        <ClientPrinted ref={allRef} id={client.id} type="all" />
+        <ClientPrinted ref={lastRef} id={client.id} type="last" />
       </div>
-      <ReactToPrint content={() => ref.current} trigger={() => <Button variant="primary">Print</Button>} /> */}
+
+      <div style={{ position: "relative" }}>
+        <Button id="printDropdownToggler" variant="primary" icon="print" onClick={() => setIsOutside(!isOutside)}>
+          Imprimer
+        </Button>
+        {!isOutside && (
+          <Dropdown $left="0" $top="4rem" $width="30rem" id="printDropdown">
+            <ReactToPrint
+              content={() => allRef.current}
+              trigger={() => (
+                <Button variant="ghost" icon="print">
+                  Imprimer toutes les transactions
+                </Button>
+              )}
+            />
+            <ReactToPrint
+              content={() => lastRef.current}
+              trigger={() => (
+                <Button variant="ghost" icon="print">
+                  Imprimer la dernière transaction
+                </Button>
+              )}
+            />
+          </Dropdown>
+        )}
+      </div>
       <Button
         variant="primary"
         icon="euro"
