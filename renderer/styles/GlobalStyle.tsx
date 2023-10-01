@@ -34,11 +34,11 @@ const GlobalStyle = createGlobalStyle`
 
     }
 
-    p.GR {
+    *.GR {
      color: ${theme.colors.success["700"]};
     }
 
-    p.RD {
+    *.RD {
      color: ${theme.colors.error["700"]};
     }
 
