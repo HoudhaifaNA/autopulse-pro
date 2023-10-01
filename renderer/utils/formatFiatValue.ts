@@ -1,4 +1,4 @@
-const formatFiatValue = (amount: number = 0, currency: "EUR" | "DZD", isBalance?: boolean) => {
+const formatFiatValue = (amount: number = 0, currency: "EUR" | "DZD", isBalance?: boolean, showSymbol?: boolean) => {
   let fiatValue = amount;
 
   const currencySymbol = currency === "EUR" ? "€" : "DA";
@@ -8,7 +8,7 @@ const formatFiatValue = (amount: number = 0, currency: "EUR" | "DZD", isBalance?
     if (amount > 0) colorStatusTag = " _GR";
   }
 
-  if (isBalance) {
+  if (isBalance && !showSymbol) {
     fiatValue = Math.abs(amount);
   }
 
