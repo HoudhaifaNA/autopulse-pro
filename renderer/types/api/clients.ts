@@ -6,7 +6,18 @@ export interface GetAllClientsResponse {
   clients: Client[];
 }
 
-export interface GetClientTransactionResponse {
+export interface GetClientLastTransactionResponse {
   client: Client;
+  last_transaction: Transaction;
+}
+
+interface ClientWithTransactionsTotals extends Client {
+  total_sortante_eur: number;
+  total_entrante_eur: number;
+  total_sortante_dzd: number;
+  total_entrante_dzd: number;
+}
+export interface GetClientTransactionResponse {
+  client: ClientWithTransactionsTotals;
   transactions: Transaction[];
 }

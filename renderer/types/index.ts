@@ -1,4 +1,8 @@
-import { GetAllClientsResponse, GetClientTransactionResponse } from "types/api/clients";
+import {
+  GetAllClientsResponse,
+  GetClientLastTransactionResponse,
+  GetClientTransactionResponse,
+} from "types/api/clients";
 import { GetAllLicencesResponse, GetLicencesListResponse } from "types/api/licences";
 import { GetPapersResoponse } from "types/api/papers";
 import { GetProcurationsResoponse } from "types/api/procurations";
@@ -49,6 +53,7 @@ import { SubmitStatus, SubmitFunction } from "./forms";
 
 export type {
   GetAllClientsResponse,
+  GetClientLastTransactionResponse,
   GetClientTransactionResponse,
   GetAllLicencesResponse,
   GetLicencesListResponse,
