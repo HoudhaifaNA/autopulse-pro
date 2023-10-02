@@ -11,10 +11,11 @@ import { Transaction } from "interfaces";
 interface TransactionsTableProps {
   direction?: Transaction["direction"];
   showSymbol?: boolean;
+  showIndex?: boolean;
   transactions: Transaction[];
 }
 
-const TransactionsTable = ({ direction, showSymbol, transactions }: TransactionsTableProps) => {
+const TransactionsTable = ({ direction, showSymbol, showIndex, transactions }: TransactionsTableProps) => {
   const renderTableHeaderCells = () => {
     return TB_HEADER_DATA.map(({ title }) => {
       return <T.TableHeaderCell key={title}>{title}</T.TableHeaderCell>;
@@ -23,7 +24,7 @@ const TransactionsTable = ({ direction, showSymbol, transactions }: Transactions
 
   const renderTransactions = () => {
     const transactionsItems = direction ? transactions.filter((tx) => tx.direction === direction) : transactions;
-    return transactionsItems.map((transaction) => {
+    return transactionsItems.map((transaction, ind) => {
       const { id, product_id, type, transaction_date, info1, info2, info3, info4, amount, currency } = transaction;
 
       const formattedTransactionDate = formatDate(transaction_date);
@@ -32,6 +33,7 @@ const TransactionsTable = ({ direction, showSymbol, transactions }: Transactions
 
       return (
         <T.TableRow key={id}>
+          {showIndex && <T.TableCell>{ind + 1}</T.TableCell>}
           <T.TableCell>{formattedTransactionDate}</T.TableCell>
           <T.TableCell>
             {type === "car" ? (
@@ -63,7 +65,10 @@ const TransactionsTable = ({ direction, showSymbol, transactions }: Transactions
     <T.TableWrapper>
       <T.Table>
         <T.TableHead>
-          <T.TableRow>{renderTableHeaderCells()}</T.TableRow>
+          <T.TableRow>
+            {showIndex && <T.TableHeaderCell>Indice</T.TableHeaderCell>}
+            {renderTableHeaderCells()}
+          </T.TableRow>
         </T.TableHead>
         <T.TableBody>{renderTransactions()}</T.TableBody>
       </T.Table>

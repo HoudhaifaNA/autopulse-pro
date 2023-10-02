@@ -31,7 +31,7 @@ const ClientPrinted = forwardRef(({ id, type }: ClientPrintedProps, ref: Ref<HTM
 
       return (
         <>
-          <TransactionsTable transactions={data.transactions} showSymbol />
+          <TransactionsTable transactions={data.transactions} showSymbol showIndex />
           <FiatItemLine label="Total Sorties (EUR)" value={total_sortante_eur} currency="EUR" />
           <FiatItemLine label="Total Entrées (EUR)" value={total_entrante_eur} currency="EUR" />
           <FiatItemLine label="Solde actuel (EUR)" value={eur_balance} currency="EUR" />
