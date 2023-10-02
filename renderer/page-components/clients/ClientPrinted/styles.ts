@@ -16,7 +16,11 @@ export const DocumentWrapper = styled.div`
   @page {
     size: A4;
     margin: 5mm;
-    margin-top: 5mm;
+    margin-top: 8mm;
+
+    @bottom-left {
+      content: counter(page);
+    }
   }
 
   ${TableWrapper} {
@@ -83,6 +87,12 @@ export const BreakerLine = styled.div`
   &:first-child {
     flex-basis: 60%;
   }
+`;
+
+export const ClientsTransactionsTotalWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
 `;
 
 export const DetailLine = styled.div<DetailLineProps>`
