@@ -19,5 +19,6 @@ interface ClientWithTransactionsTotals extends Client {
 }
 export interface GetClientTransactionResponse {
   client: ClientWithTransactionsTotals;
+  results: number;
   transactions: Transaction[];
 }

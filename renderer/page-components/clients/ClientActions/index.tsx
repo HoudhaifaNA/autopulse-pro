@@ -14,8 +14,9 @@ import { Client } from "interfaces";
 
 interface ActionsProps {
   client: Client;
+  transactionsCount: number;
 }
-const ClientActions = ({ client }: ActionsProps) => {
+const ClientActions = ({ client, transactionsCount }: ActionsProps) => {
   const dispatch = useDispatch();
   const [isOutside, setIsOutside] = useClickOutside("printDropdown", "printDropdownToggler");
   const lastRef = useRef<HTMLDivElement>(null);
@@ -25,36 +26,40 @@ const ClientActions = ({ client }: ActionsProps) => {
 
   return (
     <ActionsList>
-      <div style={{ display: "none" }}>
-        <ClientPrinted ref={allRef} id={client.id} type="all" />
-        <ClientPrinted ref={lastRef} id={client.id} type="last" />
-      </div>
+      {transactionsCount > 0 && (
+        <>
+          <div style={{ display: "none" }}>
+            <ClientPrinted ref={allRef} id={client.id} type="all" />
+            <ClientPrinted ref={lastRef} id={client.id} type="last" />
+          </div>
 
-      <div style={{ position: "relative" }}>
-        <Button id="printDropdownToggler" variant="primary" icon="print" onClick={() => setIsOutside(!isOutside)}>
-          Imprimer
-        </Button>
-        {!isOutside && (
-          <Dropdown $left="0" $top="4rem" $width="30rem" id="printDropdown">
-            <ReactToPrint
-              content={() => allRef.current}
-              trigger={() => (
-                <Button variant="ghost" icon="print">
-                  Imprimer toutes les transactions
-                </Button>
-              )}
-            />
-            <ReactToPrint
-              content={() => lastRef.current}
-              trigger={() => (
-                <Button variant="ghost" icon="print">
-                  Imprimer la dernière transaction
-                </Button>
-              )}
-            />
-          </Dropdown>
-        )}
-      </div>
+          <div style={{ position: "relative" }}>
+            <Button id="printDropdownToggler" variant="primary" icon="print" onClick={() => setIsOutside(!isOutside)}>
+              Imprimer
+            </Button>
+            {!isOutside && (
+              <Dropdown $left="0" $top="4rem" $width="30rem" id="printDropdown">
+                <ReactToPrint
+                  content={() => allRef.current}
+                  trigger={() => (
+                    <Button variant="ghost" icon="print">
+                      Imprimer toutes les transactions
+                    </Button>
+                  )}
+                />
+                <ReactToPrint
+                  content={() => lastRef.current}
+                  trigger={() => (
+                    <Button variant="ghost" icon="print">
+                      Imprimer la dernière transaction
+                    </Button>
+                  )}
+                />
+              </Dropdown>
+            )}
+          </div>
+        </>
+      )}
       <Button
         variant="primary"
         icon="euro"

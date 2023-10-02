@@ -23,26 +23,30 @@ const ActionsDropdown = ({ client, id }: ActionsDropdownProps) => {
 
   return (
     <Dropdown $right="1.5rem" $top="4rem" $width="30rem" id={id}>
-      <div style={{ display: "none" }}>
-        <ClientPrinted ref={allRef} id={client.id} type="all" />
-        <ClientPrinted ref={lastRef} id={client.id} type="last" />
-      </div>
-      <ReactToPrint
-        content={() => allRef.current}
-        trigger={() => (
-          <Button variant="ghost" icon="print">
-            Imprimer toutes les transactions
-          </Button>
-        )}
-      />
-      <ReactToPrint
-        content={() => lastRef.current}
-        trigger={() => (
-          <Button variant="ghost" icon="print">
-            Imprimer la dernière transaction
-          </Button>
-        )}
-      />
+      {client.last_transaction_date && (
+        <>
+          <div style={{ display: "none" }}>
+            <ClientPrinted ref={allRef} id={client.id} type="all" />
+            <ClientPrinted ref={lastRef} id={client.id} type="last" />
+          </div>
+          <ReactToPrint
+            content={() => allRef.current}
+            trigger={() => (
+              <Button variant="ghost" icon="print">
+                Imprimer toutes les transactions
+              </Button>
+            )}
+          />
+          <ReactToPrint
+            content={() => lastRef.current}
+            trigger={() => (
+              <Button variant="ghost" icon="print">
+                Imprimer la dernière transaction
+              </Button>
+            )}
+          />
+        </>
+      )}
       <Button
         variant="ghost"
         icon="euro"

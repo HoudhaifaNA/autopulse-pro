@@ -72,7 +72,7 @@ const ClientDetails = () => {
     <>
       <Meta title={data?.client ? `Document de ${data.client.full_name}` : "client"} />
       <DetailsViewer $width="120rem">
-        {data?.client && <ClientActions client={data.client} />}
+        {data?.client && <ClientActions client={data.client} transactionsCount={data.results} />}
         {renderClientInfo()}
       </DetailsViewer>
     </>
