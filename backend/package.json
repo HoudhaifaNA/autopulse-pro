@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "better-sqlite3": "^8.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
