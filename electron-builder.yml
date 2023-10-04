@@ -1,5 +1,5 @@
 appId: com.zauto.manager
-productName: Zauto Manager (beta)
+productName: Zauto Manager
 copyright: Copyright © 2022 Houdhaifa Lebbad
 directories:
   output: dist
