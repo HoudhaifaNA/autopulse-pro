@@ -1,5 +1,11 @@
-const convertPath = (path: string) => {
-  if (process.env.NODE_ENV === "production") return `${path}.html`;
-  return path;
+const redirectToPath = (path: string) => {
+  let convertedPath = path;
+
+  if (process.env.NODE_ENV === "production") {
+    convertedPath = `${path}.html`;
+  }
+
+  location.assign(convertedPath);
 };
-export default convertPath;
+
+export default redirectToPath;

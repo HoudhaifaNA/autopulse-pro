@@ -11,6 +11,7 @@ export const ToasterWrapper = styled.div<StyledToasterProps>`
   gap: 1.4rem;
   padding: 1.5rem 1rem;
   min-width: 35rem;
+  background-color: ${({ theme }) => theme.colors.white};
   border-bottom: 0.4rem solid
     ${({ theme, $type }) => theme.colors[$type]["500"]};
   border-radius: 0.4rem;

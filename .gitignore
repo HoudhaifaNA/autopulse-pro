@@ -4,8 +4,14 @@ node_modules
 .next
 
 /app
+db
 dist
 renderer/build
+uploads/*
+backend/package*
+backend/instructions
+
+resources/dev_icon.*
 
 .vscode
 

@@ -1,6 +1,6 @@
 import { FieldHookConfig } from "formik";
 
-import { DropdownProps } from "components/Dropdown/types";
+import { DropdownItem, DropdownProps } from "components/Dropdown/types";
 
 interface TextInputProps {
   label?: string;
@@ -13,14 +13,18 @@ interface TextInputProps {
 export type TypedInputProps = TextInputProps & FieldHookConfig<any>;
 export type ClickInputProps = { label: string } & FieldHookConfig<any>;
 
-type BaseInputFields = Pick<
-  TypedInputProps,
-  "label" | "name" | "placeholder" | "autoFocus"
->;
+type BaseInputFields = Pick<TypedInputProps, "label" | "name" | "placeholder" | "autoFocus">;
+
+export interface SelectOption extends DropdownItem {
+  relatedValues?: string[] | number[];
+}
 
 export interface SelectInputProps extends BaseInputFields {
-  items: DropdownProps["items"];
+  items: SelectOption[];
+  relatedFields?: string[];
   iconSize?: DropdownProps["iconSize"];
   buttons?: DropdownProps["children"];
   elementAs?: "input" | "div";
+  sorted?: boolean;
+  disabled?: boolean;
 }

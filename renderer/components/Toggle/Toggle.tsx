@@ -1,30 +1,30 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import * as S from "components/Toggle/Toggle.styled";
-import { Body1 } from "styles/Typography";
+import { LabelText } from "styles/Typography";
 
 interface ToggleProps {
-  status?: boolean;
+  status: boolean;
   labelPosition?: "left" | "right";
   disabled?: boolean;
-  children?: string;
+  label?: string;
+  onSwitch: Dispatch<SetStateAction<boolean>>;
 }
 
 const Toggle = (props: ToggleProps) => {
-  const { labelPosition = "right", status = false, disabled, children } = props;
-  const [toggle, setToggle] = useState(status);
+  const { labelPosition = "right", status, disabled, label, onSwitch } = props;
 
-  const switchToggle = () => !disabled && setToggle(!toggle);
+  const switchToggle = () => {
+    if (!disabled) {
+      onSwitch(!status);
+    }
+  };
 
   return (
-    <S.ToggleContainer
-      $label={labelPosition}
-      disabled={disabled}
-      onClick={switchToggle}
-    >
-      {children && <Body1>{children}</Body1>}
-      <S.SwitchWrapper $toggle={toggle}>
-        <S.SwitchCircle $toggle={toggle} />
+    <S.ToggleContainer $label={labelPosition} disabled={disabled} onClick={switchToggle}>
+      {label && <LabelText>{label}</LabelText>}
+      <S.SwitchWrapper $toggle={status}>
+        <S.SwitchCircle $toggle={status} />
       </S.SwitchWrapper>
     </S.ToggleContainer>
   );

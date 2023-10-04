@@ -28,8 +28,7 @@ const Button = styled.button<StyledButtonProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: ${({ $iconPosition }) =>
-    $iconPosition === "right" ? "row-reverse" : "row"};
+  flex-direction: ${({ $iconPosition }) => ($iconPosition === "right" ? "row-reverse" : "row")};
   gap: 0.8rem;
   height: 4rem;
   width: ${(props) => setButtonWidth(props)};
@@ -37,7 +36,7 @@ const Button = styled.button<StyledButtonProps>`
   outline: none;
   border: 0.1rem solid ${({ theme }) => theme.colors.primary["500"]};
   border-radius: 0.4rem;
-  transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in;
   opacity: ${({ disabled }) => (disabled ? ".6" : "1")};
   cursor: pointer;
   user-select: none;
@@ -64,7 +63,6 @@ export const PrimaryButton = styled(Button)`
 
 export const SecondaryButton = styled(Button)`
   color: ${({ theme }) => theme.colors.primary["500"]};
-  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 export const GhostButton = styled(Button)`
@@ -76,7 +74,7 @@ export const DangerButton = styled(Button)`
   color: ${({ theme }) => theme.colors.white};
   background-color: ${({ theme }) => theme.colors.error["500"]};
   border-color: ${({ theme }) => theme.colors.error["500"]};
-  // Change background color if not disabled
+
   &:hover,
   &:active {
     &:not([disabled]) {

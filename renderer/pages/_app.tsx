@@ -1,11 +1,16 @@
-import { AppProps } from "next/app";
-import { useRouter } from "next/router";
 import Inter from "next/font/local";
+import { useRouter } from "next/router";
+import { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
+import NextNProgress from "nextjs-progressbar";
+import { ToastContainer } from "react-toastify";
 
+import "react-toastify/dist/ReactToastify.css";
 import GlobalStyle from "styles/GlobalStyle";
 import theme from "styles/theme";
-import Layout from "components/Layout/Layout";
+
+import ReduxProvider from "contexts/ReduxProvider";
+import Layout from "layout";
 
 const inter = Inter({
   src: [
@@ -15,12 +20,16 @@ const inter = Inter({
   ],
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
 
-  // Insert Login page without Layout
+  const currentPath = router.asPath.split("/")[1];
+
   const insertPage = () => {
-    if (router.asPath === "/") return <Component {...pageProps} />;
+    if (currentPath.includes("login")) {
+      return <Component {...pageProps} />;
+    }
+
     return (
       <Layout>
         <Component {...pageProps} />
@@ -29,13 +38,17 @@ function MyApp({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <main className={inter.className}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        {insertPage()}
-      </ThemeProvider>
-    </main>
+    <ReduxProvider>
+      <main className={inter.className}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <NextNProgress color="#00d8d6" />
+          <ToastContainer />
+          {insertPage()}
+        </ThemeProvider>
+      </main>
+    </ReduxProvider>
   );
-}
+};
 
-export default MyApp;
+export default App;

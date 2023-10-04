@@ -1,21 +1,17 @@
-import styled from "styled-components";
+import { ComponentPropsWithoutRef } from "react";
+import * as S from "./styles";
 
-interface IconProps {
+export interface IconProps extends ComponentPropsWithoutRef<"svg"> {
   icon: string;
   size: string;
+  isRotated?: boolean;
 }
 
-const SvgWrapper = styled.svg<{ $size: string }>`
-  width: ${({ $size }) => $size};
-  height: ${({ $size }) => $size};
-  fill: currentColor;
-`;
-
-const Icon = ({ icon, size }: IconProps) => {
+const Icon = ({ icon, size, isRotated, ...props }: IconProps) => {
   return (
-    <SvgWrapper $size={size}>
-      <use xlinkHref={`./sprite.svg#${icon}`} />;
-    </SvgWrapper>
+    <S.SvgWrapper $size={size} $isRotated={isRotated} {...props}>
+      <use xlinkHref={`/sprite.svg#${icon}`} />;
+    </S.SvgWrapper>
   );
 };
 

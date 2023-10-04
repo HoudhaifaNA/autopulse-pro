@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode, Ref, forwardRef } from "react";
+import { MouseEventHandler, ReactNode, Ref } from "react";
 
 import * as S from "components/Button/Button.styled";
 import { ButtonText } from "styles/Typography";
@@ -7,17 +7,17 @@ import Icon from "components/Icon/Icon";
 interface ButtonProps {
   variant: "primary" | "secondary" | "ghost" | "danger";
   type?: "submit" | "button" | "reset";
+  id?: string;
   width?: string;
   icon?: string;
   iconPostition?: "right" | "left";
   floating?: boolean;
   loading?: boolean;
   disabled?: boolean;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
   children?: ReactNode;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  ref?: Ref<HTMLButtonElement>;
 }
-
-type BtnRef = Ref<HTMLButtonElement | undefined>;
 
 const buttonVariants = {
   primary: S.PrimaryButton,
@@ -26,31 +26,13 @@ const buttonVariants = {
   danger: S.DangerButton,
 };
 
-// Added Ref for react-dropzone issue
-const Button = (props: ButtonProps, ref: BtnRef) => {
-  // ...allProps will equalt to type and disabled and onClick.
-  // we can show them with the element in the browser so we don't use $. ex: type={type}
-
-  const {
-    variant,
-    width,
-    icon,
-    iconPostition,
-    loading,
-    floating,
-    children,
-    ...allProps
-  } = props;
+const Button = (props: ButtonProps) => {
+  const { variant, width, icon, iconPostition, loading, floating, children, ...allProps } = props;
 
   const SelectedButton = buttonVariants[variant];
 
   return (
-    <SelectedButton
-      $iconPosition={iconPostition}
-      $floating={floating}
-      $width={width}
-      {...allProps}
-    >
+    <SelectedButton $iconPosition={iconPostition} $floating={floating} $width={width} {...allProps}>
       {icon && <Icon icon={icon} size="2rem" />}
       {children && <ButtonText>{children}</ButtonText>}
       {loading && <S.Loader />}
@@ -58,4 +40,4 @@ const Button = (props: ButtonProps, ref: BtnRef) => {
   );
 };
 
-export default forwardRef(Button);
+export default Button;

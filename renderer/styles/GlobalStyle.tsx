@@ -1,14 +1,27 @@
 import { createGlobalStyle } from "styled-components";
+import theme from "./theme";
 
 const GlobalStyle = createGlobalStyle`
+    :root{
+        --toastify-color-success: ${theme.colors.success[500]};
+        --toastify-color-error: ${theme.colors.error[500]};
+        --toastify-color-warning: ${theme.colors.warning[500]};
+        --toastify-color-info: ${theme.colors.primary[500]};
+    }
     
+    .Toastify__toast-container{
+        z-index: 50000000000000;
+    }
+
     *, 
     *::before,
     *::after{
         padding: 0;
         margin: 0;
         box-sizing: border-box;
+
     }
+    
     html{
         font-size: 10px;
         scroll-behavior: smooth;
@@ -21,16 +34,14 @@ const GlobalStyle = createGlobalStyle`
 
     }
 
-
-    .background-black{
-        position: fixed;
-        left: 0;
-        top: 0;
-        z-index: 100;
-        height: 100vh;
-        width: 100vw;
-        background-color: rgba(0,0,0,.4);
+    *.GR {
+     color: ${theme.colors.success["700"]};
     }
+
+    *.RD {
+     color: ${theme.colors.error["700"]};
+    }
+
   
 `;
 

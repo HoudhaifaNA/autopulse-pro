@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { BadgeProps } from "./Badge";
 
-export interface StyledBadgeProps {
+interface StyledBadgeProps {
   $type: BadgeProps["type"];
 }
 

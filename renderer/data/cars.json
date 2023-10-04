@@ -1,7 +1,7 @@
 [
   {
     "brand": "ALFA ROMEO",
-    "series": [
+    "models": [
       "4C",
       "4C Spider",
       "Giulia",
@@ -20,7 +20,7 @@
   },
   {
     "brand": "AUDI",
-    "series": [
+    "models": [
       "A1",
       "A3 Cabriolet",
       "A3 Sedan",
@@ -95,7 +95,7 @@
   },
   {
     "brand": "BMW",
-    "series": [
+    "models": [
       "1 Series",
       "1 Series 3 doors",
       "1 Series Sedan",
@@ -162,7 +162,7 @@
   },
   {
     "brand": "CADILLAC",
-    "series": [
+    "models": [
       "CT4-V",
       "CT5",
       "CT5-V",
@@ -187,7 +187,7 @@
   },
   {
     "brand": "CHEVROLET",
-    "series": [
+    "models": [
       "Blazer",
       "Bolt",
       "Camaro",
@@ -235,8 +235,8 @@
     ]
   },
   {
-    "brand": "CITROËN",
-    "series": [
+    "brand": "CITROEN",
+    "models": [
       "AMI",
       "Berlingo",
       "C-Elysee",
@@ -264,7 +264,7 @@
   },
   {
     "brand": "CUPRA",
-    "series": [
+    "models": [
       "Ateca",
       "Born",
       "Formentor",
@@ -275,7 +275,7 @@
   },
   {
     "brand": "DACIA",
-    "series": [
+    "models": [
       "Dokker",
       "Dokker Van",
       "Duster",
@@ -292,7 +292,7 @@
   },
   {
     "brand": "DODGE",
-    "series": [
+    "models": [
       "Challenger",
       "Challenger SRT",
       "Charger",
@@ -307,7 +307,7 @@
   },
   {
     "brand": "FIAT",
-    "series": [
+    "models": [
       "124 Spider",
       "500",
       "500 3+1",
@@ -342,7 +342,7 @@
   },
   {
     "brand": "FORD",
-    "series": [
+    "models": [
       "Bronco",
       "E-Tourneo",
       "EcoSport",
@@ -408,7 +408,7 @@
   },
   {
     "brand": "GMC",
-    "series": [
+    "models": [
       "Acadia",
       "Canyon Crew Cab",
       "Hummer EV",
@@ -424,7 +424,7 @@
   },
   {
     "brand": "HONDA",
-    "series": [
+    "models": [
       "Accord",
       "Civic 5 Doors",
       "Civic Coupe",
@@ -453,7 +453,7 @@
   },
   {
     "brand": "HYUNDAI",
-    "series": [
+    "models": [
       "Accent Sedan",
       "Bayon",
       "Elantra 5 Doors",
@@ -498,7 +498,7 @@
   },
   {
     "brand": "INFINITI",
-    "series": [
+    "models": [
       "Q50",
       "Q60",
       "Q70",
@@ -514,7 +514,7 @@
   },
   {
     "brand": "JAGUAR",
-    "series": [
+    "models": [
       "E-Pace",
       "F-Pace",
       "F-Pace SVR",
@@ -533,7 +533,7 @@
   },
   {
     "brand": "JEEP",
-    "series": [
+    "models": [
       "Avenger",
       "Cherokee",
       "Compass",
@@ -548,7 +548,7 @@
   },
   {
     "brand": "KIA",
-    "series": [
+    "models": [
       "Borrego / Mohave",
       "Carnival / Sedona",
       "cee'd",
@@ -588,7 +588,7 @@
   },
   {
     "brand": "LAMBORGHINI",
-    "series": [
+    "models": [
       "Aventador",
       "Aventador Roadster",
       "Centenario Roadster",
@@ -604,7 +604,7 @@
   },
   {
     "brand": "LAND ROVER",
-    "series": [
+    "models": [
       "Defender 90",
       "Defender 110",
       "Defender 130",
@@ -624,7 +624,7 @@
   },
   {
     "brand": "LEXUS",
-    "series": [
+    "models": [
       "CT",
       "ES",
       "GS F",
@@ -646,7 +646,7 @@
   },
   {
     "brand": "MASERATI",
-    "series": [
+    "models": [
       "Ghibli",
       "GranTurismo",
       "Grecale",
@@ -659,7 +659,7 @@
   },
   {
     "brand": "MAZDA",
-    "series": [
+    "models": [
       "2 / Demio",
       "3 / Axela Hatchback",
       "3 / Axela Sedan",
@@ -684,7 +684,7 @@
   },
   {
     "brand": "MERCEDES BENZ",
-    "series": [
+    "models": [
       "A Sedan",
       "A",
       "A Saloon",
@@ -758,7 +758,7 @@
   },
   {
     "brand": "MERCEDES-AMG",
-    "series": [
+    "models": [
       "A",
       "C",
       "C COUPE",
@@ -794,7 +794,7 @@
   },
   {
     "brand": "MINI",
-    "series": [
+    "models": [
       "Clubman",
       "Clubvan",
       "Convertible",
@@ -807,7 +807,7 @@
   },
   {
     "brand": "MITSUBISHI",
-    "series": [
+    "models": [
       "ASX / RVR / Outlander Sport",
       "Attrage",
       "Eclipse Cross",
@@ -827,7 +827,7 @@
   },
   {
     "brand": "NISSAN",
-    "series": [
+    "models": [
       "370Z",
       "370Z Nismo",
       "370Z Roadster",
@@ -876,7 +876,7 @@
   },
   {
     "brand": "OPEL",
-    "series": [
+    "models": [
       "Adam",
       "Adam Rocks",
       "Ampera",
@@ -910,7 +910,7 @@
   },
   {
     "brand": "PEUGEOT",
-    "series": [
+    "models": [
       "108",
       "208 5 doors",
       "301",
@@ -939,7 +939,7 @@
   },
   {
     "brand": "PORSCHE",
-    "series": [
+    "models": [
       "718 Boxster",
       "718 Boxster GTS",
       "718 Boxster S",
@@ -1024,10 +1024,10 @@
       "Panamera S E-Hybrid"
     ]
   },
-  { "brand": "RAM Trucks", "series": ["1500", "2500", "3500"] },
+  { "brand": "RAM Trucks", "models": ["1500", "2500", "3500"] },
   {
     "brand": "RENAULT",
-    "series": [
+    "models": [
       "Alaskan",
       "Arkana",
       "Austral",
@@ -1070,7 +1070,7 @@
   },
   {
     "brand": "SEAT",
-    "series": [
+    "models": [
       "Alhambra",
       "Altea",
       "Arona",
@@ -1095,8 +1095,8 @@
     ]
   },
   {
-    "brand": "ŠKODA",
-    "series": [
+    "brand": "SKODA",
+    "models": [
       "Citigo",
       "Enyaq",
       "Enyaq Coupe",
@@ -1124,7 +1124,7 @@
   },
   {
     "brand": "SUZUKI",
-    "series": [
+    "models": [
       "Across",
       "APV",
       "Baleno",
@@ -1144,7 +1144,7 @@
   },
   {
     "brand": "TOYOTA",
-    "series": [
+    "models": [
       "4Runner",
       "Agya",
       "Aqua",
@@ -1210,7 +1210,7 @@
   },
   {
     "brand": "VOLKSWAGEN",
-    "series": [
+    "models": [
       "Amarok",
       "Arteon",
       "Arteon Shooting Brake",
@@ -1282,7 +1282,7 @@
   },
   {
     "brand": "VOLVO",
-    "series": [
+    "models": [
       "C40",
       "EX90",
       "S60",

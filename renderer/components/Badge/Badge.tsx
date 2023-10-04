@@ -1,7 +1,6 @@
 import { BadgeWrapper } from "./Badge.styled";
 
 export interface BadgeProps {
-  // these names don't describe the status of the badge just for theme colors names
   type: "success" | "warning" | "error";
   children: string;
 }
