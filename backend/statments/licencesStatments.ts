@@ -5,33 +5,6 @@ import { setOptionalUpdate } from "../utils/sqlValidations";
 
 // db.prepare("DROP TABLE IF EXISTS licences").run();
 
-const createLicencesTableStatment = db.prepare(`
-    CREATE TABLE IF NOT EXISTS licences(
-    id INTEGER NOT NULL PRIMARY KEY,
-    purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    seller_id INTEGER NOT NULL,
-    moudjahid TEXT NOT NULL,
-    wilaya TEXT,
-    serial_number INTEGER,
-    price INTEGER DEFAULT 0,
-    attachments TEXT,
-    car_id INTEGER,
-    issue_date TEXT NOT NULL,
-    expiration_date TEXT AS (DATETIME(issue_date, '+5 years')) STORED,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (seller_id)
-     	REFERENCES clients (id)
-       ON UPDATE NO ACTION
-       ON DELETE CASCADE
-    FOREIGN KEY (car_id)
-     	REFERENCES cars (id)
-       ON UPDATE NO ACTION
-       ON DELETE SET NULL
-    )`);
-
-createLicencesTableStatment.run();
-
 export const IS_LICENCE_VALID = `
 	CASE
 		WHEN datetime('now') < licences.expiration_date AND licences.car_id IS NULL THEN 1

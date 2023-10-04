@@ -1,34 +1,8 @@
 import db from "../database";
 import generateInsertedFields from "../utils/generateInsertedFields";
-import { checkNumber, setOptionalUpdate } from "../utils/sqlValidations";
+import { setOptionalUpdate } from "../utils/sqlValidations";
 
 // db.prepare("DROP TABLE IF EXISTS transactions").run();
-
-const createTransactionsTable = db.prepare(
-  `CREATE TABLE IF NOT EXISTS transactions(
-    id INTEGER NOT NULL PRIMARY KEY,
-    client_id INTEGER NOT NULL,
-    transaction_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    type TEXT NOT NULL CHECK (type IN ('car', 'licence', 'procuration', 'paper', 'Fiat')),
-    product_id INTEGER,
-    info1 TEXT NOT NULL,
-    info2 TEXT NOT NULL,
-    info3 TEXT,
-    info4 TEXT,
-    direction TEXT NOT NULL CHECK (direction IN ('sortante', 'entrante')),
-    currency TEXT NOT NULL CHECK (currency IN ('DZD', 'EUR')),
-    amount INTEGER NOT NULL ${checkNumber("amount")},
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (product_id, type, direction),
-    FOREIGN KEY (client_id)
-     REFERENCES clients (id)
-     ON UPDATE NO ACTION
-     ON DELETE CASCADE
-  )`
-);
-
-createTransactionsTable.run();
 
 export const selectTransactionsQuery = `
   SELECT transactions.*,

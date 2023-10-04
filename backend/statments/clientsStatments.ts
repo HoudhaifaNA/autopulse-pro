@@ -1,24 +1,8 @@
 import db from "../database";
 import generateInsertedFields from "../utils/generateInsertedFields";
-import { checkNumber, setOptionalUpdate } from "../utils/sqlValidations";
+import { setOptionalUpdate } from "../utils/sqlValidations";
 
 // db.prepare("DROP TABLE IF EXISTS clients").run();
-
-const createClientsTableStatment = db.prepare(`
-  CREATE TABLE IF NOT EXISTS clients(
-    id INTEGER NOT NULL PRIMARY KEY,
-    full_name TEXT NOT NULL UNIQUE COLLATE NOCASE,
-    phone TEXT COLLATE NOCASE,
-    email TEXT COLLATE NOCASE,
-    address TEXT,
-    eur_balance NUMERIC NOT NULL DEFAULT 0 ${checkNumber("eur_balance")},
-    dzd_balance NUMERIC NOT NULL DEFAULT 0 ${checkNumber("dzd_balance")},
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-createClientsTableStatment.run();
 
 export const selectClientsListStatment = db.prepare(`
   SELECT 

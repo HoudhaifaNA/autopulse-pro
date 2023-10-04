@@ -2,16 +2,6 @@ import db from "../database";
 
 // db.prepare("DROP TABLE IF EXISTS users").run();
 
-const createUsersTableStatment = db.prepare(`
-  CREATE TABLE IF NOT EXISTS users(
-  username TEXT NOT NULL PRIMARY KEY COLLATE NOCASE,
-  password TEXT NOT NULL,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-  )`);
-
-createUsersTableStatment.run();
-
 export const selectUsersStatment = db.prepare(`
   SELECT * FROM users
   `);

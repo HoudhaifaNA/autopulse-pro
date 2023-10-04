@@ -1,68 +1,9 @@
 import db from "../database";
 import generateDeleteTranasctionTrigger from "../utils/generateDeleteTransactionTrigger";
 import generateInsertedFields from "../utils/generateInsertedFields";
-import { checkNumber, setOptionalUpdate } from "../utils/sqlValidations";
+import { setOptionalUpdate } from "../utils/sqlValidations";
 
 // db.prepare("DROP TABLE IF EXSITS cars").run();
-
-const createCarsTableStatment = db.prepare(`
-  CREATE TABLE IF NOT EXISTS cars(
-    id INTEGER NOT NULL PRIMARY KEY,
-    purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    type TEXT NOT NULL CHECK (type IN ('locale', 'dubai', 'europe')),
-    brand TEXT NOT NULL,
-    model TEXT NOT NULL,
-    name TEXT AS (brand || ' ' || model) STORED,
-    serial_number TEXT NOT NULL,
-    registration_number TEXT NOT NULL,
-    second_registration_number TEXT '',
-    keys INTEGER NOT NULL DEFAULT 1,
-    mileage INTEGER NOT NULL DEFAULT 0,
-    color TEXT NOT NULL,
-    production_year TEXT NOT NULL,
-    features TEXT,
-    seller_id INTEGER NOT NULL,
-    owner_id INTEGER,
-    owner_name TEXT,
-    licence_price INTEGER,
-    purchase_price_eur INTEGER ${checkNumber("purchase_price_eur")},
-    eur_exchange_rate INTEGER ${checkNumber("eur_exchange_rate")},
-    purchase_price_dzd INTEGER NOT NULL ${checkNumber("purchase_price_dzd")},
-    is_exchange INTEGER DEFAULT 0,
-    exchange_types TEXT,
-    expenses TEXT,
-    expense_cost INTEGER ${checkNumber("expense_cost")},
-    euro_cost INTEGER  ${checkNumber("euro_cost")},
-    total_cost INTEGER AS (purchase_price_dzd + licence_price + expense_cost) STORED,
-    buyer_id INTEGER,
-    sold_at TEXT,
-    given_keys INTEGER,
-    papers_type TEXT,
-    has_procuration INTEGER,
-    has_gray_card INTEGER,
-    procuration_received INTEGER,
-    gray_card_received INTEGER,
-    selling_details TEXT,
-    sold_price INTEGER,
-    profit INTEGER AS (CASE WHEN buyer_id IS NOT NULL THEN sold_price - total_cost ELSE NULL END) STORED,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (seller_id)
-       REFERENCES clients (id)
-        ON UPDATE NO ACTION
-        ON DELETE CASCADE,
-      FOREIGN KEY (buyer_id)
-       REFERENCES clients (id)
-        ON UPDATE NO ACTION
-        ON DELETE CASCADE
-      FOREIGN KEY (owner_id)
-       REFERENCES licences (id)
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-    )
-  `);
-
-createCarsTableStatment.run();
 
 const IS_LICENCE_INCOMPLETE = `
   CASE
@@ -91,38 +32,6 @@ const IS_SOLD_PRICE_INCOMPLETE = `
     ELSE 0
   END AS is_sold_price_incomplete
   `;
-
-// const rows = db.prepare("SELECT id, expenses FROM cars").all();
-
-// // Process each row
-// rows.forEach((row: any) => {
-//   // Parse the JSON string into a JavaScript object
-//   const expenseObject = JSON.parse(row.expenses);
-
-//   // Remove the "eurPrice" property
-//   expenseObject.forEach((e: any) => {
-//     delete expenseObject.euroPrice;
-//   });
-
-//   // Serialize the updated object back into a JSON string
-//   const updatedJsonString = JSON.stringify(expenseObject);
-
-//   // Update the database with the modified JSON string
-//   db.prepare("UPDATE cars SET expenses = ? WHERE id = ?").run(updatedJsonString, row.id);
-//   console.log(`Updated row with id ${row.id}`);
-// });
-
-// db.prepare(
-//   `UPDATE cars
-// SET expenses = REPLACE(
-//     REPLACE(
-//         expenses,
-//         '"euroCost":', '"cost_in_eur":'
-//     ),
-//     '"totalCost":', '"cost_in_dzd":'
-// )
-// WHERE expenses LIKE '%"euroCost":%' OR expenses LIKE '%"totalCost":%';`
-// ).run();
 
 export const selectCarsWithPapersListStatment = db.prepare(`
   SELECT 

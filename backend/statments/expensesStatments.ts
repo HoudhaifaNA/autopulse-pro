@@ -1,20 +1,8 @@
 import db from "../database";
 import generateInsertedFields from "../utils/generateInsertedFields";
-import { checkNumber, setOptionalUpdate } from "../utils/sqlValidations";
+import { setOptionalUpdate } from "../utils/sqlValidations";
 
 // db.prepare("DROP TABLE IF EXISTS expenses").run();
-
-const createExpensesTableStatment = db.prepare(`
-  CREATE TABLE IF NOT EXISTS expenses(
-    id INTEGER NOT NULL PRIMARY KEY,
-    expense_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    raison TEXT NOT NULL,
-    cost INTEGER NOT NULL ${checkNumber("cost")},
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
-  )`);
-
-createExpensesTableStatment.run();
 
 export const selectAllExpensesQuery = `
   SELECT * FROM expenses

@@ -1,40 +1,8 @@
 import db from "../database";
 import generateInsertedFields from "../utils/generateInsertedFields";
-import { checkNumber, setOptionalUpdate } from "../utils/sqlValidations";
+import { setOptionalUpdate } from "../utils/sqlValidations";
 
 // db.prepare("DROP TABLE IF EXISTS procurations").run();
-
-const createProcurationsTableStatment = db.prepare(`
-  CREATE TABLE IF NOT EXISTS procurations(
-  id INTEGER PRIMARY KEY,
-  type TEXT NOT NULL CHECK (type IN ('transaction', 'expense')),
-  purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  licence_id INTEGER NOT NULL,
-  car_id INTEGER NOT NULL UNIQUE,
-  notary TEXT,
-  price INTEGER DEFAULT 0 ${checkNumber("price")},
-  deal_id INTEGER,
-  issue_date TEXT NOT NULL,
-  received_at TEXT,
-  expiration_date TEXT AS (DATETIME(issue_date, '+3 years')) STORED,
-  has_received INTEGER AS (CASE WHEN received_at IS NOT NULL THEN 1 ELSE 0 END) STORED,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (licence_id)
-   REFERENCES licences (id)
-     ON UPDATE NO ACTION
-     ON DELETE CASCADE
-  FOREIGN KEY (car_id)
-   REFERENCES cars (id)
-     ON UPDATE NO ACTION
-     ON DELETE CASCADE
-  FOREIGN KEY (deal_id)
-    REFERENCES expenses (id)
-     ON UPDATE NO ACTION
-     ON DELETE CASCADE
-  )`);
-
-createProcurationsTableStatment.run();
 
 export const IS_PROCURATION_EXPIRATED = `
   CASE
