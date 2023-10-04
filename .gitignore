@@ -11,6 +11,8 @@ uploads/*
 backend/package*
 backend/instructions
 
+resources/dev_icon.*
+
 .vscode
 
 _app
