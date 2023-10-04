@@ -70,9 +70,9 @@ const ClientPrinted = forwardRef(({ id, type }: ClientPrintedProps, ref: Ref<HTM
           <Image src="/images/logo.png" alt="zauto logo" width={200} height={70} />
         </S.DocumentLogo>
         <S.CompanyDetails>
-          <LabelText as="p">zauto.nadhir@gmail.com</LabelText>
-          <LabelText as="p">0674987298 - 0550733738 - 0550667971</LabelText>
-          <LabelText as="p">Smara , El Eulma, Sétif (19123)</LabelText>
+          <LabelText as="p">{process.env.NEXT_PUBLIC_EMAIL}</LabelText>
+          <LabelText as="p">{process.env.NEXT_PUBLIC_PHONES}</LabelText>
+          <LabelText as="p">{process.env.NEXT_PUBLIC_ADDRESS}</LabelText>
         </S.CompanyDetails>
       </S.DocumentHeader>
       <S.Breaker>
