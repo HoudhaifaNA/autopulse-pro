@@ -12,7 +12,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 You need to create three folders one for database called **db** and one for uploaded thumbnails called **uploads** and one for env files called **env**.
 
-In the root path create two folders:
+In the root path create three folders:
 
 **db/** \
 **env/** \
