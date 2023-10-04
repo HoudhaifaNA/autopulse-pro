@@ -1,7 +1,4 @@
-import path from "path";
-import os from "os";
-
-import { Menu, app, dialog, globalShortcut, session } from "electron";
+import { Menu, app, dialog, globalShortcut } from "electron";
 import serve from "electron-serve";
 import contextMenu from "electron-context-menu";
 
@@ -46,21 +43,14 @@ contextMenu({
 
     if (response == 1) e.preventDefault();
   });
-  if (isProd) {
-    // const menuTemplate = [];
-    // const menu = Menu.buildFromTemplate(menuTemplate);
-    // Menu.setApplicationMenu(menu);
 
+  if (isProd) {
+    mainWindow.setMenuBarVisibility(false);
     await mainWindow.loadURL("app://./login.html");
   } else {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/login`);
-    const reduxDevToolsPath = path.join(
-      os.homedir(),
-      `/AppData/Local/Google/Chrome/User Data/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/3.0.19_0`
-    );
     mainWindow.webContents.openDevTools();
-    await session.defaultSession.loadExtension(reduxDevToolsPath);
   }
 })();
 
