@@ -8,7 +8,6 @@ db
 dist
 renderer/build
 uploads/*
-backend/package*
 backend/instructions
 
 resources/dev_icon.*

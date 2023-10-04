@@ -50,6 +50,31 @@ Clone the Repository and run
 
 ```bash
 npm install
+```
+
+Then navigate to **backend/** and run
+
+```bash
+npm install
+```
+
+## Setup
+
+In your terminal in the root path run to create db.db file with initial tables
+
+```bash
+nodemon backend/database.ts
+```
+
+Then run below command to create user to login
+
+```bash
+nodemon backend/utils/createUser.ts
+```
+
+## Dev
+
+```bash
 npm run dev
 ```
 
