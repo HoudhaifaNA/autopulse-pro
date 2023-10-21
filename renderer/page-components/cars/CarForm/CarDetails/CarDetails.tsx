@@ -37,10 +37,13 @@ const CarDetails = () => {
   }, [isListExtended, brand, JSON.stringify(ownedModels)]);
 
   useEffect(() => {
+    if (carFilterParams.brand && values.brand === "") setFieldValue("brand", carFilterParams.brand);
+    if (carFilterParams.model && values.model === "") setFieldValue("model", carFilterParams.model);
+  }, [brandRef.current]);
+
+  useEffect(() => {
     if (brand !== brandRef.current) setFieldValue("model", "");
     brandRef.current = brand;
-    if (carFilterParams.brand) setFieldValue("brand", carFilterParams.brand);
-    if (carFilterParams.model) setFieldValue("model", carFilterParams.model);
   }, [brand]);
 
   useEffect(() => {
