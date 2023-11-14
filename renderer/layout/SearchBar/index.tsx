@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 
 import * as InputStyle from "components/Input/InputContainer.styled";
 import * as S from "./styles";
@@ -12,6 +12,7 @@ import { fetcher } from "utils/API";
 import { categoryToIcon, formatSearchItemContent } from "./utils";
 import { SearchResources, SearchResults } from "types";
 import useClickOutside from "hooks/useClickOutside";
+import { useAppSelector } from "store";
 
 interface SearchCategory extends SearchResults {
   name: SearchResources;
@@ -52,6 +53,7 @@ const renderSearchedItems = (category: SearchCategory, query: string) => {
 const SearchBar = () => {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const { fetchedUrl } = useAppSelector((state) => state.resourceUrls.cars);
   const [isOutside, setIsOutside] = useClickOutside("searchList", "searchListToggler");
 
   const path = router.asPath.split("/")[1];
@@ -64,6 +66,17 @@ const SearchBar = () => {
   }
 
   const { data } = useSWR<SearchResults>(url, fetcher);
+
+  useEffect(() => {
+    if (path === "cars") {
+      if (data?.items && data.items.length > 0 && query.length > 0) {
+        const results = data.items.length;
+        mutate(fetchedUrl, { cars: data.items, results: results, records_in_page: results }, false);
+      } else {
+        mutate(fetchedUrl);
+      }
+    }
+  }, [query, data]);
 
   return (
     <S.SearchBarContainer>
