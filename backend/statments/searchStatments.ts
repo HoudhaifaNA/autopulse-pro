@@ -10,10 +10,7 @@ export const searchClientsQuery = db.prepare(`
 
 export const searchCarsQuery = db.prepare(`
 	SELECT
-	id,
-	name,
-	serial_number,
-	registration_number
+	*
 	FROM cars
 	WHERE name LIKE @query OR serial_number LIKE @query OR registration_number LIKE @query
 	`);
