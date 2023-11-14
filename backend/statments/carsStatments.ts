@@ -222,6 +222,15 @@ export const cancelCarSaleStatment = db.prepare(`
   WHERE id = ?
 `);
 
+export const updateCarsExchangeRateQuery = db.prepare(`
+  UPDATE cars
+  SET eur_exchange_rate = ?,
+  purchase_price_dzd = ?,
+  expenses = ?,
+  expense_cost = ?
+  WHERE id = ?
+`);
+
 export const deleteCarsByIdQuery = `
   DELETE FROM cars
   WHERE id IN

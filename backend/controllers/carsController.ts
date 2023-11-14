@@ -13,7 +13,7 @@ import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
 import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
-import { Car, Licence, Paper, Procuration } from "../../interfaces";
+import { Car, CarExpense, Licence, Paper, Procuration } from "../../interfaces";
 
 interface ITotalCount {
   total_count: number;
@@ -559,6 +559,46 @@ export const cancelCarSale = tryCatch((req, res, next) => {
     db.exec("ROLLBACK;");
     return next(new AppError(error, 403));
   }
+});
+
+export const updateCarsExchangeRate = tryCatch((req, res, next) => {
+  const { eur_exchange_rate } = req.body;
+  const { ids } = req.params;
+
+  if (!eur_exchange_rate) {
+    return next(new AppError(`Veuillez fournir le taux de change de l'euro, s'il vous plaît.`, 400));
+  }
+
+  const placeHolders: string[] = [];
+  const idsList = ids.split(",");
+  const params = idsList;
+  idsList.forEach(() => placeHolders.push("?"));
+
+  const cars = db.prepare(`SELECT * FROM cars WHERE id IN (${placeHolders})`).all(params) as Car[];
+  if (cars.length > 0) {
+    cars.forEach((car) => {
+      const newPPDZ = car.purchase_price_eur * (eur_exchange_rate / 100);
+      const parsedExpenses = JSON.parse(car.expenses) as CarExpense[];
+
+      parsedExpenses.forEach((expense) => {
+        if (expense.type === "à l'étranger") {
+          expense.cost_in_dzd = expense.cost_in_eur * (eur_exchange_rate / 100);
+        }
+      });
+
+      const updatedExpenseCost = parsedExpenses.reduce((total, expense) => total + expense.cost_in_dzd, 0);
+
+      S.updateCarsExchangeRateQuery.run([
+        eur_exchange_rate,
+        newPPDZ,
+        JSON.stringify(parsedExpenses),
+        updatedExpenseCost,
+        car.id,
+      ]);
+    });
+  }
+
+  return res.status(200).json({ status: "success" });
 });
 
 export const deleteCarsById = tryCatch((req, res) => {
