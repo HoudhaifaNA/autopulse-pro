@@ -100,6 +100,13 @@ export interface Car {
   is_sold_price_incomplete: 0 | 1;
 }
 
+export interface CarExpense {
+  id: string;
+  type: "locale" | "à l'étranger";
+  raison: string;
+  cost_in_eur: number;
+  cost_in_dzd: number;
+}
 export interface Procuration {
   id: number;
   type: "expense" | "transaction";
