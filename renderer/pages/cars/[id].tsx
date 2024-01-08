@@ -15,7 +15,7 @@ import { fetcher } from "utils/API";
 import formatFiatValue from "utils/formatFiatValue";
 import formatDate from "utils/formatDate";
 import { addSecondaryUrl } from "store/reducers/resourceUrls";
-import { Expenses } from "page-components/cars/CarForm/types";
+import { Expense } from "page-components/cars/CarForm/types";
 import { Car } from "interfaces";
 
 export interface GetCarResponse {
@@ -82,7 +82,7 @@ const CarDetails = () => {
       const formattedSoldPrice = sold_price ? formatFiatValue(sold_price, "DZD") : "--";
       const formattedProfit = profit ? formatFiatValue(profit, "DZD", true) : "--";
       const formattedPurchasedPrice = type === "locale" ? formattedPurchaseDZDPrice : formattedPurchaseEURPrice;
-      const expensesList = JSON.parse(expenses) as Expenses[];
+      const expensesList = JSON.parse(expenses) as Expense[];
 
       const renderExpensesList = () => {
         return expensesList.map(({ type, raison, cost_in_eur, cost_in_dzd }) => {

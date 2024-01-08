@@ -1,5 +1,5 @@
 import { Car } from "interfaces";
-import { Expenses } from "page-components/cars/CarForm/types";
+import { Expense } from "page-components/cars/CarForm/types";
 import { AddModalPayload } from "types";
 import dateToString from "utils/dateToString";
 
@@ -38,7 +38,7 @@ const retreiveCarActions = (car: Car) => {
     selling_details,
   } = car;
 
-  const expenses = JSON.parse(car.expenses) as Expenses[];
+  const expenses = JSON.parse(car.expenses) as Expense[];
   const exchange_types = typeof car.exchange_types === "string" ? JSON.parse(car.exchange_types) : null;
 
   const UPDATE: AddModalPayload = {

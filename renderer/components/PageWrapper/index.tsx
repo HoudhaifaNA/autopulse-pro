@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import useSWR from "swr";
@@ -10,6 +11,7 @@ import EmptyState from "components/EmptyState";
 import Meta from "components/Meta/Meta";
 import Loading from "components/Loading/Loading";
 import ErrorMessage from "components/ErrorMessage/ErrorMessage";
+import Button from "components/Button/Button";
 
 import { useAppSelector } from "store";
 import { fetcher } from "utils/API";
@@ -33,12 +35,16 @@ const PageWrapper = <T extends Record<string, any>>(props: ResourcePageProps<T>)
     isSecondaryUrl,
   } = props;
 
+  const router = useRouter();
   const { startUrl, fetchedUrl, secondaryUrl } = useAppSelector((state) => state.resourceUrls[resourceName]);
   const selectedIds = useAppSelector((state) => state.selectedItems.selectedIds);
   const url = isSecondaryUrl ? secondaryUrl : fetchedUrl;
   const { data, isLoading, error } = useSWR<T>(url, fetcher);
   const dispatch = useDispatch();
   const toggleAddModal = () => dispatch(addModal({ name: resourceName, title: `Ajouter ${resourceDisplayName}` }));
+  const toggleExchangeRateModal = () => {
+    dispatch(addModal({ name: "exchange_rate", title: `Modifier prix de 100€ de ${selectedIds.length} voitures` }));
+  };
 
   const hasFilter = startUrl !== fetchedUrl;
 
@@ -53,6 +59,16 @@ const PageWrapper = <T extends Record<string, any>>(props: ResourcePageProps<T>)
 
     return () => window.removeEventListener("keypress", handleAddModalShortcut);
   }, []);
+
+  const renderUpdateMultipleController = () => {
+    if (router.asPath.startsWith("/cars") && selectedIds.length > 0) {
+      return (
+        <Button variant="primary" onClick={toggleExchangeRateModal}>
+          Modifier le prix de 100€
+        </Button>
+      );
+    }
+  };
 
   const renderPage = () => {
     if (isLoading) return <Loading />;
@@ -78,6 +94,7 @@ const PageWrapper = <T extends Record<string, any>>(props: ResourcePageProps<T>)
             <>
               <PageHeader CTAIcon="add" CTAText="Ajouter" onCTAClick={toggleAddModal}>
                 <FilterComponent resource={resourceName} />
+                {renderUpdateMultipleController()}
               </PageHeader>
               <S.PageHeaderAddOn>
                 <LabelText as="p">

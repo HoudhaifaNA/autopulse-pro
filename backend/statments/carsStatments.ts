@@ -222,7 +222,7 @@ export const cancelCarSaleStatment = db.prepare(`
   WHERE id = ?
 `);
 
-export const updateCarsExchangeRateQuery = db.prepare(`
+export const updateCarsExchangeRateStatment = db.prepare(`
   UPDATE cars
   SET eur_exchange_rate = ?,
   purchase_price_dzd = ?,

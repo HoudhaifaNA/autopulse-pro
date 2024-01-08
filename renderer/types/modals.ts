@@ -37,6 +37,12 @@ export interface SaleModalConfig {
   };
 }
 
+export interface ExchangeRateModalConfig {
+  id: string;
+  name: "exchange_rate";
+  title: string;
+}
+
 export interface WarningModalConfig {
   id: string;
   name: "warning";
@@ -53,10 +59,16 @@ export interface DeleteModalConfig {
   idsToDelete: (number | string)[];
 }
 
-export type ModalTypes = ModalFormConfig | SaleModalConfig | WarningModalConfig | DeleteModalConfig;
+export type ModalTypes =
+  | ModalFormConfig
+  | ExchangeRateModalConfig
+  | SaleModalConfig
+  | WarningModalConfig
+  | DeleteModalConfig;
 
 export type AddModalPayload =
   | Omit<ModalFormConfig, "id">
+  | Omit<ExchangeRateModalConfig, "id">
   | Omit<SaleModalConfig, "id">
   | Omit<WarningModalConfig, "id">
   | Omit<DeleteModalConfig, "id">;

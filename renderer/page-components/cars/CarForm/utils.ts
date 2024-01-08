@@ -1,13 +1,13 @@
-import { Expenses } from "./types";
+import { Expense } from "./types";
 
-export const calculateTotalExpenseCost = (expenses: Expenses[]): number => {
+export const calculateTotalExpenseCost = (expenses: Expense[]): number => {
   return expenses.reduce((total, expense) => total + expense.cost_in_dzd, 0);
 };
 
-export const calculateTotalEURCost = (ppEUR: number, expenses: Expenses[]): number => {
+export const calculateTotalEURCost = (ppEUR: number, expenses: Expense[]): number => {
   return expenses.reduce((total, expense) => total + expense.cost_in_eur, ppEUR);
 };
 
-export const calculateTotalCost = (ppDZD: number, licencePrice: number, expenses: Expenses[]): number => {
+export const calculateTotalCost = (ppDZD: number, licencePrice: number, expenses: Expense[]): number => {
   return expenses.reduce((total, expense) => total + expense.cost_in_dzd, ppDZD) + licencePrice;
 };

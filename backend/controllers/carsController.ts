@@ -1,6 +1,4 @@
 import { Request } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
-import QueryString from "qs";
 
 import db from "../database";
 import * as S from "../statments/carsStatments";
@@ -575,28 +573,33 @@ export const updateCarsExchangeRate = tryCatch((req, res, next) => {
   idsList.forEach(() => placeHolders.push("?"));
 
   const cars = db.prepare(`SELECT * FROM cars WHERE id IN (${placeHolders})`).all(params) as Car[];
-  if (cars.length > 0) {
-    cars.forEach((car) => {
-      const newPPDZ = car.purchase_price_eur * (eur_exchange_rate / 100);
-      const parsedExpenses = JSON.parse(car.expenses) as CarExpense[];
 
-      parsedExpenses.forEach((expense) => {
-        if (expense.type === "à l'étranger") {
-          expense.cost_in_dzd = expense.cost_in_eur * (eur_exchange_rate / 100);
-        }
-      });
+  cars.forEach((car) => {
+    if (car.type === "locale") {
+      return next(new AppError(`Impossible de mettre à jour le taux de change des voitures locales.`, 403));
+    }
+  });
 
-      const updatedExpenseCost = parsedExpenses.reduce((total, expense) => total + expense.cost_in_dzd, 0);
+  cars.forEach((car) => {
+    const newPPDZ = car.purchase_price_eur * (eur_exchange_rate / 100);
+    const parsedExpenses = JSON.parse(car.expenses) as CarExpense[];
 
-      S.updateCarsExchangeRateQuery.run([
-        eur_exchange_rate,
-        newPPDZ,
-        JSON.stringify(parsedExpenses),
-        updatedExpenseCost,
-        car.id,
-      ]);
+    parsedExpenses.forEach((expense) => {
+      if (expense.type === "à l'étranger") {
+        expense.cost_in_dzd = expense.cost_in_eur * (eur_exchange_rate / 100);
+      }
     });
-  }
+
+    const updatedExpenseCost = parsedExpenses.reduce((total, expense) => total + expense.cost_in_dzd, 0);
+
+    S.updateCarsExchangeRateStatment.run([
+      eur_exchange_rate,
+      newPPDZ,
+      JSON.stringify(parsedExpenses),
+      updatedExpenseCost,
+      car.id,
+    ]);
+  });
 
   return res.status(200).json({ status: "success" });
 });

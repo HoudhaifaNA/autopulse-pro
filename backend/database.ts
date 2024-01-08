@@ -13,6 +13,7 @@ import {
 } from "./statments/createTablesQueries";
 
 const isProd: boolean = process.env.NODE_ENV === "production";
+
 let dbPath = path.join(path.resolve(), "db", "db.db");
 if (isProd) dbPath = path.join(path.resolve(), "..", "..", "db/db.db");
 

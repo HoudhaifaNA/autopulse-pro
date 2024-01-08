@@ -1,6 +1,6 @@
 import { Car } from "interfaces";
 
-export interface Expenses {
+export interface Expense {
   id: string;
   type: "locale" | "à l'étranger";
   raison: string;
@@ -37,5 +37,5 @@ export interface CarInitialValues
     | "is_exchange"
     | "exchange_types"
   > {
-  expenses: Expenses[];
+  expenses: Expense[];
 }

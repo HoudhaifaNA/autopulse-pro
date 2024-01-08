@@ -6,3 +6,9 @@ export const Wrapper = styled.div`
   justify-content: space-between;
   margin-bottom: 2rem;
 `;
+
+export const HeaderActionsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+`;

@@ -3,6 +3,7 @@ import WarningModal from "components/WarningModal/WarningModal";
 import DeleteModal from "components/DeleteModal";
 import CarForm from "page-components/cars/CarForm/CarForm";
 import SaleForm from "page-components/cars/SaleForm/SaleForm";
+import UpdateExchangeRateForm from "page-components/cars/UpdateExchangeRateForm/UpdateExchangeRateForm";
 import ClientForm from "page-components/clients/ClientForm";
 import ExpenseForm from "page-components/expenses/ExpenseForm";
 import DinarForm from "page-components/finances/DinarForm";
@@ -36,6 +37,9 @@ const modalsComponents: ModalsComponents = {
   },
   sale: {
     Component: SaleForm,
+  },
+  exchange_rate: {
+    Component: UpdateExchangeRateForm,
   },
   papers: {
     Component: PaperForm,

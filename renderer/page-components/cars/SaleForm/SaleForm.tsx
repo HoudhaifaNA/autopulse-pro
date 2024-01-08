@@ -14,41 +14,16 @@ import { ModalActions } from "components/Modal/Modal";
 
 import { useAppSelector } from "store";
 import useClientsList from "hooks/useClientsList";
-import dateToString from "utils/dateToString";
 import { addModal, removeModal } from "store/reducers/modals";
 import { SaleModalConfig } from "types/modals";
 import { SaleInitialValues } from "./types";
 import { handleSubmit } from "./handleSubmit";
 import { schema } from "./schema";
+import { GRAY_CARD_OPTIONS, INITIAL_VALUES, PAPERS_OPTIONS, PROCURATION_OPTIONS } from "./constants";
 
 interface SaleFormProps {
   modalId: string;
 }
-
-const INITIAL_VALUES: SaleInitialValues = {
-  sold_at: dateToString(new Date()),
-  buyer_id: 0,
-  buyer: "",
-  sold_price: 0,
-  given_keys: 1,
-  papers_type: "Dossier",
-  has_procuration: 1,
-  has_gray_card: 1,
-  selling_details: "",
-};
-
-const PROCURATION_OPTIONS = [
-  { label: "Non", value: 0 },
-  { label: "Oui", value: 1 },
-];
-const GRAY_CARD_OPTIONS = [
-  { label: "Non", value: 0 },
-  { label: "Oui", value: 1 },
-];
-const PAPERS_OPTIONS = [
-  { label: "Dossier", value: "Dossier" },
-  { label: "Double dossier", value: "Double Dossier" },
-];
 
 const SaleForm = ({ modalId }: SaleFormProps) => {
   const { fetchedUrl, secondaryUrl } = useAppSelector((state) => state.resourceUrls.cars);
@@ -133,66 +108,3 @@ const SaleForm = ({ modalId }: SaleFormProps) => {
 };
 
 export default SaleForm;
-
-// const FOLDER_OPTIONS = ["Dossier", "Copier de dossier"];
-// const SellForm = (props: SellFormProps) => {
-//   const { id, edit, data } = props;
-//   const { setAddUpModal } = useContext(GlobalContext);
-//   const [formProps, setFormProps] = useState<FormikProps<Values>>();
-//   const { clientsItems, isLoading } = useClientsList("DA");
-//   formProps?.setFieldValue("carId", id);
-//   const buttonText = edit ? "Modifier la vente" : "Vendre";
-//   const fieldProps = formProps?.getFieldProps("selling_details");
-
-//   return (
-//     <Form
-//       title="Vendre cette voiture"
-//       initials={edit ? { ...data, edit } : INITIAL_VALUES}
-//       validation={sellCarSchema}
-//       getFormProps={(formProps) => setFormProps(formProps)}
-//       onSubmit={onSubmit}
-//       buttonText={buttonText}
-//     >
-//       <FormGroup>
-//         {!isLoading && (
-//           <SelectInput
-//             name="buyer.name"
-//             label="Acheteur :"
-//             placeholder="Nom de acheteur"
-//             relatedFields={["buyer.id"]}
-//             items={clientsItems}
-//             disabled={edit}
-//             buttons={
-//               <ButtonItem>
-//                 <Button type="button" variant="ghost" icon="add" onClick={() => setAddUpModal("clients")}>
-//                   Ajouter un client
-//                 </Button>
-//               </ButtonItem>
-//             }
-//           />
-//         )}
-//         <TypedInput name="soldPrice" type="number" label="Prix de vente" placeholder="50000.00" addOn="DA" />
-//       </FormGroup>
-//       <FormGroup>
-//         <FormGroup>
-//           <DateInput label="Date de vente" minDate="2015" name="sold_date" />
-//         </FormGroup>
-//         <FormGroup>
-//           <KeysChecker field="given_keys" />
-//         </FormGroup>
-//       </FormGroup>
-//       <FormGroup>
-//         <FormGroup>
-//           {FOLDER_OPTIONS.map((opt) => {
-//             return <ClickInput key={opt} type="radio" name="folder" label={opt} value={opt} />;
-//           })}
-//         </FormGroup>
-//         <FormGroup>
-//           <ClickInput type="checkbox" name="procuration" label="procuration" />
-//           <ClickInput type="checkbox" name="gray_card" label="Cart grise" />
-//         </FormGroup>
-//       </FormGroup>
-//       <DescriptionInput {...fieldProps} />
-//     </Form>
-//   );
-// };

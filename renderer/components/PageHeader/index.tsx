@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { Wrapper } from "./styles";
+import * as S from "./styles";
 import Button from "components/Button/Button";
 
 interface PageHeaderProps {
@@ -24,10 +24,10 @@ const PageHeader = (props: PageHeaderProps) => {
   };
 
   return (
-    <Wrapper>
-      {children}
+    <S.Wrapper>
+      <S.HeaderActionsWrapper>{children}</S.HeaderActionsWrapper>
       {renderCTABtn()}
-    </Wrapper>
+    </S.Wrapper>
   );
 };
 
