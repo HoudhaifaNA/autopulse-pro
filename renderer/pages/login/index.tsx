@@ -12,7 +12,7 @@ const LoginPage = () => {
       <Meta title="Se connecter" />
       <S.Main>
         <S.FormHeading>
-          <Image src="/images/logo.png" alt="zauto logo" width={220} height={80} />
+          <Image src="/images/logo.png" alt="zauto logo" width={0} height={80} style={{ width: "auto" }} />
           <Heading3>Se connecter</Heading3>
         </S.FormHeading>
         <LoginForm />
