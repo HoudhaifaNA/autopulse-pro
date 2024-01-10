@@ -1,9 +1,9 @@
 {
   "private": true,
-  "name": "zauto-manager",
+  "name": "auto-pulse-pro",
   "description": "A software for a car dealership",
   "version": "1.0.0",
-  "author": "Houdhaifa Lebbad",
+  "author": "AutoPulse",
   "main": "app/background.js",
   "license": "MIT",
   "scripts": {

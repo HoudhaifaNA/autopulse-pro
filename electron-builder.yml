@@ -1,6 +1,6 @@
-appId: com.zauto.manager
-productName: Zauto Manager
-copyright: Copyright © 2022 Houdhaifa Lebbad
+appId: com.autopulsepro
+productName: Auto Pulse Pro
+copyright: Copyright © 2024 AutoPulsePro
 directories:
   output: dist
   buildResources: resources

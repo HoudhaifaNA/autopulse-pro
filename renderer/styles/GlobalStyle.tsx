@@ -34,6 +34,22 @@ const GlobalStyle = createGlobalStyle`
 
     }
 
+    ::-webkit-scrollbar {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.5rem;
+  }
+
+    ::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+        border-radius: 0.5rem;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #b3b3b3;
+        border-radius: 0.5rem;
+    }
+
     *.GR {
      color: ${theme.colors.success["700"]};
     }

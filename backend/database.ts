@@ -2,6 +2,7 @@ import path from "path";
 import Database from "better-sqlite3";
 
 import {
+  createCategoriesTableStatment,
   createClientsTableStatment,
   createCarsTableStatment,
   createExpensesTableStatment,
@@ -21,6 +22,7 @@ const db = new Database(dbPath);
 
 if (db.open) {
   console.log("Connected successfully");
+  db.exec(createCategoriesTableStatment);
   db.exec(createClientsTableStatment);
   db.exec(createCarsTableStatment);
   db.exec(createExpensesTableStatment);

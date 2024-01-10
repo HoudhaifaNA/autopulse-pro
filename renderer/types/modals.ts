@@ -6,6 +6,7 @@ import { ClientInitialValues } from "page-components/clients/ClientForm/types";
 import { ExpenseIntitalValues } from "page-components/expenses/ExpenseForm/types";
 import { FiatFormInitialValues } from "page-components/finances/types";
 import { LicenceInitalValues } from "page-components/licences/LicenceForm/types";
+import { CategoryInitalValues } from "page-components/home/CategoryForm/types";
 import { PaperInitalValues } from "page-components/papers/PaperForm/types";
 import { ProcurationInitalValues } from "page-components/procurations/ProcurationForm/types";
 export interface ModalFormConfig {
@@ -15,6 +16,7 @@ export interface ModalFormConfig {
   params?: {
     isEdit: boolean;
     document:
+      | CategoryInitalValues
       | ClientInitialValues
       | LicenceInitalValues
       | CarInitialValues

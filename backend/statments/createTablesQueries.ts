@@ -1,10 +1,19 @@
 import { checkNumber } from "../utils/sqlValidations";
 
+export const createCategoriesTableStatment = `
+  CREATE TABLE IF NOT EXISTS categories(
+    id INTEGER NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE COLLATE NOCASE,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
 export const createCarsTableStatment = `
   CREATE TABLE IF NOT EXISTS cars(
     id INTEGER NOT NULL PRIMARY KEY,
     purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    type TEXT NOT NULL CHECK (type IN ('locale', 'dubai', 'europe')),
+    type TEXT NOT NULL,
     brand TEXT NOT NULL,
     model TEXT NOT NULL,
     name TEXT AS (brand || ' ' || model) STORED,
@@ -42,6 +51,10 @@ export const createCarsTableStatment = `
     profit INTEGER AS (CASE WHEN buyer_id IS NOT NULL THEN sold_price - total_cost ELSE NULL END) STORED,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (type)
+       REFERENCES categories (name)
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION,
       FOREIGN KEY (seller_id)
        REFERENCES clients (id)
         ON UPDATE NO ACTION

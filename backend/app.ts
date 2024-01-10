@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 import clientsRoutes from "./routes/clientsRoutes";
 import licencesRoutes from "./routes/licencesRoutes";
+import categoriesRoutes from "./routes/categoriesRoutes";
 import carsRoutes from "./routes/carsRoutes";
 import transactionsRoutes from "./routes/transactionsRoutes";
 import expensesRoutes from "./routes/expensesRoutes";
@@ -38,6 +39,7 @@ app.use("/api/users", userRoutes);
 app.use(authController.protect);
 app.delete("/api/*", authController.confirmAction);
 app.use("/api/clients", clientsRoutes);
+app.use("/api/categories", categoriesRoutes);
 app.use("/api/licences", licencesRoutes);
 app.use("/api/cars", carsRoutes);
 app.use("/api/transactions", transactionsRoutes);

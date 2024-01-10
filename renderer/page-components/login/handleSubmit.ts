@@ -12,7 +12,7 @@ const handleSubmit = async (values: UserCredentials) => {
     notify("success", "Connecté avec succès");
 
     setTimeout(() => {
-      redirectToPath("cars");
+      redirectToPath("home");
     }, 500);
   } catch (err: any) {
     let message = "Error";

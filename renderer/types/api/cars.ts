@@ -15,6 +15,10 @@ interface CarModel {
   model: string;
   total_cars: number;
 }
+interface Category {
+  count: number;
+  type: string;
+}
 
 export interface GetCarsBrandsResponse {
   cars_brand: CarBrand[];

@@ -47,6 +47,7 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
         mutate(fetchedUrl);
         dispatch(removeModal(modalId));
         dispatch(clearSelectedItems());
+        if (currentModal.resource === "categories") mutate("/categories/cars");
         if (currentModal.name === "cancel_sale") return mutate(secondaryUrl);
         router.push(pathWithoutDynamicParam);
       }

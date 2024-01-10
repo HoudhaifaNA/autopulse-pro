@@ -41,14 +41,22 @@ const renderNavItems = (items: NavbarItem[], isShort: boolean, currentPath: stri
 
 const Navbar = () => {
   const [short, setShort] = useState(false);
-  const { asPath } = useRouter();
+  const { asPath, push } = useRouter();
   const dispatch = useDispatch();
 
   const addLogoutModal = () => dispatch(addModal({ name: "warning", title: "Déconnecter", type: "logout" }));
 
   return (
     <S.NavbarWrapper $short={short}>
-      <S.LogoWrapper onClick={() => setShort(!short)}>
+      <S.LogoWrapper
+        onClick={(ev) => {
+          if (ev.ctrlKey) {
+            push("/home");
+          } else {
+            setShort(!short);
+          }
+        }}
+      >
         <Image
           src={`${short ? "/images/zauto-short.png" : "/images/zauto-logo.png"}`}
           alt="zauto logo"

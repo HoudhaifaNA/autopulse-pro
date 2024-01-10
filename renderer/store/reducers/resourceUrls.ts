@@ -18,6 +18,7 @@ const generateResource = (url: string, params: RestParams): ResourceConfig => {
   };
 };
 
+const categoriesParams = { orderBy: "" };
 const clientsParams = { orderBy: "-last_transaction_date" };
 const licencesParams = { orderBy: "-is_valid" };
 const carsParams = { orderBy: "-purchased_at" };
@@ -29,6 +30,7 @@ const stockParams = { orderBy: "name" };
 const statsParams = { orderBy: "" };
 
 const initialState: ResourcesState = {
+  categories: generateResource("/categories", categoriesParams),
   clients: generateResource("/clients", clientsParams),
   licences: generateResource("/licences", licencesParams),
   cars: generateResource("/cars", carsParams),

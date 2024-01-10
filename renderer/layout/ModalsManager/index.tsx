@@ -11,6 +11,7 @@ import EuroForm from "page-components/finances/EuroForm";
 import LicenceForm from "page-components/licences/LicenceForm";
 import PaperForm from "page-components/papers/PaperForm";
 import ProcurationForm from "page-components/procurations/ProcurationForm";
+import CategoryForm from "page-components/home/CategoryForm";
 
 import { useAppSelector } from "store";
 import { ModalTypes } from "types";
@@ -26,6 +27,9 @@ type ModalsComponents = {
 };
 
 const modalsComponents: ModalsComponents = {
+  categories: {
+    Component: CategoryForm,
+  },
   clients: {
     Component: ClientForm,
   },

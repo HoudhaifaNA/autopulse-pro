@@ -51,6 +51,10 @@ export interface Transaction {
 
 export type TExchangeTypes = "locale" | "europe" | "dubai";
 
+export interface Category {
+  id: number;
+  name: string;
+}
 export interface Car {
   id: number;
   purchased_at: string;
