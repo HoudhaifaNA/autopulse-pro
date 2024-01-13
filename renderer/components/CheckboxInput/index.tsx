@@ -10,7 +10,7 @@ interface CheckboxOption {
   value: string | number | null;
 }
 
-interface CheckboxInputProps {
+export interface CheckboxInputProps {
   name: string;
   label: string;
   options: CheckboxOption[];
@@ -23,11 +23,17 @@ const CheckboxInput = ({ label, name, options, isMultiple = false }: CheckboxInp
   const renderCheckboxes = () => {
     return options.map(({ label, value }) => {
       let isChecked: boolean = false;
-      if (isMultiple && values[name]) isChecked = values[name].includes(value);
-      if (!isMultiple) isChecked = values[name] === value;
+
+      if (isMultiple && values[name]) {
+        isChecked = values[name].includes(value);
+      } else {
+        isChecked = values[name] === value;
+      }
+
       const onSelect = () => {
-        if (isMultiple && !values[name]) setFieldValue(name, [value]);
-        if (isMultiple && values[name]) {
+        if (isMultiple && !values[name]) {
+          setFieldValue(name, [value]);
+        } else if (isMultiple && values[name]) {
           if (isChecked) {
             setFieldValue(
               name,
@@ -38,7 +44,13 @@ const CheckboxInput = ({ label, name, options, isMultiple = false }: CheckboxInp
           }
         }
 
-        if (!isMultiple) setFieldValue(name, value);
+        if (!isMultiple) {
+          if (isChecked) {
+            setFieldValue(name, null);
+          } else {
+            setFieldValue(name, value);
+          }
+        }
       };
       return <Checkbox label={label} isChecked={isChecked} check={onSelect} key={value} />;
     });

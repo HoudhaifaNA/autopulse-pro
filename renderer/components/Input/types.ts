@@ -10,6 +10,11 @@ interface TextInputProps {
   onIconClick?: () => void;
 }
 
+export type MultiSelectInputProps = FieldHookConfig<any> & {
+  label?: string;
+  options: string[];
+};
+
 export type TypedInputProps = TextInputProps & FieldHookConfig<any>;
 export type ClickInputProps = { label: string } & FieldHookConfig<any>;
 

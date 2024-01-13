@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useFormikContext } from "formik";
 
 import { FormGroup } from "components/Form/Form.styled";
-import { TypedInput, SelectInput } from "components/Input/Input";
+import { TypedInput, SelectInput, MultiSelectInput } from "components/Input/Input";
 import Button from "components/Button/Button";
 import CheckboxInput from "components/CheckboxInput";
 
@@ -11,6 +11,9 @@ import useClientsList from "hooks/useClientsList";
 import useLicencesList from "hooks/useLicencesList";
 import { addModal } from "store/reducers/modals";
 import { CarInitialValues } from "../types";
+import useSWR from "swr";
+import { GetCategories } from "types";
+import { fetcher } from "utils/API";
 
 interface SellingDetailsProps {
   isEdit?: boolean;
@@ -22,13 +25,10 @@ const IS_EXCHANGE_OPTIONS = [
   { label: "Oui", value: 1 },
 ];
 
-const EXCHANGE_TYPES_OPTIONS = [
-  { label: "Locale", value: "locale" },
-  { label: "europe", value: "europe" },
-  { label: "dubai", value: "dubai" },
-];
-
 const PurchaseDetails = ({ isEdit, ownerId }: SellingDetailsProps) => {
+  const [exchangeTypes, setExchangeTypes] = useState<string[]>([]);
+  const { data: categoriesData } = useSWR<GetCategories>("/categories", fetcher);
+
   const params = ownerId ? { id: ownerId } : {};
 
   const { values, setFieldValue } = useFormikContext<CarInitialValues>();
@@ -39,6 +39,15 @@ const PurchaseDetails = ({ isEdit, ownerId }: SellingDetailsProps) => {
   const PPDZD = purchase_price_eur * (eur_exchange_rate / 100);
 
   useEffect(() => {
+    if (categoriesData) {
+      const categoriesTypes = categoriesData.categories.map(({ name }) => {
+        return name;
+      });
+      setExchangeTypes(categoriesTypes);
+    }
+  }, [categoriesData]);
+
+  useEffect(() => {
     if (!is_exchange) setFieldValue("exchange_types", null);
   }, [is_exchange]);
 
@@ -47,7 +56,7 @@ const PurchaseDetails = ({ isEdit, ownerId }: SellingDetailsProps) => {
   }, [owner_id]);
 
   useEffect(() => {
-    if (type !== "locale") setFieldValue("purchase_price_dzd", PPDZD);
+    if (!type.includes("lcl")) setFieldValue("purchase_price_dzd", PPDZD);
   }, [PPDZD]);
 
   const toggleClientForm = () => dispatch(addModal({ name: "clients", title: "Ajouter un client" }));
@@ -86,7 +95,7 @@ const PurchaseDetails = ({ isEdit, ownerId }: SellingDetailsProps) => {
         )}
       </FormGroup>
       <FormGroup>
-        {type !== "locale" ? (
+        {!type.includes("lcl") ? (
           <>
             <TypedInput
               label="Prix d'achat en EUR"
@@ -118,9 +127,7 @@ const PurchaseDetails = ({ isEdit, ownerId }: SellingDetailsProps) => {
       </FormGroup>
       <FormGroup>
         <CheckboxInput label="Échanger" name="is_exchange" options={IS_EXCHANGE_OPTIONS} />
-        {is_exchange ? (
-          <CheckboxInput label="Types de change" name="exchange_types" isMultiple options={EXCHANGE_TYPES_OPTIONS} />
-        ) : null}
+        {is_exchange ? <MultiSelectInput label="Type de change" name="exchange_types" options={exchangeTypes} /> : null}
       </FormGroup>
     </>
   );

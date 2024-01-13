@@ -85,7 +85,7 @@ const retreiveCarActions = (car: Car) => {
       resourceId: 0,
       document: {
         purchased_at: dateToString(new Date()),
-        type: "locale",
+        type: "",
         brand,
         model,
         serial_number,

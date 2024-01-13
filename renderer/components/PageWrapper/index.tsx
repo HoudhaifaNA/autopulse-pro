@@ -38,6 +38,7 @@ const PageWrapper = <T extends Record<string, any>>(props: ResourcePageProps<T>)
   const router = useRouter();
   const { startUrl, fetchedUrl, secondaryUrl } = useAppSelector((state) => state.resourceUrls[resourceName]);
   const selectedIds = useAppSelector((state) => state.selectedItems.selectedIds);
+  const modalsList = useAppSelector((state) => state.modals.modalsList);
   const url = isSecondaryUrl ? secondaryUrl : fetchedUrl;
   const { data, isLoading, error } = useSWR<T>(url, fetcher);
   const dispatch = useDispatch();
@@ -51,14 +52,14 @@ const PageWrapper = <T extends Record<string, any>>(props: ResourcePageProps<T>)
   useEffect(() => {
     const handleAddModalShortcut = (e: KeyboardEvent) => {
       if ((e.target as Element)?.tagName !== "INPUT") {
-        if (e.key.toLowerCase() === "n") toggleAddModal();
+        if (e.key.toLowerCase() === "n" && !modalsList.length) toggleAddModal();
       }
     };
 
     window.addEventListener("keypress", handleAddModalShortcut);
 
     return () => window.removeEventListener("keypress", handleAddModalShortcut);
-  }, []);
+  }, [modalsList]);
 
   const renderUpdateMultipleController = () => {
     if (router.asPath.startsWith("/cars") && selectedIds.length > 0) {

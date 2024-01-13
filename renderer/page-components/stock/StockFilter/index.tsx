@@ -1,8 +1,13 @@
+import { useState, useEffect } from "react";
+import useSWR from "swr";
+import styled from "styled-components";
+
 import Filter from "components/Filter";
 import DateRangePicker from "components/DateRangePicker/DateRangePicker";
-import CategoryFilter from "components/CategoryFilter";
-import styled from "styled-components";
+import CategoryFilter, { CategoriesFliterItem } from "components/CategoryFilter";
 import { FilterCard } from "components/Filter/styles";
+import { GetCategories } from "types";
+import { fetcher } from "utils/API";
 
 const FilterWrapper = styled.div`
   ${FilterCard} {
@@ -10,17 +15,24 @@ const FilterWrapper = styled.div`
   }
 `;
 
-const TYPE_CATEGORIES = {
-  field: "type",
-  title: "Type de voitures",
-  list: [
-    { name: "Local", option: "locale" },
-    { name: "Europe", option: "europe" },
-    { name: "Dubai", option: "dubai" },
-  ],
-};
-
 const StockFilter = () => {
+  const [categories, setCategories] = useState<CategoriesFliterItem["list"]>([]);
+  const { data: categoriesData } = useSWR<GetCategories>("/categories", fetcher);
+
+  useEffect(() => {
+    if (categoriesData) {
+      const categoriesTypes = categoriesData.categories.map(({ name }) => {
+        return { name, option: name };
+      });
+      setCategories(categoriesTypes);
+    }
+  }, [categoriesData]);
+
+  const TYPE_CATEGORIES = {
+    field: "type",
+    title: "Type de voitures",
+    list: categories,
+  };
   return (
     <FilterWrapper>
       <Filter>

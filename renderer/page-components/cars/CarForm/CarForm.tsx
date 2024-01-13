@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { mutate } from "swr";
 import { Formik, FormikConfig, FormikProps } from "formik";
@@ -31,9 +31,15 @@ const CarForm = ({ modalId }: CarFormProps) => {
   const currentModal = modalsList.find(({ id }) => id === modalId) as ModalFormConfig;
   const dispatch = useDispatch();
   const ownerId = useRef<number | null>(null);
+  const carTypeMatch = fetchedUrl.match(/type=([^&]*)/);
 
+  const carType = (carTypeMatch && carTypeMatch[1]) || "";
   let formInitialValues = INITIAL_VALUES;
+
+  formInitialValues.type = carType;
+
   let submitButtonText = "Suivant";
+  const showBackBtn = (step > 1 && !carType) || step > 2;
 
   if (currentModal.params?.document) {
     formInitialValues = currentModal.params?.document as CarInitialValues;
@@ -46,6 +52,10 @@ const CarForm = ({ modalId }: CarFormProps) => {
   if (currentModal.params?.isEdit && step === 6) {
     submitButtonText = "Modifier";
   }
+
+  useEffect(() => {
+    if (carType) setStep(2);
+  }, [carType]);
 
   const formProps: FormikConfig<CarInitialValues> = {
     initialValues: formInitialValues,
@@ -79,7 +89,7 @@ const CarForm = ({ modalId }: CarFormProps) => {
             {step === 6 && <ConfirmationDetails />}
 
             <ModalActions>
-              {step > 1 && (
+              {showBackBtn && (
                 <Button
                   type="button"
                   variant="ghost"

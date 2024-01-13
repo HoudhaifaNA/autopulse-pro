@@ -29,19 +29,19 @@ export const carSchemaStepFour = object({
   owner_name: string().trim().required("Le nom du propriétaire est requis."),
 
   purchase_price_eur: number().when("type", {
-    is: "locale",
+    is: (val: string) => val && val.includes("lcl"),
     then: () => number(),
     otherwise: () => number().required("Le prix d'achat en euros est requis."),
   }),
 
   eur_exchange_rate: number().when("type", {
-    is: "locale",
+    is: (val: string) => val && val.includes("lcl"),
     then: () => number(),
     otherwise: () => number().required("Le taux de change euro est requis."),
   }),
 
   purchase_price_dzd: number().when("type", {
-    is: "locale",
+    is: (val: string) => val && val.includes("lcl"),
     then: () => number().required("Le prix d'achat en DZD est requis."),
   }),
 });

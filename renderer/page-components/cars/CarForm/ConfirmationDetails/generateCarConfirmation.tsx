@@ -48,7 +48,7 @@ const generateCarConfirmation = () => {
   let expensesList: ExpensesList = {};
 
   expenses.forEach(({ type, raison, cost_in_eur, cost_in_dzd }) => {
-    if (type === "locale") {
+    if (type.includes("lcl")) {
       expensesList[raison] = formatFiatValue(cost_in_dzd, "DZD");
     } else {
       expensesList[raison] = formatEurToDzd(cost_in_eur, eur_exchange_rate);
@@ -82,10 +82,9 @@ const generateCarConfirmation = () => {
       "Prix ​​de la licence": formatFiatValue(licence_price, "DZD"),
       Échanger: is_exchange ? "Oui" : "Non",
       "Types de change": Array.isArray(exchange_types) ? exchange_types?.join(", ") : "--",
-      "Prix ​​d'achat":
-        type === "locale"
-          ? formatFiatValue(purchase_price_dzd, "DZD")
-          : formatEurToDzd(purchase_price_eur, eur_exchange_rate),
+      "Prix ​​d'achat": type.includes("lcl")
+        ? formatFiatValue(purchase_price_dzd, "DZD")
+        : formatEurToDzd(purchase_price_eur, eur_exchange_rate),
     },
     expenseCost !== 0 && { section: "Dépenses", ...expensesList },
     {

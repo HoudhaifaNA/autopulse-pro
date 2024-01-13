@@ -247,8 +247,8 @@ export const createCar = tryCatch((req, res, next) => {
     const { lastInsertRowid } = S.insertCarStatment.run(params);
 
     const carName = `${brand} ${model}`;
-    const currency = type === "locale" ? "DZD" : "EUR";
-    const transactionAmount = type === "locale" ? purchase_price_dzd : purchase_price_eur;
+    const currency = type.includes("lcl") ? "DZD" : "EUR";
+    const transactionAmount = type.includes("lcl") ? purchase_price_dzd : purchase_price_eur;
 
     const transacrtionParams = {
       client_id: seller_id,
@@ -363,9 +363,10 @@ export const updateCar = tryCatch((req, res, next) => {
 
     const updatedCar = S.selectCarByIdStatment.get(id) as Car;
 
-    const currency = updatedCar.type === "locale" ? "DZD" : "EUR";
-    const transactionAmount =
-      updatedCar.type === "locale" ? updatedCar.purchase_price_dzd : updatedCar.purchase_price_eur;
+    const currency = updatedCar.type.includes("lcl") ? "DZD" : "EUR";
+    const transactionAmount = updatedCar.type.includes("lcl")
+      ? updatedCar.purchase_price_dzd
+      : updatedCar.purchase_price_eur;
 
     const productParams = ["car", id, "entrante"];
 
@@ -575,7 +576,7 @@ export const updateCarsExchangeRate = tryCatch((req, res, next) => {
   const cars = db.prepare(`SELECT * FROM cars WHERE id IN (${placeHolders})`).all(params) as Car[];
 
   cars.forEach((car) => {
-    if (car.type === "locale") {
+    if (car.type.includes("lcl")) {
       return next(new AppError(`Impossible de mettre à jour le taux de change des voitures locales.`, 403));
     }
   });

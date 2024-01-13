@@ -6,7 +6,7 @@ import {
 import { GetAllLicencesResponse, GetLicencesListResponse } from "types/api/licences";
 import { GetPapersResoponse } from "types/api/papers";
 import { GetProcurationsResoponse } from "types/api/procurations";
-import { CategoryCars, GetCategoryCars } from "types/api/categories";
+import { CategoryCars, GetCategories, GetCategoryCars } from "types/api/categories";
 import { GetAllCarsResponse, GetCarsWithPapersResponse, GetCarsBrandsResponse } from "types/api/cars";
 import { GetFiatTransactionsResponse } from "types/api/transactions";
 import { GetExpensesResponse, GetExpensesDateGroupResponse, ExpenseGrouped } from "types/api/expenses";
@@ -77,6 +77,7 @@ export type {
   GetTransactionsStatsResponse,
   GetClientsStatsResponse,
   CategoryCars,
+  GetCategories,
   GetCategoryCars,
   SearchResources,
   ClientsSearchResult,

@@ -19,7 +19,7 @@ const now = dateToString(new Date());
 
 export const INITIAL_VALUES: CarInitialValues = {
   purchased_at: now,
-  type: "dubai",
+  type: "",
   brand: "",
   model: "",
   serial_number: "",

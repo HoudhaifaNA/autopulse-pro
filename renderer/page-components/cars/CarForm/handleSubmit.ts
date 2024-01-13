@@ -11,6 +11,7 @@ interface Params {
 
 const handleSubmit: SubmitFunction<CarInitialValues, Params> = async (values, actions, params) => {
   let status: SubmitStatus = "success";
+
   const {
     purchased_at,
     type,

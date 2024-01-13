@@ -49,7 +49,7 @@ export interface Transaction {
   updated_at: string;
 }
 
-export type TExchangeTypes = "locale" | "europe" | "dubai";
+export type TExchangeTypes = string;
 
 export interface Category {
   id: number;
@@ -58,7 +58,7 @@ export interface Category {
 export interface Car {
   id: number;
   purchased_at: string;
-  type: "locale" | "europe" | "dubai";
+  type: TExchangeTypes;
   brand: string;
   model: string;
   name: string;

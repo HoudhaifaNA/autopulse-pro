@@ -4,6 +4,7 @@ export const CheckboxesWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  height: 8.3rem;
   gap: 0.6rem;
 `;
 

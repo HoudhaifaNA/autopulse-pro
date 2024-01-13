@@ -12,7 +12,7 @@ interface CategoryItem {
   option: string;
 }
 
-interface Categories {
+export interface CategoriesFliterItem {
   field: string;
   title: string;
   list: CategoryItem[];
@@ -20,7 +20,7 @@ interface Categories {
 
 interface CategoryFilterProps {
   resource: Resources;
-  catgories: Categories;
+  catgories: CategoriesFliterItem;
 }
 
 const CategoryFilter = ({ resource, catgories }: CategoryFilterProps) => {
