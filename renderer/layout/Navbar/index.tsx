@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { addModal } from "store/reducers/modals";
 
 const renderNavItems = (items: NavbarItem[], isShort: boolean, currentPath: string) => {
+  const [isNavItemShown, toggleNavItem] = useState(false);
   return items.map(({ name, icon, link }) => {
     let color = "#949494";
     if (link.includes("dashboard")) color = "#6A3599";
@@ -21,21 +22,41 @@ const renderNavItems = (items: NavbarItem[], isShort: boolean, currentPath: stri
     if (link.includes("expenses")) color = "#f53b57";
     if (link.includes("papers")) color = "#6D340B";
     if (link.includes("procurations")) color = "#DA0C91";
-    if (link.includes("euro")) color = "#45A1E4";
-    if (link.includes("dinar")) color = "#0BA350";
+    if (name === "Finance") color = "#0BA350";
     if (link.includes("stock")) color = "#346272";
     if (link.includes("profile")) color = "#8D8D0B";
 
     const isActive = `${link}` === currentPath || `${link}.html` === currentPath;
 
-    return (
-      <S.NavbarItem key={name} $active={isActive} $short={isShort} $color={color}>
-        <Link href={link}>
-          <Icon icon={icon} size="2.4rem" />
-          {!isShort && <span>{name}</span>}
-        </Link>
-      </S.NavbarItem>
-    );
+    if (name === "Finance") {
+      return (
+        <S.NavbarItem key={name} $active={isActive} $short={isShort} $color={color}>
+          <div onClick={() => toggleNavItem(!isNavItemShown)}>
+            <Icon icon={icon} size="2.4rem" />
+            {!isShort && <span>{name}</span>}
+          </div>
+          {isNavItemShown && (
+            <S.MultiLinks>
+              <Link href="/finances/euro">
+                <span>Euro</span>
+              </Link>
+              <Link href="/finances/dinar">
+                <span>Dinar</span>
+              </Link>
+            </S.MultiLinks>
+          )}
+        </S.NavbarItem>
+      );
+    } else {
+      return (
+        <S.NavbarItem key={name} $active={isActive} $short={isShort} $color={color}>
+          <Link href={link}>
+            <Icon icon={icon} size="2.4rem" />
+            {!isShort && <span>{name}</span>}
+          </Link>
+        </S.NavbarItem>
+      );
+    }
   });
 };
 
