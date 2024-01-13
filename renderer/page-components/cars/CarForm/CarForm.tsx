@@ -39,7 +39,7 @@ const CarForm = ({ modalId }: CarFormProps) => {
   formInitialValues.type = carType;
 
   let submitButtonText = "Suivant";
-  const showBackBtn = (step > 1 && !carType) || step > 2;
+  const showBackBtn = step > 1;
 
   if (currentModal.params?.document) {
     formInitialValues = currentModal.params?.document as CarInitialValues;

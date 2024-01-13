@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import useSWR from "swr";
 
 import * as S from "./styles";
-import { LabelText } from "styles/Typography";
+import { Body2, LabelText } from "styles/Typography";
 import Pagination from "components/Pagination/Pagination";
 import PageHeader from "components/PageHeader";
 import EmptyState from "components/EmptyState";
@@ -17,6 +17,9 @@ import { useAppSelector } from "store";
 import { fetcher } from "utils/API";
 import { addModal } from "store/reducers/modals";
 import { Resources } from "types";
+import parseUrlQueries from "utils/parseUrlQueries";
+import { deleteParam, setParam } from "store/reducers/resourceUrls";
+import Icon from "components/Icon/Icon";
 
 interface ResourcePageProps<T> {
   resourceName: Resources;
@@ -71,6 +74,31 @@ const PageWrapper = <T extends Record<string, any>>(props: ResourcePageProps<T>)
     }
   };
 
+  const params = parseUrlQueries(fetchedUrl);
+
+  const renderFilterList = () => {
+    return Object.entries(params).map(([param, { key, value }]) => {
+      const removeFilterItem = () => {
+        dispatch(deleteParam({ paramKey: param, resource: resourceName }));
+        if (param === "model") {
+          dispatch(setParam({ paramKey: "name", paramValue: params["brand"].value, resource: resourceName }));
+        } else if (param === "brand") {
+          dispatch(deleteParam({ paramKey: "name", resource: resourceName }));
+          dispatch(deleteParam({ paramKey: "model", resource: resourceName }));
+        }
+      };
+
+      if (key && value) {
+        return (
+          <S.FilterItem key={param} onClick={removeFilterItem}>
+            <Body2>{key}</Body2>
+            <Icon icon="close" size="1.2rem" />
+          </S.FilterItem>
+        );
+      }
+    });
+  };
+
   const renderPage = () => {
     if (isLoading) return <Loading />;
 
@@ -89,12 +117,14 @@ const PageWrapper = <T extends Record<string, any>>(props: ResourcePageProps<T>)
           />
         );
       }
+
       return (
         <>
           {(data.results > 0 || (data.results === 0 && hasFilter)) && (
             <>
               <PageHeader CTAIcon="add" CTAText="Ajouter" onCTAClick={toggleAddModal}>
                 <FilterComponent resource={resourceName} />
+                <S.FilterList>{renderFilterList()}</S.FilterList>
                 {renderUpdateMultipleController()}
               </PageHeader>
               <S.PageHeaderAddOn>
