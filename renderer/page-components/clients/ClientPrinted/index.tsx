@@ -6,17 +6,42 @@ import { Body2, Heading3, LabelText } from "styles/Typography";
 import FiatItemLine from "./FiatItemLine";
 import TransactionsTable from "../TransactionsTable";
 
-import useClientTransactions from "hooks/useClientTransactions";
+import useClientTransactions, { ClientTransactionFilter } from "hooks/useClientTransactions";
 import useClientLastTransaction from "hooks/useClientLastTransaction";
 import formatDate from "utils/formatDate";
 
 interface ClientPrintedProps {
   id: string | number;
   type: "last" | "all";
+  filter?: ClientTransactionFilter;
 }
 
-const ClientPrinted = forwardRef(({ id, type }: ClientPrintedProps, ref: Ref<HTMLDivElement>) => {
-  const { data } = type === "all" ? useClientTransactions(id) : useClientLastTransaction(id);
+const receipteTitleFormatter = (filter: ClientPrintedProps["filter"]) => {
+  const typesTranslated: Record<string, string> = {
+    car: "voiture",
+    paper: "dossier",
+    procuration: "procuration",
+    Fiat: "argent",
+    licence: "licence",
+  };
+  const titleList: string[] = [];
+  if (filter?.currency) titleList.push(filter.currency);
+  if (filter?.direction) titleList.push(filter.direction);
+
+  const types = filter?.types
+    .split(",")
+    .map((t) => (typesTranslated[t] ? typesTranslated[t] : ""))
+    .join(", ");
+
+  if (types) titleList.push(`(${types})`);
+
+  return titleList.join(", ");
+};
+
+const ClientPrinted = forwardRef(({ id, type, filter }: ClientPrintedProps, ref: Ref<HTMLDivElement>) => {
+  const { data } = type === "all" ? useClientTransactions(id, filter) : useClientLastTransaction(id);
+
+  const title = receipteTitleFormatter(filter);
 
   const renderTransactionsTable = () => {
     if (data && "transactions" in data) {
@@ -82,6 +107,7 @@ const ClientPrinted = forwardRef(({ id, type }: ClientPrintedProps, ref: Ref<HTM
       </S.Breaker>
       {data && (
         <>
+          {type === "all" && title.length > 0 && <h2>Facture : {title}</h2>}
           <S.DetailLine $type="stacked">
             <LabelText as="p">Date d'émission :</LabelText>
             <Body2>{formatDate(new Date().toISOString())}</Body2>

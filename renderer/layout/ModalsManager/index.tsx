@@ -12,6 +12,7 @@ import LicenceForm from "page-components/licences/LicenceForm";
 import PaperForm from "page-components/papers/PaperForm";
 import ProcurationForm from "page-components/procurations/ProcurationForm";
 import CategoryForm from "page-components/home/CategoryForm";
+import PrintModal from "page-components/clients/PrintModal";
 
 import { useAppSelector } from "store";
 import { ModalTypes } from "types";
@@ -59,6 +60,9 @@ const modalsComponents: ModalsComponents = {
   },
   transactionsEUR: {
     Component: EuroForm,
+  },
+  print: {
+    Component: PrintModal,
   },
   warning: {
     Component: WarningModal,

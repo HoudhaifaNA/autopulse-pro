@@ -15,14 +15,14 @@ import formatFiatValue from "utils/formatFiatValue";
 type TCurrencies = "DZD" | "EUR";
 
 const ClientDetails = () => {
-  const [currency, setCurrency] = useState<TCurrencies | "">("");
+  const [currency, setCurrency] = useState<TCurrencies>();
   const router = useRouter();
   const { id } = router.query;
-  const { data } = useClientTransactions(`${id}`, currency);
+  const { data, url } = useClientTransactions(`${id}`, currency ? { currency } : undefined);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(addSecondaryUrl({ resource: "clients", url: `/clients/${id}/transactions?currency=${currency}` }));
+    dispatch(addSecondaryUrl({ resource: "clients", url }));
   }, []);
 
   const renderClientInfo = () => {

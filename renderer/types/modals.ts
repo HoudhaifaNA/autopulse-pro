@@ -45,6 +45,13 @@ export interface ExchangeRateModalConfig {
   title: string;
 }
 
+export interface PrintModalConfig {
+  id: string;
+  name: "print";
+  title: string;
+  clientId: number;
+}
+
 export interface WarningModalConfig {
   id: string;
   name: "warning";
@@ -65,12 +72,14 @@ export type ModalTypes =
   | ModalFormConfig
   | ExchangeRateModalConfig
   | SaleModalConfig
+  | PrintModalConfig
   | WarningModalConfig
   | DeleteModalConfig;
 
 export type AddModalPayload =
   | Omit<ModalFormConfig, "id">
   | Omit<ExchangeRateModalConfig, "id">
+  | Omit<PrintModalConfig, "id">
   | Omit<SaleModalConfig, "id">
   | Omit<WarningModalConfig, "id">
   | Omit<DeleteModalConfig, "id">;

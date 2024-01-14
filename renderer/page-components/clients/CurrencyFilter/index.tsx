@@ -2,20 +2,26 @@ import { CategoryFilterWrapper, CategoryFilterList, CategoryFilterOption } from 
 import { Body2 } from "styles/Typography";
 
 interface CurrencyFilterProps {
-  selectedCurrency: "" | "EUR" | "DZD";
-  setCurrency: (currency: "" | "EUR" | "DZD") => void;
+  selectedCurrency: "EUR" | "DZD" | undefined;
+  setCurrency: (currency: "EUR" | "DZD" | undefined) => void;
 }
 
-const CURRENCIES = ["", "EUR", "DZD"] as const;
+const CURRENCIES = ["EUR", "DZD"] as const;
 
 const CurrencyFilter = ({ selectedCurrency, setCurrency }: CurrencyFilterProps) => {
   const renderCurrencies = () => {
     return CURRENCIES.map((currency) => {
       const isSelected = selectedCurrency === currency;
-      const toggleCurrency = () => setCurrency(currency);
+      const toggleCurrency = () => {
+        if (isSelected) {
+          setCurrency(undefined);
+        } else {
+          setCurrency(currency);
+        }
+      };
       return (
         <CategoryFilterOption onClick={toggleCurrency} $isSelected={isSelected} key={currency}>
-          <Body2>{currency ? currency : "Tous"}</Body2>
+          <Body2>{currency}</Body2>
         </CategoryFilterOption>
       );
     });
