@@ -57,11 +57,19 @@ const ClientDetails = () => {
           <CurrencyFilter selectedCurrency={currency} setCurrency={setCurrency} />
           <DetailSection>
             <DetailHeader title={`ZAUTO (sortante)`} />
-            <TransactionsTable transactions={data.transactions} direction="sortante" />
+            <TransactionsTable
+              transactions={data.transactions}
+              clientName={data.client.full_name}
+              direction="sortante"
+            />
           </DetailSection>
           <DetailSection>
             <DetailHeader title={`${full_name} (entrante)`} />
-            <TransactionsTable transactions={data.transactions} direction="entrante" />
+            <TransactionsTable
+              transactions={data.transactions}
+              clientName={data.client.full_name}
+              direction="entrante"
+            />
           </DetailSection>
         </>
       );

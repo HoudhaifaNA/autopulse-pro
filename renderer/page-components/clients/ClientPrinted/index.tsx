@@ -31,7 +31,7 @@ const ClientPrinted = forwardRef(({ id, type }: ClientPrintedProps, ref: Ref<HTM
 
       return (
         <>
-          <TransactionsTable transactions={data.transactions} showSymbol showIndex />
+          <TransactionsTable transactions={data.transactions} clientName={data.client.full_name} showSymbol showIndex />
           <S.ClientsTransactionsTotalWrapper>
             <FiatItemLine label="Total sorties (EUR)" value={total_sortante_eur} currency="EUR" />
             <FiatItemLine label="Total entrées (EUR)" value={total_entrante_eur} currency="EUR" />
@@ -56,7 +56,7 @@ const ClientPrinted = forwardRef(({ id, type }: ClientPrintedProps, ref: Ref<HTM
       return (
         <>
           <FiatItemLine label={`Dernier solde (${currency})`} value={lastBalance} currency={currency} />
-          <TransactionsTable transactions={[data.last_transaction]} showSymbol />
+          <TransactionsTable transactions={[data.last_transaction]} clientName={data.client.full_name} showSymbol />
           <FiatItemLine label={`Solde actuel (${currency})`} value={currentBalance} currency={currency} />
         </>
       );
@@ -67,7 +67,7 @@ const ClientPrinted = forwardRef(({ id, type }: ClientPrintedProps, ref: Ref<HTM
     <S.DocumentWrapper ref={ref} id="content">
       <S.DocumentHeader>
         <S.DocumentLogo>
-          <Image src="/images/logo.png" alt="zauto logo" width={200} height={70} />
+          <Image src="/images/zauto-logo.png" alt="zauto logo" width={200} height={70} />
         </S.DocumentLogo>
         <S.CompanyDetails>
           <LabelText as="p">{process.env.NEXT_PUBLIC_EMAIL}</LabelText>
