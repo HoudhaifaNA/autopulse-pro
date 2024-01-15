@@ -8,4 +8,5 @@ export interface FiatFormInitialValues {
   direction: "sortante" | "entrante";
   currency: "EUR" | "DZD";
   amount: number;
+  note: string;
 }

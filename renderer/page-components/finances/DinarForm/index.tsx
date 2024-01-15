@@ -9,6 +9,7 @@ import { FormGroup } from "components/Form/Form.styled";
 import SelectInput from "components/Input/SelectInput";
 import DateInput from "components/DateInput/DateInput";
 import TypedInput from "components/Input/TypedInput";
+import TextArea from "components/TextArea";
 import Form from "components/Form/Form";
 
 import useClientsList from "hooks/useClientsList";
@@ -104,6 +105,8 @@ const DinarForm = ({ modalId }: { modalId: string }) => {
             />
             <FormGroup />
           </FormGroup>
+          <TextArea name="note" label="Note" />
+
           <ModalActions>
             <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}>
               {submitButtonText}

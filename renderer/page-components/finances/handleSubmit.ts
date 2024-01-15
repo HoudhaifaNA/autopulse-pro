@@ -11,7 +11,7 @@ interface Params {
 const handleSubmit: SubmitFunction<FiatFormInitialValues, Params> = async (values, actions, params) => {
   let status: SubmitStatus = "success";
   try {
-    const { client_id, transaction_date, type, info1, info2, direction, currency } = values;
+    const { client_id, transaction_date, type, info1, info2, direction, currency, note } = values;
 
     const method = params?.isEdit ? "patch" : "post";
     const urlParams = params?.isEdit ? `/${params.resourceId}` : "";
@@ -19,7 +19,7 @@ const handleSubmit: SubmitFunction<FiatFormInitialValues, Params> = async (value
       ? "Transaction a été modifiée avec succès."
       : "Transaction a été créée avec succès.";
     const amount = values.direction === "entrante" ? values.amount : -values.amount;
-    const data = { client_id, transaction_date, type, info1, info2, direction, currency, amount };
+    const data = { client_id, transaction_date, type, info1, info2, direction, currency, amount, note };
 
     await API[method](`/transactions/${urlParams}`, data);
     notify("success", notificationMessage);

@@ -45,6 +45,7 @@ const TransactionsTable = ({ direction, showSymbol, clientName, showIndex, trans
         info4,
         amount,
         currency,
+        note,
       } = transaction;
 
       const formattedTransactionDate = formatDate(transaction_date);
@@ -69,6 +70,7 @@ const TransactionsTable = ({ direction, showSymbol, clientName, showIndex, trans
                 direction,
                 currency,
                 amount: Math.abs(amount),
+                note: note || "",
               },
             },
           };

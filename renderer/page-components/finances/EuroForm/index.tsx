@@ -21,6 +21,7 @@ import { FiatFormInitialValues } from "../types";
 import { handleSubmit } from "../handleSubmit";
 import { transactionSchema } from "../schema";
 import { ModalFormConfig } from "types";
+import TextArea from "components/TextArea";
 
 const EuroForm = ({ modalId }: { modalId: string }) => {
   const { fetchedUrl } = useAppSelector((state) => state.resourceUrls.transactionsEUR);
@@ -103,6 +104,7 @@ const EuroForm = ({ modalId }: { modalId: string }) => {
             />
             <FormGroup />
           </FormGroup>
+          <TextArea name="note" label="Note" />
           <ModalActions>
             <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}>
               {submitButtonText}

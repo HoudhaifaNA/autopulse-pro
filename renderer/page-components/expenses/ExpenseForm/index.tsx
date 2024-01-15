@@ -17,11 +17,13 @@ import { removeModal } from "store/reducers/modals";
 import { handleSubmit } from "./handleSubmit";
 import { expenseSchema } from "./schema";
 import { useRouter } from "next/router";
+import TextArea from "components/TextArea";
 
 const INITIAL_VALUES: ExpenseIntitalValues = {
   expense_date: dateToString(new Date()),
   raison: "",
   cost: 0,
+  note: "",
 };
 
 const ExpenseForm = ({ modalId }: { modalId: string }) => {
@@ -71,7 +73,7 @@ const ExpenseForm = ({ modalId }: { modalId: string }) => {
               <TypedInput name="raison" type="text" label="Raison" placeholder="Acheter une imprimante" />
               <TypedInput name="cost" type="number" label="Montant" placeholder="15000" addOn="DA" />
             </FormGroup>
-
+            <TextArea name="note" label="Note" />
             <ModalActions>
               <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}>
                 {submitButtonText}

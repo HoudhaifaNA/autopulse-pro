@@ -11,4 +11,5 @@ export const INITIAL_VALUES: FiatFormInitialValues = {
   direction: "entrante",
   currency: "DZD",
   amount: 0,
+  note: "",
 };
