@@ -19,7 +19,7 @@ interface ITotalCount {
 }
 
 export const getAllProcurations = tryCatch((req, res) => {
-  const { has_received, is_expirated, type, orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
+  const { has_received, is_expirated, type, orderBy = "-purchased_at", page = 1, limit = 250 } = req.query;
 
   const ranges = ["purchased_at", "issue_date", "received_at", "price"];
   const skip = (Number(page) - 1) * Number(limit);

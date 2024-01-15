@@ -33,7 +33,7 @@ export const getClientsList = tryCatch((_req, res) => {
 });
 
 export const getAllClients = tryCatch((req, res) => {
-  const { orderBy = "-last_transaction_date", page = 1, limit = 10 } = req.query;
+  const { orderBy = "-last_transaction_date", page = 1, limit = 250 } = req.query;
 
   const ranges = ["created_at", "last_transaction_date", "dzd_balance", "eur_balance"];
   const skip = (Number(page) - 1) * Number(limit);

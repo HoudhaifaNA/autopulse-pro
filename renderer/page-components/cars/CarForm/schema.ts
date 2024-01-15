@@ -1,9 +1,9 @@
-import { object, array, string, number, date, mixed } from "yup";
+import { object, array, string, number, date } from "yup";
 
 const ONE_DAY_IN_MILLISECONDS = 86400000;
 
 const today = new Date(Date.now() + ONE_DAY_IN_MILLISECONDS);
-const currentYear = today.getFullYear();
+const nextYear = today.getFullYear() + 1;
 
 export const carSchemaStepOne = object({
   type: string().required(),
@@ -19,7 +19,7 @@ export const carSchemaStepTwo = object({
   color: string().trim().required("La couleur est requise."),
   production_year: date()
     .min(1950, "L'année doit être après 1950.")
-    .max(currentYear, `L'année doit être avant ${currentYear}.`)
+    .max(nextYear, `L'année doit être avant ${nextYear}.`)
     .typeError(() => "L'année doit être une date.")
     .required("L'année est requise."),
 });

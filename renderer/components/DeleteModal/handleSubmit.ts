@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 import notify from "utils/notify";
 import API from "utils/API";
 import { SubmitFunction, SubmitStatus } from "types";
@@ -10,7 +12,9 @@ const handleSubmit: SubmitFunction<InititalValues, string> = async ({ password }
     notify("success", "Suppression a été effectuée avec succès.");
   } catch (err: any) {
     let message = "Error";
-    if (err.response) message = err.response.data.message;
+    if (err instanceof AxiosError && typeof err.response?.data.message === "string") {
+      message = err.response.data.message;
+    }
     notify("error", message);
     console.log(err);
     status = "error";

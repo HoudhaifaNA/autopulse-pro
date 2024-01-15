@@ -17,7 +17,7 @@ export const getAllTransactions = tryCatch((_req, res) => {
 
 export const getFiatTransactions = tryCatch((req, res) => {
   const { currency } = req.params;
-  const { direction, orderBy = "-transaction_date", page = 1, limit = 10 } = req.query;
+  const { direction, orderBy = "-transaction_date", page = 1, limit = 250 } = req.query;
 
   const orderByQuery = formatSortingQuery(orderBy);
 

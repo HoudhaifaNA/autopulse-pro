@@ -6,7 +6,7 @@ import AppError from "../utils/AppError";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 
 export const getAllExpenses = tryCatch((req, res) => {
-  const { groupBy, total_cost, orderBy = "-expense_date", page = 1, limit = 10 } = req.query;
+  const { groupBy, total_cost, orderBy = "-expense_date", page = 1, limit = 250 } = req.query;
 
   const rangeFilters = ["expense_date", "cost"];
 

@@ -8,7 +8,7 @@ interface RestParams extends Record<string, string | number | boolean> {
 }
 
 const generateResource = (url: string, params: RestParams): ResourceConfig => {
-  const defaultParams = { ...params, page: 1, limit: 10 };
+  const defaultParams = { ...params, page: 1, limit: 250 };
 
   return {
     baseUrl: url,

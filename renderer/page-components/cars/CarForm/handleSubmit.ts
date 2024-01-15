@@ -3,6 +3,7 @@ import notify from "utils/notify";
 import { CarInitialValues } from "./types";
 import { SubmitFunction, SubmitStatus } from "types";
 import { calculateTotalEURCost, calculateTotalExpenseCost } from "./utils";
+import { AxiosError } from "axios";
 
 interface Params {
   isEdit: boolean;
@@ -81,8 +82,8 @@ const handleSubmit: SubmitFunction<CarInitialValues, Params> = async (values, ac
     notify("success", notificationMessage);
   } catch (err: any) {
     let message = "Error";
-    if (err.response) {
-      message = err.response.data.message.code || err.response.data.message;
+    if (err instanceof AxiosError && typeof err.response?.data.message === "string") {
+      message = err.response.data.message;
     }
     notify("error", message);
     console.log(err);

@@ -97,7 +97,7 @@ const filterCars = (req: Request) => {
 };
 
 export const getAllCars = tryCatch((req, res) => {
-  const { orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
+  const { orderBy = "-purchased_at", page = 1, limit = 250 } = req.query;
 
   const skip = (Number(page) - 1) * Number(limit);
 
@@ -262,6 +262,7 @@ export const createCar = tryCatch((req, res, next) => {
       direction: "entrante",
       currency: currency,
       amount: transactionAmount,
+      note: features,
     };
 
     insertTransactionStatment.run(transacrtionParams);
@@ -380,6 +381,7 @@ export const updateCar = tryCatch((req, res, next) => {
       "entrante",
       currency,
       transactionAmount,
+      features,
     ];
 
     updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);
@@ -451,6 +453,7 @@ export const sellCar = tryCatch((req, res, next) => {
       direction: "sortante",
       currency: "DZD",
       amount: -sold_price,
+      note: selling_details,
     };
 
     insertTransactionStatment.run(transacrtionParams);
@@ -512,6 +515,7 @@ export const updateCarSale = tryCatch((req, res, next) => {
       "sortante",
       "DZD",
       -sold_price,
+      selling_details,
     ];
 
     updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);

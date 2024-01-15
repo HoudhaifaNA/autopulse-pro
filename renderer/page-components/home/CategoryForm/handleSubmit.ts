@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 import API from "utils/API";
 import notify from "utils/notify";
 import { CategoryInitalValues } from "./types";
@@ -23,7 +25,9 @@ const handleSubmit: SubmitFunction<CategoryInitalValues, Params> = async (values
     notify("success", notificationMessage);
   } catch (err: any) {
     let message = "Error";
-    if (err.response) message = err.response.data.message;
+    if (err instanceof AxiosError && typeof err.response?.data.message === "string") {
+      message = err.response.data.message;
+    }
     notify("error", message);
     console.log(err);
     status = "error";

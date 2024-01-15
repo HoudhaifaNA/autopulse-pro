@@ -49,7 +49,7 @@ export const getLicencesList = tryCatch((req, res) => {
 });
 
 export const getAllLicences = tryCatch((req, res) => {
-  const { is_valid, is_expirated, is_reserved, orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
+  const { is_valid, is_expirated, is_reserved, orderBy = "-purchased_at", page = 1, limit = 250 } = req.query;
 
   const ranges = ["purchased_at", "issue_date", "price"];
   const skip = (Number(page) - 1) * Number(limit);
