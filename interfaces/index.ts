@@ -47,6 +47,7 @@ export interface Transaction {
   currency: "EUR" | "DZD";
   client: string;
   amount: number;
+  recipient: string | null;
   note: string | null;
   created_at: string;
   updated_at: string;

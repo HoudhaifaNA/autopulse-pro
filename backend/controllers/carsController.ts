@@ -262,6 +262,7 @@ export const createCar = tryCatch((req, res, next) => {
       direction: "entrante",
       currency: currency,
       amount: transactionAmount,
+      recipient: "company",
       note: features,
     };
 
@@ -381,6 +382,7 @@ export const updateCar = tryCatch((req, res, next) => {
       "entrante",
       currency,
       transactionAmount,
+      "company",
       features,
     ];
 
@@ -453,6 +455,7 @@ export const sellCar = tryCatch((req, res, next) => {
       direction: "sortante",
       currency: "DZD",
       amount: -sold_price,
+      recipient: "buyer",
       note: selling_details,
     };
 
@@ -515,6 +518,7 @@ export const updateCarSale = tryCatch((req, res, next) => {
       "sortante",
       "DZD",
       -sold_price,
+      "buyer",
       selling_details,
     ];
 

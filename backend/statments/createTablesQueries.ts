@@ -194,6 +194,7 @@ export const createTransactionsTable = `
     direction TEXT NOT NULL CHECK (direction IN ('sortante', 'entrante')),
     currency TEXT NOT NULL CHECK (currency IN ('DZD', 'EUR')),
     amount INTEGER NOT NULL ${checkNumber("amount")},
+    recipient TEXT,
     note TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,

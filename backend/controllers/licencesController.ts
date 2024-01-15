@@ -166,6 +166,7 @@ export const createLicence = tryCatch((req, res, next) => {
       direction: "entrante",
       currency: "DZD",
       amount: price,
+      recipient: "company",
       note,
     };
 
@@ -245,6 +246,7 @@ export const updateLicence = tryCatch((req, res, next) => {
       "entrante",
       "DZD",
       price,
+      "company",
       note,
     ];
 

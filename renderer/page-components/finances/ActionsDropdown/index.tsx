@@ -15,7 +15,7 @@ interface ActionsDropdownProps {
 
 const ActionsDropdown = ({ transaction, resource, id }: ActionsDropdownProps) => {
   const dispatch = useDispatch();
-  const { transaction_date, client, client_id, info2, direction, currency, amount, note } = transaction;
+  const { transaction_date, client, client_id, info2, direction, currency, amount, recipient, note } = transaction;
   const ADD_EDIT_MODAL_PAYLOAD: AddModalPayload = {
     name: resource,
     title: `Modifier les informations de transaction`,
@@ -32,6 +32,7 @@ const ActionsDropdown = ({ transaction, resource, id }: ActionsDropdownProps) =>
         direction,
         currency,
         amount: Math.abs(amount),
+        recipient: recipient || "",
         note: note || "",
       },
     },

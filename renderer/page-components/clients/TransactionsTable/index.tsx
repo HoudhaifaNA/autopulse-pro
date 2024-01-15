@@ -45,6 +45,7 @@ const TransactionsTable = ({ direction, showSymbol, clientName, showIndex, trans
         info4,
         amount,
         currency,
+        recipient,
         note,
       } = transaction;
 
@@ -70,6 +71,7 @@ const TransactionsTable = ({ direction, showSymbol, clientName, showIndex, trans
                 direction,
                 currency,
                 amount: Math.abs(amount),
+                recipient: recipient || "",
                 note: note || "",
               },
             },

@@ -11,5 +11,6 @@ export const INITIAL_VALUES: FiatFormInitialValues = {
   direction: "entrante",
   currency: "EUR",
   amount: 0,
+  recipient: "",
   note: "",
 };

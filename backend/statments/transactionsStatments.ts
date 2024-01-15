@@ -30,6 +30,7 @@ const INSERT_FIELDS = generateInsertedFields([
   "direction",
   "currency",
   "amount",
+  "recipient",
   "note",
 ]);
 
@@ -49,6 +50,7 @@ const updateTransactionQuery = `
       ${setOptionalUpdate("direction")},
       ${setOptionalUpdate("currency")},
       ${setOptionalUpdate("amount")},
+      ${setOptionalUpdate("recipient")},
       ${setOptionalUpdate("note")},
       updated_at = CURRENT_TIMESTAMP
   `;

@@ -83,7 +83,7 @@ const DinarForm = ({ modalId }: { modalId: string }) => {
                 }
               />
             )}
-            <DateInput name="transaction_date" label="Date de transaction" />
+            <TypedInput name="recipient" label="Destinataire :" placeholder="Destinataire" />
           </FormGroup>
           <FormGroup>
             <SelectInput
@@ -96,6 +96,7 @@ const DinarForm = ({ modalId }: { modalId: string }) => {
             <TypedInput name="amount" type="number" label="Montant :" placeholder="150000" addOn="DA" />
           </FormGroup>
           <FormGroup>
+            <DateInput name="transaction_date" label="Date de transaction" />
             <SelectInput
               label="Direction :"
               placeholder="Choisissez une direction"
@@ -103,10 +104,8 @@ const DinarForm = ({ modalId }: { modalId: string }) => {
               items={DIRECTION_ITEMS}
               elementAs="div"
             />
-            <FormGroup />
           </FormGroup>
           <TextArea name="note" label="Note" />
-
           <ModalActions>
             <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}>
               {submitButtonText}

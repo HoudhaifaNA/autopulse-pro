@@ -82,7 +82,7 @@ const EuroForm = ({ modalId }: { modalId: string }) => {
                 }
               />
             )}
-            <DateInput name="transaction_date" label="Date de transaction" />
+            <TypedInput name="recipient" label="Destinataire :" placeholder="Destinataire" />
           </FormGroup>
           <FormGroup>
             <SelectInput
@@ -95,6 +95,7 @@ const EuroForm = ({ modalId }: { modalId: string }) => {
             <TypedInput name="amount" type="number" label="Montant :" placeholder="15000" addOn="€" />
           </FormGroup>
           <FormGroup>
+            <DateInput name="transaction_date" label="Date de transaction" />
             <SelectInput
               label="Direction :"
               placeholder="Choisissez une direction"
@@ -102,7 +103,6 @@ const EuroForm = ({ modalId }: { modalId: string }) => {
               items={DIRECTION_ITEMS}
               elementAs="div"
             />
-            <FormGroup />
           </FormGroup>
           <TextArea name="note" label="Note" />
           <ModalActions>
