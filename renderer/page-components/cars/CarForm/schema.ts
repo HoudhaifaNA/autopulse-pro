@@ -5,6 +5,10 @@ const ONE_DAY_IN_MILLISECONDS = 86400000;
 const today = new Date(Date.now() + ONE_DAY_IN_MILLISECONDS);
 const currentYear = today.getFullYear();
 
+export const carSchemaStepOne = object({
+  type: string().required(),
+});
+
 export const carSchemaStepTwo = object({
   brand: string().trim().required("La marque est requise."),
   model: string().trim().required("Le modèle est requis."),

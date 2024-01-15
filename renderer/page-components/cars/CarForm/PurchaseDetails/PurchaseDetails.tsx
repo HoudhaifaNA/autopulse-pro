@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 import { useDispatch } from "react-redux";
 import { useFormikContext } from "formik";
 
@@ -11,7 +12,6 @@ import useClientsList from "hooks/useClientsList";
 import useLicencesList from "hooks/useLicencesList";
 import { addModal } from "store/reducers/modals";
 import { CarInitialValues } from "../types";
-import useSWR from "swr";
 import { GetCategories } from "types";
 import { fetcher } from "utils/API";
 

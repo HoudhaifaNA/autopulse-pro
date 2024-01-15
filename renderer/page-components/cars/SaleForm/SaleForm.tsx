@@ -8,7 +8,7 @@ import { SelectInput, TypedInput } from "components/Input/Input";
 import Button from "components/Button/Button";
 import DateInput from "components/DateInput/DateInput";
 import KeysChecker from "../KeysChecker/KeysChecker";
-import CarFeatures from "../CarFeatures/CarFeatures";
+import TextArea from "components/TextArea";
 import CheckboxInput from "components/CheckboxInput";
 import { ModalActions } from "components/Modal/Modal";
 
@@ -94,7 +94,7 @@ const SaleForm = ({ modalId }: SaleFormProps) => {
                 <CheckboxInput label="Type de dossier" name="papers_type" options={PAPERS_OPTIONS} />
               </FormGroup>
             </FormGroup>
-            <CarFeatures name="selling_details" label="Détails de vente" />
+            <TextArea name="selling_details" label="Détails de vente" />
             <ModalActions>
               <Button type="submit" variant="primary" loading={isSubmitting} disabled={isSubmitting}>
                 {submitButtonText}

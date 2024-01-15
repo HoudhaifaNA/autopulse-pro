@@ -1,8 +1,7 @@
 import DateInput from "components/DateInput/DateInput";
-// import CarFeatures from "/CarFeatures";
 import { FormGroup } from "components/Form/Form.styled";
 import CheckboxInput from "components/CheckboxInput";
-import CarFeatures from "../../CarFeatures/CarFeatures";
+import TextArea from "components/TextArea";
 
 const PROCURATION_OPTIONS = [
   { label: "Non", value: 0 },
@@ -32,7 +31,7 @@ const CarAddtionalDetails = () => {
           <CheckboxInput label="Type de dossier" name="papers_type" options={PAPERS_OPTIONS} />
         </FormGroup>
       </FormGroup>
-      <CarFeatures name="features" label="Caractéristiques de la voiture" />
+      <TextArea name="features" label="Caractéristiques de la voiture" />
     </>
   );
 };
