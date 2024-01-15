@@ -163,7 +163,9 @@ export const getCarsStats = tryCatch((req, res) => {
     let percentage = 1 / exchangeTypes.length;
 
     exchangeTypes.forEach((type) => {
-      totalLostProfit[type] += category.lost_profit * percentage;
+      return 0;
+      // ! TODO
+      // totalLostProfit[type] += category.lost_profit * percentage;
     });
   });
 

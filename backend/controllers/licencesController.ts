@@ -112,7 +112,7 @@ export const getLicenceById = tryCatch((req, res, next) => {
 });
 
 export const createLicence = tryCatch((req, res, next) => {
-  const { purchased_at, moudjahid, seller_id, wilaya, serial_number, price, issue_date } = req.body;
+  const { purchased_at, moudjahid, seller_id, wilaya, serial_number, price, issue_date, note } = req.body;
   const files = req.files as Express.Multer.File[];
   const attachments: string[] = [];
 
@@ -143,6 +143,7 @@ export const createLicence = tryCatch((req, res, next) => {
       price,
       attachments: JSON.stringify(attachments),
       issue_date,
+      note,
     };
 
     const { lastInsertRowid } = S.insertLicenceStatment.run(params);
@@ -190,7 +191,7 @@ export const createLicence = tryCatch((req, res, next) => {
 });
 
 export const updateLicence = tryCatch((req, res, next) => {
-  const { purchased_at, moudjahid, seller_id, wilaya, serial_number, price, issue_date } = req.body;
+  const { purchased_at, moudjahid, seller_id, wilaya, serial_number, price, issue_date, note } = req.body;
   const { id } = req.params;
 
   db.exec("BEGIN TRANSACTION");
@@ -206,7 +207,17 @@ export const updateLicence = tryCatch((req, res, next) => {
       );
     }
 
-    const params = [purchased_at, moudjahid?.toLowerCase(), seller_id, wilaya, serial_number, price, issue_date, id];
+    const params = [
+      purchased_at,
+      moudjahid?.toLowerCase(),
+      seller_id,
+      wilaya,
+      serial_number,
+      price,
+      issue_date,
+      note,
+      id,
+    ];
 
     const { changes } = S.updateLicenceStatment.run(params);
 
@@ -249,6 +260,26 @@ export const updateLicence = tryCatch((req, res, next) => {
     db.exec("ROLLBACK;");
     return next(new AppError(error, 403));
   }
+});
+
+export const reserveLicence = tryCatch((req, res, next) => {
+  const { is_reserved } = req.body;
+  const { id } = req.params;
+  const licence = S.selectLicenceByIdStatment.get(id) as Licence | undefined;
+
+  if (!licence) {
+    return next(new AppError("Licence non trouvée.", 404));
+  }
+
+  if (!licence.is_valid && is_reserved) {
+    return next(new AppError("La licence est invalide.", 400));
+  }
+
+  S.reserveLicenceStatment.run([is_reserved, id]);
+
+  const updatedLicence = S.selectLicenceByIdStatment.get(id) as Licence;
+
+  res.status(200).json({ status: "success", licence: updatedLicence });
 });
 
 const deleteAttachment = (file: string) => {

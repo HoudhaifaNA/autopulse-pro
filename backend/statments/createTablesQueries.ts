@@ -104,8 +104,10 @@ export const createLicencesTableStatment = `
     price INTEGER DEFAULT 0,
     attachments TEXT,
     car_id INTEGER,
+    is_reserved INTEGER DEFAULT 0,
     issue_date TEXT NOT NULL,
     expiration_date TEXT AS (DATETIME(issue_date, '+5 years')) STORED,
+    note TEXT, 
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (seller_id)

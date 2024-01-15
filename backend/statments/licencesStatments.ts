@@ -67,6 +67,7 @@ const INSERT_FIELDS = generateInsertedFields([
   "price",
   "attachments",
   "issue_date",
+  "note",
 ]);
 
 export const insertLicenceStatment = db.prepare(`
@@ -83,6 +84,14 @@ export const updateLicenceStatment = db.prepare(`
  		${setOptionalUpdate("serial_number")},
  		${setOptionalUpdate("price")},
  		${setOptionalUpdate("issue_date")},
+ 		${setOptionalUpdate("note")},
+    updated_at = CURRENT_TIMESTAMP
+  WHERE id = ?
+  `);
+
+export const reserveLicenceStatment = db.prepare(`
+  UPDATE licences
+  SET ${setOptionalUpdate("is_reserved")},
     updated_at = CURRENT_TIMESTAMP
   WHERE id = ?
   `);

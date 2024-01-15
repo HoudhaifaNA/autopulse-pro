@@ -25,8 +25,10 @@ export interface Licence {
   expiration_date: string;
   created_at: string;
   updated_at: string;
+  is_reserved: 0 | 1;
   is_valid: 0 | 1;
   is_expirated: 0 | 1;
+  note: string | null;
   seller: string;
   car: string | null;
 }
