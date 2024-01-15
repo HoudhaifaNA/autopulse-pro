@@ -9,6 +9,7 @@ export const CategoryFilterWrapper = styled.div`
   flex-direction: column;
   gap: 1rem;
 `;
+
 export const CategoryFilterList = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -28,7 +29,7 @@ export const CategoryFilterOption = styled.div<CategoryFilterOptionProps>`
   padding: 0 0.5rem;
   color: ${({ theme, $isSelected }) => ($isSelected ? theme.colors.white : theme.colors.primary[500])};
   background-color: ${({ theme, $isSelected }) => ($isSelected ? theme.colors.primary[500] : theme.colors.white)};
-  border: 0.2rem solid ${({ theme }) => theme.colors.primary[300]};
+  border: 0.2rem solid ${({ theme }) => theme.colors.primary[500]};
   border-radius: 0.4rem;
   transition: all 0.2s ease-in;
   cursor: pointer;
