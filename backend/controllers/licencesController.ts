@@ -49,7 +49,7 @@ export const getLicencesList = tryCatch((req, res) => {
 });
 
 export const getAllLicences = tryCatch((req, res) => {
-  const { is_valid, is_expirated, orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
+  const { is_valid, is_expirated, is_reserved, orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
 
   const ranges = ["purchased_at", "issue_date", "price"];
   const skip = (Number(page) - 1) * Number(limit);
@@ -60,6 +60,12 @@ export const getAllLicences = tryCatch((req, res) => {
     const isValidValue = is_valid === "true" ? 1 : 0;
     const isValidFilter = `is_valid = ${isValidValue}`;
     filterQueries.push(isValidFilter);
+  }
+
+  if (is_reserved) {
+    const isReservedValue = is_reserved === "true" ? 1 : 0;
+    const isReservedFilter = `is_reserved = ${isReservedValue}`;
+    filterQueries.push(isReservedFilter);
   }
 
   if (is_expirated) {
