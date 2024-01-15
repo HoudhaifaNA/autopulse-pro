@@ -16,7 +16,7 @@ const Filter = ({ children }: { children: ReactNode }) => {
     const handleHideFilter = (e: KeyboardEvent) => {
       e.preventDefault();
       if ((e.target as Element)?.tagName !== "INPUT") {
-        if (e.key.toLowerCase() === "f") {
+        if (e.code === "KeyF") {
           dispatch(toggleFilter(!isFilterOpen));
         }
       }
