@@ -22,7 +22,7 @@ export const selectExpenseByIdStatment = db.prepare(`
   WHERE id = ?
   `);
 
-const INSERTED_FIELDS = generateInsertedFields(["expense_date", "raison", "cost"]);
+const INSERTED_FIELDS = generateInsertedFields(["expense_date", "raison", "cost", "note"]);
 
 export const insertExpenseStatment = db.prepare(`
   INSERT INTO expenses
@@ -34,6 +34,7 @@ export const updateExpenseStatment = db.prepare(`
   SET ${setOptionalUpdate("expense_date")},
     ${setOptionalUpdate("raison")},
     ${setOptionalUpdate("cost")},
+    ${setOptionalUpdate("note")},
     updated_at = CURRENT_TIMESTAMP
   WHERE id = ? 
   `);

@@ -74,8 +74,20 @@ export const getTransactionById = tryCatch((req, res, next) => {
 });
 
 export const createTransaction = tryCatch((req, res) => {
-  const { client_id, transaction_date, type, product_id, info1, info2, info3, info4, direction, currency, amount } =
-    req.body;
+  const {
+    client_id,
+    transaction_date,
+    type,
+    product_id,
+    info1,
+    info2,
+    info3,
+    info4,
+    direction,
+    currency,
+    amount,
+    note,
+  } = req.body;
 
   const params = {
     client_id,
@@ -89,6 +101,7 @@ export const createTransaction = tryCatch((req, res) => {
     direction,
     currency,
     amount,
+    note,
   };
 
   const { lastInsertRowid } = S.insertTransactionStatment.run(params);
@@ -99,9 +112,9 @@ export const createTransaction = tryCatch((req, res) => {
 
 export const updateTransaction = tryCatch((req, res, next) => {
   const { id } = req.params;
-  const { client_id, transaction_date, info1, info2, info3, info4, direction, currency, amount } = req.body;
+  const { client_id, transaction_date, info1, info2, info3, info4, direction, currency, amount, note } = req.body;
 
-  const params = [client_id, transaction_date, info1, info2, info3, info4, direction, currency, amount, id];
+  const params = [client_id, transaction_date, info1, info2, info3, info4, direction, currency, amount, note, id];
 
   const { changes } = S.updateTransactionByIdStatment.run(params);
 

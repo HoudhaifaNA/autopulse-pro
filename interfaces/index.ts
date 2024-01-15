@@ -47,6 +47,7 @@ export interface Transaction {
   currency: "EUR" | "DZD";
   client: string;
   amount: number;
+  note: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -163,6 +164,7 @@ export interface Expense {
   expense_date: string;
   raison: string;
   cost: number;
+  note: string | null;
   created_at: string;
   updated_at: string;
 }

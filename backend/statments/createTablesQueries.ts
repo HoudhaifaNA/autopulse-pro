@@ -89,6 +89,7 @@ export const createExpensesTableStatment = `
     expense_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     raison TEXT NOT NULL,
     cost INTEGER NOT NULL ${checkNumber("cost")},
+    note TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP
   )`;
@@ -193,6 +194,7 @@ export const createTransactionsTable = `
     direction TEXT NOT NULL CHECK (direction IN ('sortante', 'entrante')),
     currency TEXT NOT NULL CHECK (currency IN ('DZD', 'EUR')),
     amount INTEGER NOT NULL ${checkNumber("amount")},
+    note TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (product_id, type, direction),

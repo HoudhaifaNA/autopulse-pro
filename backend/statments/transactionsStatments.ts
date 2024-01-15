@@ -30,6 +30,7 @@ const INSERT_FIELDS = generateInsertedFields([
   "direction",
   "currency",
   "amount",
+  "note",
 ]);
 
 export const insertTransactionStatment = db.prepare(`
@@ -48,6 +49,7 @@ const updateTransactionQuery = `
       ${setOptionalUpdate("direction")},
       ${setOptionalUpdate("currency")},
       ${setOptionalUpdate("amount")},
+      ${setOptionalUpdate("note")},
       updated_at = CURRENT_TIMESTAMP
   `;
 

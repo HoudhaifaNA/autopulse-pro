@@ -166,6 +166,7 @@ export const createLicence = tryCatch((req, res, next) => {
       direction: "entrante",
       currency: "DZD",
       amount: price,
+      note,
     };
 
     insertTransactionStatment.run(transacrtionParams);
@@ -244,6 +245,7 @@ export const updateLicence = tryCatch((req, res, next) => {
       "entrante",
       "DZD",
       price,
+      note,
     ];
 
     updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);
