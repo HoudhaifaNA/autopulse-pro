@@ -33,7 +33,7 @@ const handleSubmit: SubmitFunction<LicenceInitalValues, Params> = async (values,
 
     let data = {};
     if (params?.isEdit) {
-      const { moudjahid, seller_id, purchased_at, issue_date, serial_number, wilaya, price } = values;
+      const { moudjahid, seller_id, purchased_at, issue_date, serial_number, wilaya, note, price } = values;
       data = {
         moudjahid,
         seller_id,
@@ -42,6 +42,7 @@ const handleSubmit: SubmitFunction<LicenceInitalValues, Params> = async (values,
         serial_number,
         wilaya,
         price,
+        note,
       };
     } else {
       data = valuesToFormData(values);

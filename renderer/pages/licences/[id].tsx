@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { useDispatch } from "react-redux";
 
-import { LabelText } from "styles/Typography";
+import { Body1, LabelText } from "styles/Typography";
 import DetailsViewer, {
   AttachmentsList,
   DetailContent,
@@ -18,14 +18,35 @@ import LicenceActions from "page-components/licences/LicenceActions";
 
 import { addSecondaryUrl } from "store/reducers/resourceUrls";
 import formatFiatValue from "utils/formatFiatValue";
-import { fetcher } from "utils/API";
+import API, { fetcher } from "utils/API";
 import formatDate from "utils/formatDate";
 import { Licence } from "interfaces";
 import FileViewer, { SelectedAttachement } from "components/FileViewer";
+import Badge, { BadgeProps } from "components/Badge/Badge";
 
 interface GetLicenceResponse {
   licence: Licence;
 }
+
+const renderLicenceStatus = (isValid: 0 | 1, is_reserved: 0 | 1) => {
+  let status: string = "";
+  let color: BadgeProps["type"] = "success";
+
+  if (isValid) {
+    status = "Active";
+    color = "success";
+  } else {
+    status = "Invalide";
+    color = "error";
+  }
+
+  if (is_reserved && isValid) {
+    status = "Réservée";
+    color = "warning";
+  }
+
+  return <Badge type={color}>{status}</Badge>;
+};
 
 const LicenceDetails = () => {
   const [selectedAttachment, selectAttachment] = useState<SelectedAttachement>();
@@ -39,13 +60,33 @@ const LicenceDetails = () => {
   }, []);
   const renderLicenceInfo = () => {
     if (data?.licence) {
-      const { purchased_at, moudjahid, wilaya, serial_number, seller_id, seller, price, expiration_date, car_id, car } =
-        data.licence;
+      const {
+        purchased_at,
+        moudjahid,
+        wilaya,
+        serial_number,
+        is_valid,
+        is_reserved,
+        seller_id,
+        seller,
+        price,
+        expiration_date,
+        note,
+        car_id,
+        car,
+      } = data.licence;
 
       const formattedExpirationDate = formatDate(expiration_date);
       const formattedPurchasedDate = formatDate(purchased_at);
       const formattedPrice = formatFiatValue(price, "DZD");
       const attachments = JSON.parse(data.licence.attachments) as string[];
+
+      const reserveLicence = async () => {
+        if (is_valid) {
+          await API.patch(`/licences/${id}/reserve`, { is_reserved: is_reserved ? 0 : 1 });
+          mutate(`/licences/${id}`);
+        }
+      };
 
       return (
         <>
@@ -71,6 +112,11 @@ const LicenceDetails = () => {
               </DetailItem>
             </DetailContent>
             <DetailContent $columns={3}>
+              <DetailItem title="Statut">
+                <div onClick={reserveLicence} style={{ cursor: "pointer" }}>
+                  {renderLicenceStatus(is_valid, is_reserved)}
+                </div>
+              </DetailItem>
               {car_id && (
                 <DetailItem title="Voiture">
                   <Link href={`/cars/${car_id}`}>
@@ -80,6 +126,14 @@ const LicenceDetails = () => {
               )}
             </DetailContent>
           </DetailSection>
+          {note && (
+            <DetailSection>
+              <DetailHeader title="Note" />
+              <DetailContent $columns={1}>
+                <Body1 style={{ width: "40%" }}>{note}</Body1>
+              </DetailContent>
+            </DetailSection>
+          )}
           {attachments.length > 0 && (
             <DetailSection>
               <DetailHeader title={`Fichiers`} />

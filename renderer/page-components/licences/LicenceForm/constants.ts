@@ -13,6 +13,7 @@ export const INITIAL_VALUES: LicenceInitalValues = {
   serial_number: "",
   price: 0,
   issue_date: now,
+  note: "",
   attachments: [],
 };
 

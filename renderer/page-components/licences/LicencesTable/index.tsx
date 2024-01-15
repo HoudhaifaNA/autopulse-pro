@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
+import { mutate } from "swr";
 
 import * as T from "components/Table";
 import { Body2 } from "styles/Typography";
@@ -15,10 +16,10 @@ import formatFiatValue from "utils/formatFiatValue";
 import { addModal } from "store/reducers/modals";
 import formatDate from "utils/formatDate";
 import { TB_HEADER_DATA } from "./constants";
-import { Licence } from "interfaces";
 import { AddModalPayload, GetAllLicencesResponse } from "types";
 import Badge, { BadgeProps } from "components/Badge/Badge";
 import useClickOutside from "hooks/useClickOutside";
+import API from "utils/API";
 
 interface LicenceTableProps {
   data: GetAllLicencesResponse;
@@ -26,7 +27,7 @@ interface LicenceTableProps {
 
 const ICON_SIZE = "1.8rem";
 
-const renderLicenceStatus = (isValid: 0 | 1) => {
+const renderLicenceStatus = (isValid: 0 | 1, is_reserved: 0 | 1) => {
   let status: string = "";
   let color: BadgeProps["type"] = "success";
 
@@ -38,13 +39,19 @@ const renderLicenceStatus = (isValid: 0 | 1) => {
     color = "error";
   }
 
+  if (is_reserved && isValid) {
+    status = "Réservée";
+    color = "warning";
+  }
+
   return <Badge type={color}>{status}</Badge>;
 };
 
 const LicencesTable = ({ data }: LicenceTableProps) => {
   const { licences } = data;
 
-  const { page, limit } = useAppSelector((state) => state.resourceUrls.licences.params);
+  const { fetchedUrl, secondaryUrl, params } = useAppSelector((state) => state.resourceUrls.licences);
+  const { page, limit } = params;
   const { selectedIds } = useAppSelector((state) => state.selectedItems);
   const dispatch = useDispatch();
   const [dropdownIndex, setDropdownIndex] = useState<number>();
@@ -89,8 +96,18 @@ const LicencesTable = ({ data }: LicenceTableProps) => {
 
   const renderLicences = () => {
     return licences.map((licence, ind) => {
-      const { id, purchased_at, moudjahid, serial_number, is_valid, seller_id, seller, price, expiration_date } =
-        licence;
+      const {
+        id,
+        purchased_at,
+        moudjahid,
+        serial_number,
+        is_reserved,
+        is_valid,
+        seller_id,
+        seller,
+        price,
+        expiration_date,
+      } = licence;
 
       const formattedLicencePrice = formatFiatValue(price, "DZD");
       const formattedPurchaseDate = formatDate(purchased_at);
@@ -99,6 +116,14 @@ const LicencesTable = ({ data }: LicenceTableProps) => {
       const isSelected = selectedIds.includes(id);
       const isDropdownToggled = dropdownIndex === ind;
       const rowNumber = ind + startinRowIndex + 1;
+
+      const reserveLicence = async () => {
+        if (is_valid) {
+          await API.patch(`/licences/${id}/reserve`, { is_reserved: is_reserved ? 0 : 1 });
+          mutate(fetchedUrl);
+          mutate(secondaryUrl);
+        }
+      };
 
       return (
         <T.TableRow key={id} onClick={(event) => event.ctrlKey && checkId(id)}>
@@ -113,7 +138,7 @@ const LicencesTable = ({ data }: LicenceTableProps) => {
             </Link>
           </T.TableCell>
           <T.TableCell>{serial_number || "--"}</T.TableCell>
-          <T.TableCell>{renderLicenceStatus(is_valid)}</T.TableCell>
+          <T.TableCell onClick={reserveLicence}>{renderLicenceStatus(is_valid, is_reserved)}</T.TableCell>
           <T.TableCell blurrable>
             <Link href={`/clients/${seller_id}`}>
               <Body2>{seller}</Body2>
