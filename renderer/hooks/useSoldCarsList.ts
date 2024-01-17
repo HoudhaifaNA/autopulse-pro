@@ -5,8 +5,8 @@ import { fetcher } from "utils/API";
 import { SelectInputProps } from "components/Input/types";
 import { GetCarsWithPapersResponse } from "types";
 
-const useCarsWithPaperList = () => {
-  const url = `/cars/list/`;
+const useSoldCarsList = () => {
+  const url = `/cars/list`;
   const { data, isLoading, error } = useSWR<GetCarsWithPapersResponse>(url, fetcher);
 
   let carsList: SelectInputProps["items"] = [];
@@ -14,11 +14,11 @@ const useCarsWithPaperList = () => {
   if (data && data.cars.length > 0) {
     const { cars } = data;
 
-    carsList = cars.map(({ id, name, color, serial_number }) => {
+    carsList = cars.map(({ id, name, color, buyer, owner_name }) => {
       return {
-        mainText: `${name} (${color})`,
-        secondText: serial_number,
-        relatedValues: [id],
+        mainText: `${name}`,
+        secondText: color,
+        relatedValues: [id, buyer, owner_name],
       };
     });
   }
@@ -26,4 +26,4 @@ const useCarsWithPaperList = () => {
   return { carsList, isLoading, error } as const;
 };
 
-export default useCarsWithPaperList;
+export default useSoldCarsList;

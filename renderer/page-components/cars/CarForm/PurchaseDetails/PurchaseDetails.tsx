@@ -34,7 +34,7 @@ const PurchaseDetails = ({ isEdit, ownerId }: SellingDetailsProps) => {
   const { values, setFieldValue } = useFormikContext<CarInitialValues>();
   const dispatch = useDispatch();
   const { clientsList, isLoading: isClientsLoading } = useClientsList();
-  const { licencesList, isLoading: isLicencesLoading } = useLicencesList("valid", params);
+  const { licencesList, isLoading: isLicencesLoading } = useLicencesList(params);
   const { type, owner_id, is_exchange, purchase_price_eur, eur_exchange_rate } = values;
   const PPDZD = purchase_price_eur * (eur_exchange_rate / 100);
 

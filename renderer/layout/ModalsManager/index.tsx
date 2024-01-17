@@ -16,6 +16,7 @@ import PrintModal from "page-components/clients/PrintModal";
 
 import { useAppSelector } from "store";
 import { ModalTypes } from "types";
+import DeliverProcurationForm from "page-components/procurations/DeliverProcurationForm";
 
 interface ModalItem {
   Component: ({ modalId }: { modalId: string }) => JSX.Element;
@@ -52,6 +53,9 @@ const modalsComponents: ModalsComponents = {
   procurations: {
     Component: ProcurationForm,
   },
+  deliver_procuration: {
+    Component: DeliverProcurationForm,
+  },
   expenses: {
     Component: ExpenseForm,
   },
@@ -71,6 +75,9 @@ const modalsComponents: ModalsComponents = {
     Component: DeleteModal,
   },
   cancel_sale: {
+    Component: DeleteModal,
+  },
+  cancel_procuration_delivery: {
     Component: DeleteModal,
   },
 };

@@ -22,16 +22,11 @@ const uid = () => {
 };
 
 export const getLicencesList = tryCatch((req, res) => {
-  const { filter } = req.params;
   const { id } = req.query;
 
-  let filterClause = "";
-  if (filter === "valid") {
-    filterClause = `WHERE is_valid = 1`;
-  } else if (filter === "procuration") {
-    filterClause = `WHERE has_procuration = 1 AND cars.buyer_id IS NOT NULL AND procuration_exist IS NULL`;
-  }
+  let filterClause = "WHERE is_valid = 1";
   let currentLicence;
+
   if (id) {
     currentLicence = S.selectLicenceByIdStatment.get(id) as Licence;
   }

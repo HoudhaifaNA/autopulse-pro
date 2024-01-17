@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { mutate } from "swr";
 import { useDispatch } from "react-redux";
-import { Formik, FormikConfig, FormikProps } from "formik";
+import { Formik, FormikConfig, FormikProps, useFormikContext } from "formik";
 
 import Form from "components/Form/Form";
 import { FormGroup } from "components/Form/Form.styled";
@@ -57,7 +58,22 @@ const SaleForm = ({ modalId }: SaleFormProps) => {
   };
   return (
     <Formik {...formProps}>
-      {({ handleSubmit, isSubmitting }: FormikProps<SaleInitialValues>) => {
+      {({ setFieldValue, values, handleSubmit, isSubmitting }: FormikProps<SaleInitialValues>) => {
+        const { has_gray_card } = values;
+        const papers_type = values.papers_type as ("Dossier" | "Double Dossier")[] | null;
+        useEffect(() => {
+          if (papers_type?.includes("Dossier")) {
+            setFieldValue("has_gray_card", 0);
+          }
+        }, [papers_type]);
+
+        useEffect(() => {
+          if (has_gray_card && papers_type?.includes("Dossier")) {
+            const updatedPapersType = !papers_type.includes("Double Dossier") ? null : ["Double Dossier"];
+            setFieldValue("papers_type", updatedPapersType);
+          }
+        }, [has_gray_card]);
+
         return (
           <Form onSubmit={handleSubmit}>
             <FormGroup>
@@ -91,7 +107,7 @@ const SaleForm = ({ modalId }: SaleFormProps) => {
                 <CheckboxInput label="Cart grise" name="has_gray_card" options={GRAY_CARD_OPTIONS} />
               </FormGroup>
               <FormGroup>
-                <CheckboxInput label="Type de dossier" name="papers_type" options={PAPERS_OPTIONS} />
+                <CheckboxInput label="Type de dossier" name="papers_type" isMultiple options={PAPERS_OPTIONS} />
               </FormGroup>
             </FormGroup>
             <TextArea name="selling_details" label="Détails de vente" />

@@ -18,14 +18,14 @@ import { addModal, removeModal } from "store/reducers/modals";
 import { useAppSelector } from "store";
 import { PaperInitalValues } from "./types";
 import { ModalFormConfig } from "types";
-import useCarsWithPaperList from "hooks/useCarsWithPaperList";
+import useSoldCarsList from "hooks/useSoldCarsList";
 
 const PaperForm = ({ modalId }: { modalId: string }) => {
   const { fetchedUrl, secondaryUrl } = useAppSelector((state) => state.resourceUrls.papers);
   const { modalsList } = useAppSelector((state) => state.modals);
   const currentModal = modalsList.find(({ id }) => id === modalId) as ModalFormConfig;
   const dispatch = useDispatch();
-  const { carsList, isLoading: isCarsLoading } = useCarsWithPaperList();
+  const { carsList, isLoading: isCarsLoading } = useSoldCarsList();
   const { clientsList, isLoading: isClientsLoading } = useClientsList();
 
   let formInitialValues = INITIAL_VALUES;

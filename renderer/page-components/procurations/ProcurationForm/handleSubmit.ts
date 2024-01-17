@@ -13,6 +13,7 @@ interface Params {
 const handleSubmit: SubmitFunction<ProcurationInitalValues, Params> = async (values, actions, params) => {
   let status: SubmitStatus = "success";
   try {
+    console.log(values);
     const method = params?.isEdit ? "patch" : "post";
     const urlParams = params?.isEdit ? `/${params.resourceId}` : "";
     const notificationMessage = params?.isEdit

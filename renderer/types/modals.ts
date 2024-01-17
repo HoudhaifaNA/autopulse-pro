@@ -9,6 +9,7 @@ import { LicenceInitalValues } from "page-components/licences/LicenceForm/types"
 import { CategoryInitalValues } from "page-components/home/CategoryForm/types";
 import { PaperInitalValues } from "page-components/papers/PaperForm/types";
 import { ProcurationInitalValues } from "page-components/procurations/ProcurationForm/types";
+import { DeliverProcurationInitalValues } from "page-components/procurations/DeliverProcurationForm/types";
 export interface ModalFormConfig {
   id: string;
   name: Resources;
@@ -39,6 +40,17 @@ export interface SaleModalConfig {
   };
 }
 
+export interface DeliverProcurationModalConfig {
+  id: string;
+  name: "deliver_procuration";
+  title: string;
+  params: {
+    isEdit: boolean;
+    document: DeliverProcurationInitalValues;
+    resourceId: number;
+  };
+}
+
 export interface ExchangeRateModalConfig {
   id: string;
   name: "exchange_rate";
@@ -61,7 +73,7 @@ export interface WarningModalConfig {
 
 export interface DeleteModalConfig {
   id: string;
-  name: "delete" | "cancel_sale";
+  name: "delete" | "cancel_sale" | "cancel_procuration_delivery";
   title: string;
   message: string;
   resource: Resources;
@@ -72,6 +84,7 @@ export type ModalTypes =
   | ModalFormConfig
   | ExchangeRateModalConfig
   | SaleModalConfig
+  | DeliverProcurationModalConfig
   | PrintModalConfig
   | WarningModalConfig
   | DeleteModalConfig;
@@ -81,6 +94,7 @@ export type AddModalPayload =
   | Omit<ExchangeRateModalConfig, "id">
   | Omit<PrintModalConfig, "id">
   | Omit<SaleModalConfig, "id">
+  | Omit<DeliverProcurationModalConfig, "id">
   | Omit<WarningModalConfig, "id">
   | Omit<DeleteModalConfig, "id">;
 

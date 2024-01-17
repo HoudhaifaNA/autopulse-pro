@@ -90,7 +90,7 @@ export interface Car {
   buyer_id: number | null;
   sold_at: string | null;
   given_keys: number | null;
-  papers_type: "Dossier" | "Copier de dossier" | null;
+  papers_type: ("Dossier" | "Double Dossier")[] | string | null;
   has_procuration: 0 | 1 | null;
   procuration_received: 0 | 1 | null;
   has_gray_card: 0 | 1 | null;
@@ -117,7 +117,6 @@ export interface CarExpense {
 }
 export interface Procuration {
   id: number;
-  type: "expense" | "transaction";
   purchased_at: string;
   seller_id: number;
   licence_id: number;
@@ -125,6 +124,7 @@ export interface Procuration {
   car_serial_number: string;
   buyer_id: number;
   notary: string | null;
+  procurator: string;
   recipient: string | null;
   is_expense: 0 | 1;
   note: string | null;

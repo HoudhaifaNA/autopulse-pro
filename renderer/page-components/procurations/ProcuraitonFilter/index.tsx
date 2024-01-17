@@ -4,19 +4,19 @@ import DateRangePicker from "components/DateRangePicker/DateRangePicker";
 import CategoryFilter from "components/CategoryFilter";
 
 const TYPE_CATEGORIES = {
-  field: "type",
-  title: "Type de dossier",
+  field: "is_expense",
+  title: "Type de procuration",
   list: [
-    { name: "Transaction", option: "transaction" },
-    { name: "Dépense", option: "expense" },
+    { name: "Transaction", option: "false" },
+    { name: "Dépense", option: "true" },
   ],
 };
 const RECEIVED_CATEGORIES = {
   field: "has_received",
   title: "Recu de dossier",
   list: [
-    { name: "Recu", option: "true" },
     { name: "Non recu", option: "false" },
+    { name: "Recu", option: "true" },
   ],
 };
 
@@ -24,8 +24,8 @@ const EXPIRATION_CATEGORIES = {
   field: "is_expirated",
   title: "Expiration de la licence",
   list: [
-    { name: "Expiré", option: "true" },
     { name: "Non expiré", option: "false" },
+    { name: "Expiré", option: "true" },
   ],
 };
 

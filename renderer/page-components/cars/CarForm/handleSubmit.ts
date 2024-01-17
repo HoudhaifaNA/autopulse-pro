@@ -61,7 +61,7 @@ const handleSubmit: SubmitFunction<CarInitialValues, Params> = async (values, ac
       production_year,
       keys,
       mileage,
-      papers_type,
+      papers_type: Array.isArray(papers_type) ? papers_type.join(",") : papers_type,
       has_procuration,
       has_gray_card,
       features,

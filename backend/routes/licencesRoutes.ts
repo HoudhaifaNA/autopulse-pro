@@ -10,7 +10,7 @@ router
   .post(controller.uploadAttachments, controller.createLicence)
   .delete(controller.deleteAllLicences);
 
-router.get("/list/:filter", controller.getLicencesList);
+router.get("/list", controller.getLicencesList);
 router.route("/:id").get(controller.getLicenceById).patch(controller.updateLicence);
 router.route("/:id/reserve").patch(controller.reserveLicence);
 

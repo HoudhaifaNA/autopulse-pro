@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 
 import API from "utils/API";
 import notify from "utils/notify";
-import { SaleInitialValues } from "./types";
+import { DeliverProcurationInitalValues } from "./types";
 import { SubmitFunction, SubmitStatus } from "types";
 
 interface Params {
@@ -10,18 +10,13 @@ interface Params {
   resourceId: number;
 }
 
-const handleSubmit: SubmitFunction<SaleInitialValues, Params> = async (values, actions, params) => {
+const handleSubmit: SubmitFunction<DeliverProcurationInitalValues, Params> = async (values, actions, params) => {
   let status: SubmitStatus = "success";
-
   try {
-    const method = params?.isEdit ? "patch" : "post";
     const urlParams = `${params?.resourceId}`;
-    const notificationMessage = params?.isEdit
-      ? "La vente a été mise à jour avec succès."
-      : "La vente a été effectuée avec succès.";
+    const notificationMessage = "Procuration a été livré avec succès.";
 
-    const papers_type = Array.isArray(values.papers_type) ? values.papers_type.join(",") : values.papers_type;
-    await API[method](`/cars/sale/${urlParams}`, { ...values, papers_type });
+    await API.patch(`/procurations/${urlParams}/deliver`, values);
     notify("success", notificationMessage);
   } catch (err: any) {
     let message = "Error";

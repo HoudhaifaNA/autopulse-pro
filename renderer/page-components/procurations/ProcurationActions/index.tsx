@@ -10,10 +10,18 @@ import { Procuration } from "interfaces";
 const ProcurationActions = ({ procuration }: { procuration: Procuration }) => {
   const dispatch = useDispatch();
 
-  const { UPDATE, DELETE } = retreiveProcurationActions(procuration);
+  const { UPDATE, DELIVER, CANCEL_PROCURATION_DELIVER, DELETE } = retreiveProcurationActions(procuration);
 
   return (
     <ActionsList>
+      <Button variant="primary" icon="deliver" onClick={() => dispatch(addModal(DELIVER))}>
+        {procuration.has_received ? "Modifier livraison" : "Livrer"}
+      </Button>
+      {procuration.has_received ? (
+        <Button variant="primary" icon="cancel" onClick={() => dispatch(addModal(CANCEL_PROCURATION_DELIVER))}>
+          Annuler livraison
+        </Button>
+      ) : null}
       <Button
         variant="primary"
         icon="edit"

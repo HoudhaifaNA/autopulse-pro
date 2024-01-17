@@ -18,7 +18,7 @@ interface ITotalCount {
 }
 
 export const getCarsWithPapersList = tryCatch((_req, res) => {
-  const cars = S.selectCarsWithPapersListStatment.all();
+  const cars = S.selectCarsListStatment.all();
 
   return res.status(200).json({ status: "success", results: cars.length, cars });
 });

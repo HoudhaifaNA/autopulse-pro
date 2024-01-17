@@ -26,13 +26,8 @@ export const selectLicencesListQuery = `
     licences.serial_number,
     licences.car_id,
     ${IS_LICENCE_VALID},
-    licences.price,
-    cars.has_procuration,
-    cars.buyer_id,
-    procurations.car_id AS procuration_exist
+    licences.price
   FROM licences
-  LEFT JOIN cars ON licences.car_id = cars.id
-  LEFT JOIN procurations ON licences.id = procurations.licence_id
   `;
 
 export const selectLicencesQuery = `

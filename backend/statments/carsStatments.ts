@@ -33,18 +33,16 @@ const IS_SOLD_PRICE_INCOMPLETE = `
   END AS is_sold_price_incomplete
   `;
 
-export const selectCarsWithPapersListStatment = db.prepare(`
+export const selectCarsListStatment = db.prepare(`
   SELECT 
   cars.id,
-  cars.name,
-  cars.serial_number,
+  ( cars.name || ' (' || cars.registration_number || ')' ) AS name,
   cars.color,
-  cars.has_gray_card,
-  cars.buyer_id,
-  papers.id AS paper_exist
+  buyers.full_name AS buyer,
+  cars.owner_name
   FROM cars
-  LEFT JOIN papers ON cars.id = papers.car_id
-  WHERE has_gray_card = 1 AND buyer_id IS NOT NULL AND paper_exist IS NULL
+  LEFT JOIN clients AS buyers ON buyers.id = cars.buyer_id
+  WHERE buyer_id IS NOT NULL
   `);
 
 export const selectCarsQuery = `
