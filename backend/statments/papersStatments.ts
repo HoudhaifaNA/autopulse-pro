@@ -4,25 +4,13 @@ import { setOptionalUpdate } from "../utils/sqlValidations";
 
 // db.prepare("DROP TABLE IF EXISTS papers").run();
 
-export const IS_PAPER_EXPIRATED = `
-  CASE
-    WHEN datetime('now') > papers.expiration_date THEN 1
-    ELSE 0
-  END AS is_expirated
-  `;
-
 export const selectPapersQuery = `
   SELECT papers.*,
-  ${IS_PAPER_EXPIRATED},
   clients.full_name AS seller,
-  ( cars.name || ' (' || cars.serial_number || ')' ) AS car,
-  owners.id AS owner_id,
-  owners.full_name AS owner
+  ( cars.name || ' (' || cars.serial_number || ')' ) AS car
   FROM papers
   INNER JOIN clients ON clients.id = papers.seller_id
   INNER JOIN cars ON cars.id = papers.car_id
-  LEFT JOIN clients AS owners ON owners.id = cars.buyer_id
-
   `;
 
 export const selectPaperByIdStatment = db.prepare(`
@@ -37,13 +25,13 @@ export const selectPaperByCarIdStatment = db.prepare(`
 
 const INSERTED_FIELDS = generateInsertedFields([
   "type",
+  "given_at",
   "purchased_at",
   "seller_id",
   "car_id",
+  "owner",
   "price",
-  "deal_id",
-  "issue_date",
-  "received_at",
+  "note",
 ]);
 
 export const insertPaperStatment = db.prepare(`
@@ -54,19 +42,30 @@ export const insertPaperStatment = db.prepare(`
 export const updatePaperStatment = db.prepare(`
   UPDATE papers
   SET ${setOptionalUpdate("type")},
+    ${setOptionalUpdate("given_at")},
     ${setOptionalUpdate("purchased_at")},
     ${setOptionalUpdate("seller_id")},
+    ${setOptionalUpdate("car_id")},
+    ${setOptionalUpdate("owner")},
+    ${setOptionalUpdate("note")},
     ${setOptionalUpdate("price")},
-    deal_id = ?,
-    ${setOptionalUpdate("issue_date")},
-    received_at = ?,
     updated_at = CURRENT_TIMESTAMP
   WHERE id = ? 
   `);
 
-export const resetPaperDealIdStatment = db.prepare(`
+export const updatePaperDeliveryStatment = db.prepare(`
   UPDATE papers
-  SET deal_id = null,
+  SET ${setOptionalUpdate("recipient")},
+      ${setOptionalUpdate("received_at")},
+      ${setOptionalUpdate("note")},
+      updated_at = CURRENT_TIMESTAMP
+  WHERE id = ? 
+  `);
+
+export const cancelPaperDeliveryStatment = db.prepare(`
+  UPDATE papers
+  SET recipient = null,
+      received_at = null,
       updated_at = CURRENT_TIMESTAMP
   WHERE id = ? 
   `);
@@ -80,11 +79,8 @@ const deletePapersRelatedRecords = db.prepare(`
   AFTER DELETE ON papers
   FOR EACH ROW
   BEGIN
-    DELETE FROM expenses
-    WHERE id = OLD.deal_id AND OLD.type = 'expense';
-
     DELETE FROM transactions
-    WHERE type = 'paper' AND product_id = OLD.id AND OLD.type = 'transaction';
+    WHERE type = 'paper' AND product_id = OLD.id;
   END;
   `);
 

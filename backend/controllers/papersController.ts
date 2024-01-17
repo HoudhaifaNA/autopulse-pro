@@ -1,12 +1,7 @@
 import db from "../database";
 import * as S from "../statments/papersStatments";
 import { selectCarByIdStatment } from "../statments/carsStatments";
-import { deleteExpensesByIdQuery, insertExpenseStatment, updateExpenseStatment } from "../statments/expensesStatments";
-import {
-  deleteTransactionsByProductIdQuery,
-  insertTransactionStatment,
-  updateTransactionByProductIdStatment,
-} from "../statments/transactionsStatments";
+import { insertTransactionStatment, updateTransactionByProductIdStatment } from "../statments/transactionsStatments";
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
@@ -18,9 +13,9 @@ interface ITotalCount {
 }
 
 export const getAllPapers = tryCatch((req, res) => {
-  const { has_received, is_expirated, type, orderBy = "-purchased_at", page = 1, limit = 250 } = req.query;
+  const { has_received, type, orderBy = "-purchased_at", page = 1, limit = 250 } = req.query;
 
-  const ranges = ["purchased_at", "issue_date", "received_at", "price"];
+  const ranges = ["purchased_at", "given_at", "received_at", "price"];
   const skip = (Number(page) - 1) * Number(limit);
 
   const filterQueries = generateRangeFilters(ranges, req.query, "papers");
@@ -36,12 +31,6 @@ export const getAllPapers = tryCatch((req, res) => {
     filterQueries.push(typeFilter);
   }
 
-  if (is_expirated) {
-    const isExpiratedValue = is_expirated === "true" ? 1 : 0;
-    const isExpiratedFilter = `is_expirated = ${isExpiratedValue}`;
-    filterQueries.push(isExpiratedFilter);
-  }
-
   const filters = filterQueries.join(" AND ");
   const filterClause = filters ? `WHERE ${filters}` : "";
   const orderByQuery = formatSortingQuery(orderBy);
@@ -55,7 +44,6 @@ export const getAllPapers = tryCatch((req, res) => {
 
   const selectPapersCountQuery = `
     SELECT
-    ${S.IS_PAPER_EXPIRATED},
     COUNT(*) AS total_count
     FROM papers
     ${filterClause}
@@ -84,8 +72,7 @@ export const getPaperById = tryCatch((req, res, next) => {
 });
 
 export const createPaper = tryCatch((req, res, next) => {
-  const { type, purchased_at, seller_id, car_id, price, issue_date, received_at } = req.body;
-  let deal_id = null;
+  const { type, given_at, purchased_at, seller_id, car_id, owner, note, price } = req.body;
 
   const car = selectCarByIdStatment.get(car_id) as Car | undefined;
 
@@ -93,7 +80,7 @@ export const createPaper = tryCatch((req, res, next) => {
     return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
-  if (!car.buyer_id || !car.has_gray_card) {
+  if (!car.buyer_id || (!car.has_gray_card && !car.papers_type)) {
     return next(
       new AppError(
         `Impossible d'ajouter une cart grise pour cette voiture. La voiture n'a pas encore été vendue ou la carte grise n'est pas activée.`,
@@ -104,47 +91,36 @@ export const createPaper = tryCatch((req, res, next) => {
 
   db.exec("BEGIN TRANSACTION");
   try {
-    if (type === "expense") {
-      const expenseParams = {
-        expense_date: purchased_at,
-        raison: `Cart grise de ${car.name} (${car.serial_number})`,
-        cost: price,
-      };
-
-      const { lastInsertRowid } = insertExpenseStatment.run(expenseParams);
-      deal_id = lastInsertRowid;
-    }
-
     const params = {
       type,
+      given_at,
       purchased_at,
       seller_id,
       car_id,
+      owner,
+      note,
       price,
-      deal_id,
-      issue_date,
-      received_at,
     };
 
     const { lastInsertRowid } = S.insertPaperStatment.run(params);
 
-    if (type === "transaction") {
-      const transactionParams = {
-        client_id: seller_id,
-        transaction_date: purchased_at,
-        type: "paper",
-        product_id: lastInsertRowid,
-        info1: "Cart grise",
-        info2: car.name,
-        info3: car.color,
-        info4: `${car.registration_number} (${car.serial_number})`,
-        direction: "entrante",
-        currency: "DZD",
-        amount: price,
-      };
+    const sellerTransactionParams = {
+      client_id: seller_id,
+      transaction_date: purchased_at,
+      type: "paper",
+      product_id: lastInsertRowid,
+      info1: "Cart grise",
+      info2: car.name,
+      info3: car.serial_number,
+      info4: owner,
+      direction: "entrante",
+      currency: "DZD",
+      amount: price,
+      recipient: "company",
+      note,
+    };
 
-      insertTransactionStatment.run(transactionParams);
-    }
+    insertTransactionStatment.run(sellerTransactionParams);
 
     const newPaper = S.selectPaperByIdStatment.get(lastInsertRowid);
     db.exec("COMMIT;");
@@ -157,83 +133,96 @@ export const createPaper = tryCatch((req, res, next) => {
 });
 
 export const updatePaper = tryCatch((req, res, next) => {
-  const { type, purchased_at, price, seller_id, issue_date, received_at } = req.body;
+  const { type, given_at, purchased_at, seller_id, car_id, owner, note, price } = req.body;
   const { id } = req.params;
-  let deal_id = null;
+
+  const car = selectCarByIdStatment.get(car_id) as Car | undefined;
+
+  if (!car) {
+    return next(new AppError(`Voiture non trouvée.`, 404));
+  }
+
+  if (!car.buyer_id || (!car.has_gray_card && !car.papers_type)) {
+    return next(
+      new AppError(
+        `Impossible d'ajouter une cart grise pour cette voiture. La voiture n'a pas encore été vendue ou la carte grise n'est pas activée.`,
+        400
+      )
+    );
+  }
+
+  db.exec("BEGIN TRANSACTION");
+  try {
+    const sellerTransactionParams = [
+      seller_id,
+      purchased_at,
+      "Cart grise",
+      car.name,
+      car.serial_number,
+      owner,
+      "entrante",
+      "DZD",
+      price,
+      "company",
+      note,
+    ];
+
+    const productParams = ["paper", id, "entrante"];
+
+    updateTransactionByProductIdStatment.run([...sellerTransactionParams, ...productParams]);
+
+    const params = [type, given_at, purchased_at, seller_id, car_id, owner, note, price, id];
+
+    S.updatePaperStatment.run(params);
+    const updatedPaper = S.selectPaperByIdStatment.get(id);
+    db.exec("COMMIT;");
+
+    res.status(200).json({ status: "success", paper: updatedPaper });
+  } catch (error: any) {
+    db.exec("ROLLBACK;");
+    return next(new AppError(error, 403));
+  }
+});
+
+export const deliverPaper = tryCatch((req, res, next) => {
+  const { recipient, received_at, note } = req.body;
+  const { id } = req.params;
 
   const paper = S.selectPaperByIdStatment.get(id) as Paper | undefined;
 
   if (!paper) {
-    return next(new AppError("Dossier non trouvé.", 404));
+    return next(new AppError("Dossier / Cart grise non trouvée.", 404));
   }
 
-  deal_id = paper.deal_id;
+  try {
+    const params = [recipient, received_at, note, id];
 
-  const car = selectCarByIdStatment.get(paper.car_id) as Car;
+    S.updatePaperDeliveryStatment.run(params);
+
+    const updatedPaper = S.selectPaperByIdStatment.get(id);
+
+    res.status(200).json({ status: "success", paper: updatedPaper });
+  } catch (error: any) {
+    db.exec("ROLLBACK;");
+    return next(new AppError(error, 403));
+  }
+});
+
+export const cancelPaperDelivery = tryCatch((req, res, next) => {
+  const { id } = req.params;
+
+  const paper = S.selectPaperByIdStatment.get(id) as Paper | undefined;
+
+  if (!paper) {
+    return next(new AppError("Dossier / Cart grise non trouvée.", 404));
+  }
 
   db.exec("BEGIN TRANSACTION");
+
   try {
-    if (type && type !== paper.type) {
-      if (type === "expense") {
-        deleteDocumentsByIds(id, deleteTransactionsByProductIdQuery, ["paper", "entrante"]);
-
-        const expenseParams = {
-          expense_date: purchased_at ?? paper.purchased_at,
-          raison: `Cart grise de ${car.name} (${car.serial_number})`,
-          cost: price ?? paper.price,
-        };
-
-        const { lastInsertRowid } = insertExpenseStatment.run(expenseParams);
-        deal_id = lastInsertRowid;
-      } else if (type === "transaction") {
-        S.resetPaperDealIdStatment.run(id);
-        deleteDocumentsByIds(`${paper.deal_id}`, deleteExpensesByIdQuery);
-        deal_id = null;
-
-        const transactionParams = {
-          client_id: seller_id ?? paper.seller_id,
-          transaction_date: purchased_at ?? paper.purchased_at,
-          type: "paper",
-          product_id: id,
-          info1: "Cart grise",
-          info2: car.name,
-          info3: car.color,
-          info4: `${car.registration_number} (${car.serial_number})`,
-          direction: "entrante",
-          currency: "DZD",
-          amount: price ?? paper.price,
-        };
-
-        insertTransactionStatment.run(transactionParams);
-      }
-    } else {
-      if (paper.type === "expense") {
-        const expenseParams = [purchased_at, null, price ?? paper.price, paper.deal_id];
-
-        updateExpenseStatment.run(expenseParams);
-      } else if (paper.type === "transaction") {
-        const transactionParams = [
-          seller_id,
-          purchased_at,
-          "Cart grise",
-          car.name,
-          car.color,
-          `${car.registration_number} (${car.serial_number})`,
-          "entrante",
-          "DZD",
-          price,
-        ];
-
-        const productParams = ["paper", id, "entrante"];
-
-        updateTransactionByProductIdStatment.run([...transactionParams, ...productParams]);
-      }
-    }
-
-    const params = [type, purchased_at, seller_id, price, deal_id, issue_date, received_at, id];
-
-    S.updatePaperStatment.run(params);
+    S.cancelPaperDeliveryStatment.run(id);
     const updatedPaper = S.selectPaperByIdStatment.get(id);
+
     db.exec("COMMIT;");
 
     res.status(200).json({ status: "success", paper: updatedPaper });

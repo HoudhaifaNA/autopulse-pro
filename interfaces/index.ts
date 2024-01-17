@@ -145,22 +145,18 @@ export interface Procuration {
 
 export interface Paper {
   id: number;
-  type: "expense" | "transaction";
-  purchased_at: string;
+  type: "dossier" | "cart grise";
+  given_at: string;
+  purchased_at: string | null;
   seller_id: number;
   car_id: number;
   price: number;
-  deal_id: number | null;
-  issue_date: string;
   received_at: string | null;
-  expiration_date: string;
   has_received: 0 | 1;
   created_at: string;
   updated_at: string;
-  is_expirated: 0 | 1;
   seller: string;
   car: string;
-  owner_id: number;
   owner: string;
 }
 

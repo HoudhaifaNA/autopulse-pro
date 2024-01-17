@@ -124,15 +124,16 @@ export const createLicencesTableStatment = `
 export const createPapersTableStatment = `
   CREATE TABLE IF NOT EXISTS papers(
   id INTEGER PRIMARY KEY,
-  type TEXT NOT NULL CHECK (type IN ('transaction', 'expense')),
+  type TEXT NOT NULL CHECK (type IN ('dossier', 'cart grise')),
+  given_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   seller_id INTEGER NOT NULL,
   car_id INTEGER NOT NULL UNIQUE,
+  owner TEXT,
+  note TEXT,
   price INTEGER DEFAULT 0 ${checkNumber("price")},
-  deal_id INTEGER,
-  issue_date TEXT NOT NULL,
+  recipient TEXT,
   received_at TEXT,
-  expiration_date TEXT AS (DATETIME(issue_date, '+3 years')) STORED,
   has_received INTEGER AS (CASE WHEN received_at IS NOT NULL THEN 1 ELSE 0 END) STORED,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -142,10 +143,6 @@ export const createPapersTableStatment = `
      ON DELETE CASCADE
   FOREIGN KEY (car_id)
    REFERENCES cars (id)
-     ON UPDATE NO ACTION
-     ON DELETE CASCADE
-  FOREIGN KEY (deal_id)
-    REFERENCES expenses (id)
      ON UPDATE NO ACTION
      ON DELETE CASCADE
   )`;
