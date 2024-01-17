@@ -11,6 +11,7 @@ router
   .delete(controller.deleteAllProcurations);
 
 router.route("/:id").get(controller.getProcurationById).patch(controller.updateProcuration);
+router.route("/:id/deliver").patch(controller.deliverProcuration).delete(controller.cancelProcurationDelivery);
 
 router.delete("/:ids", controller.deleteProcurationsById);
 

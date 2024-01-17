@@ -153,25 +153,28 @@ export const createPapersTableStatment = `
 export const createProcurationsTableStatment = `
   CREATE TABLE IF NOT EXISTS procurations(
   id INTEGER PRIMARY KEY,
-  type TEXT NOT NULL CHECK (type IN ('transaction', 'expense')),
   purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  licence_id INTEGER NOT NULL,
   car_id INTEGER NOT NULL UNIQUE,
+  seller_id INTEGER NOT NULL,
+  procurator TEXT NOT NULL,
   notary TEXT,
   price INTEGER DEFAULT 0 ${checkNumber("price")},
+  is_expense INTEGER DEFAULT 0,
   deal_id INTEGER,
+  recipient TEXT,
+  note TEXT,
   issue_date TEXT NOT NULL,
-  received_at TEXT,
   expiration_date TEXT AS (DATETIME(issue_date, '+3 years')) STORED,
+  received_at TEXT,
   has_received INTEGER AS (CASE WHEN received_at IS NOT NULL THEN 1 ELSE 0 END) STORED,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (licence_id)
-   REFERENCES licences (id)
-     ON UPDATE NO ACTION
-     ON DELETE CASCADE
   FOREIGN KEY (car_id)
    REFERENCES cars (id)
+     ON UPDATE NO ACTION
+     ON DELETE CASCADE
+  FOREIGN KEY (seller_id)
+    REFERENCES clients (id)
      ON UPDATE NO ACTION
      ON DELETE CASCADE
   FOREIGN KEY (deal_id)

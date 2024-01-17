@@ -85,73 +85,75 @@ export const getProcurationById = tryCatch((req, res, next) => {
 });
 
 export const createProcuration = tryCatch((req, res, next) => {
-  const { type, purchased_at, notary, licence_id, price, issue_date, received_at } = req.body;
-  const licence = selectLicenceByIdStatment.get(licence_id) as Licence | undefined;
-  let deal_id = null;
+  const { purchased_at, car_id, seller_id, notary, procurator, price, note, issue_date } = req.body;
 
-  if (!licence || !licence.car_id) {
-    return next(new AppError("La licence est invalide. Veuillez vérifier les informations fournies.", 400));
+  const car = selectCarByIdStatment.get(car_id) as Car | undefined;
+
+  if (!car) {
+    return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
-  const { car_id, seller_id } = licence;
+  const { buyer_id, buyer, has_procuration, owner_id } = car;
 
-  const car = selectCarByIdStatment.get(car_id) as Car;
-
-  const { buyer_id, has_procuration } = car;
-
-  if (!buyer_id || !has_procuration) {
+  if (!buyer_id || !has_procuration || !owner_id) {
     return next(
       new AppError(
-        "Impossible d'ajouter une procuration pour cette voiture. La voiture n'a pas encore été vendue ou la procuration n'est pas activée.",
+        "Impossible d'ajouter une procuration pour cette voiture. La voiture n'a pas encore été vendue ou la procuration n'est pas activée ou licence est invalide.",
         400
       )
     );
   }
 
+  const licence = selectLicenceByIdStatment.get(owner_id) as Licence;
+
   db.exec("BEGIN TRANSACTION");
   try {
-    if (type === "expense") {
-      const expenseParams = {
-        expense_date: purchased_at,
-        raison: `Procuration de ${car.name} (${car.serial_number})`,
-        cost: price,
-      };
-
-      const { lastInsertRowid } = insertExpenseStatment.run(expenseParams);
-      deal_id = lastInsertRowid;
-    }
-
     const params = {
-      type,
       purchased_at,
-      licence_id,
       car_id,
+      seller_id,
+      procurator,
       notary,
       price,
-      deal_id,
+      note,
       issue_date,
-      received_at,
     };
 
     const { lastInsertRowid } = S.insertProcurationStatment.run(params);
 
-    if (type === "transaction") {
-      const transactionParams = {
-        client_id: seller_id,
-        transaction_date: purchased_at,
-        type: "procuration",
-        product_id: lastInsertRowid,
-        info1: "Procuration",
-        info2: car.name,
-        info3: car.serial_number,
-        info4: licence.moudjahid,
-        direction: "entrante",
-        currency: "DZD",
-        amount: price,
-      };
+    const sellerTransactionParams = {
+      client_id: seller_id,
+      transaction_date: purchased_at,
+      type: "procuration",
+      product_id: lastInsertRowid,
+      info1: "Procuration",
+      info2: car.name,
+      info3: car.serial_number,
+      info4: licence.moudjahid,
+      direction: "entrante",
+      currency: "DZD",
+      amount: price,
+      recipient: "company",
+      note,
+    };
+    const buyerTransactionParams = {
+      client_id: buyer_id,
+      transaction_date: purchased_at,
+      type: "procuration",
+      product_id: lastInsertRowid,
+      info1: "Procuration",
+      info2: car.name,
+      info3: car.serial_number,
+      info4: licence.moudjahid,
+      direction: "sortante",
+      currency: "DZD",
+      amount: -price,
+      recipient: buyer,
+      note,
+    };
 
-      insertTransactionStatment.run(transactionParams);
-    }
+    insertTransactionStatment.run(sellerTransactionParams);
+    insertTransactionStatment.run(buyerTransactionParams);
 
     const newProcuration = S.selectProcurationByIdStatment.get(lastInsertRowid);
     db.exec("COMMIT;");
@@ -164,9 +166,8 @@ export const createProcuration = tryCatch((req, res, next) => {
 });
 
 export const updateProcuration = tryCatch((req, res, next) => {
-  const { type, purchased_at, price, notary, issue_date, received_at } = req.body;
+  const { purchased_at, car_id, seller_id, notary, procurator, price, note, issue_date } = req.body;
   const { id } = req.params;
-  let deal_id = null;
 
   const procuration = S.selectProcurationByIdStatment.get(id) as Procuration | undefined;
 
@@ -174,72 +175,194 @@ export const updateProcuration = tryCatch((req, res, next) => {
     return next(new AppError("Procuration non trouvée.", 404));
   }
 
-  deal_id = procuration.deal_id;
+  const car = selectCarByIdStatment.get(car_id) as Car | undefined;
 
-  const car = selectCarByIdStatment.get(procuration.car_id) as Car;
+  if (!car) {
+    return next(new AppError(`Voiture non trouvée.`, 404));
+  }
+
+  const { buyer_id, buyer, has_procuration, owner_id } = car;
+
+  if (!buyer_id || !has_procuration || !owner_id) {
+    return next(
+      new AppError(
+        "Impossible d'ajouter une procuration pour cette voiture. La voiture n'a pas encore été vendue ou la procuration n'est pas activée ou licence est invalide.",
+        400
+      )
+    );
+  }
+
+  const licence = selectLicenceByIdStatment.get(owner_id) as Licence;
 
   db.exec("BEGIN TRANSACTION");
   try {
-    if (type && type !== procuration.type) {
-      if (type === "expense") {
-        deleteDocumentsByIds(id, deleteTransactionsByProductIdQuery, ["procuration", "entrante"]);
+    const sellerTransactionParams = [
+      seller_id,
+      purchased_at,
+      "Procuration",
+      car.name,
+      car.serial_number,
+      licence.moudjahid,
+      "entrante",
+      "DZD",
+      price,
+      "company",
+      note,
+    ];
 
+    const productParams = ["procuration", id, "entrante"];
+
+    updateTransactionByProductIdStatment.run([...sellerTransactionParams, ...productParams]);
+
+    if (procuration.is_expense) {
+      const expenseParams = [
+        purchased_at,
+        `Procuration de ${car.name} (${car.serial_number})`,
+        price,
+        note,
+        procuration.deal_id,
+      ];
+
+      updateExpenseStatment.run(expenseParams);
+    } else {
+      const buyerTransactionParams = [
+        buyer_id,
+        purchased_at,
+        "Procuration",
+        car.name,
+        car.serial_number,
+        licence.moudjahid,
+        "sortante",
+        "DZD",
+        -price,
+        buyer,
+        note,
+      ];
+
+      const productParams = ["procuration", id, "sortante"];
+
+      updateTransactionByProductIdStatment.run([...buyerTransactionParams, ...productParams]);
+    }
+
+    const params = [purchased_at, car_id, seller_id, procurator, notary, price, note, issue_date, id];
+
+    S.updateProcurationStatment.run(params);
+    const updatedProcuration = S.selectProcurationByIdStatment.get(id);
+    db.exec("COMMIT;");
+
+    res.status(200).json({ status: "success", procuration: updatedProcuration });
+  } catch (error: any) {
+    db.exec("ROLLBACK;");
+    return next(new AppError(error, 403));
+  }
+});
+
+export const deliverProcuration = tryCatch((req, res, next) => {
+  const { recipient, received_at, is_expense } = req.body;
+  const { id } = req.params;
+
+  const procuration = S.selectProcurationByIdStatment.get(id) as Procuration | undefined;
+
+  if (!procuration) {
+    return next(new AppError("Procuration non trouvée.", 404));
+  }
+
+  let { purchased_at, car, car_serial_number, moudjahid, price, buyer_id, buyer, deal_id } = procuration;
+  let note = req.body.note || procuration.note;
+
+  db.exec("BEGIN TRANSACTION");
+  try {
+    if (is_expense !== procuration.is_expense) {
+      if (is_expense) {
+        deleteDocumentsByIds(id, deleteTransactionsByProductIdQuery, ["procuration", "sortante"]);
         const expenseParams = {
-          expense_date: purchased_at ?? procuration.purchased_at,
-          raison: `Procuration de ${car.name} (${car.serial_number})`,
-          cost: price ?? procuration.price,
+          expense_date: purchased_at,
+          raison: `Procuration de ${car} (${car_serial_number})`,
+          cost: price,
+          note,
         };
 
         const { lastInsertRowid } = insertExpenseStatment.run(expenseParams);
-        deal_id = lastInsertRowid;
-      } else if (type === "transaction") {
+
+        deal_id = lastInsertRowid as number;
+      } else {
         S.resetProcurationDealIdStatment.run(id);
-        deleteDocumentsByIds(`${procuration.deal_id}`, deleteExpensesByIdQuery);
+        deleteDocumentsByIds(`${deal_id}`, deleteExpensesByIdQuery);
         deal_id = null;
 
-        const transactionParams = {
-          client_id: procuration.seller_id,
-          transaction_date: purchased_at ?? procuration.purchased_at,
+        const buyerTransactionParams = {
+          client_id: buyer_id,
+          transaction_date: purchased_at,
           type: "procuration",
           product_id: id,
           info1: "Procuration",
-          info2: car.name,
-          info3: car.serial_number,
-          info4: procuration.moudjahid,
-          direction: "entrante",
+          info2: car,
+          info3: car_serial_number,
+          info4: moudjahid,
+          direction: "sortante",
           currency: "DZD",
-          amount: price ?? procuration.price,
+          amount: -price,
+          recipient: buyer,
+          note,
         };
 
-        insertTransactionStatment.run(transactionParams);
-      }
-    } else {
-      if (procuration.type === "expense") {
-        const expenseParams = [purchased_at, null, price, procuration.deal_id];
-
-        updateExpenseStatment.run(expenseParams);
-      } else if (procuration.type === "transaction") {
-        const transactionParams = [
-          procuration.seller_id,
-          purchased_at,
-          "Procuration",
-          car.name,
-          car.serial_number,
-          procuration.moudjahid,
-          "entrante",
-          "DZD",
-          price,
-        ];
-
-        const productParams = ["procuration", id, "entrante"];
-
-        updateTransactionByProductIdStatment.run([...transactionParams, ...productParams]);
+        insertTransactionStatment.run(buyerTransactionParams);
       }
     }
 
-    const params = [type, purchased_at, price, notary, deal_id, issue_date, received_at, id];
+    const params = [recipient, received_at, is_expense, deal_id, note, id];
 
-    S.updateProcurationStatment.run(params);
+    S.updateProcurationDeliveryStatment.run(params);
+
+    const updatedProcuration = S.selectProcurationByIdStatment.get(id);
+    db.exec("COMMIT;");
+
+    res.status(200).json({ status: "success", procuration: updatedProcuration });
+  } catch (error: any) {
+    db.exec("ROLLBACK;");
+    return next(new AppError(error, 403));
+  }
+});
+
+export const cancelProcurationDelivery = tryCatch((req, res, next) => {
+  const { id } = req.params;
+
+  const procuration = S.selectProcurationByIdStatment.get(id) as Procuration | undefined;
+
+  if (!procuration) {
+    return next(new AppError("Procuration non trouvée.", 404));
+  }
+
+  let { purchased_at, car, car_serial_number, is_expense, note, moudjahid, price, buyer_id, buyer, deal_id } =
+    procuration;
+
+  db.exec("BEGIN TRANSACTION");
+
+  S.cancelProcurationDeliveryStatment.run(id);
+
+  try {
+    if (is_expense) {
+      deleteDocumentsByIds(`${deal_id}`, deleteExpensesByIdQuery);
+
+      const buyerTransactionParams = {
+        client_id: buyer_id,
+        transaction_date: purchased_at,
+        type: "procuration",
+        product_id: id,
+        info1: "Procuration",
+        info2: car,
+        info3: car_serial_number,
+        info4: moudjahid,
+        direction: "sortante",
+        currency: "DZD",
+        amount: -price,
+        recipient: buyer,
+        note,
+      };
+
+      insertTransactionStatment.run(buyerTransactionParams);
+    }
+
     const updatedProcuration = S.selectProcurationByIdStatment.get(id);
     db.exec("COMMIT;");
 

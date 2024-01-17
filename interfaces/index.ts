@@ -122,8 +122,12 @@ export interface Procuration {
   seller_id: number;
   licence_id: number;
   car_id: number;
-  owner_id: number;
+  car_serial_number: string;
+  buyer_id: number;
   notary: string | null;
+  recipient: string | null;
+  is_expense: 0 | 1;
+  note: string | null;
   price: number;
   deal_id: number | null;
   issue_date: string;
@@ -135,7 +139,7 @@ export interface Procuration {
   is_expirated: 0 | 1;
   moudjahid: string;
   seller: string;
-  owner: string;
+  buyer: string;
   car: string;
 }
 

@@ -7,7 +7,6 @@ import multer, { FileFilterCallback } from "multer";
 import db from "../database";
 import * as S from "../statments/licencesStatments";
 import { insertTransactionStatment, updateTransactionByProductIdStatment } from "../statments/transactionsStatments";
-import { selectProcurationByCarIdStatment } from "../statments/procurationsStatments";
 import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
@@ -253,15 +252,6 @@ export const updateLicence = tryCatch((req, res, next) => {
     updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);
 
     const updatedLicence = S.selectLicenceByIdStatment.get(id) as Licence;
-
-    const procuration = selectProcurationByCarIdStatment.get(updatedLicence.car_id) as Procuration | undefined;
-    if (procuration && procuration.type === "transaction") {
-      const procurationTransactionParams = [updatedLicence.seller_id, null, null, null, null, null, null, null, null];
-
-      const procurationProductParams = ["procuration", procuration.id, "entrante"];
-
-      updateTransactionByProductIdStatment.run([...procurationTransactionParams, ...procurationProductParams]);
-    }
 
     db.exec("COMMIT;");
 

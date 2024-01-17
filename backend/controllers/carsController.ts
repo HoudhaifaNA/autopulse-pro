@@ -356,6 +356,13 @@ export const updateCar = tryCatch((req, res, next) => {
       id,
     ];
 
+    const procuration = selectProcurationByCarIdStatment.get(id) as Procuration | undefined;
+
+    if (procuration && !owner_id) {
+      db.exec("ROLLBACK;");
+      return next(new AppError(`Licence invalide pour une voiture avec procuration.`, 400));
+    }
+
     const { changes } = S.updateCarStatment.run(params);
 
     if (!changes) {
@@ -506,9 +513,19 @@ export const updateCarSale = tryCatch((req, res, next) => {
 
     const soldCar = S.selectCarByIdStatment.get(id) as Car;
 
-    const productParams = ["car", id, "sortante"];
+    const procuration = selectProcurationByCarIdStatment.get(id) as Procuration | undefined;
 
-    const transacrtionParams = [
+    if (procuration && !procuration.is_expense && procuration.buyer_id !== buyer_id) {
+      const procurationParams = ["procuration", procuration.id, "sortante"];
+
+      const procurationBuyerParams = [buyer_id, null, null, null, null, null, null, null, null, null, null];
+
+      updateTransactionByProductIdStatment.run([...procurationBuyerParams, ...procurationParams]);
+    }
+
+    const carSaleProductParams = ["car", id, "sortante"];
+
+    const carSaletransacrtionParams = [
       buyer_id,
       sold_at,
       soldCar.name,
@@ -522,7 +539,7 @@ export const updateCarSale = tryCatch((req, res, next) => {
       selling_details,
     ];
 
-    updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);
+    updateTransactionByProductIdStatment.run([...carSaletransacrtionParams, ...carSaleProductParams]);
 
     db.exec("COMMIT;");
 
