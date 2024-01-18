@@ -13,10 +13,11 @@ import PaperForm from "page-components/papers/PaperForm";
 import ProcurationForm from "page-components/procurations/ProcurationForm";
 import CategoryForm from "page-components/home/CategoryForm";
 import PrintModal from "page-components/clients/PrintModal";
+import DeliverProcurationForm from "page-components/procurations/DeliverProcurationForm";
+import DeliverPaperForm from "page-components/papers/DeliverPaperForm";
 
 import { useAppSelector } from "store";
 import { ModalTypes } from "types";
-import DeliverProcurationForm from "page-components/procurations/DeliverProcurationForm";
 
 interface ModalItem {
   Component: ({ modalId }: { modalId: string }) => JSX.Element;
@@ -56,6 +57,9 @@ const modalsComponents: ModalsComponents = {
   deliver_procuration: {
     Component: DeliverProcurationForm,
   },
+  deliver_paper: {
+    Component: DeliverPaperForm,
+  },
   expenses: {
     Component: ExpenseForm,
   },
@@ -78,6 +82,9 @@ const modalsComponents: ModalsComponents = {
     Component: DeleteModal,
   },
   cancel_procuration_delivery: {
+    Component: DeleteModal,
+  },
+  cancel_paper_delivery: {
     Component: DeleteModal,
   },
 };

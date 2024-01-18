@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { mutate } from "swr";
 import { Formik, FormikConfig, FormikProps } from "formik";
 import { useDispatch } from "react-redux";
@@ -5,7 +6,7 @@ import { useDispatch } from "react-redux";
 import Button from "components/Button/Button";
 import DateInput from "components/DateInput/DateInput";
 import Form from "components/Form/Form";
-import { FormGroup } from "components/Form/Form.styled";
+import { FormGroup, ScrollFormWrapper } from "components/Form/Form.styled";
 import SelectInput from "components/Input/SelectInput";
 import TypedInput from "components/Input/TypedInput";
 import { ModalActions } from "components/Modal/Modal";
@@ -19,22 +20,22 @@ import { useAppSelector } from "store";
 import { PaperInitalValues } from "./types";
 import { ModalFormConfig } from "types";
 import useSoldCarsList from "hooks/useSoldCarsList";
+import TextArea from "components/TextArea";
 
 const PaperForm = ({ modalId }: { modalId: string }) => {
   const { fetchedUrl, secondaryUrl } = useAppSelector((state) => state.resourceUrls.papers);
   const { modalsList } = useAppSelector((state) => state.modals);
   const currentModal = modalsList.find(({ id }) => id === modalId) as ModalFormConfig;
   const dispatch = useDispatch();
-  const { carsList, isLoading: isCarsLoading } = useSoldCarsList();
+
   const { clientsList, isLoading: isClientsLoading } = useClientsList();
+  const { carsList, isLoading: carsLoading } = useSoldCarsList();
 
   let formInitialValues = INITIAL_VALUES;
-  let isFormDisabled = false;
   let submitButtonText = "Ajouter";
 
   if (currentModal.params?.isEdit) {
     formInitialValues = currentModal.params?.document as PaperInitalValues;
-    isFormDisabled = true;
     submitButtonText = "Modifier";
   }
 
@@ -55,54 +56,69 @@ const PaperForm = ({ modalId }: { modalId: string }) => {
 
   return (
     <Formik {...formProps}>
-      {({ handleSubmit, isSubmitting }: FormikProps<PaperInitalValues>) => {
+      {({ setFieldValue, values, handleSubmit, isSubmitting }: FormikProps<PaperInitalValues>) => {
+        useEffect(() => {
+          if (values.purchased_at) {
+            setFieldValue("type", "cart grise");
+          } else {
+            setFieldValue("type", "dossier");
+          }
+        }, [values.purchased_at]);
+
+        useEffect(() => {
+          //@ts-ignore
+          setFieldValue("owner", currentModal.params?.document.owner);
+        }, []);
+
         return (
           <Form onSubmit={handleSubmit}>
-            <FormGroup>
-              {!isCarsLoading && (
-                <SelectInput
-                  name="car"
-                  label="Voiture"
-                  placeholder="Nom de voiture"
-                  relatedFields={["car_id"]}
-                  items={carsList}
-                  disabled={isFormDisabled}
-                />
-              )}
-            </FormGroup>
-            <FormGroup>
-              {!isClientsLoading && (
-                <SelectInput
-                  name="seller"
-                  label="Vendeur"
-                  placeholder="Nom de vendeur"
-                  relatedFields={["seller_id"]}
-                  items={clientsList}
-                  buttons={
-                    <Button type="button" variant="ghost" icon="add" onClick={toggleClientForm}>
-                      Ajouter un client
-                    </Button>
-                  }
-                />
-              )}
-              <DateInput name="purchased_at" label="Date de réception" />
-            </FormGroup>
-            <FormGroup>
-              <SelectInput
-                label="Type :"
-                placeholder="Choisissez un type"
-                name="type_ui"
-                items={TYPE_ITEMS}
-                elementAs="div"
-                relatedFields={["type"]}
-              />
-              <TypedInput name="price" type="number" label="Prix" placeholder="0" addOn="DA" />
-            </FormGroup>
-            <FormGroup>
-              <DateInput name="issue_date" label="Date d'émission" />
-              <DateInput name="received_at" label="Date de livraison" clearable />
-            </FormGroup>
+            <ScrollFormWrapper>
+              <FormGroup>
+                {!carsLoading && (
+                  <SelectInput
+                    name="car"
+                    label="Voiture"
+                    placeholder="Nom de voiture"
+                    relatedFields={["car_id", "", "owner"]}
+                    items={carsList}
+                  />
+                )}
 
+                <TypedInput name="owner" type="text" label="Propriétaire" placeholder="Propriétaire" />
+              </FormGroup>
+              <FormGroup>
+                {!isClientsLoading && (
+                  <SelectInput
+                    name="seller"
+                    label="Vendeur"
+                    placeholder="Nom de vendeur"
+                    relatedFields={["seller_id"]}
+                    items={clientsList}
+                    buttons={
+                      <Button type="button" variant="ghost" icon="add" onClick={toggleClientForm}>
+                        Ajouter un client
+                      </Button>
+                    }
+                  />
+                )}
+                <TypedInput name="price" type="number" label="Prix" placeholder="0" addOn="DA" />
+              </FormGroup>
+              <FormGroup>
+                <DateInput name="given_at" label="Date donnée" />
+                <DateInput name="purchased_at" label="Date de réception" clearable />
+              </FormGroup>
+              <FormGroup>
+                <SelectInput
+                  label="Type :"
+                  placeholder="Choisissez un type"
+                  name="type"
+                  items={TYPE_ITEMS}
+                  elementAs="div"
+                />
+              </FormGroup>
+
+              <TextArea name="note" label="Note" />
+            </ScrollFormWrapper>
             <ModalActions>
               <Button type="submit" variant="primary" loading={isSubmitting}>
                 {submitButtonText}

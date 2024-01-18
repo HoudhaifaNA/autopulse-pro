@@ -1,4 +1,4 @@
-import { mutate } from "swr";
+import { mutate, useSWRConfig } from "swr";
 import { Formik, FormikConfig, FormikProps } from "formik";
 import { useDispatch } from "react-redux";
 
@@ -41,6 +41,19 @@ const LicenceForm = ({ modalId }: LicenceFormProps) => {
   const currentModal = modalsList.find(({ id }) => id === modalId) as ModalFormConfig;
   const dispatch = useDispatch();
   const { clientsList, isLoading: isClientsLoading } = useClientsList();
+  const { cache, mutate } = useSWRConfig();
+
+  const urlRegex = /^\/licences\/list/;
+
+  const invalidateLicences = () => {
+    const keysArray = Array.from(cache.keys());
+
+    keysArray.forEach((key) => {
+      if (urlRegex.test(key)) {
+        mutate(key);
+      }
+    });
+  };
 
   let formInitialValues = INITIAL_VALUES;
   let isFormDisabled = false;
@@ -62,7 +75,7 @@ const LicenceForm = ({ modalId }: LicenceFormProps) => {
       if (status === "success") {
         mutate(fetchedUrl);
         mutate(secondaryUrl);
-        mutate("/licences/list/valid");
+        invalidateLicences();
         dispatch(removeModal(modalId));
       }
     },

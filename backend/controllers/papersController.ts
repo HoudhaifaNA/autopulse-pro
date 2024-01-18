@@ -104,23 +104,25 @@ export const createPaper = tryCatch((req, res, next) => {
 
     const { lastInsertRowid } = S.insertPaperStatment.run(params);
 
-    const sellerTransactionParams = {
-      client_id: seller_id,
-      transaction_date: purchased_at,
-      type: "paper",
-      product_id: lastInsertRowid,
-      info1: "Cart grise",
-      info2: car.name,
-      info3: car.serial_number,
-      info4: owner,
-      direction: "entrante",
-      currency: "DZD",
-      amount: price,
-      recipient: "company",
-      note,
-    };
+    if (purchased_at) {
+      const sellerTransactionParams = {
+        client_id: seller_id,
+        transaction_date: purchased_at,
+        type: "paper",
+        product_id: lastInsertRowid,
+        info1: "Cart grise",
+        info2: car.name,
+        info3: car.serial_number,
+        info4: owner,
+        direction: "entrante",
+        currency: "DZD",
+        amount: price,
+        recipient: "company",
+        note,
+      };
 
-    insertTransactionStatment.run(sellerTransactionParams);
+      insertTransactionStatment.run(sellerTransactionParams);
+    }
 
     const newPaper = S.selectPaperByIdStatment.get(lastInsertRowid);
     db.exec("COMMIT;");
@@ -135,6 +137,12 @@ export const createPaper = tryCatch((req, res, next) => {
 export const updatePaper = tryCatch((req, res, next) => {
   const { type, given_at, purchased_at, seller_id, car_id, owner, note, price } = req.body;
   const { id } = req.params;
+
+  const paper = S.selectPaperByIdStatment.get(id) as Paper | undefined;
+
+  if (!paper) {
+    return next(new AppError("Dossier / Cart grise non trouvée.", 404));
+  }
 
   const car = selectCarByIdStatment.get(car_id) as Car | undefined;
 
@@ -153,23 +161,43 @@ export const updatePaper = tryCatch((req, res, next) => {
 
   db.exec("BEGIN TRANSACTION");
   try {
-    const sellerTransactionParams = [
-      seller_id,
-      purchased_at,
-      "Cart grise",
-      car.name,
-      car.serial_number,
-      owner,
-      "entrante",
-      "DZD",
-      price,
-      "company",
-      note,
-    ];
+    if (purchased_at && !paper.purchased_at) {
+      const sellerTransactionParams = {
+        client_id: seller_id,
+        transaction_date: purchased_at,
+        type: "paper",
+        product_id: id,
+        info1: "Cart grise",
+        info2: car.name,
+        info3: car.serial_number,
+        info4: owner,
+        direction: "entrante",
+        currency: "DZD",
+        amount: price,
+        recipient: "company",
+        note,
+      };
 
-    const productParams = ["paper", id, "entrante"];
+      insertTransactionStatment.run(sellerTransactionParams);
+    } else if (purchased_at && paper.purchased_at) {
+      const sellerTransactionParams = [
+        seller_id,
+        purchased_at,
+        "Cart grise",
+        car.name,
+        car.serial_number,
+        owner,
+        "entrante",
+        "DZD",
+        price,
+        "company",
+        note,
+      ];
 
-    updateTransactionByProductIdStatment.run([...sellerTransactionParams, ...productParams]);
+      const productParams = ["paper", id, "entrante"];
+
+      updateTransactionByProductIdStatment.run([...sellerTransactionParams, ...productParams]);
+    }
 
     const params = [type, given_at, purchased_at, seller_id, car_id, owner, note, price, id];
 

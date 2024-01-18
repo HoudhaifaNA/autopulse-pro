@@ -152,10 +152,13 @@ export interface Paper {
   car_id: number;
   price: number;
   received_at: string | null;
+  recipient: string | null;
   has_received: 0 | 1;
+  note: string | null;
   created_at: string;
   updated_at: string;
   seller: string;
+  buyer: string;
   car: string;
   owner: string;
 }

@@ -6,9 +6,9 @@ import { SelectInputProps } from "components/Input/types";
 import { GetLicencesListResponse } from "types";
 
 const useLicencesList = (params?: { id?: number }) => {
-  const filterParams = params?.id ? `id=${params.id}` : "";
+  const filterParams = params?.id ? `?id=${params.id}` : "";
 
-  const url = `/licences/list?${filterParams}`;
+  const url = `/licences/list${filterParams}`;
   const { data, isLoading, error } = useSWR<GetLicencesListResponse>(url, fetcher);
 
   let licencesList: SelectInputProps["items"] = [];

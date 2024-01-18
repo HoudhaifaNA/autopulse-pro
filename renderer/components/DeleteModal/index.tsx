@@ -33,7 +33,7 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
   const [visibility, toggleVisibility] = useState(false);
   let url = `${baseUrl}/${currentModal.idsToDelete.join(",")}`;
   if (currentModal.name === "cancel_sale") url = `${baseUrl}/sale/${currentModal.idsToDelete.join(",")}`;
-  if (currentModal.name === "cancel_procuration_delivery")
+  if (currentModal.name === "cancel_procuration_delivery" || currentModal.name === "cancel_paper_delivery")
     url = `${baseUrl}/${currentModal.idsToDelete.join(",")}/deliver`;
   if (currentModal.resource.startsWith("transactions")) url = `/transactions/${currentModal.idsToDelete.join(",")}`;
   if (currentModal.resource === "expenses" && !secondaryUrl) {
@@ -51,7 +51,11 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
         dispatch(removeModal(modalId));
         dispatch(clearSelectedItems());
         if (currentModal.resource === "categories") mutate("/categories/cars");
-        if (currentModal.name === "cancel_sale" || currentModal.name === "cancel_procuration_delivery") {
+        if (
+          currentModal.name === "cancel_sale" ||
+          currentModal.name === "cancel_procuration_delivery" ||
+          currentModal.name === "cancel_paper_delivery"
+        ) {
           return mutate(secondaryUrl);
         }
         if (currentModal.resource.startsWith("transactions")) {

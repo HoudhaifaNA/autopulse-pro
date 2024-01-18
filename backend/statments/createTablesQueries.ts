@@ -126,7 +126,7 @@ export const createPapersTableStatment = `
   id INTEGER PRIMARY KEY,
   type TEXT NOT NULL CHECK (type IN ('dossier', 'cart grise')),
   given_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  purchased_at TEXT,
   seller_id INTEGER NOT NULL,
   car_id INTEGER NOT NULL UNIQUE,
   owner TEXT,
