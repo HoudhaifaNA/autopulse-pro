@@ -17,29 +17,6 @@ interface LostProfit {
 
 const TABLES = ["clients", "cars", "licences", "expenses", "procurations", "papers", "transactions"];
 
-const selectCarsPrices = (column: string, filterQueries: string[]) => {
-  if (column === "sold_price" || column === "profit") {
-    filterQueries.push(`cars.buyer_id IS NOT NULL`);
-  }
-
-  const filters = filterQueries.join(" AND ");
-  const filterClause = filters ? `WHERE ${filters}` : "";
-  let priceQuery = ``;
-
-  if (column === "profit") {
-    priceQuery = S.selectCarsProfitQuery.replaceAll("--FILTER", filterClause);
-  } else {
-    priceQuery = S.selectCarsPricesQuery.replaceAll("--PRICE", column).replaceAll("--FILTER", filterClause);
-  }
-
-  const selectCarsStatsQuery = `
-  ${priceQuery}
-  GROUP BY types.type;
-  `;
-
-  return db.prepare(selectCarsStatsQuery).all();
-};
-
 export const getCarsStock = tryCatch((req, res) => {
   const { type, orderBy = "name" } = req.query;
 
@@ -139,52 +116,30 @@ export const getClientsBalanaceStats = tryCatch((_req, res) => {
 export const getCarsStats = tryCatch((req, res) => {
   const rangeFilters = ["purchased_at", "sold_at"];
 
-  const filterQueries = generateRangeFilters(rangeFilters, req.query);
+  const filterQueries = generateRangeFilters(rangeFilters, req.query, "cars");
 
-  let lostProfitAddOnFilters: string = "";
-  filterQueries.forEach((filter) => (lostProfitAddOnFilters += ` AND ${filter}`));
+  let filterQuery = "";
+  let filterTypes = "";
 
-  const selectLostProfitQuery = `
-  ${S.selectLostLocaleProfitQuery}
-  ${lostProfitAddOnFilters}
-  GROUP BY exchange_types
+  if (filterQueries.length > 0) {
+    filterQuery = `WHERE ${filterQueries.join(" AND ")}`;
+    filterTypes = `AND ${filterQueries.join(" AND ")}`;
+  }
+
+  const selectAllCarsStats = `
+  ${S.selectCarsAllPrices}
+   ${filterQuery}
   `;
 
-  const lostProfitCategories = db.prepare(selectLostProfitQuery).all() as LostProfit[];
+  const selectCarsByCategoryStats = S.selectCarsByTypePrices.replace("--TYPES", filterTypes);
 
-  const totalLostProfit = {
-    locale: 0,
-    europe: 0,
-    dubai: 0,
-  };
-
-  lostProfitCategories.forEach((category) => {
-    const exchangeTypes: [TExchangeTypes] = JSON.parse(category.exchange_types);
-    let percentage = 1 / exchangeTypes.length;
-
-    exchangeTypes.forEach((type) => {
-      return 0;
-      // ! TODO
-      // totalLostProfit[type] += category.lost_profit * percentage;
-    });
-  });
-
-  const totalPurchasePriceEUR = selectCarsPrices("purchase_price_eur", filterQueries);
-  const totalPurchasePriceDZD = selectCarsPrices("purchase_price_dzd", filterQueries);
-  const totalExpenseCost = selectCarsPrices("expense_cost", filterQueries);
-  const totalCost = selectCarsPrices("total_cost", filterQueries);
-  const totalSoldPrice = selectCarsPrices("sold_price", filterQueries);
-  const totalProfit = selectCarsPrices("profit", filterQueries);
+  const all_cars = db.prepare(selectAllCarsStats).get();
+  const cars_by_category = db.prepare(selectCarsByCategoryStats).all();
 
   return res.status(200).json({
     status: "success",
-    total_purchase_price_eur: totalPurchasePriceEUR,
-    total_purchase_price_dzd: totalPurchasePriceDZD,
-    total_expense_cost: totalExpenseCost,
-    total_cost: totalCost,
-    total_sold_price: totalSoldPrice,
-    total_profit: totalProfit,
-    total_lost_profit: totalLostProfit,
+    all_cars,
+    cars_by_category,
   });
 });
 

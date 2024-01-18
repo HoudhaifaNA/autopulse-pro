@@ -11,6 +11,7 @@ import { fetcher } from "utils/API";
 import formatFiatValue from "utils/formatFiatValue";
 import { useAppSelector } from "store";
 import { GetCarsStatsResponse } from "types";
+import { CarsStats } from "types/api/stats";
 
 const CarsStats = () => {
   const { fetchedUrl } = useAppSelector((state) => state.resourceUrls.carsStats);
@@ -22,47 +23,67 @@ const CarsStats = () => {
     if (error) return <ErrorMessage>{error.response.data.message}</ErrorMessage>;
 
     if (data) {
-      const renderTickets = (field: keyof GetCarsStatsResponse) => {
-        if (field !== "total_lost_profit") {
-          return data[field].map((carType) => {
-            const { type, total, cars_count } = carType;
-            let currency: "DZD" | "EUR" = "DZD";
-            let isBalance = false;
-            if (field === "total_purchase_price_eur") currency = "EUR";
-            if (field === "total_profit") isBalance = true;
-
-            const formattedTotal = formatFiatValue(total, currency, isBalance);
-            const title = `Voitures ${type} (${cars_count})`;
-
-            return <StatTicket title={title} icon={type} value={formattedTotal} key={type} />;
-          });
-        } else {
-          const { locale, europe, dubai } = data[field];
-          const formattedLostProfitLocale = formatFiatValue(locale, "DZD", true);
-          const formattedLostProfitEurope = formatFiatValue(europe, "DZD", true);
-          const formattedLostProfitDubai = formatFiatValue(dubai, "DZD", true);
-
-          return (
-            <>
-              <StatTicket title="Intérêt total perdu dubai" icon="dubai" value={formattedLostProfitDubai} />
-              <StatTicket title="Intérêt total perdu europe" icon="europe" value={formattedLostProfitEurope} />
-              <StatTicket title="Intérêt total perdu locale" icon="locale" value={formattedLostProfitLocale} />
-            </>
-          );
-        }
+      const renderStatsTickets = ({
+        total_cars_count,
+        total_purchase,
+        sold_cars_count,
+        sold_total_purchase,
+        total_sold,
+        total_profit,
+        total_lost_count,
+        total_negative_profit,
+        total_profited_count,
+        total_positive_profit,
+      }: CarsStats) => {
+        return (
+          <>
+            <StatTicket
+              title={`Coût total d'achat (${total_cars_count} voitures)`}
+              icon="car"
+              value={formatFiatValue(total_purchase, "DZD")}
+            />
+            <StatTicket
+              title={`Coût total d'achat des voitures vendues (${sold_cars_count} voitures)`}
+              icon="car"
+              value={formatFiatValue(sold_total_purchase, "DZD")}
+            />
+            <StatTicket
+              title={`Prix total vendu (${sold_cars_count} voitures)`}
+              icon="car"
+              value={formatFiatValue(total_sold, "DZD")}
+            />
+            <StatTicket
+              title={`Intérêt total (${sold_cars_count} voitures)`}
+              icon="car"
+              value={formatFiatValue(total_profit, "DZD")}
+            />
+            <StatTicket
+              title={`Intérêts negative (${total_lost_count} voitures)`}
+              icon="car"
+              value={formatFiatValue(total_negative_profit, "DZD")}
+            />
+            <StatTicket
+              title={`Intérêts positive (${total_profited_count} voitures)`}
+              icon="car"
+              value={formatFiatValue(total_positive_profit, "DZD")}
+            />
+          </>
+        );
       };
 
-      return (
-        <>
-          <TicketList title="Prix ​​total d'achat en euros">{renderTickets("total_purchase_price_eur")}</TicketList>
-          <TicketList title="Prix ​​total d'achat en dinars">{renderTickets("total_purchase_price_dzd")}</TicketList>
-          <TicketList title="Coûts totaux des dépenses">{renderTickets("total_expense_cost")}</TicketList>
-          <TicketList title="Coûts totaux de la voiture">{renderTickets("total_cost")}</TicketList>
-          <TicketList title="Prix ​​de vente total">{renderTickets("total_sold_price")}</TicketList>
-          <TicketList title="Intérêts totaux">{renderTickets("total_profit")}</TicketList>
-          <TicketList title="Intérêt total perdu">{renderTickets("total_lost_profit")}</TicketList>
-        </>
-      );
+      const renderTickets = () => {
+        if (data)
+          return (
+            <>
+              <TicketList title="Total">{renderStatsTickets(data.all_cars)}</TicketList>
+              {data.cars_by_category.map((category) => {
+                return <TicketList title={category.type}>{renderStatsTickets(category)}</TicketList>;
+              })}
+            </>
+          );
+      };
+
+      return <>{renderTickets()}</>;
     }
   };
   return (

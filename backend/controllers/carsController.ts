@@ -139,20 +139,10 @@ export const getCarsBrandsAndSeries = tryCatch((req, res) => {
   const cars_brand = db.prepare(carsBrandQuery).all();
   const cars_name = db.prepare(carsNameQuery).all(name);
 
-  // const purchased_years = S.selectPurchasedYearsStatment.all().map((year_obj: any) => {
-  //   return year_obj.purchased_year;
-  // });
-
-  // const sold_years = S.selectSoldYearsStatment.all().map((year_obj: any) => {
-  //   return year_obj.sold_year;
-  // });
-
   return res.status(200).json({
     status: "success",
     cars_brand,
     cars_name,
-    // purchased_years,
-    //  sold_years
   });
 });
 

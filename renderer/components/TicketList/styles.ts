@@ -5,6 +5,10 @@ export const TicketListWrapper = styled.div`
   padding: 1rem;
   margin: 4rem 0;
   border-radius: 0.4rem;
+
+  h5 {
+    text-transform: capitalize;
+  }
 `;
 
 export const TicketListItems = styled.div`

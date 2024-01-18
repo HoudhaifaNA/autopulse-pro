@@ -180,7 +180,7 @@ const CarsTable = ({ data }: CarsTableProps) => {
 
   return (
     <>
-      <div style={{ marginBottom: "1rem" }}>
+      <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "flex-end" }}>
         <Button variant="primary" onClick={() => setIsExpanded(!isExpanded)}>
           Montrer {isExpanded ? "moins" : "plus"}
         </Button>
