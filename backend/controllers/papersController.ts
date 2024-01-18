@@ -1,16 +1,46 @@
 import db from "../database";
 import * as S from "../statments/papersStatments";
-import { selectCarByIdStatment } from "../statments/carsStatments";
+import { selectCarByIdStatment, selectCarsQuery, updateCarExpenses } from "../statments/carsStatments";
 import { insertTransactionStatment, updateTransactionByProductIdStatment } from "../statments/transactionsStatments";
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
-import { Car, Paper } from "../../interfaces";
+import { Car, CarExpense, Paper } from "../../interfaces";
+import uid from "../../renderer/utils/uniqid";
 
 interface ITotalCount {
   total_count: number;
 }
+
+const calculateTotalExpenseCost = (expenses: CarExpense[]): number => {
+  return expenses.reduce((total, expense) => total + expense.cost_in_dzd, 0);
+};
+
+const updateCarPaperExpenses = (car: Car, paperPrice: number, toDelete: boolean) => {
+  const { id } = car;
+  const RAISON = "Dossier / Cart grise";
+  let expenses = JSON.parse(car.expenses) as CarExpense[];
+  let doesExpenseExist = expenses.findIndex((exp) => exp.raison === RAISON);
+
+  if (toDelete) {
+    expenses = expenses.filter((exp) => exp.raison !== RAISON);
+  } else {
+    if (doesExpenseExist !== -1) {
+      expenses = expenses.map((exp) => {
+        if (exp.raison === RAISON) {
+          return { ...exp, cost_in_dzd: paperPrice };
+        }
+        return exp;
+      });
+    } else {
+      expenses = [...expenses, { id: uid(), raison: RAISON, type: "locale", cost_in_eur: 0, cost_in_dzd: paperPrice }];
+    }
+  }
+
+  const expense_cost = calculateTotalExpenseCost(expenses);
+  updateCarExpenses.run([JSON.stringify(expenses), expense_cost, id]);
+};
 
 export const getAllPapers = tryCatch((req, res) => {
   const { has_received, type, orderBy = "-purchased_at", page = 1, limit = 250 } = req.query;
@@ -125,6 +155,7 @@ export const createPaper = tryCatch((req, res, next) => {
     }
 
     const newPaper = S.selectPaperByIdStatment.get(lastInsertRowid);
+    updateCarPaperExpenses(car, price, false);
     db.exec("COMMIT;");
 
     return res.status(201).json({ status: "success", paper: newPaper });
@@ -203,6 +234,7 @@ export const updatePaper = tryCatch((req, res, next) => {
 
     S.updatePaperStatment.run(params);
     const updatedPaper = S.selectPaperByIdStatment.get(id);
+    updateCarPaperExpenses(car, price, false);
     db.exec("COMMIT;");
 
     res.status(200).json({ status: "success", paper: updatedPaper });
@@ -264,6 +296,18 @@ export const deletePapersById = tryCatch((req, res) => {
   const { ids } = req.params;
 
   deleteDocumentsByIds(ids, S.deletePapersByIdQuery);
+
+  const carsList = db
+    .prepare(
+      `
+  ${selectCarsQuery}
+  WHERE cars.id IN (${ids}) 
+  `
+    )
+    .all() as Car[];
+  carsList.forEach((car) => {
+    updateCarPaperExpenses(car, 0, true);
+  });
 
   return res.status(204).json({ status: "success" });
 });

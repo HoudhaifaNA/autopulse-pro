@@ -209,6 +209,14 @@ export const updateCarSaleStatment = db.prepare(`
   WHERE id = ?
 `);
 
+export const updateCarExpenses = db.prepare(`
+  UPDATE cars
+  SET ${setOptionalUpdate("expenses")},
+  ${setOptionalUpdate("expense_cost")},
+  updated_at = CURRENT_TIMESTAMP
+  WHERE id = ?
+`);
+
 export const cancelCarSaleStatment = db.prepare(`
   UPDATE cars
     SET buyer_id = null,
