@@ -28,10 +28,13 @@ const receipteTitleFormatter = (filter: ClientPrintedProps["filter"]) => {
   if (filter?.currency) titleList.push(filter.currency);
   if (filter?.direction) titleList.push(filter.direction);
 
-  const types = filter?.types
-    .split(",")
-    .map((t) => (typesTranslated[t] ? typesTranslated[t] : ""))
-    .join(", ");
+  let types = "";
+  if (filter?.types) {
+    filter.types
+      .split(",")
+      .map((t) => (typesTranslated[t] ? typesTranslated[t] : ""))
+      .join(", ");
+  }
 
   if (types) titleList.push(`(${types})`);
 

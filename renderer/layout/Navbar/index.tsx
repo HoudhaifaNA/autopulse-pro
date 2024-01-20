@@ -15,6 +15,7 @@ const renderNavItems = (items: NavbarItem[], isShort: boolean, currentPath: stri
   const [isNavItemShown, toggleNavItem] = useState(false);
   return items.map(({ name, icon, link }) => {
     let color = "#949494";
+    if (link.includes("home")) color = "#45A1E4";
     if (link.includes("dashboard")) color = "#6A3599";
     if (link.includes("cars")) color = "#ffa801";
     if (link.includes("clients")) color = "#000000";
@@ -62,22 +63,14 @@ const renderNavItems = (items: NavbarItem[], isShort: boolean, currentPath: stri
 
 const Navbar = () => {
   const [short, setShort] = useState(false);
-  const { asPath, push } = useRouter();
+  const { asPath } = useRouter();
   const dispatch = useDispatch();
 
   const addLogoutModal = () => dispatch(addModal({ name: "warning", title: "Déconnecter", type: "logout" }));
 
   return (
     <S.NavbarWrapper $short={short}>
-      <S.LogoWrapper
-        onClick={(ev) => {
-          if (ev.ctrlKey) {
-            push("/home");
-          } else {
-            setShort(!short);
-          }
-        }}
-      >
+      <S.LogoWrapper onClick={() => setShort(!short)}>
         <Image
           src={`${short ? "/images/zauto-short.png" : "/images/zauto-logo.png"}`}
           alt="zauto logo"

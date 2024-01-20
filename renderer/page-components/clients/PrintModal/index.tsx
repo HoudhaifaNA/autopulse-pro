@@ -16,7 +16,13 @@ import { PrintModalConfig } from "types/modals";
 import { removeModal } from "store/reducers/modals";
 
 const CURRENCIES = ["DZD", "EUR"] as const;
-const TYPES = ["car", "paper", "procuration", "licence", "Fiat"] as const;
+const TYPES = [
+  { value: "car", local: "Voitures" },
+  { value: "paper", local: "Dossiers" },
+  { value: "procuration", local: "Procurations" },
+  { value: "licence", local: "Licences" },
+  { value: "Fiat", local: "Argent" },
+] as const;
 const DIRECTIONS = ["sortante", "entrante"] as const;
 const PRINT_TYPES = ["Tout", "Dernier"] as const;
 
@@ -52,20 +58,20 @@ const PrintModal = ({ modalId }: { modalId: string }) => {
   };
   const renderTypes = () => {
     return TYPES.map((tp) => {
-      const isSelected = types.includes(tp);
+      const isSelected = types.includes(tp.value);
 
       const toggleCurrency = () => {
         if (isSelected) {
-          setTypes((prevTypes) => prevTypes.filter((prev) => prev !== tp));
+          setTypes((prevTypes) => prevTypes.filter((prev) => prev !== tp.value));
         } else {
-          setTypes([...types, tp]);
+          setTypes([...types, tp.value]);
         }
       };
 
       return (
-        <S.PrintConfigItem $selected={isSelected} key={tp} onClick={toggleCurrency}>
+        <S.PrintConfigItem $selected={isSelected} key={tp.value} onClick={toggleCurrency}>
           <IconWrapper>{isSelected && <Icon icon="success" size="2.4rem" />}</IconWrapper>
-          <Body2>{tp}</Body2>
+          <Body2>{tp.local}</Body2>
         </S.PrintConfigItem>
       );
     });

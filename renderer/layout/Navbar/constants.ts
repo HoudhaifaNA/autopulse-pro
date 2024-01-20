@@ -1,6 +1,7 @@
 import { NavbarItem } from "./types";
 
 export const NAVBAR_ITEMS: NavbarItem[] = [
+  { name: "Accueil", icon: "home", link: "/home" },
   { name: "Voitures", icon: "car", link: "/cars" },
   { name: "Clients", icon: "clients", link: "/clients" },
   { name: "Licences", icon: "document", link: "/licences" },

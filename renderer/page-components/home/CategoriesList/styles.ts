@@ -6,8 +6,6 @@ export const Main = styled.main`
   flex-direction: column;
   align-items: center;
   gap: 3rem;
-  padding: 6rem;
-  background-color: ${({ theme }) => theme.colors.white};
   overflow-y: auto;
 `;
 
@@ -37,7 +35,7 @@ export const PathSegment = styled.div`
 
 export const CardsList = styled.div`
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-template-rows: auto;
   gap: 2rem;
   width: 80%;

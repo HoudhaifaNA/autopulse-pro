@@ -125,7 +125,6 @@ const CategoriesList = () => {
 
   return (
     <S.Main>
-      <Image src="/images/zauto-logo.png" alt="zauto logo" width={0} height={120} style={{ width: "auto" }} />
       {renderPathBar()}
       <S.CardsList>
         <CategoryCard onClick={() => router.push("/cars")}>

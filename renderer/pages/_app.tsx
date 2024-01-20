@@ -27,7 +27,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   const currentPath = router.asPath.split("/")[1];
 
   const insertPage = () => {
-    if (currentPath.includes("login") || currentPath.includes("home")) {
+    if (currentPath.includes("login")) {
       return <Component {...pageProps} />;
     }
 
