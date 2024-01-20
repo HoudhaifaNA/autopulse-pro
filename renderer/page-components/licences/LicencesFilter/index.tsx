@@ -12,6 +12,15 @@ const VALID_CATEGORIES = {
   ],
 };
 
+const RESERVED_CATEGORIES = {
+  field: "is_reserved",
+  title: "Réservation de la licence",
+  list: [
+    { name: "Réservée", option: "true" },
+    { name: "Disponible", option: "false" },
+  ],
+};
+
 const EXPIRATION_CATEGORIES = {
   field: "is_expirated",
   title: "Expiration de la licence",
@@ -28,6 +37,7 @@ const LicencesFilter = () => {
       <DateRangePicker label="Date d'émission" resource="licences" rangeParam="issue_date" />
       <AmountRange label="Prix" resource="licences" rangeParam="price" />
       <CategoryFilter resource="licences" catgories={VALID_CATEGORIES} />
+      <CategoryFilter resource="licences" catgories={RESERVED_CATEGORIES} />
       <CategoryFilter resource="licences" catgories={EXPIRATION_CATEGORIES} />
     </Filter>
   );

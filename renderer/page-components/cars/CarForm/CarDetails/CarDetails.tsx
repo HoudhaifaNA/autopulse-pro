@@ -11,7 +11,7 @@ import { SelectOption } from "components/Input/types";
 import { CarInitialValues } from "../types";
 import KeysChecker from "../../KeysChecker/KeysChecker";
 
-const currentYear = new Date().getFullYear();
+const nextYear = new Date().getFullYear() + 1;
 
 const CarDetails = () => {
   const { values, setFieldValue } = useFormikContext<CarInitialValues>();
@@ -84,7 +84,7 @@ const CarDetails = () => {
         </FormGroup>
         <FormGroup>
           <SelectInput label="Couleur" name="color" placeholder="Noir" items={COLORS_LIST} />
-          <TypedInput name="production_year" type="text" label="Année" placeholder={`${currentYear}`} />
+          <TypedInput name="production_year" type="text" label="Année" placeholder={`${nextYear}`} />
         </FormGroup>
       </FormGroup>
     </>

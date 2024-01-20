@@ -42,6 +42,43 @@ export const ClickInput = styled.input`
   cursor: pointer;
 `;
 
+export const MultiSelectWrapper = styled.div<{ $hasError: boolean }>`
+  width: 100%;
+  height: 8.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  .mantine-MultiSelect {
+    &-root {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      height: 6.2rem;
+    }
+    &-input {
+      height: 4rem;
+      font-size: 1.4rem;
+      font-family: "Inter", sans-serif;
+      display: flex;
+      align-items: center;
+    }
+
+    &-defaultValue {
+      text-transform: capitalize;
+      font-size: 1.3rem;
+    }
+
+    &-item {
+      height: 4rem;
+      text-transform: capitalize;
+      font-size: 1.4rem;
+      font-family: "Inter", sans-serif;
+      color: ${({ theme, $hasError }) => ($hasError ? theme.colors.error["700"] : theme.colors.black)};
+    }
+  }
+`;
+
 export const SelectInput = styled.div`
   position: relative;
   width: 100%;

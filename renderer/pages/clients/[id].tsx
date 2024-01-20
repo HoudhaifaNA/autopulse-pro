@@ -15,14 +15,14 @@ import formatFiatValue from "utils/formatFiatValue";
 type TCurrencies = "DZD" | "EUR";
 
 const ClientDetails = () => {
-  const [currency, setCurrency] = useState<TCurrencies | "">("");
+  const [currency, setCurrency] = useState<TCurrencies>();
   const router = useRouter();
   const { id } = router.query;
-  const { data } = useClientTransactions(`${id}`, currency);
+  const { data, url } = useClientTransactions(`${id}`, currency ? { currency } : undefined);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(addSecondaryUrl({ resource: "clients", url: `/clients/${id}/transactions?currency=${currency}` }));
+    dispatch(addSecondaryUrl({ resource: "clients", url }));
   }, []);
 
   const renderClientInfo = () => {
@@ -57,11 +57,19 @@ const ClientDetails = () => {
           <CurrencyFilter selectedCurrency={currency} setCurrency={setCurrency} />
           <DetailSection>
             <DetailHeader title={`ZAUTO (sortante)`} />
-            <TransactionsTable transactions={data.transactions} direction="sortante" />
+            <TransactionsTable
+              transactions={data.transactions}
+              clientName={data.client.full_name}
+              direction="sortante"
+            />
           </DetailSection>
           <DetailSection>
             <DetailHeader title={`${full_name} (entrante)`} />
-            <TransactionsTable transactions={data.transactions} direction="entrante" />
+            <TransactionsTable
+              transactions={data.transactions}
+              clientName={data.client.full_name}
+              direction="entrante"
+            />
           </DetailSection>
         </>
       );

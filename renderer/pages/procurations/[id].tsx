@@ -14,10 +14,26 @@ import formatFiatValue from "utils/formatFiatValue";
 import { fetcher } from "utils/API";
 import formatDate from "utils/formatDate";
 import { Procuration } from "interfaces";
+import Badge, { BadgeProps } from "components/Badge/Badge";
 
 interface GetProcurationResponse {
   procuration: Procuration;
 }
+
+const renderProcurationStatus = (isExpirated: 0 | 1, invalidMsg: string, validMsg: string) => {
+  let status: string = "";
+  let color: BadgeProps["type"] = "success";
+
+  if (isExpirated) {
+    status = validMsg;
+    color = "success";
+  } else {
+    status = invalidMsg;
+    color = "error";
+  }
+
+  return <Badge type={color}>{status}</Badge>;
+};
 
 const PaperDetails = () => {
   const router = useRouter();
@@ -36,8 +52,9 @@ const PaperDetails = () => {
         purchased_at,
         car_id,
         car,
-        owner,
-        owner_id,
+        buyer,
+        buyer_id,
+        procurator,
         notary,
         moudjahid,
         licence_id,
@@ -46,8 +63,9 @@ const PaperDetails = () => {
         price,
         expiration_date,
         received_at,
+        is_expense,
+        has_received,
       } = procuration;
-      const type = procuration.type === "expense" ? "Dépense" : "Transaction";
       const formattedPurchasedDate = formatDate(purchased_at);
       const formattedPrice = formatFiatValue(price, "DZD");
       const formattedExpirationDate = formatDate(expiration_date);
@@ -58,17 +76,19 @@ const PaperDetails = () => {
           <DetailSection>
             <DetailHeader title={`Procuration de ${moudjahid}`} />
             <DetailContent $columns={3}>
+              <DetailItem title="Client" blurrable>
+                <Link href={`/clients/${buyer_id}`}>
+                  <LabelText>{buyer}</LabelText>
+                </Link>
+              </DetailItem>
               <DetailItem title="Moudjahid">
                 <Link href={`/licences/${licence_id}`}>
                   <LabelText>{moudjahid}</LabelText>
                 </Link>
               </DetailItem>
-              <DetailItem title="Client" blurrable>
-                <Link href={`/clients/${owner_id}`}>
-                  <LabelText>{owner}</LabelText>
-                </Link>
+              <DetailItem title="Procureur">
+                <LabelText>{procurator}</LabelText>
               </DetailItem>
-              <DetailItem title="Notaire">{notary}</DetailItem>
             </DetailContent>
             <DetailContent $columns={3}>
               <DetailItem title="Date de réception">{formattedPurchasedDate}</DetailItem>
@@ -91,7 +111,9 @@ const PaperDetails = () => {
               <DetailItem title="Date de livraison">{formattedReceivedDate}</DetailItem>
             </DetailContent>
             <DetailContent $columns={3}>
-              <DetailItem title="Type">{type}</DetailItem>
+              <DetailItem title="Livré">{renderProcurationStatus(has_received, "No", "Oui")}</DetailItem>
+              <DetailItem title="Dépense">{renderProcurationStatus(is_expense, "No", "Oui")}</DetailItem>
+              <DetailItem title="Notaire">{notary || "--"}</DetailItem>
             </DetailContent>
           </DetailSection>
         </>

@@ -62,6 +62,7 @@ export const PrimaryButton = styled(Button)`
 `;
 
 export const SecondaryButton = styled(Button)`
+  background-color: transparent;
   color: ${({ theme }) => theme.colors.primary["500"]};
 `;
 

@@ -15,26 +15,22 @@ interface ActionsDropdownProps {
 const ActionsDropdown = ({ procuration, id }: ActionsDropdownProps) => {
   const dispatch = useDispatch();
 
-  const { UPDATE, DELETE } = retreiveProcurationActions(procuration);
+  const { UPDATE, DELIVER, CANCEL_PROCURATION_DELIVER, DELETE } = retreiveProcurationActions(procuration);
 
   return (
     <Dropdown $right="1.5rem" $top="4rem" $width="30rem" id={id}>
-      <Button
-        variant="ghost"
-        icon="edit"
-        onClick={() => {
-          dispatch(addModal(UPDATE));
-        }}
-      >
+      <Button variant="ghost" icon="deliver" onClick={() => dispatch(addModal(DELIVER))}>
+        {procuration.has_received ? "Modifier livraison" : "Livrer"}
+      </Button>
+      {procuration.has_received ? (
+        <Button variant="ghost" icon="cancel" onClick={() => dispatch(addModal(CANCEL_PROCURATION_DELIVER))}>
+          Annuler livraison
+        </Button>
+      ) : null}
+      <Button variant="ghost" icon="edit" onClick={() => dispatch(addModal(UPDATE))}>
         Modifier
       </Button>
-      <Button
-        variant="ghost"
-        icon="delete"
-        onClick={() => {
-          dispatch(addModal(DELETE));
-        }}
-      >
+      <Button variant="ghost" icon="delete" onClick={() => dispatch(addModal(DELETE))}>
         Supprimer
       </Button>
     </Dropdown>

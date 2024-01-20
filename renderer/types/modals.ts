@@ -6,8 +6,11 @@ import { ClientInitialValues } from "page-components/clients/ClientForm/types";
 import { ExpenseIntitalValues } from "page-components/expenses/ExpenseForm/types";
 import { FiatFormInitialValues } from "page-components/finances/types";
 import { LicenceInitalValues } from "page-components/licences/LicenceForm/types";
+import { CategoryInitalValues } from "page-components/home/CategoryForm/types";
 import { PaperInitalValues } from "page-components/papers/PaperForm/types";
 import { ProcurationInitalValues } from "page-components/procurations/ProcurationForm/types";
+import { DeliverProcurationInitalValues } from "page-components/procurations/DeliverProcurationForm/types";
+import { DeliverPaperInitalValues } from "page-components/papers/DeliverPaperForm/types";
 export interface ModalFormConfig {
   id: string;
   name: Resources;
@@ -15,6 +18,7 @@ export interface ModalFormConfig {
   params?: {
     isEdit: boolean;
     document:
+      | CategoryInitalValues
       | ClientInitialValues
       | LicenceInitalValues
       | CarInitialValues
@@ -37,10 +41,39 @@ export interface SaleModalConfig {
   };
 }
 
+export interface DeliverProcurationModalConfig {
+  id: string;
+  name: "deliver_procuration";
+  title: string;
+  params: {
+    isEdit: boolean;
+    document: DeliverProcurationInitalValues;
+    resourceId: number;
+  };
+}
+
+export interface DeliverPaperModalConfig {
+  id: string;
+  name: "deliver_paper";
+  title: string;
+  params: {
+    isEdit: boolean;
+    document: DeliverPaperInitalValues;
+    resourceId: number;
+  };
+}
+
 export interface ExchangeRateModalConfig {
   id: string;
   name: "exchange_rate";
   title: string;
+}
+
+export interface PrintModalConfig {
+  id: string;
+  name: "print";
+  title: string;
+  clientId: number;
 }
 
 export interface WarningModalConfig {
@@ -52,7 +85,7 @@ export interface WarningModalConfig {
 
 export interface DeleteModalConfig {
   id: string;
-  name: "delete" | "cancel_sale";
+  name: "delete" | "cancel_sale" | "cancel_procuration_delivery" | "cancel_paper_delivery";
   title: string;
   message: string;
   resource: Resources;
@@ -63,13 +96,19 @@ export type ModalTypes =
   | ModalFormConfig
   | ExchangeRateModalConfig
   | SaleModalConfig
+  | DeliverProcurationModalConfig
+  | DeliverPaperModalConfig
+  | PrintModalConfig
   | WarningModalConfig
   | DeleteModalConfig;
 
 export type AddModalPayload =
   | Omit<ModalFormConfig, "id">
   | Omit<ExchangeRateModalConfig, "id">
+  | Omit<PrintModalConfig, "id">
   | Omit<SaleModalConfig, "id">
+  | Omit<DeliverProcurationModalConfig, "id">
+  | Omit<DeliverPaperModalConfig, "id">
   | Omit<WarningModalConfig, "id">
   | Omit<DeleteModalConfig, "id">;
 

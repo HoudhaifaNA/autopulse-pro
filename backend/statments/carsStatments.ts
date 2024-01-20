@@ -33,18 +33,16 @@ const IS_SOLD_PRICE_INCOMPLETE = `
   END AS is_sold_price_incomplete
   `;
 
-export const selectCarsWithPapersListStatment = db.prepare(`
+export const selectCarsListStatment = db.prepare(`
   SELECT 
   cars.id,
-  cars.name,
-  cars.serial_number,
+  ( cars.name || ' (' || cars.registration_number || ')' ) AS name,
   cars.color,
-  cars.has_gray_card,
-  cars.buyer_id,
-  papers.id AS paper_exist
+  buyers.full_name AS buyer,
+  cars.owner_name
   FROM cars
-  LEFT JOIN papers ON cars.id = papers.car_id
-  WHERE has_gray_card = 1 AND buyer_id IS NOT NULL AND paper_exist IS NULL
+  LEFT JOIN clients AS buyers ON buyers.id = cars.buyer_id
+  WHERE buyer_id IS NOT NULL
   `);
 
 export const selectCarsQuery = `
@@ -163,9 +161,9 @@ export const updateCarStatment = db.prepare(`
     ${setOptionalUpdate("production_year")},
     ${setOptionalUpdate("keys")},
     ${setOptionalUpdate("mileage")},
-    ${setOptionalUpdate("papers_type")},
-    ${setOptionalUpdate("has_procuration")},
-    ${setOptionalUpdate("has_gray_card")},
+    papers_type = ?,
+    has_procuration = ?,
+    has_gray_card = ?,
     ${setOptionalUpdate("features")},
     ${setOptionalUpdate("seller_id")},
     owner_id = ?,
@@ -174,8 +172,8 @@ export const updateCarStatment = db.prepare(`
     ${setOptionalUpdate("purchase_price_eur")},
     ${setOptionalUpdate("eur_exchange_rate")},
     ${setOptionalUpdate("purchase_price_dzd")},
-    ${setOptionalUpdate("is_exchange")},
-    ${setOptionalUpdate("exchange_types")},
+    is_exchange = ?,
+    exchange_types = ?,
     ${setOptionalUpdate("expenses")},
     ${setOptionalUpdate("expense_cost")},
     ${setOptionalUpdate("euro_cost")},
@@ -202,11 +200,19 @@ export const updateCarSaleStatment = db.prepare(`
   SET ${setOptionalUpdate("buyer_id")},
   ${setOptionalUpdate("sold_at")},
   ${setOptionalUpdate("given_keys")},
-  ${setOptionalUpdate("papers_type")},
-  ${setOptionalUpdate("has_procuration")},
-  ${setOptionalUpdate("has_gray_card")},
+  papers_type = ?,
+  has_procuration = ?,
+  has_gray_card = ?,
   ${setOptionalUpdate("selling_details")},
   ${setOptionalUpdate("sold_price")},
+  updated_at = CURRENT_TIMESTAMP
+  WHERE id = ?
+`);
+
+export const updateCarExpenses = db.prepare(`
+  UPDATE cars
+  SET ${setOptionalUpdate("expenses")},
+  ${setOptionalUpdate("expense_cost")},
   updated_at = CURRENT_TIMESTAMP
   WHERE id = ?
 `);

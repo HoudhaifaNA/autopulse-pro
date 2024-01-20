@@ -26,13 +26,8 @@ export const selectLicencesListQuery = `
     licences.serial_number,
     licences.car_id,
     ${IS_LICENCE_VALID},
-    licences.price,
-    cars.has_procuration,
-    cars.buyer_id,
-    procurations.car_id AS procuration_exist
+    licences.price
   FROM licences
-  LEFT JOIN cars ON licences.car_id = cars.id
-  LEFT JOIN procurations ON licences.id = procurations.licence_id
   `;
 
 export const selectLicencesQuery = `
@@ -67,6 +62,7 @@ const INSERT_FIELDS = generateInsertedFields([
   "price",
   "attachments",
   "issue_date",
+  "note",
 ]);
 
 export const insertLicenceStatment = db.prepare(`
@@ -83,6 +79,14 @@ export const updateLicenceStatment = db.prepare(`
  		${setOptionalUpdate("serial_number")},
  		${setOptionalUpdate("price")},
  		${setOptionalUpdate("issue_date")},
+ 		${setOptionalUpdate("note")},
+    updated_at = CURRENT_TIMESTAMP
+  WHERE id = ?
+  `);
+
+export const reserveLicenceStatment = db.prepare(`
+  UPDATE licences
+  SET ${setOptionalUpdate("is_reserved")},
     updated_at = CURRENT_TIMESTAMP
   WHERE id = ?
   `);

@@ -12,6 +12,8 @@ backend/instructions
 
 resources/dev_icon.*
 
+renderer/public/images/companies/
+
 .vscode
 
 _app

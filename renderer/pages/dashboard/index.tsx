@@ -21,26 +21,26 @@ const STATS_NAMES = {
     translate: "voitures",
     icon: "car",
   },
-  licences: {
-    translate: "licences",
-    icon: "document",
-  },
+  // licences: {
+  //   translate: "licences",
+  //   icon: "document",
+  // },
   expenses: {
     translate: "dépenses",
     icon: "shopping",
   },
-  procurations: {
-    translate: "procurations",
-    icon: "procuration",
-  },
-  papers: {
-    translate: "dossier",
-    icon: "folder",
-  },
-  transactions: {
-    translate: "transactions",
-    icon: "exchange",
-  },
+  // procurations: {
+  //   translate: "procurations",
+  //   icon: "procuration",
+  // },
+  // papers: {
+  //   translate: "dossier",
+  //   icon: "folder",
+  // },
+  // transactions: {
+  //   translate: "transactions",
+  //   icon: "exchange",
+  // },
 };
 
 const Dashboard = () => {
@@ -56,7 +56,7 @@ const Dashboard = () => {
       type CountKeys = keyof typeof data;
 
       return (Object.entries(data) as [CountKeys, number][]).map(([key, value]) => {
-        if (key !== "status") {
+        if (key === "cars" || key === "clients" || key === "expenses") {
           const { icon, translate } = STATS_NAMES[key];
 
           return (

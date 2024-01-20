@@ -4,7 +4,7 @@ import uid from "utils/uniqid";
 import slugify from "utils/slugify";
 import dateToString from "utils/dateToString";
 import { CarInitialValues } from "./types";
-import { carSchemaStepTwo, carSchemaStepFour, carSchemaStepFive } from "./schema";
+import { carSchemaStepOne, carSchemaStepTwo, carSchemaStepFour, carSchemaStepFive } from "./schema";
 
 import cars from "data/cars.json";
 
@@ -19,7 +19,7 @@ const now = dateToString(new Date());
 
 export const INITIAL_VALUES: CarInitialValues = {
   purchased_at: now,
-  type: "dubai",
+  type: "",
   brand: "",
   model: "",
   serial_number: "",
@@ -76,6 +76,7 @@ export const INITIAL_VALUES: CarInitialValues = {
 };
 
 export const SCHEMAS: { [key: number]: ObjectSchema<object> } = {
+  1: carSchemaStepOne,
   2: carSchemaStepTwo,
   4: carSchemaStepFour,
   5: carSchemaStepFive,

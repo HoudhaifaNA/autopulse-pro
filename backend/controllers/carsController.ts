@@ -18,7 +18,7 @@ interface ITotalCount {
 }
 
 export const getCarsWithPapersList = tryCatch((_req, res) => {
-  const cars = S.selectCarsWithPapersListStatment.all();
+  const cars = S.selectCarsListStatment.all();
 
   return res.status(200).json({ status: "success", results: cars.length, cars });
 });
@@ -97,7 +97,7 @@ const filterCars = (req: Request) => {
 };
 
 export const getAllCars = tryCatch((req, res) => {
-  const { orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
+  const { orderBy = "-purchased_at", page = 1, limit = 250 } = req.query;
 
   const skip = (Number(page) - 1) * Number(limit);
 
@@ -139,20 +139,10 @@ export const getCarsBrandsAndSeries = tryCatch((req, res) => {
   const cars_brand = db.prepare(carsBrandQuery).all();
   const cars_name = db.prepare(carsNameQuery).all(name);
 
-  // const purchased_years = S.selectPurchasedYearsStatment.all().map((year_obj: any) => {
-  //   return year_obj.purchased_year;
-  // });
-
-  // const sold_years = S.selectSoldYearsStatment.all().map((year_obj: any) => {
-  //   return year_obj.sold_year;
-  // });
-
   return res.status(200).json({
     status: "success",
     cars_brand,
     cars_name,
-    // purchased_years,
-    //  sold_years
   });
 });
 
@@ -247,8 +237,8 @@ export const createCar = tryCatch((req, res, next) => {
     const { lastInsertRowid } = S.insertCarStatment.run(params);
 
     const carName = `${brand} ${model}`;
-    const currency = type === "locale" ? "DZD" : "EUR";
-    const transactionAmount = type === "locale" ? purchase_price_dzd : purchase_price_eur;
+    const currency = type.includes("lcl") ? "DZD" : "EUR";
+    const transactionAmount = type.includes("lcl") ? purchase_price_dzd : purchase_price_eur;
 
     const transacrtionParams = {
       client_id: seller_id,
@@ -262,6 +252,8 @@ export const createCar = tryCatch((req, res, next) => {
       direction: "entrante",
       currency: currency,
       amount: transactionAmount,
+      recipient: "company",
+      note: features,
     };
 
     insertTransactionStatment.run(transacrtionParams);
@@ -354,6 +346,13 @@ export const updateCar = tryCatch((req, res, next) => {
       id,
     ];
 
+    const procuration = selectProcurationByCarIdStatment.get(id) as Procuration | undefined;
+
+    if (procuration && !owner_id) {
+      db.exec("ROLLBACK;");
+      return next(new AppError(`Licence invalide pour une voiture avec procuration.`, 400));
+    }
+
     const { changes } = S.updateCarStatment.run(params);
 
     if (!changes) {
@@ -363,9 +362,10 @@ export const updateCar = tryCatch((req, res, next) => {
 
     const updatedCar = S.selectCarByIdStatment.get(id) as Car;
 
-    const currency = updatedCar.type === "locale" ? "DZD" : "EUR";
-    const transactionAmount =
-      updatedCar.type === "locale" ? updatedCar.purchase_price_dzd : updatedCar.purchase_price_eur;
+    const currency = updatedCar.type.includes("lcl") ? "DZD" : "EUR";
+    const transactionAmount = updatedCar.type.includes("lcl")
+      ? updatedCar.purchase_price_dzd
+      : updatedCar.purchase_price_eur;
 
     const productParams = ["car", id, "entrante"];
 
@@ -379,6 +379,8 @@ export const updateCar = tryCatch((req, res, next) => {
       "entrante",
       currency,
       transactionAmount,
+      "company",
+      features,
     ];
 
     updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);
@@ -450,6 +452,8 @@ export const sellCar = tryCatch((req, res, next) => {
       direction: "sortante",
       currency: "DZD",
       amount: -sold_price,
+      recipient: "buyer",
+      note: selling_details,
     };
 
     insertTransactionStatment.run(transacrtionParams);
@@ -499,9 +503,19 @@ export const updateCarSale = tryCatch((req, res, next) => {
 
     const soldCar = S.selectCarByIdStatment.get(id) as Car;
 
-    const productParams = ["car", id, "sortante"];
+    const procuration = selectProcurationByCarIdStatment.get(id) as Procuration | undefined;
 
-    const transacrtionParams = [
+    if (procuration && !procuration.is_expense && procuration.buyer_id !== buyer_id) {
+      const procurationParams = ["procuration", procuration.id, "sortante"];
+
+      const procurationBuyerParams = [buyer_id, null, null, null, null, null, null, null, null, null, null];
+
+      updateTransactionByProductIdStatment.run([...procurationBuyerParams, ...procurationParams]);
+    }
+
+    const carSaleProductParams = ["car", id, "sortante"];
+
+    const carSaletransacrtionParams = [
       buyer_id,
       sold_at,
       soldCar.name,
@@ -511,9 +525,11 @@ export const updateCarSale = tryCatch((req, res, next) => {
       "sortante",
       "DZD",
       -sold_price,
+      "buyer",
+      selling_details,
     ];
 
-    updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);
+    updateTransactionByProductIdStatment.run([...carSaletransacrtionParams, ...carSaleProductParams]);
 
     db.exec("COMMIT;");
 
@@ -575,7 +591,7 @@ export const updateCarsExchangeRate = tryCatch((req, res, next) => {
   const cars = db.prepare(`SELECT * FROM cars WHERE id IN (${placeHolders})`).all(params) as Car[];
 
   cars.forEach((car) => {
-    if (car.type === "locale") {
+    if (car.type.includes("lcl")) {
       return next(new AppError(`Impossible de mettre à jour le taux de change des voitures locales.`, 403));
     }
   });

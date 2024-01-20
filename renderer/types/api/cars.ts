@@ -15,6 +15,10 @@ interface CarModel {
   model: string;
   total_cars: number;
 }
+interface Category {
+  count: number;
+  type: string;
+}
 
 export interface GetCarsBrandsResponse {
   cars_brand: CarBrand[];
@@ -24,11 +28,9 @@ export interface GetCarsBrandsResponse {
 interface CarWithPaper {
   id: number;
   name: string;
-  has_gray_card: 1;
-  buyer_id: number;
   color: string;
-  serial_number: string;
-  paper_exist: null;
+  buyer: string;
+  owner_name: string;
 }
 
 export interface GetCarsWithPapersResponse {

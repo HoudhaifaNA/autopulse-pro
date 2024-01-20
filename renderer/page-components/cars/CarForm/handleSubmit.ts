@@ -3,6 +3,7 @@ import notify from "utils/notify";
 import { CarInitialValues } from "./types";
 import { SubmitFunction, SubmitStatus } from "types";
 import { calculateTotalEURCost, calculateTotalExpenseCost } from "./utils";
+import { AxiosError } from "axios";
 
 interface Params {
   isEdit: boolean;
@@ -11,6 +12,7 @@ interface Params {
 
 const handleSubmit: SubmitFunction<CarInitialValues, Params> = async (values, actions, params) => {
   let status: SubmitStatus = "success";
+
   const {
     purchased_at,
     type,
@@ -59,7 +61,7 @@ const handleSubmit: SubmitFunction<CarInitialValues, Params> = async (values, ac
       production_year,
       keys,
       mileage,
-      papers_type,
+      papers_type: Array.isArray(papers_type) ? papers_type.join(",") : papers_type,
       has_procuration,
       has_gray_card,
       features,
@@ -80,8 +82,8 @@ const handleSubmit: SubmitFunction<CarInitialValues, Params> = async (values, ac
     notify("success", notificationMessage);
   } catch (err: any) {
     let message = "Error";
-    if (err.response) {
-      message = err.response.data.message.code || err.response.data.message;
+    if (err instanceof AxiosError && typeof err.response?.data.message === "string") {
+      message = err.response.data.message;
     }
     notify("error", message);
     console.log(err);

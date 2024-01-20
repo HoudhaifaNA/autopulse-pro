@@ -6,7 +6,7 @@ import useColoredText from "hooks/useColoredText";
 
 interface TicketProps {
   title: string;
-  icon: string;
+  icon?: string;
   value: string;
 }
 
@@ -22,9 +22,11 @@ const StatTicket = ({ title, icon, value }: TicketProps) => {
 
   return (
     <S.StatTicket>
-      <S.TicketIcon>
-        <Icon icon={icon} size="3.2rem" />
-      </S.TicketIcon>
+      {icon && (
+        <S.TicketIcon>
+          <Icon icon={icon} size="3.2rem" />
+        </S.TicketIcon>
+      )}
       <S.TicketContent>
         <Heading5 className={classNames}>{mainText}</Heading5>
         <Body2>{title}</Body2>

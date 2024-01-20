@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 import API from "utils/API";
 import notify from "utils/notify";
 import { SaleInitialValues } from "./types";
@@ -18,12 +20,13 @@ const handleSubmit: SubmitFunction<SaleInitialValues, Params> = async (values, a
       ? "La vente a été mise à jour avec succès."
       : "La vente a été effectuée avec succès.";
 
-    await API[method](`/cars/sale/${urlParams}`, values);
+    const papers_type = Array.isArray(values.papers_type) ? values.papers_type.join(",") : values.papers_type;
+    await API[method](`/cars/sale/${urlParams}`, { ...values, papers_type });
     notify("success", notificationMessage);
   } catch (err: any) {
     let message = "Error";
-    if (err.response) {
-      message = err.response.data.message.code || err.response.data.message;
+    if (err instanceof AxiosError && typeof err.response?.data.message === "string") {
+      message = err.response.data.message;
     }
     notify("error", message);
     console.log(err);

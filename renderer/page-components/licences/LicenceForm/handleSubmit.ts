@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 import API from "utils/API";
 import notify from "utils/notify";
 import { LicenceInitalValues } from "./types";
@@ -33,7 +35,7 @@ const handleSubmit: SubmitFunction<LicenceInitalValues, Params> = async (values,
 
     let data = {};
     if (params?.isEdit) {
-      const { moudjahid, seller_id, purchased_at, issue_date, serial_number, wilaya, price } = values;
+      const { moudjahid, seller_id, purchased_at, issue_date, serial_number, wilaya, note, price } = values;
       data = {
         moudjahid,
         seller_id,
@@ -42,6 +44,7 @@ const handleSubmit: SubmitFunction<LicenceInitalValues, Params> = async (values,
         serial_number,
         wilaya,
         price,
+        note,
       };
     } else {
       data = valuesToFormData(values);
@@ -51,8 +54,8 @@ const handleSubmit: SubmitFunction<LicenceInitalValues, Params> = async (values,
     notify("success", notificationMessage);
   } catch (err: any) {
     let message = "Error";
-    if (err.response) {
-      message = err.response.data.message.code || err.response.data.message;
+    if (err instanceof AxiosError && typeof err.response?.data.message === "string") {
+      message = err.response.data.message;
     }
     notify("error", message);
     console.log(err);

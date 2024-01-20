@@ -1,10 +1,9 @@
 import { string, number, object } from "yup";
 
 const procurationSchema = object({
-  moudjahid: string()
-    .trim()
-    .min(3, `Le nom du moudjahid doit comporter au moins 3 caractères`)
-    .required("Le nom du moudjahid est requis"),
+  car: string().required().required("Voiture est requis"),
+  procurator: string().required().required("Procureur est requis"),
+  seller: string().required().required("Vendeur est requis"),
   price: number()
     .min(0, ({ min }) => `Minimum ${min} DA`)
     .required("Prix est requis"),

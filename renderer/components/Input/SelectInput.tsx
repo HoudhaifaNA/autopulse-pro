@@ -25,7 +25,7 @@ const getInputData = (values: any, errors: any, name: string) => {
 };
 
 const SelectInput = (props: T.SelectInputProps) => {
-  const { setFieldValue, values, errors } = useFormikContext();
+  const { setFieldValue, values, errors } = useFormikContext<any>();
   const uniqueId = uid();
   const dropdownId = `selectDropdown-${uniqueId}`;
   const togglerId = `selectDropdownToggler-${uniqueId}`;
@@ -43,7 +43,7 @@ const SelectInput = (props: T.SelectInputProps) => {
 
     if (relatedFields) {
       relatedFields.forEach((field, i) => {
-        const value = currentInput ? currentInput.relatedValues?.[i] : 0;
+        const value = currentInput ? currentInput.relatedValues?.[i] : values[field];
         setFieldValue(field, value);
       });
     }

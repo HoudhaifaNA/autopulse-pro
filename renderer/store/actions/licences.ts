@@ -2,7 +2,7 @@ import { AddModalPayload } from "types";
 import { Licence } from "interfaces";
 
 const retreiveLicenceActions = (licence: Licence) => {
-  const { id, moudjahid, seller_id, seller, purchased_at, issue_date, serial_number, wilaya, price } = licence;
+  const { id, moudjahid, seller_id, seller, purchased_at, issue_date, serial_number, note, wilaya, price } = licence;
 
   const UPDATE: AddModalPayload = {
     name: "licences",
@@ -19,6 +19,7 @@ const retreiveLicenceActions = (licence: Licence) => {
         serial_number,
         wilaya,
         price,
+        note: note || "",
         attachments: [],
       },
     },

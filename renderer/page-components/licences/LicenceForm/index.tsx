@@ -1,4 +1,4 @@
-import { mutate } from "swr";
+import { mutate, useSWRConfig } from "swr";
 import { Formik, FormikConfig, FormikProps } from "formik";
 import { useDispatch } from "react-redux";
 
@@ -9,6 +9,7 @@ import Form from "components/Form/Form";
 import { FormGroup } from "components/Form/Form.styled";
 import SelectInput from "components/Input/SelectInput";
 import TypedInput from "components/Input/TypedInput";
+import TextArea from "components/TextArea";
 import Dropzone from "../Dropzone";
 import AttachmentViewer from "../AttachmentViewer";
 import { ModalActions } from "components/Modal/Modal";
@@ -40,6 +41,19 @@ const LicenceForm = ({ modalId }: LicenceFormProps) => {
   const currentModal = modalsList.find(({ id }) => id === modalId) as ModalFormConfig;
   const dispatch = useDispatch();
   const { clientsList, isLoading: isClientsLoading } = useClientsList();
+  const { cache, mutate } = useSWRConfig();
+
+  const urlRegex = /^\/licences\/list/;
+
+  const invalidateLicences = () => {
+    const keysArray = Array.from(cache.keys());
+
+    keysArray.forEach((key) => {
+      if (urlRegex.test(key)) {
+        mutate(key);
+      }
+    });
+  };
 
   let formInitialValues = INITIAL_VALUES;
   let isFormDisabled = false;
@@ -61,7 +75,7 @@ const LicenceForm = ({ modalId }: LicenceFormProps) => {
       if (status === "success") {
         mutate(fetchedUrl);
         mutate(secondaryUrl);
-        mutate("/licences/list/valid");
+        invalidateLicences();
         dispatch(removeModal(modalId));
       }
     },
@@ -72,47 +86,50 @@ const LicenceForm = ({ modalId }: LicenceFormProps) => {
       {({ values, handleSubmit, isSubmitting }: FormikProps<LicenceInitalValues>) => {
         return (
           <Form onSubmit={handleSubmit}>
-            <FormGroup>
-              <TypedInput type="text" name="moudjahid" label="Moudjahid" placeholder="Nom du moudjahid" />
-              {!isClientsLoading && (
+            <S.LicenceFormWrapper>
+              <FormGroup>
+                <TypedInput type="text" name="moudjahid" label="Moudjahid" placeholder="Nom du moudjahid" />
+                {!isClientsLoading && (
+                  <SelectInput
+                    name="seller"
+                    label="Vendeur"
+                    placeholder="Nom de vendeur"
+                    relatedFields={["seller_id"]}
+                    items={clientsList}
+                    buttons={
+                      <Button type="button" variant="ghost" icon="add" onClick={toggleClientForm}>
+                        Ajouter un client
+                      </Button>
+                    }
+                  />
+                )}
+              </FormGroup>
+              <FormGroup>
+                <DateInput name="purchased_at" label="Date d'achat" minDate="2015" />
+                <DateInput name="issue_date" label="Date d'émission" minDate="2015" />
+              </FormGroup>
+              <FormGroup>
+                <TypedInput name="serial_number" label="Numéro de série" placeholder="420022" />
                 <SelectInput
-                  name="seller"
-                  label="Vendeur"
-                  placeholder="Nom de vendeur"
-                  relatedFields={["seller_id"]}
-                  items={clientsList}
-                  buttons={
-                    <Button type="button" variant="ghost" icon="add" onClick={toggleClientForm}>
-                      Ajouter un client
-                    </Button>
-                  }
+                  name="wilaya"
+                  label="Wilaya"
+                  placeholder="Entrez la wilaya"
+                  items={WILAYAS_ITEMS}
+                  sorted={false}
                 />
-              )}
-            </FormGroup>
-            <FormGroup>
-              <DateInput name="purchased_at" label="Date d'achat" minDate="2015" />
-              <DateInput name="issue_date" label="Date d'émission" minDate="2015" />
-            </FormGroup>
-            <FormGroup>
-              <TypedInput name="serial_number" label="Numéro de série" placeholder="420022" />
-              <SelectInput
-                name="wilaya"
-                label="Wilaya"
-                placeholder="Entrez la wilaya"
-                items={WILAYAS_ITEMS}
-                sorted={false}
-              />
-              <TypedInput name="price" type="number" label="Prix" placeholder="0" addOn="DA" />
-            </FormGroup>
-            <FormGroup>
-              <Dropzone disabled={isFormDisabled} />
-            </FormGroup>
-            <S.DocumentsList>{renderAttachments(values.attachments)}</S.DocumentsList>
-            <ModalActions>
-              <Button type="submit" variant="primary" loading={isSubmitting}>
-                {submitButtonText}
-              </Button>
-            </ModalActions>
+                <TypedInput name="price" type="number" label="Prix" placeholder="0" addOn="DA" />
+              </FormGroup>
+              <TextArea label="Note" name="note" />
+              <FormGroup>
+                <Dropzone disabled={isFormDisabled} />
+              </FormGroup>
+              <S.DocumentsList>{renderAttachments(values.attachments)}</S.DocumentsList>
+              <ModalActions>
+                <Button type="submit" variant="primary" loading={isSubmitting}>
+                  {submitButtonText}
+                </Button>
+              </ModalActions>
+            </S.LicenceFormWrapper>
           </Form>
         );
       }}

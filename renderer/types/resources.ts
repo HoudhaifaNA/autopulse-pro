@@ -1,5 +1,6 @@
 export type Resources =
   | "clients"
+  | "categories"
   | "licences"
   | "cars"
   | "expenses"

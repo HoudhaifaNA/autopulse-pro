@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 import API from "utils/API";
 import notify from "utils/notify";
 import { ProcurationInitalValues } from "./types";
@@ -11,6 +13,7 @@ interface Params {
 const handleSubmit: SubmitFunction<ProcurationInitalValues, Params> = async (values, actions, params) => {
   let status: SubmitStatus = "success";
   try {
+    console.log(values);
     const method = params?.isEdit ? "patch" : "post";
     const urlParams = params?.isEdit ? `/${params.resourceId}` : "";
     const notificationMessage = params?.isEdit
@@ -23,8 +26,8 @@ const handleSubmit: SubmitFunction<ProcurationInitalValues, Params> = async (val
     notify("success", notificationMessage);
   } catch (err: any) {
     let message = "Error";
-    if (err.response) {
-      message = err.response.data.message.code || err.response.data.message;
+    if (err instanceof AxiosError && typeof err.response?.data.message === "string") {
+      message = err.response.data.message;
     }
     notify("error", message);
     console.log(err);

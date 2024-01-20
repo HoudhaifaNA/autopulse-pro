@@ -5,15 +5,18 @@ interface CarTypeProps {
 }
 
 export const CarTypeWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  min-height: 30rem;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
   gap: 5rem;
+  overflow-y: auto;
+  padding: 2rem;
   height: 20rem;
 `;
 export const CarType = styled.div<CarTypeProps>`
   position: relative;
-  width: 19rem;
+  grid-column: span 1;
   height: 12.5rem;
   display: flex;
   flex-direction: column;

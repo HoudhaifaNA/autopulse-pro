@@ -14,17 +14,19 @@ export const IS_PROCURATION_EXPIRATED = `
 export const selectProcurationsQuery = `
   SELECT procurations.*,
   ${IS_PROCURATION_EXPIRATED},
+  licences.id AS licence_id,
   licences.moudjahid AS moudjahid,
   clients.full_name AS seller,
-  clients.id AS seller_id,
+  buyers.full_name AS buyer,
+  buyers.id AS buyer_id,
+  cars.id AS car_id,
   cars.name AS car,
-  owners.id AS owner_id,
-  owners.full_name AS owner
+  cars.serial_number AS car_serial_number
   FROM procurations
-  INNER JOIN licences ON licences.id = procurations.licence_id
-  INNER JOIN clients ON clients.id = licences.seller_id
-  INNER JOIN cars ON cars.id = licences.car_id
-  LEFT JOIN clients AS owners ON owners.id = cars.buyer_id
+  INNER JOIN cars ON cars.id = procurations.car_id
+  INNER JOIN clients ON clients.id = procurations.seller_id
+  INNER JOIN licences ON licences.id = cars.owner_id
+  LEFT JOIN clients AS buyers ON buyers.id = cars.buyer_id
   `;
 
 export const selectProcurationByIdStatment = db.prepare(`
@@ -38,15 +40,14 @@ export const selectProcurationByCarIdStatment = db.prepare(`
   `);
 
 const INSERTED_FIELDS = generateInsertedFields([
-  "type",
   "purchased_at",
-  "licence_id",
   "car_id",
+  "seller_id",
+  "procurator",
   "notary",
   "price",
-  "deal_id",
+  "note",
   "issue_date",
-  "received_at",
 ]);
 
 export const insertProcurationStatment = db.prepare(`
@@ -56,14 +57,36 @@ export const insertProcurationStatment = db.prepare(`
 
 export const updateProcurationStatment = db.prepare(`
   UPDATE procurations
-  SET ${setOptionalUpdate("type")},
-    ${setOptionalUpdate("purchased_at")},
-    ${setOptionalUpdate("price")},
+  SET ${setOptionalUpdate("purchased_at")},
+    ${setOptionalUpdate("car_id")},
+    ${setOptionalUpdate("seller_id")},
+    ${setOptionalUpdate("procurator")},
     ${setOptionalUpdate("notary")},
-    deal_id = ?,
+    ${setOptionalUpdate("price")},
+    ${setOptionalUpdate("note")},
     ${setOptionalUpdate("issue_date")},
-    received_at = ?,
     updated_at = CURRENT_TIMESTAMP
+  WHERE id = ? 
+  `);
+
+export const updateProcurationDeliveryStatment = db.prepare(`
+  UPDATE procurations
+  SET ${setOptionalUpdate("recipient")},
+      ${setOptionalUpdate("received_at")},
+      is_expense = ?,
+      deal_id = ?,
+      ${setOptionalUpdate("note")},
+      updated_at = CURRENT_TIMESTAMP
+  WHERE id = ? 
+  `);
+
+export const cancelProcurationDeliveryStatment = db.prepare(`
+  UPDATE procurations
+  SET recipient = null,
+      received_at = null,
+      is_expense = 0,
+      deal_id = null,
+      updated_at = CURRENT_TIMESTAMP
   WHERE id = ? 
   `);
 
@@ -84,10 +107,10 @@ const deleteProcurationsRelatedRecords = db.prepare(`
   FOR EACH ROW
   BEGIN
     DELETE FROM expenses
-    WHERE id = OLD.deal_id AND OLD.type = 'expense';
+    WHERE id = OLD.deal_id AND OLD.is_expense = 1;
 
     DELETE FROM transactions
-    WHERE type = 'procuration' AND product_id = OLD.id AND OLD.type = 'transaction';
+    WHERE type = 'procuration' AND product_id = OLD.id;
   END;
   `);
 

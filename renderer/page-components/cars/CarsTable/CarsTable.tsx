@@ -18,6 +18,7 @@ import { TB_HEADER_DATA } from "./constants";
 import { AddModalPayload, GetAllCarsResponse } from "types";
 import IncompleteFieldsMarks from "../IncompleteFieldsMarks/IncompleteFieldsMarks";
 import useClickOutside from "hooks/useClickOutside";
+import Button from "components/Button/Button";
 
 interface CarsTableProps {
   data: GetAllCarsResponse;
@@ -28,6 +29,7 @@ const ICON_SIZE = "1.8rem";
 const CarsTable = ({ data }: CarsTableProps) => {
   const { cars } = data;
 
+  const [isExpanded, setIsExpanded] = useState(false);
   const { page, limit } = useAppSelector((state) => state.resourceUrls.cars.params);
   const { selectedIds } = useAppSelector((state) => state.selectedItems);
   const dispatch = useDispatch();
@@ -149,19 +151,23 @@ const CarsTable = ({ data }: CarsTableProps) => {
               <Body2>{seller}</Body2>
             </Link>
           </T.TableCell>
-          <T.TableCell blurrable>{formattedTotalCost}</T.TableCell>
-          <T.TableCell>{formattedSoldDate}</T.TableCell>
-          <T.TableCell blurrable>
-            {buyer ? (
-              <Link href={`/clients/${buyer_id}`}>
-                <Body2>{buyer}</Body2>
-              </Link>
-            ) : (
-              <Body2>--</Body2>
-            )}
-          </T.TableCell>
-          <T.TableCell blurrable>{formattedSoldPrice}</T.TableCell>
-          <T.TableCell>{type}</T.TableCell>
+          {isExpanded && (
+            <>
+              <T.TableCell blurrable>{formattedTotalCost}</T.TableCell>
+              <T.TableCell>{formattedSoldDate}</T.TableCell>
+              <T.TableCell blurrable>
+                {buyer ? (
+                  <Link href={`/clients/${buyer_id}`}>
+                    <Body2>{buyer}</Body2>
+                  </Link>
+                ) : (
+                  <Body2>--</Body2>
+                )}
+              </T.TableCell>
+              <T.TableCell blurrable>{formattedSoldPrice}</T.TableCell>
+              <T.TableCell>{type}</T.TableCell>{" "}
+            </>
+          )}
 
           <T.TableCell onClick={() => onClickToggleDropdown(ind)} id={`toggler-${ind}`}>
             <Icon icon="more_vert" size={ICON_SIZE} />
@@ -173,22 +179,29 @@ const CarsTable = ({ data }: CarsTableProps) => {
   };
 
   return (
-    <T.TableWrapper>
-      <T.Table>
-        <T.TableHead>
-          <T.TableRow>
-            <T.TableHeaderCell>
-              <Checkbox isChecked={isAllCarsOnPageSelected && cars.length > 0} check={checkAllOnPage} />
-            </T.TableHeaderCell>
-            <TableHeaderRow cells={TB_HEADER_DATA} resource="cars" />
-            <T.TableHeaderCell onClick={toggleDeleteAll}>
-              <Icon icon="delete" size="1.8rem" />
-            </T.TableHeaderCell>
-          </T.TableRow>
-        </T.TableHead>
-        <T.TableBody>{renderCars()}</T.TableBody>
-      </T.Table>
-    </T.TableWrapper>
+    <>
+      <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary" onClick={() => setIsExpanded(!isExpanded)}>
+          Montrer {isExpanded ? "moins" : "plus"}
+        </Button>
+      </div>
+      <T.TableWrapper>
+        <T.Table>
+          <T.TableHead>
+            <T.TableRow>
+              <T.TableHeaderCell>
+                <Checkbox isChecked={isAllCarsOnPageSelected && cars.length > 0} check={checkAllOnPage} />
+              </T.TableHeaderCell>
+              <TableHeaderRow cells={isExpanded ? TB_HEADER_DATA : TB_HEADER_DATA.slice(0, -5)} resource="cars" />
+              <T.TableHeaderCell onClick={toggleDeleteAll}>
+                <Icon icon="delete" size="1.8rem" />
+              </T.TableHeaderCell>
+            </T.TableRow>
+          </T.TableHead>
+          <T.TableBody>{renderCars()}</T.TableBody>
+        </T.Table>
+      </T.TableWrapper>
+    </>
   );
 };
 

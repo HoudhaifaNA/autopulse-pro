@@ -1,10 +1,19 @@
 import { checkNumber } from "../utils/sqlValidations";
 
+export const createCategoriesTableStatment = `
+  CREATE TABLE IF NOT EXISTS categories(
+    id INTEGER NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE COLLATE NOCASE,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+
 export const createCarsTableStatment = `
   CREATE TABLE IF NOT EXISTS cars(
     id INTEGER NOT NULL PRIMARY KEY,
     purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    type TEXT NOT NULL CHECK (type IN ('locale', 'dubai', 'europe')),
+    type TEXT NOT NULL,
     brand TEXT NOT NULL,
     model TEXT NOT NULL,
     name TEXT AS (brand || ' ' || model) STORED,
@@ -42,6 +51,10 @@ export const createCarsTableStatment = `
     profit INTEGER AS (CASE WHEN buyer_id IS NOT NULL THEN sold_price - total_cost ELSE NULL END) STORED,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (type)
+       REFERENCES categories (name)
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION,
       FOREIGN KEY (seller_id)
        REFERENCES clients (id)
         ON UPDATE NO ACTION
@@ -76,6 +89,7 @@ export const createExpensesTableStatment = `
     expense_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     raison TEXT NOT NULL,
     cost INTEGER NOT NULL ${checkNumber("cost")},
+    note TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP
   )`;
@@ -91,8 +105,10 @@ export const createLicencesTableStatment = `
     price INTEGER DEFAULT 0,
     attachments TEXT,
     car_id INTEGER,
+    is_reserved INTEGER DEFAULT 0,
     issue_date TEXT NOT NULL,
     expiration_date TEXT AS (DATETIME(issue_date, '+5 years')) STORED,
+    note TEXT, 
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (seller_id)
@@ -108,15 +124,16 @@ export const createLicencesTableStatment = `
 export const createPapersTableStatment = `
   CREATE TABLE IF NOT EXISTS papers(
   id INTEGER PRIMARY KEY,
-  type TEXT NOT NULL CHECK (type IN ('transaction', 'expense')),
-  purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  type TEXT NOT NULL CHECK (type IN ('dossier', 'cart grise')),
+  given_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  purchased_at TEXT,
   seller_id INTEGER NOT NULL,
   car_id INTEGER NOT NULL UNIQUE,
+  owner TEXT,
+  note TEXT,
   price INTEGER DEFAULT 0 ${checkNumber("price")},
-  deal_id INTEGER,
-  issue_date TEXT NOT NULL,
+  recipient TEXT,
   received_at TEXT,
-  expiration_date TEXT AS (DATETIME(issue_date, '+3 years')) STORED,
   has_received INTEGER AS (CASE WHEN received_at IS NOT NULL THEN 1 ELSE 0 END) STORED,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -128,34 +145,33 @@ export const createPapersTableStatment = `
    REFERENCES cars (id)
      ON UPDATE NO ACTION
      ON DELETE CASCADE
-  FOREIGN KEY (deal_id)
-    REFERENCES expenses (id)
-     ON UPDATE NO ACTION
-     ON DELETE CASCADE
   )`;
 
 export const createProcurationsTableStatment = `
   CREATE TABLE IF NOT EXISTS procurations(
   id INTEGER PRIMARY KEY,
-  type TEXT NOT NULL CHECK (type IN ('transaction', 'expense')),
   purchased_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  licence_id INTEGER NOT NULL,
   car_id INTEGER NOT NULL UNIQUE,
+  seller_id INTEGER NOT NULL,
+  procurator TEXT NOT NULL,
   notary TEXT,
   price INTEGER DEFAULT 0 ${checkNumber("price")},
+  is_expense INTEGER DEFAULT 0,
   deal_id INTEGER,
+  recipient TEXT,
+  note TEXT,
   issue_date TEXT NOT NULL,
-  received_at TEXT,
   expiration_date TEXT AS (DATETIME(issue_date, '+3 years')) STORED,
+  received_at TEXT,
   has_received INTEGER AS (CASE WHEN received_at IS NOT NULL THEN 1 ELSE 0 END) STORED,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (licence_id)
-   REFERENCES licences (id)
-     ON UPDATE NO ACTION
-     ON DELETE CASCADE
   FOREIGN KEY (car_id)
    REFERENCES cars (id)
+     ON UPDATE NO ACTION
+     ON DELETE CASCADE
+  FOREIGN KEY (seller_id)
+    REFERENCES clients (id)
      ON UPDATE NO ACTION
      ON DELETE CASCADE
   FOREIGN KEY (deal_id)
@@ -178,6 +194,8 @@ export const createTransactionsTable = `
     direction TEXT NOT NULL CHECK (direction IN ('sortante', 'entrante')),
     currency TEXT NOT NULL CHECK (currency IN ('DZD', 'EUR')),
     amount INTEGER NOT NULL ${checkNumber("amount")},
+    recipient TEXT,
+    note TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (product_id, type, direction),

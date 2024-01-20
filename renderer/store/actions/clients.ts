@@ -37,6 +37,8 @@ const retreiveClientActions = (client: Client) => {
         direction: "entrante",
         currency: "EUR",
         amount: 0,
+        recipient: full_name,
+        note: "",
       },
     },
   };
@@ -56,6 +58,8 @@ const retreiveClientActions = (client: Client) => {
         direction: "entrante",
         currency: "DZD",
         amount: 0,
+        recipient: full_name,
+        note: "",
       },
     },
   };

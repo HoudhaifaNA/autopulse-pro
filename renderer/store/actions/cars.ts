@@ -17,7 +17,6 @@ const retreiveCarActions = (car: Car) => {
     production_year,
     keys,
     mileage,
-    papers_type,
     has_procuration,
     has_gray_card,
     features,
@@ -40,6 +39,7 @@ const retreiveCarActions = (car: Car) => {
 
   const expenses = JSON.parse(car.expenses) as Expense[];
   const exchange_types = typeof car.exchange_types === "string" ? JSON.parse(car.exchange_types) : null;
+  const papers_type = typeof car.papers_type === "string" ? (car.papers_type.split(",") as Car["papers_type"]) : null;
 
   const UPDATE: AddModalPayload = {
     name: "cars",
@@ -85,7 +85,7 @@ const retreiveCarActions = (car: Car) => {
       resourceId: 0,
       document: {
         purchased_at: dateToString(new Date()),
-        type: "locale",
+        type: "",
         brand,
         model,
         serial_number,

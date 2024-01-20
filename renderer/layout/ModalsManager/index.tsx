@@ -11,6 +11,10 @@ import EuroForm from "page-components/finances/EuroForm";
 import LicenceForm from "page-components/licences/LicenceForm";
 import PaperForm from "page-components/papers/PaperForm";
 import ProcurationForm from "page-components/procurations/ProcurationForm";
+import CategoryForm from "page-components/home/CategoryForm";
+import PrintModal from "page-components/clients/PrintModal";
+import DeliverProcurationForm from "page-components/procurations/DeliverProcurationForm";
+import DeliverPaperForm from "page-components/papers/DeliverPaperForm";
 
 import { useAppSelector } from "store";
 import { ModalTypes } from "types";
@@ -26,6 +30,9 @@ type ModalsComponents = {
 };
 
 const modalsComponents: ModalsComponents = {
+  categories: {
+    Component: CategoryForm,
+  },
   clients: {
     Component: ClientForm,
   },
@@ -47,6 +54,12 @@ const modalsComponents: ModalsComponents = {
   procurations: {
     Component: ProcurationForm,
   },
+  deliver_procuration: {
+    Component: DeliverProcurationForm,
+  },
+  deliver_paper: {
+    Component: DeliverPaperForm,
+  },
   expenses: {
     Component: ExpenseForm,
   },
@@ -56,6 +69,9 @@ const modalsComponents: ModalsComponents = {
   transactionsEUR: {
     Component: EuroForm,
   },
+  print: {
+    Component: PrintModal,
+  },
   warning: {
     Component: WarningModal,
   },
@@ -63,6 +79,12 @@ const modalsComponents: ModalsComponents = {
     Component: DeleteModal,
   },
   cancel_sale: {
+    Component: DeleteModal,
+  },
+  cancel_procuration_delivery: {
+    Component: DeleteModal,
+  },
+  cancel_paper_delivery: {
     Component: DeleteModal,
   },
 };

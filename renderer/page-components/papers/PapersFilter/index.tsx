@@ -7,38 +7,29 @@ const TYPE_CATEGORIES = {
   field: "type",
   title: "Type de dossier",
   list: [
-    { name: "Transaction", option: "transaction" },
-    { name: "Dépense", option: "expense" },
+    { name: "Dossier", option: "dossier" },
+    { name: "Cart grise", option: "cart grise" },
   ],
 };
+
 const RECEIVED_CATEGORIES = {
   field: "has_received",
   title: "Recu de dossier",
   list: [
-    { name: "Recu", option: "true" },
     { name: "Non recu", option: "false" },
-  ],
-};
-
-const EXPIRATION_CATEGORIES = {
-  field: "is_expirated",
-  title: "Expiration de la licence",
-  list: [
-    { name: "Expiré", option: "true" },
-    { name: "Non expiré", option: "false" },
+    { name: "Recu", option: "true" },
   ],
 };
 
 const PapersFilter = () => {
   return (
     <Filter>
+      <DateRangePicker label="Date donnée" resource="papers" rangeParam="given_at" />
       <DateRangePicker label="Date de réception" resource="papers" rangeParam="purchased_at" />
-      <DateRangePicker label="Date d'émission" resource="papers" rangeParam="issue_date" />
       <DateRangePicker label="Date de livraison" resource="papers" rangeParam="received_at" />
       <AmountRange label="Prix" resource="papers" rangeParam="price" />
       <CategoryFilter resource="papers" catgories={TYPE_CATEGORIES} />
       <CategoryFilter resource="papers" catgories={RECEIVED_CATEGORIES} />
-      <CategoryFilter resource="papers" catgories={EXPIRATION_CATEGORIES} />
     </Filter>
   );
 };

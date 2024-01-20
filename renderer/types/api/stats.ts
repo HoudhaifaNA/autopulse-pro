@@ -11,10 +11,18 @@ interface BalanceDetails {
   amount: number;
 }
 
-interface CarsStats {
-  type: "dubai" | "europe" | "locale";
-  total: number;
-  cars_count: number;
+export interface CarsStats {
+  type: string;
+  total_cars_count: number;
+  total_purchase: number;
+  sold_cars_count: number;
+  sold_total_purchase: number;
+  total_sold: number;
+  total_profit: number;
+  total_profited_count: number;
+  total_lost_count: number;
+  total_positive_profit: number;
+  total_negative_profit: number;
 }
 
 export interface GetStockResponse {
@@ -40,17 +48,8 @@ export interface GetClientsStatsResponse {
 }
 
 export interface GetCarsStatsResponse {
-  total_purchase_price_eur: CarsStats[];
-  total_purchase_price_dzd: CarsStats[];
-  total_expense_cost: CarsStats[];
-  total_cost: CarsStats[];
-  total_sold_price: CarsStats[];
-  total_profit: CarsStats[];
-  total_lost_profit: {
-    locale: number;
-    europe: number;
-    dubai: number;
-  };
+  all_cars: CarsStats;
+  cars_by_category: CarsStats[];
 }
 
 export interface GetLicencesStatsResponse {

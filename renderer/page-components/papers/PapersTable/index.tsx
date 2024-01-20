@@ -89,14 +89,11 @@ const PapersTable = ({ data }: PaperTableProps) => {
 
   const renderPapers = () => {
     return papers.map((paper, ind) => {
-      const { id, purchased_at, car_id, car, has_received, received_at, seller_id, seller, price, expiration_date } =
-        paper;
+      const { id, purchased_at, car_id, type, owner, car, has_received, received_at, seller_id, seller, price } = paper;
 
       const formattedPaperPrice = formatFiatValue(price, "DZD");
-      const formattedPurchaseDate = formatDate(purchased_at);
+      const formattedPurchaseDate = purchased_at ? formatDate(purchased_at) : "--";
       const formattedReceivedDate = received_at ? formatDate(received_at) : "--";
-      const formattedExpirationDate = formatDate(expiration_date);
-      const type = paper.type === "expense" ? "Dépense" : "Transaction";
 
       const isSelected = selectedIds.includes(id);
       const isDropdownToggled = dropdownIndex === ind;
@@ -109,7 +106,7 @@ const PapersTable = ({ data }: PaperTableProps) => {
           </T.TableCell>
           <T.TableCell>{rowNumber}</T.TableCell>
           <T.TableCell>
-            <Link href={`/papers/${id}`}>
+            <Link href={`/cars/${car_id}`}>
               <Body2>{car}</Body2>
             </Link>
           </T.TableCell>
@@ -118,12 +115,16 @@ const PapersTable = ({ data }: PaperTableProps) => {
               <Body2>{seller}</Body2>
             </Link>
           </T.TableCell>
+          <T.TableCell blurrable>
+            <Link href={`/papers/${id}`}>
+              <Body2>{owner}</Body2>
+            </Link>
+          </T.TableCell>
           <T.TableCell>{renderPaperStatus(has_received, "No", "Oui")}</T.TableCell>
           <T.TableCell>{type}</T.TableCell>
           <T.TableCell blurrable>{formattedPaperPrice}</T.TableCell>
           <T.TableCell>{formattedPurchaseDate}</T.TableCell>
           <T.TableCell>{formattedReceivedDate}</T.TableCell>
-          <T.TableCell>{formattedExpirationDate}</T.TableCell>
           <T.TableCell onClick={() => onClickToggleDropdown(ind)} id={`toggler-${ind}`}>
             <Icon icon="more_vert" size={ICON_SIZE} />
             {isDropdownToggled && !isOutside && <ActionsDropdown paper={paper} id={`dropdown-${ind}`} />}

@@ -1,3 +1,5 @@
+import { AxiosError } from "axios";
+
 import API from "utils/API";
 import notify from "utils/notify";
 import { ExchangeRateInitialValue } from "./types";
@@ -15,8 +17,8 @@ const handleSubmit: SubmitFunction<ExchangeRateInitialValue, Params> = async (va
     notify("success", "taux de change mis à jour avec succès");
   } catch (err: any) {
     let message = "Error";
-    if (err.response) {
-      message = err.response.data.message.code || err.response.data.message;
+    if (err instanceof AxiosError && typeof err.response?.data.message === "string") {
+      message = err.response.data.message;
     }
     notify("error", message);
     console.log(err);

@@ -5,12 +5,8 @@ import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
 
-interface ITotalCount {
-  total_count: number;
-}
-
 export const getAllExpenses = tryCatch((req, res) => {
-  const { groupBy, total_cost, orderBy = "-expense_date", page = 1, limit = 10 } = req.query;
+  const { groupBy, total_cost, orderBy = "-expense_date", page = 1, limit = 250 } = req.query;
 
   const rangeFilters = ["expense_date", "cost"];
 
@@ -118,9 +114,9 @@ export const getExpenseById = tryCatch((req, res, next) => {
 });
 
 export const createExpense = tryCatch((req, res) => {
-  const { expense_date, raison, cost } = req.body;
+  const { expense_date, raison, cost, note } = req.body;
 
-  const params = { expense_date, raison, cost };
+  const params = { expense_date, raison, cost, note };
 
   const { lastInsertRowid } = S.insertExpenseStatment.run(params);
 
@@ -131,9 +127,9 @@ export const createExpense = tryCatch((req, res) => {
 
 export const updateExpense = tryCatch((req, res, next) => {
   const { id } = req.params;
-  const { expense_date, raison, cost } = req.body;
+  const { expense_date, raison, cost, note } = req.body;
 
-  const params = [expense_date, raison, cost, id];
+  const params = [expense_date, raison, cost, note, id];
 
   const { changes } = S.updateExpenseStatment.run(params);
 

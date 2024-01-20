@@ -11,6 +11,7 @@ import theme from "styles/theme";
 
 import ReduxProvider from "contexts/ReduxProvider";
 import Layout from "layout";
+import ModalsManager from "layout/ModalsManager";
 
 const inter = Inter({
   src: [
@@ -44,6 +45,8 @@ const App = ({ Component, pageProps }: AppProps) => {
           <GlobalStyle />
           <NextNProgress color="#00d8d6" />
           <ToastContainer />
+          <ModalsManager />
+
           {insertPage()}
         </ThemeProvider>
       </main>

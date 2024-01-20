@@ -26,12 +26,15 @@ const INITIAL_VALUES: InititalValues = {
 const DeleteModal = ({ modalId }: DeleteModalProps) => {
   const router = useRouter();
   const modalsList = useAppSelector((state) => state.modals.modalsList);
+  const clientsURLs = useAppSelector((state) => state.resourceUrls.clients);
   const currentModal = modalsList.find(({ id }) => id === modalId) as DeleteModalConfig;
   const { baseUrl, fetchedUrl, secondaryUrl } = useAppSelector((state) => state.resourceUrls[currentModal.resource]);
   const dispatch = useDispatch();
   const [visibility, toggleVisibility] = useState(false);
   let url = `${baseUrl}/${currentModal.idsToDelete.join(",")}`;
   if (currentModal.name === "cancel_sale") url = `${baseUrl}/sale/${currentModal.idsToDelete.join(",")}`;
+  if (currentModal.name === "cancel_procuration_delivery" || currentModal.name === "cancel_paper_delivery")
+    url = `${baseUrl}/${currentModal.idsToDelete.join(",")}/deliver`;
   if (currentModal.resource.startsWith("transactions")) url = `/transactions/${currentModal.idsToDelete.join(",")}`;
   if (currentModal.resource === "expenses" && !secondaryUrl) {
     url = `/expenses/dates/${currentModal.idsToDelete.join(",")}`;
@@ -47,7 +50,19 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
         mutate(fetchedUrl);
         dispatch(removeModal(modalId));
         dispatch(clearSelectedItems());
-        if (currentModal.name === "cancel_sale") return mutate(secondaryUrl);
+        if (currentModal.resource === "categories") mutate("/categories/cars");
+        if (
+          currentModal.name === "cancel_sale" ||
+          currentModal.name === "cancel_procuration_delivery" ||
+          currentModal.name === "cancel_paper_delivery"
+        ) {
+          return mutate(secondaryUrl);
+        }
+        if (currentModal.resource.startsWith("transactions")) {
+          mutate(clientsURLs.fetchedUrl);
+          mutate(clientsURLs.secondaryUrl);
+          return;
+        }
         router.push(pathWithoutDynamicParam);
       }
     },

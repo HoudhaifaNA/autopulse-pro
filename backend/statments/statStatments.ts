@@ -37,83 +37,42 @@ export const selectBalanceStats = `
   ) AS client_stats ON status.balance_status = client_stats.balance_status;
   `;
 
-export const selectCarsPricesQuery = `
+export const selectCarsAllPrices = `
   SELECT
-  types.type,
-  IFNULL(SUM(cars.--PRICE), 0) AS total,
-  IFNULL(cars_count, 0) AS cars_count
-  FROM (
-  SELECT 'dubai' AS type
-  UNION ALL
-  SELECT 'europe'
-  UNION ALL
-  SELECT 'locale'
-  ) AS types
-  LEFT JOIN (
-    SELECT 
     type,
-    IFNULL(SUM(--PRICE), 0) AS --PRICE,
-    COUNT(*) AS cars_count
-    FROM cars
-    --FILTER
-    GROUP BY type
-  ) AS cars ON types.type = cars.type
-  `;
-
-export const selectCarsProfitQuery = `
-  SELECT
-  types.type,
-  IFNULL(SUM(
-    CASE
-      WHEN cars.type = 'locale' AND cars.profit < 0 AND cars.is_exchange = 1 AND (
-        cars.exchange_types LIKE '%europe%' 
-        OR cars.exchange_types LIKE '%dubai%'
-        )
-      THEN 0
-      ELSE profit
-    END
-  ), 0) AS total,
-  IFNULL(cars_count, 0) AS cars_count
-  FROM (
-    SELECT 'dubai' AS type
-    UNION ALL
-    SELECT 'europe'
-    UNION ALL
-    SELECT 'locale'
-  ) AS types
-  LEFT JOIN (
-    SELECT 
-    type,
-    is_exchange,
-    exchange_types,
-    SUM(
-      CASE
-        WHEN type = 'locale' AND profit < 0 AND is_exchange = 1 AND (
-          exchange_types LIKE '%europe%' 
-          OR exchange_types LIKE '%dubai%'
-          )
-        THEN 0
-        ELSE profit
-      END
-    ) AS profit,
-    COUNT(*) AS cars_count
-    FROM cars
-    --FILTER
-    GROUP BY type
-  ) AS cars ON types.type = cars.type
-  `;
-
-export const selectLostLocaleProfitQuery = `
-  SELECT 
-  SUM(profit) AS lost_profit,
-  exchange_types
+    COUNT(id) AS total_cars_count,
+    COALESCE(SUM(total_cost), 0) AS total_purchase,
+    COUNT(CASE WHEN buyer_id IS NOT NULL THEN 1 END) AS sold_cars_count,
+    COALESCE(SUM(CASE WHEN buyer_id IS NOT NULL THEN total_cost ELSE 0 END), 0) AS sold_total_purchase,
+    COALESCE(SUM(CASE WHEN buyer_id IS NOT NULL THEN sold_price ELSE 0 END), 0) AS total_sold,
+    COALESCE(SUM(CASE WHEN buyer_id IS NOT NULL THEN profit ELSE 0 END), 0) AS total_profit,
+    COUNT(CASE WHEN buyer_id IS NOT NULL AND profit > 0 THEN 1 END) AS total_profited_count,
+    COUNT(CASE WHEN buyer_id IS NOT NULL AND profit < 0 THEN 1 END) AS total_lost_count,
+    COALESCE(SUM(CASE WHEN buyer_id IS NOT NULL AND profit > 0 THEN profit ELSE 0 END), 0) AS total_positive_profit,
+    COALESCE(SUM(CASE WHEN buyer_id IS NOT NULL AND profit < 0 THEN profit ELSE 0 END), 0) AS total_negative_profit
   FROM cars
-  WHERE buyer_id IS NOT NULL
-    AND type = 'locale'
-    AND profit < 0 
-    AND is_exchange = 1
-    AND ( exchange_types LIKE '%europe%' OR exchange_types LIKE '%dubai%' )
-  `;
+`;
+
+export const selectCarsByTypePrices = `
+  SELECT
+    all_types.type,
+    COALESCE(COUNT(cars.id), 0) AS total_cars_count,
+    COALESCE(SUM(cars.total_cost), 0) AS total_purchase,
+    COUNT(CASE WHEN cars.buyer_id IS NOT NULL THEN 1 END) AS sold_cars_count,
+    COALESCE(SUM(CASE WHEN cars.buyer_id IS NOT NULL THEN cars.total_cost ELSE 0 END), 0) AS sold_total_purchase,
+    COALESCE(SUM(CASE WHEN cars.buyer_id IS NOT NULL THEN cars.sold_price ELSE 0 END), 0) AS total_sold,
+    COALESCE(SUM(CASE WHEN cars.buyer_id IS NOT NULL THEN cars.profit ELSE 0 END), 0) AS total_profit,
+    COUNT(CASE WHEN cars.buyer_id IS NOT NULL AND cars.profit > 0 THEN 1 END) AS total_profited_count,
+    COUNT(CASE WHEN cars.buyer_id IS NOT NULL AND cars.profit < 0 THEN 1 END) AS total_lost_count,
+    COALESCE(SUM(CASE WHEN cars.buyer_id IS NOT NULL AND cars.profit > 0 THEN cars.profit ELSE 0 END), 0) AS total_positive_profit,
+    COALESCE(SUM(CASE WHEN cars.buyer_id IS NOT NULL AND cars.profit < 0 THEN cars.profit ELSE 0 END), 0) AS total_negative_profit
+  FROM (
+    SELECT DISTINCT type
+    FROM cars
+  ) all_types
+  LEFT JOIN cars ON all_types.type = cars.type --TYPES 
+  GROUP BY all_types.type;
+`;
 
 export const selectLicencesTotalCost = `
 	SELECT 

@@ -1,19 +1,14 @@
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+
 import Filter from "components/Filter";
 import AmountRange from "components/AmountRange/AmountRange";
 import DateRangePicker from "components/DateRangePicker/DateRangePicker";
-import CategoryFilter from "components/CategoryFilter";
+import CategoryFilter, { CategoriesFliterItem } from "components/CategoryFilter";
 import BrandsFilter from "../BrandsFilter/BrandsFilter";
 import YearsPickerInput from "components/YearsPickerInput";
-
-const TYPE_CATEGORIES = {
-  field: "type",
-  title: "Type de voitures",
-  list: [
-    { name: "Local", option: "locale" },
-    { name: "Europe", option: "europe" },
-    { name: "Dubai", option: "dubai" },
-  ],
-};
+import { GetCategories } from "types";
+import { fetcher } from "utils/API";
 
 const LICENCE_CATEGORIES = {
   field: "isLicenceInComplete",
@@ -58,6 +53,24 @@ const SOLD_CATEGORIES = {
 };
 
 const CarsFilter = () => {
+  const [categories, setCategories] = useState<CategoriesFliterItem["list"]>([]);
+  const { data: categoriesData } = useSWR<GetCategories>("/categories", fetcher);
+
+  useEffect(() => {
+    if (categoriesData) {
+      const categoriesTypes = categoriesData.categories.map(({ name }) => {
+        return { name, option: name };
+      });
+      setCategories(categoriesTypes);
+    }
+  }, [categoriesData]);
+
+  const TYPE_CATEGORIES = {
+    field: "type",
+    title: "Type de voitures",
+    list: categories,
+  };
+
   return (
     <Filter>
       <YearsPickerInput label="Années de production" resource="cars" yearsParam="productionYears" />

@@ -7,7 +7,7 @@ export const INITIAL_VALUES: SaleInitialValues = {
   buyer: "",
   sold_price: 0,
   given_keys: 1,
-  papers_type: "Dossier",
+  papers_type: null,
   has_procuration: 1,
   has_gray_card: 1,
   selling_details: "",

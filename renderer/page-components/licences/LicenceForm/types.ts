@@ -12,5 +12,6 @@ export interface LicenceInitalValues {
   serial_number: string;
   price: number;
   issue_date: string;
+  note: string;
   attachments: Attachment[];
 }

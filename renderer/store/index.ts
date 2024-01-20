@@ -3,6 +3,7 @@ import { useSelector, TypedUseSelectorHook } from "react-redux";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
+import filterReducer from "./reducers/filter";
 import modalsReducer from "./reducers/modals";
 import resourceUrlsReducer from "./reducers/resourceUrls";
 import selectedItemsReducer from "./reducers/selectedItems";
@@ -15,6 +16,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
+  filter: filterReducer,
   modals: modalsReducer,
   resourceUrls: resourceUrlsReducer,
   selectedItems: selectedItemsReducer,

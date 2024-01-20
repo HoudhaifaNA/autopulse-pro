@@ -81,14 +81,14 @@ const CarDetails = () => {
       const formattedTotalCost = formatFiatValue(total_cost, "DZD");
       const formattedSoldPrice = sold_price ? formatFiatValue(sold_price, "DZD") : "--";
       const formattedProfit = profit ? formatFiatValue(profit, "DZD", true) : "--";
-      const formattedPurchasedPrice = type === "locale" ? formattedPurchaseDZDPrice : formattedPurchaseEURPrice;
+      const formattedPurchasedPrice = type.includes("lcl") ? formattedPurchaseDZDPrice : formattedPurchaseEURPrice;
       const expensesList = JSON.parse(expenses) as Expense[];
 
       const renderExpensesList = () => {
         return expensesList.map(({ type, raison, cost_in_eur, cost_in_dzd }) => {
           return (
             <DetailContent $columns={3}>
-              {type !== "locale" && (
+              {!type.includes("lcl") && (
                 <DetailItem title={raison} blurrable>
                   {formatFiatValue(cost_in_eur, "EUR")}
                 </DetailItem>

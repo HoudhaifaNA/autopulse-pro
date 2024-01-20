@@ -23,20 +23,4 @@ export const FilterCard = styled.div`
   box-shadow: 0 1rem 2rem 1rem rgba(0, 0, 0, 0.15);
   border-radius: 0.4rem;
   overflow-y: auto;
-
-  ::-webkit-scrollbar {
-    width: 1rem;
-    height: 1rem;
-    border-radius: 0.5rem;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-    border-radius: 0.5rem;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: #b3b3b3;
-    border-radius: 0.5rem;
-  }
 `;

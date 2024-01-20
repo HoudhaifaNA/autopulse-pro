@@ -14,10 +14,26 @@ import formatFiatValue from "utils/formatFiatValue";
 import { fetcher } from "utils/API";
 import formatDate from "utils/formatDate";
 import { Paper } from "interfaces";
+import Badge, { BadgeProps } from "components/Badge/Badge";
 
 interface GetPaperResponse {
   paper: Paper;
 }
+
+const renderPaperStatus = (isExpirated: 0 | 1, invalidMsg: string, validMsg: string) => {
+  let status: string = "";
+  let color: BadgeProps["type"] = "success";
+
+  if (isExpirated) {
+    status = validMsg;
+    color = "success";
+  } else {
+    status = invalidMsg;
+    color = "error";
+  }
+
+  return <Badge type={color}>{status}</Badge>;
+};
 
 const PaperDetails = () => {
   const router = useRouter();
@@ -32,11 +48,11 @@ const PaperDetails = () => {
     if (data?.paper) {
       const { paper } = data;
 
-      const { purchased_at, car_id, car, seller_id, seller, price, expiration_date, received_at } = paper;
-      const type = paper.type === "expense" ? "Dépense" : "Transaction";
-      const formattedPurchasedDate = formatDate(purchased_at);
-      const formattedPrice = formatFiatValue(price, "DZD");
-      const formattedExpirationDate = formatDate(expiration_date);
+      const { purchased_at, given_at, car_id, type, owner, car, has_received, received_at, seller_id, seller, price } =
+        paper;
+      const formattedPaperPrice = formatFiatValue(price, "DZD");
+      const formattedGivenAt = given_at ? formatDate(given_at) : "--";
+      const formattedPurchaseDate = purchased_at ? formatDate(purchased_at) : "--";
       const formattedReceivedDate = received_at ? formatDate(received_at) : "--";
 
       return (
@@ -44,14 +60,14 @@ const PaperDetails = () => {
           <DetailSection>
             <DetailHeader title={`Dossier de ${car}`} />
             <DetailContent $columns={3}>
-              <DetailItem title="Date de réception">{formattedPurchasedDate}</DetailItem>
+              <DetailItem title="Date de réception">{formattedPurchaseDate}</DetailItem>
               <DetailItem title="vendeur" blurrable>
                 <Link href={`/clients/${seller_id}`}>
                   <LabelText>{seller}</LabelText>
                 </Link>
               </DetailItem>
               <DetailItem title="Prix" blurrable>
-                {formattedPrice}
+                {formattedPaperPrice}
               </DetailItem>
             </DetailContent>
             <DetailContent $columns={3}>
@@ -60,10 +76,12 @@ const PaperDetails = () => {
                   <LabelText>{car}</LabelText>
                 </Link>
               </DetailItem>
-              <DetailItem title="Date d'expiration">{formattedExpirationDate}</DetailItem>
-              <DetailItem title="Date de livraison">{formattedReceivedDate}</DetailItem>
+              <DetailItem title="Date donnée">{formattedGivenAt}</DetailItem>
+              <DetailItem title="Propriétaire">{owner}</DetailItem>
             </DetailContent>
             <DetailContent $columns={3}>
+              <DetailItem title="Date de livraison">{formattedReceivedDate}</DetailItem>
+              <DetailItem title="Livré">{renderPaperStatus(has_received, "No", "Oui")}</DetailItem>
               <DetailItem title="Type">{type}</DetailItem>
             </DetailContent>
           </DetailSection>

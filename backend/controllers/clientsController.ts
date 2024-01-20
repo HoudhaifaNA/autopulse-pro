@@ -7,6 +7,7 @@ import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
 import AppError from "../utils/AppError";
 import tryCatch from "../utils/tryCatch";
 import deleteDocumentsByIds from "../utils/deleteDocumentsByIds";
+import { Client } from "../../interfaces";
 
 export const verifyClientInfo = tryCatch((req, _res, next) => {
   const { phone, email } = req.body;
@@ -32,7 +33,7 @@ export const getClientsList = tryCatch((_req, res) => {
 });
 
 export const getAllClients = tryCatch((req, res) => {
-  const { orderBy = "-last_transaction_date", page = 1, limit = 10 } = req.query;
+  const { orderBy = "-last_transaction_date", page = 1, limit = 250 } = req.query;
 
   const ranges = ["created_at", "last_transaction_date", "dzd_balance", "eur_balance"];
   const skip = (Number(page) - 1) * Number(limit);
@@ -79,24 +80,48 @@ export const getClientById = tryCatch((req, res, next) => {
 
 export const getClientTransactions = tryCatch((req, res, next) => {
   const { id } = req.params;
-  const { currency } = req.query;
+  const { types, currency, direction } = req.query;
+  const client = S.selectClientByIdStatment.get(id) as Client | undefined;
 
-  const client = S.selectClientTransactionsTotalsStatment.get(id);
   if (!client) {
     return next(new AppError("Client non trouvé.", 404));
   }
 
-  let currencyFilter = ``;
+  let filterList = [];
 
-  if (currency) {
-    currencyFilter = ` AND currency = '${currency}' `;
+  let typesFilter =
+    typeof types === "string"
+      ? types
+          .split(",")
+          .map((type) => `'${type}'`)
+          .join(",")
+      : undefined;
+
+  if (types) {
+    filterList.push(`type IN (${typesFilter})`);
   }
 
-  const clientTransactionsQuery = S.selectClientTransactionsQuery.replace("--CURRENCY", currencyFilter);
+  if (currency) {
+    filterList.push(`currency = '${currency}'`);
+  }
+
+  if (direction) {
+    filterList.push(`direction = '${direction}'`);
+  }
+
+  const filterStatment = filterList.length > 0 ? ` AND ${filterList.join(" AND ")}` : "";
+
+  const clientTransactionsQuery = S.selectClientTransactionsQuery.replace("--FILTER", filterStatment);
+  const clientTransactionsTotalQuery = S.selectClientTransactionsTotalsStatment.replace("--FILTER", filterStatment);
 
   const transactions = db.prepare(clientTransactionsQuery).all(id);
+  const clientTotals = db.prepare(clientTransactionsTotalQuery).get(id) as any;
 
-  return res.status(200).json({ status: "success", results: transactions.length, client, transactions });
+  const clientsAccount = { ...clientTotals, ...client };
+
+  return res
+    .status(200)
+    .json({ status: "success", results: transactions.length, client: clientsAccount, transactions });
 });
 
 export const getClientLastTransaction = tryCatch((req, res, next) => {

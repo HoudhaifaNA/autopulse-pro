@@ -99,6 +99,16 @@ export const NavbarItem = styled.li<StyledNavbarItemProps>`
   }
 `;
 
+export const MultiLinks = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start !important;
+  gap: 1rem;
+  span {
+    color: ${({ theme }) => theme.colors.primary[500]};
+  }
+`;
+
 export const SecondaryNavList = styled.ul`
   display: flex;
   justify-content: flex-end;

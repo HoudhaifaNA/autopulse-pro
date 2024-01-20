@@ -2,7 +2,7 @@ import { Expense } from "interfaces";
 import { AddModalPayload, ExpenseGrouped } from "types";
 
 export const retreiveExpensesActions = (expense: Expense) => {
-  const { id, expense_date, raison, cost } = expense;
+  const { id, expense_date, raison, cost, note } = expense;
 
   const UPDATE: AddModalPayload = {
     name: "expenses",
@@ -14,6 +14,7 @@ export const retreiveExpensesActions = (expense: Expense) => {
         expense_date,
         raison,
         cost,
+        note: note || "",
       },
     },
   };

@@ -5,7 +5,6 @@ import { ReactNode, useEffect } from "react";
 import * as S from "./styles";
 import Navbar from "layout/Navbar";
 import Header from "./Header";
-import ModalsManager from "./ModalsManager";
 
 import useCurrentUser from "hooks/useCurrentUser";
 import useInactiveTimeout from "hooks/useInactiveTimeout";
@@ -32,7 +31,6 @@ const Layout = ({ children }: { children: ReactNode }) => {
     <S.Wrapper>
       <Navbar />
       <S.MainContent>
-        <ModalsManager />
         <Header />
         <S.CurrentPage>{children}</S.CurrentPage>
       </S.MainContent>

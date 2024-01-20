@@ -25,8 +25,10 @@ export interface Licence {
   expiration_date: string;
   created_at: string;
   updated_at: string;
+  is_reserved: 0 | 1;
   is_valid: 0 | 1;
   is_expirated: 0 | 1;
+  note: string | null;
   seller: string;
   car: string | null;
 }
@@ -45,16 +47,22 @@ export interface Transaction {
   currency: "EUR" | "DZD";
   client: string;
   amount: number;
+  recipient: string | null;
+  note: string | null;
   created_at: string;
   updated_at: string;
 }
 
-export type TExchangeTypes = "locale" | "europe" | "dubai";
+export type TExchangeTypes = string;
 
+export interface Category {
+  id: number;
+  name: string;
+}
 export interface Car {
   id: number;
   purchased_at: string;
-  type: "locale" | "europe" | "dubai";
+  type: TExchangeTypes;
   brand: string;
   model: string;
   name: string;
@@ -82,7 +90,7 @@ export interface Car {
   buyer_id: number | null;
   sold_at: string | null;
   given_keys: number | null;
-  papers_type: "Dossier" | "Copier de dossier" | null;
+  papers_type: ("Dossier" | "Double Dossier")[] | string | null;
   has_procuration: 0 | 1 | null;
   procuration_received: 0 | 1 | null;
   has_gray_card: 0 | 1 | null;
@@ -109,13 +117,17 @@ export interface CarExpense {
 }
 export interface Procuration {
   id: number;
-  type: "expense" | "transaction";
   purchased_at: string;
   seller_id: number;
   licence_id: number;
   car_id: number;
-  owner_id: number;
+  car_serial_number: string;
+  buyer_id: number;
   notary: string | null;
+  procurator: string;
+  recipient: string | null;
+  is_expense: 0 | 1;
+  note: string | null;
   price: number;
   deal_id: number | null;
   issue_date: string;
@@ -127,28 +139,27 @@ export interface Procuration {
   is_expirated: 0 | 1;
   moudjahid: string;
   seller: string;
-  owner: string;
+  buyer: string;
   car: string;
 }
 
 export interface Paper {
   id: number;
-  type: "expense" | "transaction";
-  purchased_at: string;
+  type: "dossier" | "cart grise";
+  given_at: string;
+  purchased_at: string | null;
   seller_id: number;
   car_id: number;
   price: number;
-  deal_id: number | null;
-  issue_date: string;
   received_at: string | null;
-  expiration_date: string;
+  recipient: string | null;
   has_received: 0 | 1;
+  note: string | null;
   created_at: string;
   updated_at: string;
-  is_expirated: 0 | 1;
   seller: string;
+  buyer: string;
   car: string;
-  owner_id: number;
   owner: string;
 }
 
@@ -157,6 +168,7 @@ export interface Expense {
   expense_date: string;
   raison: string;
   cost: number;
+  note: string | null;
   created_at: string;
   updated_at: string;
 }

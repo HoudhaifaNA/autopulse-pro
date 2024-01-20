@@ -7,7 +7,6 @@ import multer, { FileFilterCallback } from "multer";
 import db from "../database";
 import * as S from "../statments/licencesStatments";
 import { insertTransactionStatment, updateTransactionByProductIdStatment } from "../statments/transactionsStatments";
-import { selectProcurationByCarIdStatment } from "../statments/procurationsStatments";
 import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
 import tryCatch from "../utils/tryCatch";
 import AppError from "../utils/AppError";
@@ -23,16 +22,11 @@ const uid = () => {
 };
 
 export const getLicencesList = tryCatch((req, res) => {
-  const { filter } = req.params;
   const { id } = req.query;
 
-  let filterClause = "";
-  if (filter === "valid") {
-    filterClause = `WHERE is_valid = 1`;
-  } else if (filter === "procuration") {
-    filterClause = `WHERE has_procuration = 1 AND cars.buyer_id IS NOT NULL AND procuration_exist IS NULL`;
-  }
+  let filterClause = "WHERE is_valid = 1";
   let currentLicence;
+
   if (id) {
     currentLicence = S.selectLicenceByIdStatment.get(id) as Licence;
   }
@@ -49,7 +43,7 @@ export const getLicencesList = tryCatch((req, res) => {
 });
 
 export const getAllLicences = tryCatch((req, res) => {
-  const { is_valid, is_expirated, orderBy = "-purchased_at", page = 1, limit = 10 } = req.query;
+  const { is_valid, is_expirated, is_reserved, orderBy = "-purchased_at", page = 1, limit = 250 } = req.query;
 
   const ranges = ["purchased_at", "issue_date", "price"];
   const skip = (Number(page) - 1) * Number(limit);
@@ -60,6 +54,12 @@ export const getAllLicences = tryCatch((req, res) => {
     const isValidValue = is_valid === "true" ? 1 : 0;
     const isValidFilter = `is_valid = ${isValidValue}`;
     filterQueries.push(isValidFilter);
+  }
+
+  if (is_reserved) {
+    const isReservedValue = is_reserved === "true" ? 1 : 0;
+    const isReservedFilter = `is_reserved = ${isReservedValue}`;
+    filterQueries.push(isReservedFilter);
   }
 
   if (is_expirated) {
@@ -112,7 +112,7 @@ export const getLicenceById = tryCatch((req, res, next) => {
 });
 
 export const createLicence = tryCatch((req, res, next) => {
-  const { purchased_at, moudjahid, seller_id, wilaya, serial_number, price, issue_date } = req.body;
+  const { purchased_at, moudjahid, seller_id, wilaya, serial_number, price, issue_date, note } = req.body;
   const files = req.files as Express.Multer.File[];
   const attachments: string[] = [];
 
@@ -143,6 +143,7 @@ export const createLicence = tryCatch((req, res, next) => {
       price,
       attachments: JSON.stringify(attachments),
       issue_date,
+      note,
     };
 
     const { lastInsertRowid } = S.insertLicenceStatment.run(params);
@@ -159,6 +160,8 @@ export const createLicence = tryCatch((req, res, next) => {
       direction: "entrante",
       currency: "DZD",
       amount: price,
+      recipient: "company",
+      note,
     };
 
     insertTransactionStatment.run(transacrtionParams);
@@ -190,7 +193,7 @@ export const createLicence = tryCatch((req, res, next) => {
 });
 
 export const updateLicence = tryCatch((req, res, next) => {
-  const { purchased_at, moudjahid, seller_id, wilaya, serial_number, price, issue_date } = req.body;
+  const { purchased_at, moudjahid, seller_id, wilaya, serial_number, price, issue_date, note } = req.body;
   const { id } = req.params;
 
   db.exec("BEGIN TRANSACTION");
@@ -206,7 +209,17 @@ export const updateLicence = tryCatch((req, res, next) => {
       );
     }
 
-    const params = [purchased_at, moudjahid?.toLowerCase(), seller_id, wilaya, serial_number, price, issue_date, id];
+    const params = [
+      purchased_at,
+      moudjahid?.toLowerCase(),
+      seller_id,
+      wilaya,
+      serial_number,
+      price,
+      issue_date,
+      note,
+      id,
+    ];
 
     const { changes } = S.updateLicenceStatment.run(params);
 
@@ -227,20 +240,13 @@ export const updateLicence = tryCatch((req, res, next) => {
       "entrante",
       "DZD",
       price,
+      "company",
+      note,
     ];
 
     updateTransactionByProductIdStatment.run([...transacrtionParams, ...productParams]);
 
     const updatedLicence = S.selectLicenceByIdStatment.get(id) as Licence;
-
-    const procuration = selectProcurationByCarIdStatment.get(updatedLicence.car_id) as Procuration | undefined;
-    if (procuration && procuration.type === "transaction") {
-      const procurationTransactionParams = [updatedLicence.seller_id, null, null, null, null, null, null, null, null];
-
-      const procurationProductParams = ["procuration", procuration.id, "entrante"];
-
-      updateTransactionByProductIdStatment.run([...procurationTransactionParams, ...procurationProductParams]);
-    }
 
     db.exec("COMMIT;");
 
@@ -249,6 +255,26 @@ export const updateLicence = tryCatch((req, res, next) => {
     db.exec("ROLLBACK;");
     return next(new AppError(error, 403));
   }
+});
+
+export const reserveLicence = tryCatch((req, res, next) => {
+  const { is_reserved } = req.body;
+  const { id } = req.params;
+  const licence = S.selectLicenceByIdStatment.get(id) as Licence | undefined;
+
+  if (!licence) {
+    return next(new AppError("Licence non trouvée.", 404));
+  }
+
+  if (!licence.is_valid && is_reserved) {
+    return next(new AppError("La licence est invalide.", 400));
+  }
+
+  S.reserveLicenceStatment.run([is_reserved, id]);
+
+  const updatedLicence = S.selectLicenceByIdStatment.get(id) as Licence;
+
+  res.status(200).json({ status: "success", licence: updatedLicence });
 });
 
 const deleteAttachment = (file: string) => {
