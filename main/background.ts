@@ -1,11 +1,14 @@
 import { Menu, app, dialog, globalShortcut } from "electron";
 import serve from "electron-serve";
 import contextMenu from "electron-context-menu";
+// import { machineIdSync } from "node-machine-id";
 
 import { createWindow } from "./helpers";
 import "../backend/server";
 
 const isProd: boolean = process.env.NODE_ENV === "production";
+
+// const  ip = machineIdSync(true);
 
 if (isProd) {
   serve({ directory: "app" });

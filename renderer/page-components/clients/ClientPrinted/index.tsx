@@ -95,7 +95,7 @@ const ClientPrinted = forwardRef(({ id, type, filter }: ClientPrintedProps, ref:
     <S.DocumentWrapper ref={ref} id="content">
       <S.DocumentHeader>
         <S.DocumentLogo>
-          <Image src="/images/zauto-logo.png" alt="zauto logo" width={200} height={70} />
+          <Image src="/images/companies/zauto-logo.png" alt="zauto logo" width={200} height={70} />
         </S.DocumentLogo>
         <S.CompanyDetails>
           <LabelText as="p">{process.env.NEXT_PUBLIC_EMAIL}</LabelText>

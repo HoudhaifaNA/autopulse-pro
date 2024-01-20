@@ -55,17 +55,17 @@ const CarsStats = () => {
             <StatTicket
               title={`Intérêt total (${sold_cars_count} voitures)`}
               icon="car"
-              value={formatFiatValue(total_profit, "DZD")}
+              value={formatFiatValue(total_profit, "DZD", true)}
             />
             <StatTicket
               title={`Intérêts negative (${total_lost_count} voitures)`}
               icon="car"
-              value={formatFiatValue(total_negative_profit, "DZD")}
+              value={formatFiatValue(total_negative_profit, "DZD", true)}
             />
             <StatTicket
               title={`Intérêts positive (${total_profited_count} voitures)`}
               icon="car"
-              value={formatFiatValue(total_positive_profit, "DZD")}
+              value={formatFiatValue(total_positive_profit, "DZD", true)}
             />
           </>
         );

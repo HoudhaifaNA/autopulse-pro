@@ -72,7 +72,7 @@ const Navbar = () => {
     <S.NavbarWrapper $short={short}>
       <S.LogoWrapper onClick={() => setShort(!short)}>
         <Image
-          src={`${short ? "/images/zauto-short.png" : "/images/zauto-logo.png"}`}
+          src={`${short ? "/images/companies/zauto-short.png" : "/images/companies/zauto-logo.png"}`}
           alt="zauto logo"
           width={short ? 60 : 200}
           height={short ? 50 : 70}
