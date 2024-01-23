@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import * as S from "./styles";
 import Icon from "components/Icon/Icon";
 import CategoryCard from "./CategoryCard";
-import { Body1 } from "styles/Typography";
+import { Body1, Body2 } from "styles/Typography";
 import { GetCarsBrandsResponse, GetCategoryCars } from "types";
 import { fetcher } from "utils/API";
 import { deleteParam, setParam } from "store/reducers/resourceUrls";
@@ -70,7 +70,7 @@ const CategoriesList = () => {
             setSelectedBrand("");
           }}
         >
-          <Body1>Categories</Body1>
+          <Icon icon="home" size="2.4rem" />
         </S.PathSegment>
         {selectedCategory && (
           <S.PathSegment onClick={() => setSelectedBrand("")}>
@@ -93,33 +93,41 @@ const CategoriesList = () => {
         const { UPDATE, DELETE } = retreiveCategoryActions(category);
 
         return (
-          <CategoryCard key={name} onClick={() => handleCategoryClick(name)}>
-            <Body1>
+          <CategoryCard key={name} onDoubleClick={() => handleCategoryClick(name)}>
+            <Body2>
               {name} ({total_cars})
-            </Body1>
+            </Body2>
             <S.CardActions onClick={(e) => e.stopPropagation()}>
-              <Icon icon="edit" size="2.4rem" onClick={() => dispatch(addModal(UPDATE))} />
-              <Icon icon="delete" size="2.4rem" onClick={() => dispatch(addModal(DELETE))} />
+              <Icon icon="edit" size="1.8rem" onClick={() => dispatch(addModal(UPDATE))} />
+              <Icon icon="delete" size="1.8rem" onClick={() => dispatch(addModal(DELETE))} />
             </S.CardActions>
           </CategoryCard>
         );
       });
     } else if (!selectedBrand) {
-      return brandsItems.map(({ brand, total_cars }) => (
-        <CategoryCard key={brand} onClick={() => handleBrandClick(brand)}>
-          <Body1>
-            {brand} ({total_cars})
-          </Body1>
-        </CategoryCard>
-      ));
+      return brandsItems.map(({ brand, total_cars }) => {
+        if (total_cars > 0) {
+          return (
+            <CategoryCard key={brand} onDoubleClick={() => handleBrandClick(brand)}>
+              <Body2>
+                {brand} ({total_cars})
+              </Body2>
+            </CategoryCard>
+          );
+        }
+      });
     } else {
-      return modelsItems.map(({ model, total_cars }) => (
-        <CategoryCard key={model} onClick={() => handleModelClick(model)}>
-          <Body1>
-            {model} ({total_cars})
-          </Body1>
-        </CategoryCard>
-      ));
+      return modelsItems.map(({ model, total_cars }) => {
+        if (total_cars > 0) {
+          return (
+            <CategoryCard key={model} onDoubleClick={() => handleModelClick(model)}>
+              <Body2>
+                {model} ({total_cars})
+              </Body2>
+            </CategoryCard>
+          );
+        }
+      });
     }
   };
 
@@ -127,12 +135,12 @@ const CategoriesList = () => {
     <S.Main>
       {renderPathBar()}
       <S.CardsList>
-        <CategoryCard onClick={() => router.push("/cars")}>
-          <Body1>Tout</Body1>
+        <CategoryCard onDoubleClick={() => router.push("/cars")}>
+          <Body2>Tout</Body2>
         </CategoryCard>
         {renderCards()}
         {!selectedCategory && (
-          <CategoryCard onClick={toggleCategoryForm}>
+          <CategoryCard onDoubleClick={toggleCategoryForm}>
             <Icon icon="add" size="4.8rem" />
           </CategoryCard>
         )}

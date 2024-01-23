@@ -4,7 +4,6 @@ export const Main = styled.main`
   height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 3rem;
   overflow-y: auto;
 `;
@@ -18,7 +17,7 @@ export const Path = styled.div`
 export const PathSegment = styled.div`
   text-transform: capitalize;
   transform-origin: all 0.2s ease-in;
-  padding: 1rem 2rem;
+  padding: 1rem;
   border-radius: 0.5rem;
   color: ${({ theme }) => theme.colors.primary["300"]};
 
@@ -35,17 +34,17 @@ export const PathSegment = styled.div`
 
 export const CardsList = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   grid-template-rows: auto;
   gap: 2rem;
-  width: 80%;
+  width: 100%;
 `;
 
 export const CardActions = styled.div`
   position: absolute;
   opacity: 0;
   visibility: hidden;
-  bottom: 2rem;
+  bottom: 1.2rem;
   left: 0;
   width: 100%;
   display: flex;
@@ -58,7 +57,7 @@ export const CardActions = styled.div`
 export const Card = styled.div`
   position: relative;
   grid-column: span 1;
-  height: 15rem;
+  height: 12rem;
   display: flex;
   align-items: center;
   justify-content: center;

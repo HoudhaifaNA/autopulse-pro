@@ -34,9 +34,10 @@ const CarForm = ({ modalId }: CarFormProps) => {
   const carTypeMatch = fetchedUrl.match(/type=([^&]*)/);
 
   const carType = (carTypeMatch && carTypeMatch[1]) || "";
+
   let formInitialValues = INITIAL_VALUES;
 
-  formInitialValues.type = carType;
+  formInitialValues.type = carType.replace(/%20/g, " ");
 
   let submitButtonText = "Suivant";
   const showBackBtn = step > 1;
