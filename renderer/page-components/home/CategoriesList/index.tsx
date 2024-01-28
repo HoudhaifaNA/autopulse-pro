@@ -28,7 +28,13 @@ const CategoriesList = () => {
   const { data: brandsAndSeriesData } = useSWR<GetCarsBrandsResponse>(brandAndSeriesUrl, fetcher);
   const { data: categoriesData } = useSWR<GetCategoryCars>("/categories/cars", fetcher);
 
-  const toggleCategoryForm = () => dispatch(addModal({ name: "categories", title: "Ajouter une category" }));
+  const handleAdding = () => {
+    if (!selectedCategory) {
+      dispatch(addModal({ name: "categories", title: "Ajouter une category" }));
+    } else if (selectedCategory) {
+      dispatch(addModal({ name: "cars", title: "Ajouter une voiture" }));
+    }
+  };
 
   useEffect(() => {
     if (categoriesData) setCategoriesItems(categoriesData.categories);
@@ -139,11 +145,9 @@ const CategoriesList = () => {
           <Body2>Tout</Body2>
         </CategoryCard>
         {renderCards()}
-        {!selectedCategory && (
-          <CategoryCard onDoubleClick={toggleCategoryForm}>
-            <Icon icon="add" size="4.8rem" />
-          </CategoryCard>
-        )}
+        <CategoryCard onClick={handleAdding}>
+          <Icon icon="add" size="4.8rem" />
+        </CategoryCard>
       </S.CardsList>
     </S.Main>
   );
