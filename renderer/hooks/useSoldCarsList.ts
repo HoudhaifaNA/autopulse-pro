@@ -5,8 +5,9 @@ import { fetcher } from "utils/API";
 import { SelectInputProps } from "components/Input/types";
 import { GetCarsWithPapersResponse } from "types";
 
-const useSoldCarsList = () => {
-  const url = `/cars/list`;
+const useSoldCarsList = (isSold?: boolean) => {
+  const param = isSold ? `type=sold` : "";
+  const url = `/cars/list?${param}`;
   const { data, isLoading, error } = useSWR<GetCarsWithPapersResponse>(url, fetcher);
 
   let carsList: SelectInputProps["items"] = [];
@@ -18,7 +19,7 @@ const useSoldCarsList = () => {
       return {
         mainText: `${name}`,
         secondText: color,
-        relatedValues: [id, buyer, owner_name],
+        relatedValues: [id, buyer || "", owner_name],
       };
     });
   }

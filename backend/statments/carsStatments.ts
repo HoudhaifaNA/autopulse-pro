@@ -33,7 +33,7 @@ const IS_SOLD_PRICE_INCOMPLETE = `
   END AS is_sold_price_incomplete
   `;
 
-export const selectCarsListStatment = db.prepare(`
+export const selectCarsListStatment = `
   SELECT 
   cars.id,
   ( cars.name || ' (' || cars.registration_number || ')' ) AS name,
@@ -42,8 +42,8 @@ export const selectCarsListStatment = db.prepare(`
   cars.owner_name
   FROM cars
   LEFT JOIN clients AS buyers ON buyers.id = cars.buyer_id
-  WHERE buyer_id IS NOT NULL
-  `);
+
+  `;
 
 export const selectCarsQuery = `
   SELECT cars.*,

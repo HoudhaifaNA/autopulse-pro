@@ -66,8 +66,10 @@ const PaperForm = ({ modalId }: { modalId: string }) => {
         }, [values.purchased_at]);
 
         useEffect(() => {
-          //@ts-ignore
-          setFieldValue("owner", currentModal.params?.document.owner);
+          if (currentModal.params?.isEdit) {
+            const { owner } = currentModal.params?.document as PaperInitalValues;
+            setFieldValue("owner", owner);
+          }
         }, []);
 
         return (
@@ -79,7 +81,7 @@ const PaperForm = ({ modalId }: { modalId: string }) => {
                     name="car"
                     label="Voiture"
                     placeholder="Nom de voiture"
-                    relatedFields={["car_id", "", "owner"]}
+                    relatedFields={["car_id", null, "owner"]}
                     items={carsList}
                   />
                 )}

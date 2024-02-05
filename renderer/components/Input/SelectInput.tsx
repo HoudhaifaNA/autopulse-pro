@@ -43,8 +43,10 @@ const SelectInput = (props: T.SelectInputProps) => {
 
     if (relatedFields) {
       relatedFields.forEach((field, i) => {
-        const value = currentInput ? currentInput.relatedValues?.[i] : values[field];
-        setFieldValue(field, value);
+        if (field) {
+          const value = currentInput ? currentInput.relatedValues?.[i] : values[field];
+          setFieldValue(field, value);
+        }
       });
     }
   }, [inputValue]);

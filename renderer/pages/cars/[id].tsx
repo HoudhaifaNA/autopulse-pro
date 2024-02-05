@@ -80,7 +80,8 @@ const CarDetails = () => {
       const formattedPurchaseDZDPrice = formatFiatValue(purchase_price_dzd, "DZD");
       const formattedTotalCost = formatFiatValue(total_cost, "DZD");
       const formattedSoldPrice = sold_price ? formatFiatValue(sold_price, "DZD") : "--";
-      const formattedProfit = profit ? formatFiatValue(profit, "DZD", true) : "--";
+      //@ts-ignore
+      const formattedProfit = buyer_id ? formatFiatValue(profit, "DZD", true) : "--";
       const formattedPurchasedPrice = type.includes("lcl") ? formattedPurchaseDZDPrice : formattedPurchaseEURPrice;
       const expensesList = JSON.parse(expenses) as Expense[];
 

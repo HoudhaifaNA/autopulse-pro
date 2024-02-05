@@ -26,7 +26,7 @@ export interface SelectOption extends DropdownItem {
 
 export interface SelectInputProps extends BaseInputFields {
   items: SelectOption[];
-  relatedFields?: string[];
+  relatedFields?: (string | null)[];
   iconSize?: DropdownProps["iconSize"];
   buttons?: DropdownProps["children"];
   elementAs?: "input" | "div";

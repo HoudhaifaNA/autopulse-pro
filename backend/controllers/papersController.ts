@@ -110,13 +110,8 @@ export const createPaper = tryCatch((req, res, next) => {
     return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
-  if (!car.buyer_id || (!car.has_gray_card && !car.papers_type)) {
-    return next(
-      new AppError(
-        `Impossible d'ajouter une cart grise pour cette voiture. La voiture n'a pas encore été vendue ou la carte grise n'est pas activée.`,
-        400
-      )
-    );
+  if (!car.has_gray_card && !car.papers_type) {
+    return next(new AppError(`Carte grise n'est pas activée.`, 400));
   }
 
   db.exec("BEGIN TRANSACTION");
@@ -181,13 +176,8 @@ export const updatePaper = tryCatch((req, res, next) => {
     return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
-  if (!car.buyer_id || (!car.has_gray_card && !car.papers_type)) {
-    return next(
-      new AppError(
-        `Impossible d'ajouter une cart grise pour cette voiture. La voiture n'a pas encore été vendue ou la carte grise n'est pas activée.`,
-        400
-      )
-    );
+  if (!car.has_gray_card && !car.papers_type) {
+    return next(new AppError(`Carte grise n'est pas activée.`, 400));
   }
 
   db.exec("BEGIN TRANSACTION");

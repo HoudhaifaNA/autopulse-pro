@@ -29,7 +29,7 @@ interface CarWithPaper {
   id: number;
   name: string;
   color: string;
-  buyer: string;
+  buyer?: string;
   owner_name: string;
 }
 

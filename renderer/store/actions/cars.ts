@@ -35,6 +35,7 @@ const retreiveCarActions = (car: Car) => {
     sold_price,
     given_keys,
     selling_details,
+    total_cost,
   } = car;
 
   const expenses = JSON.parse(car.expenses) as Expense[];
@@ -124,6 +125,7 @@ const retreiveCarActions = (car: Car) => {
         has_gray_card,
         has_procuration,
         papers_type,
+        sold_price: total_cost,
       },
     },
   };

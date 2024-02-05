@@ -28,7 +28,7 @@ const ProcurationForm = ({ modalId }: { modalId: string }) => {
   const dispatch = useDispatch();
 
   const { clientsList, isLoading: isClientsLoading } = useClientsList();
-  const { carsList, isLoading: carsLoading } = useSoldCarsList();
+  const { carsList, isLoading: carsLoading } = useSoldCarsList(true);
 
   let formInitialValues = INITIAL_VALUES;
   let submitButtonText = "Ajouter";

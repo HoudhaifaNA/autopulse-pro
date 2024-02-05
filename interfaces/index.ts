@@ -158,7 +158,7 @@ export interface Paper {
   created_at: string;
   updated_at: string;
   seller: string;
-  buyer: string;
+  buyer: string | null;
   car: string;
   owner: string;
 }

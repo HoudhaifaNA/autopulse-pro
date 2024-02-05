@@ -17,8 +17,13 @@ interface ITotalCount {
   total_count: number;
 }
 
-export const getCarsWithPapersList = tryCatch((_req, res) => {
-  const cars = S.selectCarsListStatment.all();
+export const getCarsWithPapersList = tryCatch((req, res) => {
+  const { type } = req.query;
+  const selectCarsForPPQuery = `${S.selectCarsListStatment}
+  ${type === "sold" ? "  WHERE buyer_id IS NOT NULL" : ""}
+  `;
+
+  const cars = db.prepare(selectCarsForPPQuery).all();
 
   return res.status(200).json({ status: "success", results: cars.length, cars });
 });

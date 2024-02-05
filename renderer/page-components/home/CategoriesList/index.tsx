@@ -59,6 +59,7 @@ const CategoriesList = () => {
   const handleBrandClick = (brand: string) => {
     setSelectedBrand(brand);
     dispatch(setParam({ resource: "cars", paramKey: "brand", paramValue: brand }));
+    dispatch(setParam({ resource: "cars", paramKey: "name", paramValue: brand }));
   };
 
   const handleModelClick = (model: string) => {
