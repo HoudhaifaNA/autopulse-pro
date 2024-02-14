@@ -258,7 +258,6 @@ export const updateLicence = tryCatch((req, res, next) => {
 });
 
 export const reserveLicence = tryCatch((req, res, next) => {
-  const { is_reserved } = req.body;
   const { id } = req.params;
   const licence = S.selectLicenceByIdStatment.get(id) as Licence | undefined;
 
@@ -266,10 +265,11 @@ export const reserveLicence = tryCatch((req, res, next) => {
     return next(new AppError("Licence non trouvée.", 404));
   }
 
-  if (!licence.is_valid && is_reserved) {
+  if (!licence.is_valid) {
     return next(new AppError("La licence est invalide.", 400));
   }
 
+  const is_reserved = licence.is_reserved ? 0 : 1;
   S.reserveLicenceStatment.run([is_reserved, id]);
 
   const updatedLicence = S.selectLicenceByIdStatment.get(id) as Licence;

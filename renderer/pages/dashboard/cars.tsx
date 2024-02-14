@@ -34,6 +34,11 @@ const CarsStats = () => {
         total_negative_profit,
         total_profited_count,
         total_positive_profit,
+        exchange_lost_count,
+        lost_exchange_profit,
+        related_lost_count,
+        related_lost_profit,
+        total_realted_lost_profit,
       }: CarsStats) => {
         return (
           <>
@@ -67,6 +72,27 @@ const CarsStats = () => {
               icon="car"
               value={formatFiatValue(total_positive_profit, "DZD", true)}
             />
+            {exchange_lost_count && lost_exchange_profit ? (
+              <StatTicket
+                title={`Échange et perdu (${exchange_lost_count} voitures)`}
+                icon="car"
+                value={formatFiatValue(lost_exchange_profit, "DZD", true)}
+              />
+            ) : null}
+            {related_lost_count && related_lost_profit && total_realted_lost_profit ? (
+              <StatTicket
+                title={`Échange associé perdu (${related_lost_count} voitures)`}
+                icon="car"
+                value={formatFiatValue(related_lost_profit, "DZD", true)}
+              />
+            ) : null}
+            {related_lost_count && total_realted_lost_profit ? (
+              <StatTicket
+                title={`Intérêts total avec les échanges (${related_lost_count} voitures)`}
+                icon="car"
+                value={formatFiatValue(total_realted_lost_profit, "DZD", true)}
+              />
+            ) : null}
           </>
         );
       };

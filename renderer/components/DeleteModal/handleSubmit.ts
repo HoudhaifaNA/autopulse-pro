@@ -8,8 +8,12 @@ import { InititalValues } from "./types";
 const handleSubmit: SubmitFunction<InititalValues, string> = async ({ password }, actions, url) => {
   let status: SubmitStatus = "success";
   try {
-    await API.delete(url!, { data: { password } });
-    notify("success", "Suppression a été effectuée avec succès.");
+    const method = url?.includes("reserve") ? "patch" : "delete";
+    const data = method === "patch" ? { password } : { data: { password } };
+
+    //@ts-ignore
+    await API[method](url!, data);
+    notify("success", "Succès.");
   } catch (err: any) {
     let message = "Error";
     if (err instanceof AxiosError && typeof err.response?.data.message === "string") {

@@ -119,9 +119,14 @@ const LicencesTable = ({ data }: LicenceTableProps) => {
 
       const reserveLicence = async () => {
         if (is_valid) {
-          await API.patch(`/licences/${id}/reserve`, { is_reserved: is_reserved ? 0 : 1 });
-          mutate(fetchedUrl);
-          mutate(secondaryUrl);
+          const ADD_RESERVE_MODAL_PAYLOAD: AddModalPayload = {
+            name: "reserve_licence",
+            title: "Confirmer la réservation",
+            message: `${is_reserved ? "annuler la réservation" : "réserve"} la licence de ${moudjahid}`,
+            resource: "licences",
+            idsToDelete: [id],
+          };
+          dispatch(addModal(ADD_RESERVE_MODAL_PAYLOAD));
         }
       };
 

@@ -39,6 +39,9 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
   if (currentModal.resource === "expenses" && !secondaryUrl) {
     url = `/expenses/dates/${currentModal.idsToDelete.join(",")}`;
   }
+  if (currentModal.name === "reserve_licence") {
+    url = `/licences/${currentModal.idsToDelete.join(",")}/reserve`;
+  }
 
   const pathWithoutDynamicParam = router.pathname.replace(/\[.*?\]/g, "");
 
@@ -54,7 +57,8 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
         if (
           currentModal.name === "cancel_sale" ||
           currentModal.name === "cancel_procuration_delivery" ||
-          currentModal.name === "cancel_paper_delivery"
+          currentModal.name === "cancel_paper_delivery" ||
+          currentModal.name === "reserve_licence"
         ) {
           return mutate(secondaryUrl);
         }
@@ -75,7 +79,8 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
           <S.DeleteModalWrapper>
             <Form onSubmit={handleSubmit}>
               <Body1>
-                Êtes-vous sûr de vouloir supprimer <b>{currentModal.message}</b> ?
+                Êtes-vous sûr de vouloir {currentModal.name !== "reserve_licence" && "suprimmer"}{" "}
+                <b>{currentModal.message}</b> ?
               </Body1>
               <FormGroup>
                 <TypedInput
@@ -89,8 +94,12 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
                 <FormGroup />
               </FormGroup>
               <ModalActions>
-                <Button type="submit" variant="danger" loading={isSubmitting}>
-                  Suprimmer
+                <Button
+                  type="submit"
+                  variant={currentModal.name === "reserve_licence" ? "primary" : "danger"}
+                  loading={isSubmitting}
+                >
+                  {currentModal.name === "reserve_licence" ? "Réserve" : "Suprimmer"}
                 </Button>
               </ModalActions>
             </Form>

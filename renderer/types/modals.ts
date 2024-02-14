@@ -85,7 +85,7 @@ export interface WarningModalConfig {
 
 export interface DeleteModalConfig {
   id: string;
-  name: "delete" | "cancel_sale" | "cancel_procuration_delivery" | "cancel_paper_delivery";
+  name: "delete" | "cancel_sale" | "reserve_licence" | "cancel_procuration_delivery" | "cancel_paper_delivery";
   title: string;
   message: string;
   resource: Resources;

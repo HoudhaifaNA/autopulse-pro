@@ -9,9 +9,23 @@ interface ITotalCount {
   total_count: number;
 }
 
+interface CarCategoryStats {
+  type: string;
+  total_cars_count: number;
+  total_purchase: number;
+  sold_cars_count: number;
+  sold_total_purchase: number;
+  total_sold: number;
+  total_profit: number;
+  total_profited_count: number;
+  total_lost_count: number;
+  total_positive_profit: number;
+  total_negative_profit: number;
+}
 interface LostProfit {
   cars_count: number;
-  lost_profit: number;
+  type: string;
+  profit: number;
   exchange_types: string;
 }
 
@@ -128,18 +142,55 @@ export const getCarsStats = tryCatch((req, res) => {
 
   const selectAllCarsStats = `
   ${S.selectCarsAllPrices}
-   ${filterQuery}
+  ${filterQuery}
+  `;
+
+  const selectCarsLostProfit = `
+  ${S.selectCarLostProfitQuery}
   `;
 
   const selectCarsByCategoryStats = S.selectCarsByTypePrices.replace("--TYPES", filterTypes);
 
   const all_cars = db.prepare(selectAllCarsStats).get();
-  const cars_by_category = db.prepare(selectCarsByCategoryStats).all();
+  const cars_by_category = db.prepare(selectCarsByCategoryStats).all() as CarCategoryStats[];
+  const lostProfits = db.prepare(selectCarsLostProfit).all() as LostProfit[];
+
+  const calcCategories: any[] = [];
+
+  cars_by_category.forEach((cat) => {
+    let updatedCat: any = cat;
+
+    if (cat.type.includes(" lcl ")) {
+      const hasExchangeLostProfit: LostProfit[] = [];
+      lostProfits.forEach((c) => {
+        if (c.type === cat.type) hasExchangeLostProfit.push(c);
+      });
+      const totalLostProfit = hasExchangeLostProfit.reduce((a, b) => a + b.profit, 0);
+      updatedCat = { ...cat, lost_exchange_profit: totalLostProfit, exchange_lost_count: hasExchangeLostProfit.length };
+    }
+
+    if (filterQueries.length === 0 && !cat.type.includes(" lcl ")) {
+      const categoryRelatedProfits: LostProfit[] = [];
+      lostProfits.forEach((c) => {
+        if (JSON.parse(c.exchange_types).includes(cat.type)) categoryRelatedProfits.push(c);
+      });
+
+      const lostProfit = categoryRelatedProfits.reduce((a, b) => a + b.profit / JSON.parse(b.exchange_types).length, 0);
+      updatedCat = {
+        ...updatedCat,
+        related_lost_profit: lostProfit,
+        total_realted_lost_profit: cat.total_profit + lostProfit,
+        related_lost_count: categoryRelatedProfits.length,
+      };
+    }
+
+    calcCategories.push(updatedCat);
+  });
 
   return res.status(200).json({
     status: "success",
     all_cars,
-    cars_by_category,
+    cars_by_category: calcCategories,
   });
 });
 

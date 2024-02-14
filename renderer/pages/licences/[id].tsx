@@ -23,6 +23,8 @@ import formatDate from "utils/formatDate";
 import { Licence } from "interfaces";
 import FileViewer, { SelectedAttachement } from "components/FileViewer";
 import Badge, { BadgeProps } from "components/Badge/Badge";
+import { addModal } from "store/reducers/modals";
+import { AddModalPayload } from "types";
 
 interface GetLicenceResponse {
   licence: Licence;
@@ -83,8 +85,14 @@ const LicenceDetails = () => {
 
       const reserveLicence = async () => {
         if (is_valid) {
-          await API.patch(`/licences/${id}/reserve`, { is_reserved: is_reserved ? 0 : 1 });
-          mutate(`/licences/${id}`);
+          const ADD_RESERVE_MODAL_PAYLOAD: AddModalPayload = {
+            name: "reserve_licence",
+            title: "Confirmer la réservation",
+            message: `${is_reserved ? "annuler la réservation" : "réserve"} la licence de ${moudjahid}`,
+            resource: "licences",
+            idsToDelete: [data.licence.id],
+          };
+          dispatch(addModal(ADD_RESERVE_MODAL_PAYLOAD));
         }
       };
 

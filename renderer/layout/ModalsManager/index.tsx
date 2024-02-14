@@ -87,6 +87,9 @@ const modalsComponents: ModalsComponents = {
   cancel_paper_delivery: {
     Component: DeleteModal,
   },
+  reserve_licence: {
+    Component: DeleteModal,
+  },
 };
 
 const ModalsManager = () => {

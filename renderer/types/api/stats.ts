@@ -23,6 +23,11 @@ export interface CarsStats {
   total_lost_count: number;
   total_positive_profit: number;
   total_negative_profit: number;
+  lost_exchange_profit?: number;
+  exchange_lost_count?: number;
+  related_lost_profit?: number;
+  total_realted_lost_profit?: number;
+  related_lost_count?: number;
 }
 
 export interface GetStockResponse {

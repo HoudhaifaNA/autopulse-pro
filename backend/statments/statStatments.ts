@@ -74,6 +74,20 @@ export const selectCarsByTypePrices = `
   GROUP BY all_types.type;
 `;
 
+export const selectCarLostProfitQuery = `
+  SELECT 
+  type,
+  exchange_types,
+  profit
+  FROM cars 
+  WHERE buyer_id IS NOT NULL 
+    AND profit < 0 
+    AND is_exchange = 1 
+    AND exchange_types IS NOT NULL 
+    AND exchange_types != '' 
+    AND type LIKE '% lcl %'
+`;
+
 export const selectLicencesTotalCost = `
 	SELECT 
 	COUNT(*) AS licences_count,
