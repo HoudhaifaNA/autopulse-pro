@@ -99,7 +99,7 @@ const DeleteModal = ({ modalId }: DeleteModalProps) => {
                   variant={currentModal.name === "reserve_licence" ? "primary" : "danger"}
                   loading={isSubmitting}
                 >
-                  {currentModal.name === "reserve_licence" ? "Réserve" : "Suprimmer"}
+                  {currentModal.name === "reserve_licence" ? "Modifier" : "Suprimmer"}
                 </Button>
               </ModalActions>
             </Form>

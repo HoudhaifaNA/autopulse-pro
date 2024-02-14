@@ -61,6 +61,7 @@ const ClientDetails = () => {
               transactions={data.transactions}
               clientName={data.client.full_name}
               direction="sortante"
+              showIndex
             />
           </DetailSection>
           <DetailSection>
@@ -69,6 +70,7 @@ const ClientDetails = () => {
               transactions={data.transactions}
               clientName={data.client.full_name}
               direction="entrante"
+              showIndex
             />
           </DetailSection>
         </>
