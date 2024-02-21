@@ -92,7 +92,15 @@ const toggleCarGrayCardOnInsert = db.prepare(`
   FOR EACH ROW
   BEGIN
     UPDATE cars
-    SET gray_card_received = NEW.has_received
+    SET gray_card_received = NEW.has_received,
+    has_gray_card = CASE
+                  WHEN NEW.type = 'cart grise' THEN 1
+                  ELSE has_gray_card
+                  END,
+    papers_type = CASE
+                  WHEN NEW.type = 'dossier' THEN 'Dossier'
+                  ELSE papers_type
+                  END
     WHERE cars.id = NEW.car_id ;
   END;
   `);
@@ -103,7 +111,15 @@ const toggleCarGrayCardOnUpdate = db.prepare(`
   FOR EACH ROW
   BEGIN
     UPDATE cars
-    SET gray_card_received = NEW.has_received
+    SET gray_card_received = NEW.has_received,
+    has_gray_card = CASE
+                  WHEN NEW.type = 'cart grise' THEN 1
+                  ELSE has_gray_card
+                  END,
+    papers_type = CASE
+                WHEN NEW.type = 'dossier' THEN 'Dossier'
+                ELSE papers_type
+                END
     WHERE cars.id = NEW.car_id ;
   END;
   `);
@@ -114,7 +130,9 @@ const toggleCarGrayCardonOnDelete = db.prepare(`
   FOR EACH ROW
   BEGIN
     UPDATE cars
-    SET gray_card_received = null
+    SET gray_card_received = null,
+    has_gray_card = 0,
+    papers_type = NULL
     WHERE cars.id = OLD.car_id ;
   END;
   `);

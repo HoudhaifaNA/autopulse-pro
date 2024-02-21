@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import filterReducer from "./reducers/filter";
+import expandedReducer from "./reducers/expanded";
 import modalsReducer from "./reducers/modals";
 import resourceUrlsReducer from "./reducers/resourceUrls";
 import selectedItemsReducer from "./reducers/selectedItems";
@@ -17,6 +18,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   filter: filterReducer,
+  expanded: expandedReducer,
   modals: modalsReducer,
   resourceUrls: resourceUrlsReducer,
   selectedItems: selectedItemsReducer,

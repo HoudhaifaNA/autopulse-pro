@@ -120,7 +120,8 @@ const toggleCarProcurationOnInsert = db.prepare(`
   FOR EACH ROW
   BEGIN
     UPDATE cars
-    SET procuration_received = NEW.has_received
+    SET procuration_received = NEW.has_received,
+    has_procuration = 1
     WHERE cars.id = NEW.car_id ;
   END;
   `);
@@ -142,7 +143,8 @@ const toggleCarProcurationOnDelete = db.prepare(`
   FOR EACH ROW
   BEGIN
     UPDATE cars
-    SET procuration_received = null
+    SET procuration_received = null,
+    has_procuration = 0
     WHERE cars.id = OLD.car_id ;
   END;
   `);

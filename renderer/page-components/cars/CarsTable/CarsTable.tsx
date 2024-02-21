@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 
@@ -19,6 +19,8 @@ import { AddModalPayload, GetAllCarsResponse } from "types";
 import IncompleteFieldsMarks from "../IncompleteFieldsMarks/IncompleteFieldsMarks";
 import useClickOutside from "hooks/useClickOutside";
 import Button from "components/Button/Button";
+import { toggleExpanded } from "store/reducers/expanded";
+import { useRouter } from "next/router";
 
 interface CarsTableProps {
   data: GetAllCarsResponse;
@@ -29,10 +31,11 @@ const ICON_SIZE = "1.8rem";
 const CarsTable = ({ data }: CarsTableProps) => {
   const { cars } = data;
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { isExpanded } = useAppSelector((state) => state.expanded);
   const { page, limit } = useAppSelector((state) => state.resourceUrls.cars.params);
   const { selectedIds } = useAppSelector((state) => state.selectedItems);
   const dispatch = useDispatch();
+  const router = useRouter();
   const [dropdownIndex, setDropdownIndex] = useState<number>();
   const [isOutside, setIsOutside] = useClickOutside(`dropdown-${dropdownIndex}`, `toggler-${dropdownIndex}`);
 
@@ -41,6 +44,25 @@ const CarsTable = ({ data }: CarsTableProps) => {
   const startinRowIndex = (page - 1) * limit;
 
   const checkId = (id: number) => dispatch(toggleItemId(id));
+  const setIsExpanded = () => dispatch(toggleExpanded(!isExpanded));
+
+  useEffect(() => {
+    const handleExpansionToggling = (e: KeyboardEvent) => {
+      e.preventDefault();
+      if ((e.target as Element)?.tagName !== "INPUT") {
+        if (e.code === "KeyE") {
+          setIsExpanded();
+        }
+      }
+    };
+    window.addEventListener("keyup", handleExpansionToggling);
+    return () => window.removeEventListener("keyup", handleExpansionToggling);
+  }, [isExpanded]);
+
+  useEffect(() => {
+    const handleRouteChange = () => dispatch(toggleExpanded(false));
+    router.events.on("routeChangeComplete", handleRouteChange);
+  }, [router.events]);
 
   const checkAllOnPage = () => {
     if (isAllCarsOnPageSelected) {
@@ -181,7 +203,7 @@ const CarsTable = ({ data }: CarsTableProps) => {
   return (
     <>
       <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "flex-end" }}>
-        <Button variant="primary" onClick={() => setIsExpanded(!isExpanded)}>
+        <Button variant="primary" onClick={setIsExpanded}>
           Montrer {isExpanded ? "moins" : "plus"}
         </Button>
       </div>

@@ -21,6 +21,12 @@ if (isProd) dbPath = path.join(path.resolve(), "..", "..", "db/db.db");
 const db = new Database(dbPath);
 
 if (db.open) {
+  // db.prepare("DROP TRIGGER IF EXISTS toggle_car_gray_card_on_insert;").run();
+  // db.prepare("DROP TRIGGER IF EXISTS toggle_car_gray_card_on_update;").run();
+  // db.prepare("DROP TRIGGER IF EXISTS toggle_car_gray_card_on_delete;").run();
+  // db.prepare("DROP TRIGGER IF EXISTS toggle_car_procuration_on_insert;").run();
+  // db.prepare("DROP TRIGGER IF EXISTS toggle_car_procuration_on_update;").run();
+  // db.prepare("DROP TRIGGER IF EXISTS toggle_car_procuration_on_delete;").run();
   console.log("Connected successfully");
   db.exec(createCategoriesTableStatment);
   db.exec(createClientsTableStatment);

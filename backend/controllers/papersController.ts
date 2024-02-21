@@ -110,10 +110,6 @@ export const createPaper = tryCatch((req, res, next) => {
     return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
-  if (!car.has_gray_card && !car.papers_type) {
-    return next(new AppError(`Carte grise n'est pas activée.`, 400));
-  }
-
   db.exec("BEGIN TRANSACTION");
   try {
     const params = {
@@ -174,10 +170,6 @@ export const updatePaper = tryCatch((req, res, next) => {
 
   if (!car) {
     return next(new AppError(`Voiture non trouvée.`, 404));
-  }
-
-  if (!car.has_gray_card && !car.papers_type) {
-    return next(new AppError(`Carte grise n'est pas activée.`, 400));
   }
 
   db.exec("BEGIN TRANSACTION");

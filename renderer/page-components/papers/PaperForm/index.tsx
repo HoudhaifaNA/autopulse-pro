@@ -85,8 +85,6 @@ const PaperForm = ({ modalId }: { modalId: string }) => {
                     items={carsList}
                   />
                 )}
-
-                <TypedInput name="owner" type="text" label="Propriétaire" placeholder="Propriétaire" />
               </FormGroup>
               <FormGroup>
                 {!isClientsLoading && (
@@ -103,6 +101,7 @@ const PaperForm = ({ modalId }: { modalId: string }) => {
                     }
                   />
                 )}
+                <TypedInput name="owner" type="text" label="Propriétaire" placeholder="Propriétaire" />
                 <TypedInput name="price" type="number" label="Prix" placeholder="0" addOn="DA" />
               </FormGroup>
               <FormGroup>

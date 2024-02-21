@@ -94,12 +94,12 @@ export const createProcuration = tryCatch((req, res, next) => {
     return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
-  const { buyer_id, buyer, has_procuration, owner_id } = car;
+  const { buyer_id, buyer, owner_id } = car;
 
-  if (!buyer_id || !has_procuration || !owner_id) {
+  if (!buyer_id || !owner_id) {
     return next(
       new AppError(
-        "Impossible d'ajouter une procuration pour cette voiture. La voiture n'a pas encore été vendue ou la procuration n'est pas activée ou licence est invalide.",
+        "Impossible d'ajouter une procuration pour cette voiture. La voiture n'a pas encore été vendue ou licence est invalide.",
         400
       )
     );
@@ -182,12 +182,12 @@ export const updateProcuration = tryCatch((req, res, next) => {
     return next(new AppError(`Voiture non trouvée.`, 404));
   }
 
-  const { buyer_id, buyer, has_procuration, owner_id } = car;
+  const { buyer_id, buyer, owner_id } = car;
 
-  if (!buyer_id || !has_procuration || !owner_id) {
+  if (!buyer_id || !owner_id) {
     return next(
       new AppError(
-        "Impossible d'ajouter une procuration pour cette voiture. La voiture n'a pas encore été vendue ou la procuration n'est pas activée ou licence est invalide.",
+        "Impossible d'ajouter une procuration pour cette voiture. La voiture n'a pas encore été vendue ou licence est invalide.",
         400
       )
     );

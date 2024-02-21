@@ -69,10 +69,9 @@ const ProcurationForm = ({ modalId }: { modalId: string }) => {
                     items={carsList}
                   />
                 )}
-
-                <TypedInput name="procurator" type="text" label="Procureur" placeholder="Procureur" />
               </FormGroup>
               <FormGroup>
+                <TypedInput name="procurator" type="text" label="Procureur" placeholder="Procureur" />
                 <TypedInput name="moudjahid" type="text" label="Moudjahid" placeholder="Moudjahid" disabled />
                 <DateInput name="issue_date" label="Date d'émission" />
               </FormGroup>
