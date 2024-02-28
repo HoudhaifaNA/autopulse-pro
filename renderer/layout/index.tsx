@@ -16,7 +16,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const username = useCurrentUser();
-  useInactiveTimeout();
+  // useInactiveTimeout();
   useBlur();
 
   useEffect(() => {

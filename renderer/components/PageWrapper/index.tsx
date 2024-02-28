@@ -20,6 +20,7 @@ import { Resources } from "types";
 import parseUrlQueries from "utils/parseUrlQueries";
 import { deleteParam, setParam } from "store/reducers/resourceUrls";
 import Icon from "components/Icon/Icon";
+import PathBar from "components/PathBar";
 
 interface ResourcePageProps<T> {
   resourceName: Resources;
@@ -78,17 +79,9 @@ const PageWrapper = <T extends Record<string, any>>(props: ResourcePageProps<T>)
 
   const renderFilterList = () => {
     return Object.entries(params).map(([param, { key, value }]) => {
-      const removeFilterItem = () => {
-        dispatch(deleteParam({ paramKey: param, resource: resourceName }));
-        if (param === "model") {
-          dispatch(setParam({ paramKey: "name", paramValue: params["brand"].value, resource: resourceName }));
-        } else if (param === "brand") {
-          dispatch(deleteParam({ paramKey: "name", resource: resourceName }));
-          dispatch(deleteParam({ paramKey: "model", resource: resourceName }));
-        }
-      };
+      const removeFilterItem = () => dispatch(deleteParam({ paramKey: param, resource: resourceName }));
 
-      if (key && value) {
+      if (!["model", "brand", "type"].includes(param) && key && value) {
         return (
           <S.FilterItem key={param} onClick={removeFilterItem}>
             <Body2>{key}</Body2>
@@ -124,7 +117,10 @@ const PageWrapper = <T extends Record<string, any>>(props: ResourcePageProps<T>)
             <>
               <PageHeader CTAIcon="add" CTAText="Ajouter" onCTAClick={toggleAddModal}>
                 <FilterComponent resource={resourceName} />
-                <S.FilterList>{renderFilterList()}</S.FilterList>
+                <S.FilterList>
+                  <PathBar />
+                  {renderFilterList()}
+                </S.FilterList>
                 {renderUpdateMultipleController()}
               </PageHeader>
               <S.PageHeaderAddOn>
