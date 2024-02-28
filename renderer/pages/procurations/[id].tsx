@@ -76,9 +76,9 @@ const PaperDetails = () => {
           <DetailSection>
             <DetailHeader title={`Procuration de ${moudjahid}`} />
             <DetailContent $columns={3}>
-              <DetailItem title="Client" blurrable>
-                <Link href={`/clients/${buyer_id}`}>
-                  <LabelText>{buyer}</LabelText>
+              <DetailItem title="Voiture">
+                <Link href={`/cars/${car_id}`}>
+                  <LabelText>{car}</LabelText>
                 </Link>
               </DetailItem>
               <DetailItem title="Moudjahid">
@@ -86,34 +86,34 @@ const PaperDetails = () => {
                   <LabelText>{moudjahid}</LabelText>
                 </Link>
               </DetailItem>
-              <DetailItem title="Procureur">
-                <LabelText>{procurator}</LabelText>
+              <DetailItem title="Client" blurrable>
+                <Link href={`/clients/${buyer_id}`}>
+                  <LabelText>{buyer}</LabelText>
+                </Link>
               </DetailItem>
             </DetailContent>
             <DetailContent $columns={3}>
-              <DetailItem title="Date de réception">{formattedPurchasedDate}</DetailItem>
               <DetailItem title="vendeur" blurrable>
                 <Link href={`/clients/${seller_id}`}>
                   <LabelText>{seller}</LabelText>
                 </Link>
               </DetailItem>
+              <DetailItem title="Date de réception">{formattedPurchasedDate}</DetailItem>
               <DetailItem title="Prix" blurrable>
                 {formattedPrice}
               </DetailItem>
             </DetailContent>
             <DetailContent $columns={3}>
-              <DetailItem title="Voiture">
-                <Link href={`/cars/${car_id}`}>
-                  <LabelText>{car}</LabelText>
-                </Link>
+              <DetailItem title="Procureur">
+                <LabelText>{procurator}</LabelText>
               </DetailItem>
+              <DetailItem title="Notaire">{notary || "--"}</DetailItem>
               <DetailItem title="Date d'expiration">{formattedExpirationDate}</DetailItem>
-              <DetailItem title="Date de livraison">{formattedReceivedDate}</DetailItem>
             </DetailContent>
             <DetailContent $columns={3}>
-              <DetailItem title="Livré">{renderProcurationStatus(has_received, "No", "Oui")}</DetailItem>
               <DetailItem title="Dépense">{renderProcurationStatus(is_expense, "No", "Oui")}</DetailItem>
-              <DetailItem title="Notaire">{notary || "--"}</DetailItem>
+              <DetailItem title="Livré">{renderProcurationStatus(has_received, "No", "Oui")}</DetailItem>
+              <DetailItem title="Date de livraison">{formattedReceivedDate}</DetailItem>
             </DetailContent>
           </DetailSection>
         </>
@@ -124,7 +124,7 @@ const PaperDetails = () => {
   return (
     <>
       <Meta title={data?.procuration ? `Procuration de ${data.procuration.moudjahid}` : "Dossier"} />
-      <DetailsViewer $width="105rem">
+      <DetailsViewer $width="110rem">
         {data?.procuration && <ProcurationActions procuration={data?.procuration} />}
         {renderPaperInfo()}
       </DetailsViewer>

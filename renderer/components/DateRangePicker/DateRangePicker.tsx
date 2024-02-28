@@ -88,10 +88,10 @@ const DateRangePicker = ({ resource, rangeParam, label }: DateRangePickerProps) 
     if (firstDate && secondDate) {
       const diffInMilliseconds = dayjs(secondDate).diff(dayjs(firstDate));
 
-      if (diffInMilliseconds === ONE_DAY_IN_MILLISECONDS) {
-        value[1] = new Date(firstDate);
-        value[1].setFullYear(value[1].getFullYear() + 1);
-      }
+      // if (diffInMilliseconds === ONE_DAY_IN_MILLISECONDS) {
+      //   value[1] = new Date(firstDate);
+      //   value[1].setFullYear(value[1].getFullYear() + 1);
+      // }
     }
 
     setSelectedRange(value);
@@ -102,7 +102,7 @@ const DateRangePicker = ({ resource, rangeParam, label }: DateRangePickerProps) 
     dispatch(deleteParam({ resource, paramKey: rangeParam }));
   };
 
-  const maxDate = new Date(Date.now());
+  const maxDate = new Date(Date.now() + ONE_DAY_IN_MILLISECONDS);
 
   return (
     <S.Wrapper>

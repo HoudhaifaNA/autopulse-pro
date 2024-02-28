@@ -160,6 +160,7 @@ export interface Paper {
   seller: string;
   buyer: string | null;
   car: string;
+  car_serial_number: string;
   owner: string;
 }
 

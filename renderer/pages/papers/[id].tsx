@@ -48,8 +48,20 @@ const PaperDetails = () => {
     if (data?.paper) {
       const { paper } = data;
 
-      const { purchased_at, given_at, car_id, type, owner, car, has_received, received_at, seller_id, seller, price } =
-        paper;
+      const {
+        purchased_at,
+        given_at,
+        car_id,
+        type,
+        owner,
+        car,
+        car_serial_number,
+        has_received,
+        received_at,
+        seller_id,
+        seller,
+        price,
+      } = paper;
       const formattedPaperPrice = formatFiatValue(price, "DZD");
       const formattedGivenAt = given_at ? formatDate(given_at) : "--";
       const formattedPurchaseDate = purchased_at ? formatDate(purchased_at) : "--";
@@ -58,31 +70,32 @@ const PaperDetails = () => {
       return (
         <>
           <DetailSection>
-            <DetailHeader title={`Dossier de ${car}`} />
-            <DetailContent $columns={3}>
-              <DetailItem title="Date de réception">{formattedPurchaseDate}</DetailItem>
-              <DetailItem title="vendeur" blurrable>
-                <Link href={`/clients/${seller_id}`}>
-                  <LabelText>{seller}</LabelText>
-                </Link>
-              </DetailItem>
-              <DetailItem title="Prix" blurrable>
-                {formattedPaperPrice}
-              </DetailItem>
-            </DetailContent>
+            <DetailHeader title={`Dossier de ${car} (${car_serial_number})`} />
             <DetailContent $columns={3}>
               <DetailItem title="Voiture">
                 <Link href={`/cars/${car_id}`}>
                   <LabelText>{car}</LabelText>
                 </Link>
               </DetailItem>
-              <DetailItem title="Date donnée">{formattedGivenAt}</DetailItem>
               <DetailItem title="Propriétaire">{owner}</DetailItem>
+
+              <DetailItem title="vendeur" blurrable>
+                <Link href={`/clients/${seller_id}`}>
+                  <LabelText>{seller}</LabelText>
+                </Link>
+              </DetailItem>
             </DetailContent>
             <DetailContent $columns={3}>
-              <DetailItem title="Date de livraison">{formattedReceivedDate}</DetailItem>
-              <DetailItem title="Livré">{renderPaperStatus(has_received, "No", "Oui")}</DetailItem>
+              <DetailItem title="Date de réception">{formattedPurchaseDate}</DetailItem>
+              <DetailItem title="Prix" blurrable>
+                {formattedPaperPrice}
+              </DetailItem>
+              <DetailItem title="Date donnée">{formattedGivenAt}</DetailItem>
+            </DetailContent>
+            <DetailContent $columns={3}>
               <DetailItem title="Type">{type}</DetailItem>
+              <DetailItem title="Livré">{renderPaperStatus(has_received, "No", "Oui")}</DetailItem>
+              <DetailItem title="Date de livraison">{formattedReceivedDate}</DetailItem>
             </DetailContent>
           </DetailSection>
         </>
@@ -93,7 +106,7 @@ const PaperDetails = () => {
   return (
     <>
       <Meta title={data?.paper ? `Dossier de ${data.paper.car}` : "Dossier"} />
-      <DetailsViewer $width="105rem">
+      <DetailsViewer $width="110rem">
         {data?.paper && <PaperActions paper={data?.paper} />}
         {renderPaperInfo()}
       </DetailsViewer>

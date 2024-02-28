@@ -238,6 +238,41 @@ export const getTransactionsStats = tryCatch((req, res) => {
     transactions_total_amount: transactionsAmount,
   });
 });
+
+export const getDailyTransaction = tryCatch((req, res) => {
+  const rangeFilters = ["transaction_date"];
+
+  const filterQueries = generateRangeFilters(rangeFilters, req.query);
+
+  const filters = filterQueries.join(" AND ");
+  const filterClause = filters ? `WHERE ${filters}` : "";
+
+  const selectDailyTransactions = `
+  ${S.selectDailyTransactions}
+  ${filterClause}
+  GROUP BY currencies.currency
+  `;
+
+  const transactionsAmount = db.prepare(selectDailyTransactions).all();
+
+  let dailyTransactions = [];
+
+  if (transactionsAmount.length === 0) {
+    // If no records found, manually create entries with zero values
+    dailyTransactions = [
+      { currency: "EUR", transactions_count: 0, total_amount: 0 },
+      { currency: "DZD", transactions_count: 0, total_amount: 0 },
+    ];
+  } else {
+    dailyTransactions = transactionsAmount;
+  }
+
+  return res.status(200).json({
+    status: "success",
+    daily_transactions: dailyTransactions,
+  });
+});
+
 export const getExpensesStats = tryCatch((req, res) => {
   const rangeFilters = ["expense_date"];
 

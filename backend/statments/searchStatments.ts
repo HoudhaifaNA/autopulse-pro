@@ -28,11 +28,10 @@ export const searchProcurationsQuery = db.prepare(`
 	SELECT
 	procurations.id,
 	procurations.notary,
-	licences.moudjahid AS moudjahid,
+	cars.owner_name AS moudjahid,
 	( cars.name || ' (' || cars.serial_number || ')' ) AS car
 	FROM procurations
-	INNER JOIN cars ON cars.id = licences.car_id
-	INNER JOIN licences ON licences.id = cars.owner_id
+	INNER JOIN cars ON cars.id = procurations.car_id
 	WHERE moudjahid LIKE @query OR car LIKE @query OR notary LIKE @query
 	`);
 

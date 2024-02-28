@@ -108,6 +108,18 @@ export const selectTransactionsAmount = `
     transactions ON currencies.currency = transactions.currency
             AND transactions.type = 'Fiat'
   `;
+export const selectDailyTransactions = `
+   SELECT
+    currencies.currency AS currency,
+    COALESCE(COUNT(transactions.type), 0) AS transactions_count,
+    COALESCE(SUM(transactions.amount), 0) AS total_amount
+  FROM
+    (SELECT 'EUR' AS currency
+    UNION SELECT 'DZD'
+  ) AS currencies
+  LEFT JOIN
+    transactions ON currencies.currency = transactions.currency
+  `;
 
 export const selectExpensesTotalCost = `
 	SELECT 

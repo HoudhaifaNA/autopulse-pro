@@ -7,7 +7,8 @@ import { setOptionalUpdate } from "../utils/sqlValidations";
 export const selectPapersQuery = `
   SELECT papers.*,
   clients.full_name AS seller,
-  ( cars.name || ' (' || cars.serial_number || ')' ) AS car,
+  cars.name AS car,
+  cars.serial_number AS car_serial_number,
   buyers.full_name AS buyer
   FROM papers
   INNER JOIN clients ON clients.id = papers.seller_id

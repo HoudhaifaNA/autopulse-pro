@@ -14,6 +14,7 @@ export type Resources =
   | "licencesStats"
   | "expensesStats"
   | "transactionsStats"
+  | "dailyStats"
   | "procurationsStats"
   | "papersStats";
 

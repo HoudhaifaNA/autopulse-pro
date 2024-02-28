@@ -19,6 +19,7 @@ import {
   GetPapersStatsResponse,
   GetProcurationsStatsResponse,
   GetTransactionsStatsResponse,
+  GetDailyTransactionsResponse,
   GetClientsStatsResponse,
 } from "types/api/stats";
 import {
@@ -75,6 +76,7 @@ export type {
   GetPapersStatsResponse,
   GetProcurationsStatsResponse,
   GetTransactionsStatsResponse,
+  GetDailyTransactionsResponse,
   GetClientsStatsResponse,
   CategoryCars,
   GetCategories,

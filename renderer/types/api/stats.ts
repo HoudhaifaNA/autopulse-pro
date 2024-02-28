@@ -96,3 +96,6 @@ export interface TransactionSummary {
 export interface GetTransactionsStatsResponse {
   transactions_total_amount: TransactionSummary[];
 }
+export interface GetDailyTransactionsResponse {
+  daily_transactions: TransactionSummary[];
+}

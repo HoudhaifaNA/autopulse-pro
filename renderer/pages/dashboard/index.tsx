@@ -13,6 +13,10 @@ import { GetCountsResponse } from "types";
 import { useAppSelector } from "store";
 
 const STATS_NAMES = {
+  revenu: {
+    translate: "caisse",
+    icon: "finance",
+  },
   clients: {
     translate: "clients",
     icon: "clients",
@@ -56,7 +60,8 @@ const Dashboard = () => {
       type CountKeys = keyof typeof data;
 
       return (Object.entries(data) as [CountKeys, number][]).map(([key, value]) => {
-        if (key === "cars" || key === "clients" || key === "expenses") {
+        if (["cars", "expenses", "clients"].includes(key)) {
+          //@ts-ignore
           const { icon, translate } = STATS_NAMES[key];
 
           return (
@@ -72,7 +77,12 @@ const Dashboard = () => {
     <>
       <Meta title="Tableau de bord" />
       <CountStatsFilter />
-      <TicketList title="Tableau de bord">{renderPage()}</TicketList>
+      <TicketList title="Tableau de bord">
+        <Link href={`/dashboard/revenu`}>
+          <StatTicket title="caisse" icon="finance" value="caisse" />
+        </Link>
+        {renderPage()}
+      </TicketList>
     </>
   );
 };

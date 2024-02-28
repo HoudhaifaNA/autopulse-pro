@@ -76,7 +76,7 @@ const SearchBar = () => {
         mutate(fetchedUrl);
       }
     }
-  }, [query, data]);
+  }, [query, data, path]);
 
   return (
     <S.SearchBarContainer>
