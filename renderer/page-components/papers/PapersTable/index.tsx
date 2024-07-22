@@ -89,9 +89,23 @@ const PapersTable = ({ data }: PaperTableProps) => {
 
   const renderPapers = () => {
     return papers.map((paper, ind) => {
-      const { id, purchased_at, car_id, type, owner, car, has_received, received_at, seller_id, seller, price } = paper;
+      const {
+        id,
+        purchased_at,
+        car_id,
+        type,
+        owner,
+        car,
+        has_received,
+        received_at,
+        given_at,
+        seller_id,
+        seller,
+        price,
+      } = paper;
 
       const formattedPaperPrice = formatFiatValue(price, "DZD");
+      const formattedGivenDate = given_at ? formatDate(given_at) : "--";
       const formattedPurchaseDate = purchased_at ? formatDate(purchased_at) : "--";
       const formattedReceivedDate = received_at ? formatDate(received_at) : "--";
 
@@ -123,6 +137,7 @@ const PapersTable = ({ data }: PaperTableProps) => {
           <T.TableCell>{renderPaperStatus(has_received, "No", "Oui")}</T.TableCell>
           <T.TableCell>{type}</T.TableCell>
           <T.TableCell blurrable>{formattedPaperPrice}</T.TableCell>
+          <T.TableCell>{formattedGivenDate}</T.TableCell>
           <T.TableCell>{formattedPurchaseDate}</T.TableCell>
           <T.TableCell>{formattedReceivedDate}</T.TableCell>
           <T.TableCell onClick={() => onClickToggleDropdown(ind)} id={`toggler-${ind}`}>
