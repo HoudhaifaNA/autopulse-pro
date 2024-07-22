@@ -17,7 +17,7 @@ const FiatItemLine = ({ label, value, currency }: FiatItemLineProps) => {
 
   return (
     <S.DetailLine $type="spaced">
-      <LabelText as="p">{label} :</LabelText>
+      <LabelText as="p">{label} : </LabelText>
       <Body2 className={colorClassName}>{fiatText}</Body2>
     </S.DetailLine>
   );

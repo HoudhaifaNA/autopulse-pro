@@ -11,9 +11,10 @@ import { fetcher } from "utils/API";
 import formatFiatValue from "utils/formatFiatValue";
 import { GetDailyTransactionsResponse } from "types";
 import { useAppSelector } from "store";
+import RevenuTable from "page-components/dashboard/RevenuTable";
 
 const TransactionsStats = () => {
-  const { fetchedUrl } = useAppSelector((state) => state.resourceUrls.transactionsStats);
+  const { fetchedUrl } = useAppSelector((state) => state.resourceUrls.dailyStats);
 
   const { data, isLoading, error } = useSWR<GetDailyTransactionsResponse>(fetchedUrl, fetcher);
 
@@ -23,12 +24,14 @@ const TransactionsStats = () => {
     if (error) return <ErrorMessage>{error.response.data.message}</ErrorMessage>;
 
     if (data) {
-      const { daily_transactions } = data;
+      const { daily_transactions, lastDay_transactions } = data;
 
       const renderTransactionsTypes = () => {
         return daily_transactions.map((transaction) => {
           const { currency, transactions_count, total_amount } = transaction;
-          const formattedTotalCost = formatFiatValue(total_amount, currency, true);
+
+          const samePrevTotal = lastDay_transactions.find((l) => l.currency === currency);
+          const formattedTotalCost = formatFiatValue(total_amount + (samePrevTotal?.total_amount || 0), currency, true);
           const icon = currency === "DZD" ? "dinar" : "euro";
 
           return (
@@ -50,6 +53,14 @@ const TransactionsStats = () => {
       <Meta title="Statistiques des virements" />
       <TransactionsStatsFilter />
       {renderPage()}
+      {data?.transactions_list && (
+        <RevenuTable
+          dailyTransactions={data.daily_transactions}
+          lastDayTransactions={data.lastDay_transactions}
+          resource="dailyStats"
+          transactions={data.transactions_list}
+        />
+      )}
     </>
   );
 };

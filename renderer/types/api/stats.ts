@@ -1,3 +1,5 @@
+import { Transaction } from "../../../interfaces";
+
 interface CarCategoryStock {
   name: string;
   bought_number: number;
@@ -97,5 +99,8 @@ export interface GetTransactionsStatsResponse {
   transactions_total_amount: TransactionSummary[];
 }
 export interface GetDailyTransactionsResponse {
+  lastDay_transactions: TransactionSummary[];
   daily_transactions: TransactionSummary[];
+  results: number;
+  transactions_list: Transaction[];
 }

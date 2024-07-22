@@ -108,7 +108,7 @@ export const selectTransactionsAmount = `
     transactions ON currencies.currency = transactions.currency
             AND transactions.type = 'Fiat'
   `;
-export const selectDailyTransactions = `
+export const selectDailyTransactionsTotals = `
    SELECT
     currencies.currency AS currency,
     COALESCE(COUNT(transactions.type), 0) AS transactions_count,
@@ -119,6 +119,13 @@ export const selectDailyTransactions = `
   ) AS currencies
   LEFT JOIN
     transactions ON currencies.currency = transactions.currency
+  `;
+
+export const selectDailyTransactionsList = `
+  // SELECT transactions.*,
+  // clients.full_name AS client
+  // FROM transactions
+  // INNER JOIN clients ON clients.id = client_id
   `;
 
 export const selectExpensesTotalCost = `

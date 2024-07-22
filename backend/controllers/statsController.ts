@@ -1,9 +1,9 @@
 import db from "../database";
 import * as S from "../statments/statStatments";
+import { selectTransactionsQuery } from "../statments/transactionsStatments";
 import { formatSortingQuery, generateRangeFilters } from "../utils/APIFeatures";
 
 import tryCatch from "../utils/tryCatch";
-import { TExchangeTypes } from "../../interfaces";
 
 interface ITotalCount {
   total_count: number;
@@ -238,38 +238,113 @@ export const getTransactionsStats = tryCatch((req, res) => {
     transactions_total_amount: transactionsAmount,
   });
 });
+7;
 
+function getPreviousDay(dateRange: string): string {
+  const [startDateStr, endDateStr] = dateRange.split("_");
+
+  const startDate = new Date(startDateStr);
+  const endDate = new Date(endDateStr);
+
+  // Subtract one day from each date
+  startDate.setDate(startDate.getDate() - 1);
+  endDate.setDate(endDate.getDate() - 1);
+
+  // Format the dates back into the desired string format
+  const formattedStartDate = formatDate(startDate);
+  const formattedEndDate = formatDate(endDate);
+
+  return `${formattedStartDate}_${formattedEndDate}`;
+}
+
+function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = padZero(date.getMonth() + 1);
+  const day = padZero(date.getDate());
+  const hours = padZero(date.getHours());
+  const minutes = padZero(date.getMinutes());
+  const seconds = padZero(date.getSeconds());
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+function padZero(num: number): string {
+  return num < 10 ? `0${num}` : num.toString();
+}
 export const getDailyTransaction = tryCatch((req, res) => {
+  const { currency } = req.query;
   const rangeFilters = ["transaction_date"];
 
   const filterQueries = generateRangeFilters(rangeFilters, req.query);
+  const filterListQueries = generateRangeFilters(rangeFilters, req.query, "transactions");
 
+  const prevDayFilters = generateRangeFilters(rangeFilters, {
+    transaction_date: getPreviousDay(req.query.transaction_date as any),
+  });
+
+  if (currency) {
+    filterListQueries.push(`transactions.currency = '${currency}'`);
+  }
   const filters = filterQueries.join(" AND ");
   const filterClause = filters ? `WHERE ${filters}` : "";
 
-  const selectDailyTransactions = `
-  ${S.selectDailyTransactions}
+  const selectDailyTransactionsTotalsQuery = `
+  ${S.selectDailyTransactionsTotals}
   ${filterClause}
   GROUP BY currencies.currency
   `;
 
-  const transactionsAmount = db.prepare(selectDailyTransactions).all();
+  const selectDailyTransactionsListQuery = `
+  ${selectTransactionsQuery}
+  ${filterListQueries.join(" AND ") ? `WHERE ${filterListQueries.join(" AND ")}` : ""}
+  `;
+  const prevDay = db
+    .prepare(
+      ` 
+  ${S.selectDailyTransactionsTotals}
+  ${prevDayFilters.join(" AND ") ? `WHERE ${prevDayFilters.join(" AND ")}` : ""}
+  GROUP BY currencies.currency
+  `
+    )
+    .all() as any[];
+
+  const transactionsAmount = db.prepare(selectDailyTransactionsTotalsQuery).all() as any[];
+  const transactionsList = db.prepare(selectDailyTransactionsListQuery).all();
 
   let dailyTransactions = [];
+  let prevDayTransactions = [];
 
-  if (transactionsAmount.length === 0) {
-    // If no records found, manually create entries with zero values
-    dailyTransactions = [
-      { currency: "EUR", transactions_count: 0, total_amount: 0 },
-      { currency: "DZD", transactions_count: 0, total_amount: 0 },
-    ];
-  } else {
-    dailyTransactions = transactionsAmount;
-  }
+  dailyTransactions = [
+    {
+      currency: "EUR",
+      transactions_count: transactionsAmount.find((d) => d.currency === "EUR")?.transactions_count || 0,
+      total_amount: transactionsAmount.find((d) => d.currency === "EUR")?.total_amount || 0,
+    },
+    {
+      currency: "DZD",
+      transactions_count: transactionsAmount.find((d) => d.currency === "DZD")?.transactions_count || 0,
+      total_amount: transactionsAmount.find((d) => d.currency === "DZD")?.total_amount || 0,
+    },
+  ];
+  prevDayTransactions = [
+    {
+      currency: "EUR",
+      transactions_count: prevDay.find((d) => d.currency === "EUR")?.transactions_count || 0,
+      total_amount: prevDay.find((d) => d.currency === "EUR")?.total_amount || 0,
+    },
+    {
+      currency: "DZD",
+      transactions_count: prevDay.find((d) => d.currency === "DZD")?.transactions_count || 0,
+      total_amount: prevDay.find((d) => d.currency === "DZD")?.total_amount || 0,
+    },
+  ];
 
   return res.status(200).json({
     status: "success",
+    lastDay_transactions: prevDayTransactions,
     daily_transactions: dailyTransactions,
+    results: transactionsList.length,
+    transactions_list: transactionsList,
   });
 });
 

@@ -14,17 +14,16 @@ import Button from "components/Button/Button";
 
 interface TransactionsTableProps {
   direction?: Transaction["direction"];
-  showSymbol?: boolean;
-  showIndex?: boolean;
+  forPrint: boolean;
   clientName: string;
   transactions: Transaction[];
 }
 
-const TransactionsTable = ({ direction, showSymbol, clientName, showIndex, transactions }: TransactionsTableProps) => {
+const TransactionsTable = ({ direction, forPrint, clientName, transactions }: TransactionsTableProps) => {
   const dispatch = useDispatch();
 
-  const renderTableHeaderCells = () => {
-    return TB_HEADER_DATA.map(({ title }) => {
+  const renderTableHeaderCells = (type: Transaction["type"]) => {
+    return TB_HEADER_DATA[type].map(({ title }) => {
       return <T.TableHeaderCell key={title}>{title}</T.TableHeaderCell>;
     });
   };
@@ -95,33 +94,72 @@ const TransactionsTable = ({ direction, showSymbol, clientName, showIndex, trans
         );
       };
 
+      const renderFirstCell = () => {
+        if (forPrint) {
+          let infoShown: any = info1;
+          if (type === "Fiat") infoShown = recipient;
+          if (type !== "Fiat" && type !== "car") infoShown = info4;
+          if (type === "licence") infoShown = info2;
+          return <Body2>{infoShown}</Body2>;
+        } else {
+          return type === "car" ? (
+            <Link href={`/cars/${product_id}`}>
+              <Body2>{info1}</Body2>
+            </Link>
+          ) : (
+            <Body2 as={type === "Fiat" ? "a" : "p"} onClick={editFiatTransaction}>
+              {info1}
+            </Body2>
+          );
+        }
+      };
+
+      const renderSecondCell = () => {
+        if (forPrint) {
+          let infoShown: any = info2;
+          if (type === "licence") infoShown = info3;
+          return <Body2>{infoShown}</Body2>;
+        } else {
+          return ["licence", "paper", "procuration"].includes(type) ? (
+            <Link href={`/${type}s/${product_id}`}>
+              <Body2>{info2}</Body2>
+            </Link>
+          ) : (
+            <Body2>{info2}</Body2>
+          );
+        }
+      };
+
+      const renderThirdCell = () => {
+        if (forPrint) {
+          let infoShown: any = info3 || "--";
+          if (type === "licence") infoShown = info4;
+          return <Body2>{infoShown}</Body2>;
+        } else {
+          return info3 || "--";
+        }
+      };
+
+      const renderFourCell = () => {
+        if (forPrint) {
+          let infoShown: any = "--";
+          if (type === "licence") infoShown = "--";
+          if (type === "car") infoShown = info4;
+          return <Body2>{infoShown}</Body2>;
+        } else {
+          return type === "Fiat" ? renderDeleteTransactionBtn() : info4 || "--";
+        }
+      };
+
       return (
         <T.TableRow key={id}>
-          {showIndex && <T.TableCell>{ind + 1}</T.TableCell>}
+          {forPrint && <T.TableCell>{ind + 1}</T.TableCell>}
           <T.TableCell>{formattedTransactionDate}</T.TableCell>
-          <T.TableCell>
-            {type === "car" ? (
-              <Link href={`/cars/${product_id}`}>
-                <Body2>{info1}</Body2>
-              </Link>
-            ) : (
-              <Body2 as={type === "Fiat" ? "a" : "p"} onClick={editFiatTransaction}>
-                {info1}
-              </Body2>
-            )}
-          </T.TableCell>
-          <T.TableCell>
-            {["licence", "paper", "procuration"].includes(type) ? (
-              <Link href={`/${type}s/${product_id}`}>
-                <Body2>{info2}</Body2>
-              </Link>
-            ) : (
-              <Body2>{info2}</Body2>
-            )}
-          </T.TableCell>
-          <T.TableCell>{info3 || "--"}</T.TableCell>
-          <T.TableCell>{type === "Fiat" && !showSymbol ? renderDeleteTransactionBtn() : info4 || "--"}</T.TableCell>
-          <T.TableCell blurrable>{`${showSymbol ? symbol : ""} ${formattedTransactionAmount}`}</T.TableCell>
+          <T.TableCell>{renderFirstCell()}</T.TableCell>
+          <T.TableCell>{renderSecondCell()}</T.TableCell>
+          <T.TableCell>{renderThirdCell()}</T.TableCell>
+          <T.TableCell>{renderFourCell()}</T.TableCell>
+          <T.TableCell blurrable>{`${forPrint ? symbol : ""} ${formattedTransactionAmount}`}</T.TableCell>
         </T.TableRow>
       );
     });
@@ -132,8 +170,8 @@ const TransactionsTable = ({ direction, showSymbol, clientName, showIndex, trans
       <T.Table>
         <T.TableHead>
           <T.TableRow>
-            {showIndex && <T.TableHeaderCell>Indice</T.TableHeaderCell>}
-            {renderTableHeaderCells()}
+            {forPrint && <T.TableHeaderCell>Indice</T.TableHeaderCell>}
+            {transactions[0] && renderTableHeaderCells(transactions[0].type)}
           </T.TableRow>
         </T.TableHead>
         <T.TableBody>{renderTransactions()}</T.TableBody>

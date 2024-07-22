@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { TableWrapper, TableHead, TableRow } from "components/Table/styles";
+import { TableWrapper, TableHead, TableRow, TableHeaderCell } from "components/Table/styles";
 
 interface DetailLineProps {
   $type: "stacked" | "spaced";
@@ -15,8 +15,8 @@ export const DocumentWrapper = styled.div`
 
   @page {
     size: A4;
-    margin: 5mm;
-    margin-top: 8mm;
+    margin: 2rem;
+    margin-top: 7mm;
 
     @bottom-left {
       content: counter(page);
@@ -27,10 +27,14 @@ export const DocumentWrapper = styled.div`
     min-height: max-content;
     max-height: max-content;
     overflow: visible;
+    margin-top: 1rem;
   }
 
   ${TableHead} {
-    display: none;
+  }
+
+  ${TableHeaderCell} {
+    position: relative;
   }
 
   ${TableRow}:first-child {
@@ -43,8 +47,6 @@ export const DocumentWrapper = styled.div`
 
   ${TableRow} {
     min-height: 6rem;
-    page-break-inside: avoid;
-    page-break-before: avoid;
   }
 
   a {
@@ -89,6 +91,36 @@ export const BreakerLine = styled.div`
   }
 `;
 
+export const GroupTable = styled.div`
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  border: 0.2rem solid #000;
+  border-radius: 1rem;
+  page-break-inside: avoid;
+  page-break-before: avoid;
+`;
+
+export const GroupHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+export const GroupTotals = styled.div`
+  display: flex;
+  margin-top: 2rem;
+`;
+
+export const GroupTotalsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  margin-left: auto;
+`;
+
 export const ClientsTransactionsTotalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -97,6 +129,7 @@ export const ClientsTransactionsTotalWrapper = styled.div`
 
 export const DetailLine = styled.div<DetailLineProps>`
   display: flex;
+  min-width: 30rem;
   align-items: center;
   justify-content: ${({ $type }) => ($type === "spaced" ? "space-between" : "flex-start")};
   gap: ${({ $type }) => ($type === "stacked" ? "1rem" : "0")};
@@ -109,7 +142,7 @@ export const DetailLine = styled.div<DetailLineProps>`
 export const DocumentFooter = styled.div`
   margin-top: auto;
   width: 100%;
-  height: 7rem;
+  height: 6rem;
   display: flex;
   justify-content: space-between;
 

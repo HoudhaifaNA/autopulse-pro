@@ -1,8 +1,42 @@
-export const TB_HEADER_DATA = [
-  { title: "Date d. transaction", sortable: false },
-  { title: "Info 1", sortable: false },
-  { title: "Info 2", sortable: false },
-  { title: "Info 3", sortable: false },
-  { title: "Info 4", sortable: false },
-  { title: "Montant", sortable: false },
-];
+export const TB_HEADER_DATA = {
+  car: [
+    { title: "Date d. transaction", sortable: false },
+    { title: "Nom", sortable: false },
+    { title: "Coleur", sortable: false },
+    { title: "MT (N.CH)", sortable: false },
+    { title: "Année", sortable: false },
+    { title: "Prix", sortable: false },
+  ],
+  paper: [
+    { title: "Date d. transaction", sortable: false },
+    { title: "Propriétaire", sortable: false },
+    { title: "Voiture", sortable: false },
+    { title: "N.CH", sortable: false },
+    { title: "--", sortable: false },
+    { title: "Prix", sortable: false },
+  ],
+  procuration: [
+    { title: "Date d. transaction", sortable: false },
+    { title: "Propriétaire", sortable: false },
+    { title: "Voiture", sortable: false },
+    { title: "N.CH", sortable: false },
+    { title: "", sortable: false },
+    { title: "Prix", sortable: false },
+  ],
+  Fiat: [
+    { title: "Date d. transaction", sortable: false },
+    { title: "Destinataire", sortable: false },
+    { title: "Méthode", sortable: false },
+    { title: "--", sortable: false },
+    { title: "--", sortable: false },
+    { title: "Montante", sortable: false },
+  ],
+  licence: [
+    { title: "Date d. transaction", sortable: false },
+    { title: "Moudjahid", sortable: false },
+    { title: "Wilaya", sortable: false },
+    { title: "N.Série", sortable: false },
+    { title: "--", sortable: false },
+    { title: "Prix", sortable: false },
+  ],
+};

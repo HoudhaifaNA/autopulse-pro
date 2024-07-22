@@ -44,12 +44,12 @@ const CategoriesList = () => {
     }
   }, [brandsAndSeriesData, categoriesData]);
 
-  // useEffect(() => {
-  //   dispatch(deleteParam({ resource: "cars", paramKey: "type" }));
-  //   dispatch(deleteParam({ resource: "cars", paramKey: "brand" }));
-  //   dispatch(deleteParam({ resource: "cars", paramKey: "model" }));
-  //   dispatch(deleteParam({ resource: "cars", paramKey: "name" }));
-  // }, []);
+  useEffect(() => {
+    dispatch(deleteParam({ resource: "cars", paramKey: "type" }));
+    dispatch(deleteParam({ resource: "cars", paramKey: "brand" }));
+    dispatch(deleteParam({ resource: "cars", paramKey: "model" }));
+    dispatch(deleteParam({ resource: "cars", paramKey: "name" }));
+  }, []);
 
   const handleCategoryClick = (name: string) => {
     dispatch(setParam({ resource: "cars", paramKey: "type", paramValue: name }));

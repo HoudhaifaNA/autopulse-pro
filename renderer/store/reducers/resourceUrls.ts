@@ -18,6 +18,36 @@ const generateResource = (url: string, params: RestParams): ResourceConfig => {
   };
 };
 
+function formatTodayDate(): string {
+  const today = new Date();
+  const startDate = formatDate(today);
+
+  // Set endDate to tomorrow
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const endDate = formatDate(tomorrow);
+
+  return `${startDate}_${endDate}`;
+}
+
+function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = padZero(date.getMonth() + 1);
+  const day = padZero(date.getDate());
+  const hours = "00";
+  const minutes = "00";
+  const seconds = "00";
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+function padZero(num: number): string {
+  return num < 10 ? `0${num}` : num.toString();
+}
+
+// Example usage
+const todayDateRange = formatTodayDate();
+
 const categoriesParams = { orderBy: "" };
 const clientsParams = { orderBy: "-last_transaction_date" };
 const licencesParams = { orderBy: "-is_valid" };
@@ -28,6 +58,7 @@ const procurationsParams = { orderBy: "-purchased_at" };
 const transctionsParams = { orderBy: "-transaction_date" };
 const stockParams = { orderBy: "name" };
 const statsParams = { orderBy: "" };
+const dailyParams = { orderBy: "", transaction_date: todayDateRange };
 
 const initialState: ResourcesState = {
   categories: generateResource("/categories", categoriesParams),
@@ -43,8 +74,8 @@ const initialState: ResourcesState = {
   countStats: generateResource("/stats/count", statsParams),
   carsStats: generateResource("/stats/cars", statsParams),
   licencesStats: generateResource("/stats/licences", statsParams),
-  transactionsStats: generateResource("/stats/daily", statsParams),
-  dailyStats: generateResource("/stats/daily", statsParams),
+  transactionsStats: generateResource("/stats/transactions", statsParams),
+  dailyStats: generateResource("/stats/daily", dailyParams),
   expensesStats: generateResource("/stats/expenses", statsParams),
   procurationsStats: generateResource("/stats/procurations", statsParams),
   papersStats: generateResource("/stats/papers", statsParams),
@@ -57,6 +88,7 @@ const resourceUrlsSlice = createSlice({
     setParam: (state, action: PayloadAction<Param>) => {
       const { resource, paramKey, paramValue } = action.payload;
       const { baseUrl, params, secondaryUrl } = state[resource];
+      console.log(action.payload);
 
       if (paramKey === "orderBy" && typeof paramValue === "string") {
         params[paramKey] = params[paramKey] === paramValue ? `-${paramValue}` : paramValue;

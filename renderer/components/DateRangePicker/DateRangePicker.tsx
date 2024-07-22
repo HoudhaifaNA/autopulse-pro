@@ -37,6 +37,7 @@ interface DateRangePickerProps {
   resource: Resources;
   rangeParam: string;
   label: string;
+  clearable?: boolean;
 }
 
 const getInitialDateRange = (dateRangeParamValue: ParamValue): DateRangeValue => {
@@ -56,7 +57,7 @@ const getInitialDateRange = (dateRangeParamValue: ParamValue): DateRangeValue =>
 
 const ONE_DAY_IN_MILLISECONDS = 86400000;
 
-const DateRangePicker = ({ resource, rangeParam, label }: DateRangePickerProps) => {
+const DateRangePicker = ({ resource, rangeParam, label, clearable = true }: DateRangePickerProps) => {
   const dateRangeParamValue = useAppSelector((state) => state.resourceUrls[resource].params[rangeParam]);
   const dispatch = useDispatch();
   const [selectedRange, setSelectedRange] = useState<DateRangeValue>(getInitialDateRange(dateRangeParamValue));
@@ -121,7 +122,7 @@ const DateRangePicker = ({ resource, rangeParam, label }: DateRangePickerProps) 
         size="xl"
         locale="fr"
         onChange={handleDateChange}
-        clearable
+        clearable={clearable}
         clearButtonProps={{ onClick: clearDateRange }}
       />
     </S.Wrapper>
